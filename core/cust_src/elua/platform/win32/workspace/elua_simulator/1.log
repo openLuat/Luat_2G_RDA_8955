@@ -1,0 +1,26 @@
+ 驱动器 D 中的卷是 DATA
+ 卷的序列号是 4020-4E8A
+
+ D:\code\LUA_trunk\cust_src\elua\platform\win32\workspace\elua_simulator 的目录
+
+2014/03/15  23:00    <DIR>          .
+2014/03/15  23:00    <DIR>          ..
+2014/03/15  23:00                 0 1.log
+2013/09/07  10:58            64,549 9321A15_S443_V016.lua
+2013/12/18  23:02             8,004 cta.lua
+2014/03/15  22:28    <DIR>          Debug
+2013/12/18  13:22               855 dispchinese.lua
+2014/03/03  11:18            72,712 DualServ_9321A22_AIR.lua
+2014/03/15  23:00    <DIR>          elua
+2014/03/14  14:27            19,494 elua_simulator.dsp
+2013/03/10  14:45               551 elua_simulator.dsw
+2014/03/15  22:59         1,183,857 elua_simulator.exe
+2013/10/24  21:05           753,776 elua_simulator.ilk
+2014/03/14  22:32           558,080 elua_simulator.ncb
+2014/03/14  22:32            95,232 elua_simulator.opt
+2014/03/15  22:59             4,002 elua_simulator.plg
+2014/03/15  22:53    <DIR>          lua
+2014/03/14  14:33            25,300 luadb.bin
+2014/02/10  14:26    <DIR>          test~
+              13 个文件      2,786,412 字节
+               6 个目录 37,548,695,552 可用字节

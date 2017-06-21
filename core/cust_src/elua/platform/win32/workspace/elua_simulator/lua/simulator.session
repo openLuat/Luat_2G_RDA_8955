@@ -1,0 +1,35 @@
+# SciTE session file
+
+buffer.1.path=D:\Data\Project\lua\lua forge project\iup\test\Lua\button.wlua
+buffer.1.position=3732
+
+buffer.2.path=D:\Data\Project\lua\source\sample.wlua
+buffer.2.position=857
+
+buffer.3.path=D:\Data\Project\lua\source\sample.lua
+buffer.3.position=36
+
+buffer.4.path=D:\Data\Project\lua\sample\Lua\alarm.wlua
+buffer.4.position=396
+
+buffer.5.path=D:\Data\Project\lua\sample\Lua\dial.wlua
+buffer.5.position=396
+
+buffer.6.path=D:\Data\Project\lua\sample\Lua\getparam.wlua
+buffer.6.position=853
+
+buffer.7.path=D:\Data\Project\lua\sample\Lua\list.wlua
+buffer.7.position=422
+
+buffer.8.path=D:\Data\Project\lua\sample\Lua\frame.wlua
+buffer.8.position=576
+
+buffer.9.path=D:\code\LUA_trunk\cust_src\elua\platform\win32\workspace\elua_simulator\release\event.lua
+buffer.9.position=58
+
+buffer.10.path=D:\code\LUA_trunk\cust_src\elua\platform\win32\workspace\elua_simulator\release\simulator.wlua
+buffer.10.position=4082
+buffer.10.current=1
+
+buffer.11.path=D:\code\LUA_trunk\cust_src\elua\platform\win32\workspace\elua_simulator\release\daemon.lua
+buffer.11.position=404

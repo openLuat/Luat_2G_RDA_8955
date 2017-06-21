@@ -1,0 +1,4 @@
+/lua/main.lua:16: attempt to call field 'color' (a nil value)
+stack traceback:
+	/lua/main.lua:16: in main chunk
+	[C]: ?

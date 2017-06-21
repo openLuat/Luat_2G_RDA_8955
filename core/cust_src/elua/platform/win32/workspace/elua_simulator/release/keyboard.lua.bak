@@ -1,0 +1,82 @@
+
+require"pack"
+require"bit"
+module(...,package.seeall)
+
+local ROWS,COLS = 8,8
+local dlg,matrix
+
+local function bit2table(val,bits)
+	local t = {}
+	local v1 = 1
+
+	for i=1,bits do
+		if bit.band(val,v1) == v1 then
+			table.insert(t,i)
+		end
+		v1 = v1*2
+	end
+	return	t
+end
+
+function press(l,c,status)
+	--if status ~= iup.BUTTION1 then return end
+
+	iup.Message("press",c)
+end
+
+function release(l,c,status)
+	--if status ~= iup.BUTTION1 then return end
+
+	iup.Message("release",l..c)
+end
+
+function open(r,c)
+	if dlg ~= nil then return end
+
+	matrix = iup.matrix
+	{
+		numlin = #r,
+		numcol = #c,
+		numlin_visible = #r,
+		numcol_visible = #c,
+		--height0=10,
+		widthdef=30,
+		scrollbar = "NO",
+	}
+
+	matrix.click_cb = press
+	matrix.release_cb = release
+
+	for i=1,#r do
+		matrix:setcell(i,0,"ROW"..r[i])
+	end
+
+	for i=1,#c do
+		matrix:setcell(0,i,"COL"..c[i])
+	end
+
+	dlg = iup.dialog
+	{
+		matrix
+		;title = "keyboard"
+	}
+
+	dlg:show()
+end
+
+function proc_evt_key(d)
+	local _,key_type,row_mask,col_mask = string.unpack(d,"III")
+	local row,col = bit2table(row_mask,ROWS),bit2table(col_mask,COLS)
+
+	open(row,col)
+end
+
+function close()
+	if dlg then
+		dlg:destroy()
+		dlg = nil
+	end
+end
+
+event.add(event.EVT_KEY,proc_evt_key)

@@ -1,0 +1,4496 @@
+
+chgs 1 1 
+6,1,0F0FFFTFFFFT0 
+atc: OK
+ 
+sendat: AT+CREG? 
+atc: OK
+ 
+sendat: AT+CGATT? 
+atc: OK
+ 
+cgatt: 
+sendat: AT+CSQ 
+atc: OK
+ 
+sendat: AT+CREG? 
+atc: OK
+ 
+sendat: AT+CGATT? 
+chgs 1 1 
+8,1,0F0FFFTFFFFT0 
+atc: OK
+ 
+cgatt: 
+sendat: AT+CSQ 
+atc: OK
+ 
+sendat: AT+CREG? 
+atc: OK
+ 
+sendat: AT+CGATT? 
+atc: OK
+ 
+cgatt: 
+sendat: AT+CSQ 
+atc: OK
+ 
+sendat: AT+CREG? 
+atc: OK
+ 
+sendat: AT+CGATT? 
+chgs 1 1 
+8,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+atc: OK
+ 
+cgatt: 
+sendat: AT+CSQ 
+atc: OK
+ 
+sendat: AT+CREG? 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+10,1,0F0FFFTFFFFT0 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+sendat: AT+CGATT? 
+chgs 1 1 
+10,1,0F0FFFTFFFFT0 
+
+lua.lasterr: (command line):1527: /RecDir/zlog11.zip: No such file or directory
+stack traceback:
+	[C]: in function 'assert'
+	(command line):1527: in function 'open_zip'
+	(command line):1628: in function 'OutputZiplog'
+	(command line):1666: in function 'GetLog'
+	(command line):3468: in function 'handlehost'
+	(command line):3491: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.1 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.1 
+config_w s1.clouddatasrv.com 
+WriteResetC 8018,20,20,600,300,120,300,120,1,0,0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+2,1,0F0FFFTFFFFT0 
+chgs 1 1 
+2,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+4,1,0F0FFFTFFFFT0 
+chgs 1 1 
+4,1,0F0FFFTFFFFT0 
+chgs 1 1 
+6,1,0F0FFFTFFFFT0 
+chgs 1 1 
+6,1,0F0FFFTFFFFT0 
+chgs 1 1 
+8,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+8,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+10,1,0F0FFFTFFFFT0 
+chgs 1 1 
+10,1,0F0FFFTFFFFT0 
+chgs 1 1 
+12,1,0F0FFFTFFFFT0 
+chgs 1 1 
+12,1,0F0FFFTFFFFT0 
+chgs 1 1 
+14,1,0F0FFFTFFFFT0 
+chgs 1 1 
+14,1,0F0FFFTFFFFT0 
+chgs 1 1 
+16,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+16,1,0F0FFFTFFFFT0 
+chgs 1 1 
+18,1,0F0FFFTFFFFT0 
+chgs 1 1 
+18,1,0F0FFFTFFFFT0 
+HeartTime 20 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+20,1,0F0FFFTFFFFT0 
+chgs 1 1 
+20,1,0F0FFFTFFFFT0 
+chgs 1 1 
+22,1,0F0FFFTFFFFT0 
+chgs 1 1 
+22,1,0F0FFFTFFFFT0 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+atc: RDY
+ 
+chgs 1 1 
+24,1,0F0FFFTFFFFT0 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+chgs 1 1 
+26,1,0F0FFFTFFFFT0 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+chgs 1 1 
+28,1,0F0FFFTFFFFT0 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+HeartTime 30 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+30,0F0FFFTFFFFT0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+atc: RDY
+ 
+chgs 1 1 
+32,0F0FFFTFFFFT0 
+chgs 1 1 
+33,0F0FFFTFFFFT0 
+atc: RDY
+ 
+chgs 1 1 
+34,0F0FFFTFFFFT0 
+atc: RDY
+ 
+chgs 1 1 
+35,0F0FFFTFFFFT0 
+chgs 1 1 
+36,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+atc: RDY
+ 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+atc: RDY
+ 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+atc: RDY
+ 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+HeartTime 20 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+21,1,0F0FFFTFFFFT0 
+chgs 1 1 
+21,1,0F0FFFTFFFFT0 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+HeartTime 30 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+chgs 1 1 
+33,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+33,0F0FFFTFFFFT0 
+chgs 1 1 
+35,0F0FFFTFFFFT0 
+chgs 1 1 
+35,0F0FFFTFFFFT0 
+chgs 1 1 
+37,0F0FFFTFFFFT0 
+chgs 1 1 
+37,0F0FFFTFFFFT0 
+chgs 1 1 
+39,0F0FFFTFFFFT0 
+chgs 1 1 
+39,0F0FFFTFFFFT0 
+HeartTime 40 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+41,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+41,0F0FFFTFFFFT0 
+chgs 1 1 
+43,0F0FFFTFFFFT0 
+chgs 1 1 
+43,0F0FFFTFFFFT0 
+chgs 1 1 
+45,0F0FFFTFFFFT0 
+chgs 1 1 
+45,0F0FFFTFFFFT0 
+chgs 1 1 
+47,0F0FFFTFFFFT0 
+chgs 1 1 
+47,0F0FFFTFFFFT0 
+chgs 1 1 
+49,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+restart sys 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+2,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+atc: RDY
+ 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+HeartTime 20 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+20,1,0F0FFFTFFFFT0 
+chgs 1 1 
+21,1,0F0FFFTFFFFT0 
+chgs 1 1 
+22,1,0F0FFFTFFFFT0 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+24,1,0F0FFFTFFFFT0 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+chgs 1 1 
+26,1,0F0FFFTFFFFT0 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+chgs 1 1 
+28,1,0F0FFFTFFFFT0 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+HeartTime 30 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+30,0F0FFFTFFFFT0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+32,0F0FFFTFFFFT0 
+chgs 1 1 
+33,0F0FFFTFFFFT0 
+chgs 1 1 
+34,0F0FFFTFFFFT0 
+chgs 1 1 
+35,0F0FFFTFFFFT0 
+chgs 1 1 
+36,0F0FFFTFFFFT0 
+chgs 1 1 
+37,0F0FFFTFFFFT0 
+chgs 1 1 
+38,0F0FFFTFFFFT0 
+chgs 1 1 
+39,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+HeartTime 40 21 20 0 20 0 -280 300 0 
+restart sys 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+atc: RDY
+ 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+atc: +CFUN:1
+ 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+HeartTime 20 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+20,1,0F0FFFTFFFFT0 
+chgs 1 1 
+21,1,0F0FFFTFFFFT0 
+chgs 1 1 
+22,1,0F0FFFTFFFFT0 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+chgs 1 1 
+24,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+chgs 1 1 
+26,1,0F0FFFTFFFFT0 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+chgs 1 1 
+28,1,0F0FFFTFFFFT0 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+HeartTime 30 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+30,0F0FFFTFFFFT0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+chgs 1 1 
+32,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+atc: +CSIMTYPE: 0,0
+ 
+chgs 1 1 
+33,0F0FFFTFFFFT0 
+chgs 1 1 
+34,0F0FFFTFFFFT0 
+chgs 1 1 
+35,0F0FFFTFFFFT0 
+chgs 1 1 
+36,0F0FFFTFFFFT0 
+chgs 1 1 
+37,0F0FFFTFFFFT0 
+chgs 1 1 
+38,0F0FFFTFFFFT0 
+chgs 1 1 
+39,0F0FFFTFFFFT0 
+HeartTime 40 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+40,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+41,0F0FFFTFFFFT0 
+chgs 1 1 
+42,0F0FFFTFFFFT0 
+chgs 1 1 
+43,0F0FFFTFFFFT0 
+chgs 1 1 
+44,0F0FFFTFFFFT0 
+chgs 1 1 
+45,0F0FFFTFFFFT0 
+chgs 1 1 
+46,0F0FFFTFFFFT0 
+chgs 1 1 
+47,0F0FFFTFFFFT0 
+chgs 1 1 
+48,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+restart sys 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+atc: RDY
+ 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+HeartTime 20 0 20 0 20 0 -280 300 0 
+atc: RDY
+ 
+chgs 1 1 
+21,1,0F0FFFTFFFFT0 
+chgs 1 1 
+21,1,0F0FFFTFFFFT0 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RD 
+atc: Y
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+atc: RDY
+ 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+HeartTime 30 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+atc: OK
+ 
+sendat: AT+CGATT? 
+chgs 1 1 
+33,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+33,0F0FFFTFFFFT0 
+chgs 1 1 
+35,0F0FFFTFFFFT0 
+chgs 1 1 
+35,0F0FFFTFFFFT0 
+atc: OK
+ 
+cgatt: 
+sendat: AT+CSQ 
+chgs 1 1 
+37,0F0FFFTFFFFT0 
+chgs 1 1 
+37,0F0FFFTFFFFT0 
+chgs 1 1 
+39,0F0FFFTFFFFT0 
+chgs 1 1 
+39,0F0FFFTFFFFT0 
+HeartTime 40 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+41,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+41,0F0FFFTFFFFT0 
+chgs 1 1 
+43,0F0FFFTFFFFT0 
+chgs 1 1 
+43,0F0FFFTFFFFT0 
+chgs 1 1 
+45,0F0FFFTFFFFT0 
+chgs 1 1 
+45,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+atc: RDY
+ 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+atc: +CFUN: 1
+ 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+atc: +CSIMTYPE: 0,0
+ 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+HeartTime 20 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+21,1,0F0FFFTFFFFT0 
+atc: OK
+ 
+sendat: AT*EXASSERT=1 
+chgs 1 1 
+21,1,0F0FFFTFFFFT0 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+atc: OK
+ 
+sendat: AT*TRACE="SXS",0,0 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+HeartTime 30 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+atc: OK
+ 
+sendat: AT*TRACE="DSS",0,0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+chgs 1 1 
+33,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+atc: OK
+ 
+sendat: AT*TRACE="RDA",0,0 
+chgs 1 1 
+33,0F0FFFTFFFFT0 
+chgs 1 1 
+35,0F0FFFTFFFFT0 
+chgs 1 1 
+35,0F0FFFTFFFFT0 
+atc: OK
+ 
+sendat: AT+CREG=2 
+chgs 1 1 
+37,0F0FFFTFFFFT0 
+chgs 1 1 
+37,0F0FFFTFFFFT0 
+atc: OK
+ 
+sendat: AT+WISN? 
+chgs 1 1 
+39,0F0FFFTFFFFT0 
+chgs 1 1 
+39,0F0FFFTFFFFT0 
+HeartTime 40 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+41,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+41,0F0FFFTFFFFT0 
+chgs 1 1 
+43,0F0FFFTFFFFT0 
+atc: 2508010007018744
+ 
+chgs 1 1 
+43,0F0FFFTFFFFT0 
+atc: OK
+ 
+sn: 2508010007018744 
+sendat: AT+CGSN 
+chgs 1 1 
+45,0F0FFFTFFFFT0 
+chgs 1 1 
+45,0F0FFFTFFFFT0 
+chgs 1 1 
+47,0F0FFFTFFFFT0 
+chgs 1 1 
+47,0F0FFFTFFFFT0 
+chgs 1 1 
+49,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+atc: 862991200186465
+ 
+chgs 1 1 
+49,0F0FFFTFFFFT0 
+HeartTime 50 42 20 0 20 0 -280 300 0 
+atc: OK
+ 
+imei: 862991200186465 
+sendat: AT+CNMI=2,2 
+chgs 1 1 
+51,0F0FFFTFFFFT0 
+chgs 1 1 
+51,0F0FFFTFFFFT0 
+chgs 1 1 
+53,0F0FFFTFFFFT0 
+chgs 1 1 
+53,0F0FFFTFFFFT0 
+atc: OK
+ 
+sendat: AT+CMGF=1 
+chgs 1 1 
+55,0F0FFFTFFFFT0 
+atc: OK
+ 
+sendat: AT+CSCS="UCS2" 
+chgs 1 1 
+55,0F0FFFTFFFFT0 
+chgs 1 1 
+57,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+atc: OK
+ 
+sendat: AT+CENG=1,1 
+chgs 1 1 
+57,0F0FFFTFFFFT0 
+chgs 1 1 
+59,0F0FFFTFFFFT0 
+atc: OK
+ 
+sendat: AT+VER 
+chgs 1 1 
+59,0F0FFFTFFFFT0 
+HeartTime 60 42 20 0 20 0 -280 300 0 
+chgs 1 1 
+61,0303103209,0F0FFFTFFFFT0 
+chgs 1 1 
+61,0F0FFFTFFFFT0 
+chgs 1 1 
+63,0F0FFFTFFFFT0 
+chgs 1 1 
+63,0F0FFFTFFFFT0 
+atc: SW_V2968_AM004_LUA
+ 
+chgs 1 1 
+65,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+atc: OK
+ 
+SOFTVERSION SW_V2968_AM004_LUA 
+sendat: AT+AMFGM 
+chgs 1 1 
+65,0F0FFFTFFFFT0 
+chgs 1 1 
+67,0F0FFFTFFFFT0 
+chgs 1 1 
+67,0F0FFFTFFFFT0 
+chgs 1 1 
+69,0F0FFFTFFFFT0 
+chgs 1 1 
+69,0F0FFFTFFFFT0 
+HeartTime 70 63 20 0 20 0 -280 300 0 
+atc: +AMFGM: 1 
+atc: 61792
+ 
+chgs 1 1 
+71,0F0FFFTFFFFT0 
+chgs 1 1 
+71,0F0FFFTFFFFT0 
+atc: OK
+ 
+sendat: AT+AMFGL 
+chgs 1 1 
+73,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+73,0F0FFFTFFFFT0 
+chgs 1 1 
+75,0F0FFFTFFFFT0 
+chgs 1 1 
+75,0F0FFFTFFFFT0 
+chgs 1 1 
+77,0F0FFFTFFFFT0 
+chgs 1 1 
+77,0F0FFFTFFFFT0 
+chgs 1 1 
+79,0F0FFFTFFFFT0 
+chgs 1 1 
+79,0F0FFFTFFFFT0 
+HeartTime 80 63 20 0 20 0 -280 300 0 
+chgs 1 1 
+81,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+81,0F0FFFTFFFFT0 
+chgs 1 1 
+83,0F0FFFTFFFFT0 
+chgs 1 1 
+83,0F0FFFTFFFFT0 
+chgs 1 1 
+85,0F0FFFTFFFFT0 
+chgs 1 1 
+85,0F0FFFTFFFFT0 
+chgs 1 1 
+87,0F0FFFTFFFFT0 
+chgs 1 1 
+87,0F0FFFTFFFFT0 
+chgs 1 1 
+89,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+atc: +AMFGL:
+ 
+chgs 1 1 
+89,0F0FFFTFFFFT0 
+HeartTime 90 84 20 0 20 0 -280 300 0 
+atc: OK
+ 
+sendat: AT+AMFGD="luaerrinfo.txt",0 
+chgs 1 1 
+91,0F0FFFTFFFFT0 
+chgs 1 1 
+91,0F0FFFTFFFFT0 
+chgs 1 1 
+93,0F0FFFTFFFFT0 
+chgs 1 1 
+93,0F0FFFTFFFFT0 
+chgs 1 1 
+95,0F0FFFTFFFFT0 
+chgs 1 1 
+95,0F0FFFTFFFFT0 
+atc: ERROR
+ 
+sendat: AT+CGATT? 
+chgs 1 1 
+97,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+97,0F0FFFTFFFFT0 
+chgs 1 1 
+99,0F0FFFTFFFFT0 
+chgs 1 1 
+99,0F0FFFTFFFFT0 
+HeartTime 100 84 20 0 20 0 -280 300 0 
+chgs 1 1 
+101,0F0FFFTFFFFT0 
+chgs 1 1 
+101,0F0FFFTFFFFT0 
+chgs 1 1 
+103,0F0FFFTFFFFT0 
+chgs 1 1 
+103,0F0FFFTFFFFT0 
+chgs 1 1 
+105,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+105,0F0FFFTFFFFT0 
+chgs 1 1 
+107,0F0FFFTFFFFT0 
+chgs 1 1 
+107,0F0FFFTFFFFT0 
+chgs 1 1 
+109,0F0FFFTFFFFT0 
+chgs 1 1 
+109,0F0FFFTFFFFT0 
+HeartTime 110 105 20 0 20 0 -280 300 0 
+chgs 1 1 
+111,0F0FFFTFFFFT0 
+chgs 1 1 
+111,0F0FFFTFFFFT0 
+chgs 1 1 
+113,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+113,0F0FFFTFFFFT0 
+chgs 1 1 
+115,0F0FFFTFFFFT0 
+atc: +CGATT: 0
+ 
+chgs 1 1 
+115,0F0FFFTFFFFT0 
+chgs 1 1 
+117,0F0FFFTFFFFT0 
+atc: OK
+ 
+cgatt: 0 
+sendat: AT+CSQ 
+chgs 1 1 
+117,0F0FFFTFFFFT0 
+chgs 1 1 
+119,0F0FFFTFFFFT0 
+chgs 1 1 
+119,0F0FFFTFFFFT0 
+HeartTime 120 105 20 0 20 0 -280 300 0 
+chgs 1 1 
+121,0303103310,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+121,0F0FFFTFFFFT0 
+chgs 1 1 
+123,0F0FFFTFFFFT0 
+chgs 1 1 
+123,0F0FFFTFFFFT0 
+chgs 1 1 
+125,0F0FFFTFFFFT0 
+chgs 1 1 
+125,0F0FFFTFFFFT0 
+atc: +CSQ: 99,99
+ 
+chgs 1 1 
+127,0F0FFFTFFFFT0 
+atc: OK
+ 
+sendat: AT+CREG? 
+chgs 1 1 
+127,0F0FFFTFFFFT0 
+chgs 1 1 
+129,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+129,0F0FFFTFFFFT0 
+HeartTime 130 126 20 0 20 0 -280 300 0 
+chgs 1 1 
+131,0F0FFFTFFFFT0 
+chgs 1 1 
+131,0F0FFFTFFFFT0 
+atc: +CREG: 2,0
+ 
+network: 2,0 
+chgs 1 1 
+133,0F0FFFTFFFFT0 
+chgs 1 1 
+133,0F0FFFTFFFFT0 
+atc: OK
+ 
+sendat: AT+CGATT? 
+chgs 1 1 
+135,0F0FFFTFFFFT0 
+chgs 1 1 
+135,0F0FFFTFFFFT0 
+chgs 1 1 
+137,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+137,0F0FFFTFFFFT0 
+chgs 1 1 
+139,0F0FFFTFFFFT0 
+chgs 1 1 
+139,0F0FFFTFFFFT0 
+HeartTime 140 126 20 0 20 0 -280 300 0 
+chgs 1 1 
+141,0F0FFFTFFFFT0 
+chgs 1 1 
+141,0F0FFFTFFFFT0 
+chgs 1 1 
+143,0F0FFFTFFFFT0 
+atc: +CGATT: 0
+ 
+chgs 1 1 
+143,0F0FFFTFFFFT0 
+atc: OK
+ 
+cgatt: 0 
+sendat: AT+CSQ 
+chgs 1 1 
+145,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+145,0F0FFFTFFFFT0 
+chgs 1 1 
+147,0F0FFFTFFFFT0 
+chgs 1 1 
+147,0F0FFFTFFFFT0 
+chgs 1 1 
+149,0F0FFFTFFFFT0 
+atc: +CSQ: 99,99
+ 
+chgs 1 1 
+149,0F0FFFTFFFFT0 
+HeartTime 150 147 20 0 20 0 -280 300 0 
+atc: OK
+ 
+sendat: AT+CREG? 
+chgs 1 1 
+151,0F0FFFTFFFFT0 
+chgs 1 1 
+151,0F0FFFTFFFFT0 
+chgs 1 1 
+153,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+153,0F0FFFTFFFFT0 
+chgs 1 1 
+155,0F0FFFTFFFFT0 
+atc: +CREG: 2
+ 
+network: 2 
+chgs 1 1 
+155,0F0FFFTFFFFT0 
+atc: OK
+ 
+sendat: AT+CGATT? 
+chgs 1 1 
+157,0F0FFFTFFFFT0 
+chgs 1 1 
+157,0F0FFFTFFFFT0 
+chgs 1 1 
+159,0F0FFFTFFFFT0 
+chgs 1 1 
+159,0F0FFFTFFFFT0 
+HeartTime 160 147 20 0 20 0 -280 300 0 
+chgs 1 1 
+161,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+161,0F0FFFTFFFFT0 
+chgs 1 1 
+163,0F0FFFTFFFFT0 
+chgs 1 1 
+163,0F0FFFTFFFFT0 
+chgs 1 1 
+165,0F0FFFTFFFFT0 
+chgs 1 1 
+165,0F0FFFTFFFFT0 
+chgs 1 1 
+167,0F0FFFTFFFFT0 
+chgs 1 1 
+167,0F0FFFTFFFFT0 
+chgs 1 1 
+169,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+169,0F0FFFTFFFFT0 
+HeartTime 170 168 20 0 20 0 -280 300 0 
+chgs 1 1 
+171,0F0FFFTFFFFT0 
+chgs 1 1 
+171,0F0FFFTFFFFT0 
+chgs 1 1 
+173,0F0FFFTFFFFT0 
+chgs 1 1 
+173,0F0FFFTFFFFT0 
+chgs 1 1 
+175,0F0FFFTFFFFT0 
+chgs 1 1 
+175,0F0FFFTFFFFT0 
+chgs 1 1 
+177,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+177,0F0FFFTFFFFT0 
+chgs 1 1 
+179,0F0FFFTFFFFT0 
+chgs 1 1 
+179,0F0FFFTFFFFT0 
+HeartTime 180 168 20 0 20 0 -280 300 0 
+chgs 1 1 
+181,0303103411,0F0FFFTFFFFT0 
+chgs 1 1 
+181,0F0FFFTFFFFT0 
+chgs 1 1 
+183,0F0FFFTFFFFT0 
+chgs 1 1 
+183,0F0FFFTFFFFT0 
+chgs 1 1 
+185,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+185,0F0FFFTFFFFT0 
+chgs 1 1 
+187,0F0FFFTFFFFT0 
+chgs 1 1 
+187,0F0FFFTFFFFT0 
+chgs 1 1 
+189,0F0FFFTFFFFT0 
+chgs 1 1 
+189,0F0FFFTFFFFT0 
+HeartTime 190 189 20 0 20 0 -280 300 0 
+chgs 1 1 
+191,0F0FFFTFFFFT0 
+chgs 1 1 
+191,0F0FFFTFFFFT0 
+chgs 1 1 
+193,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+193,0F0FFFTFFFFT0 
+chgs 1 1 
+195,0F0FFFTFFFFT0 
+chgs 1 1 
+195,0F0FFFTFFFFT0 
+chgs 1 1 
+197,0F0FFFTFFFFT0 
+chgs 1 1 
+197,0F0FFFTFFFFT0 
+chgs 1 1 
+199,0F0FFFTFFFFT0 
+chgs 1 1 
+199,0F0FFFTFFFFT0 
+HeartTime 200 189 20 0 20 0 -280 300 0 
+chgs 1 1 
+201,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+201,0F0FFFTFFFFT0 
+chgs 1 1 
+203,0F0FFFTFFFFT0 
+chgs 1 1 
+203,0F0FFFTFFFFT0 
+chgs 1 1 
+205,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+restart sys 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+atc:            
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+2,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+4,1,0F0FFFTFFFFT0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+6,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+8,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+10,1,0F0FFFTFFFFT0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+12,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+14,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+16,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+atc:   
+atc:    
+atc:    
+atc:     
+atc:         
+atc:              
+atc:      
+atc:     
+atc:   
+atc:    
+atc:      
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+8,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+10,1,0F0FFFTFFFFT0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+12,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+14,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+16,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chgs 1 1 
+18,1,0F0FFFTFFFFT0 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+HeartTime 20 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+20,1,0F0FFFTFFFFT0 
+chgs 1 1 
+21,1,0F0FFFTFFFFT0 
+chgs 1 1 
+22,1,0F0FFFTFFFFT0 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+chgs 1 1 
+24,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+chgs 1 1 
+26,1,0F0FFFTFFFFT0 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+chgs 1 1 
+28,1,0F0FFFTFFFFT0 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+HeartTime 30 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+30,0F0FFFTFFFFT0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+chgs 1 1 
+32,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+33,0F0FFFTFFFFT0 
+chgs 1 1 
+34,0F0FFFTFFFFT0 
+chgs 1 1 
+35,0F0FFFTFFFFT0 
+chgs 1 1 
+36,0F0FFFTFFFFT0 
+chgs 1 1 
+37,0F0FFFTFFFFT0 
+chgs 1 1 
+38,0F0FFFTFFFFT0 
+chgs 1 1 
+39,0F0FFFTFFFFT0 
+HeartTime 40 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+40,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+41,0F0FFFTFFFFT0 
+chgs 1 1 
+42,0F0FFFTFFFFT0 
+chgs 1 1 
+43,0F0FFFTFFFFT0 
+chgs 1 1 
+44,0F0FFFTFFFFT0 
+chgs 1 1 
+45,0F0FFFTFFFFT0 
+chgs 1 1 
+46,0F0FFFTFFFFT0 
+chgs 1 1 
+47,0F0FFFTFFFFT0 
+chgs 1 1 
+48,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+restart sys 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+atc: ¡¥¨Š•é "ME",1
+ 
+atc: +CMTI: "ME",2
+ 
+atc: +CMTI: "ME",3
+ 
+atc: +CMTI: "ME",4
+ 
+atc: +CMTI: "ME",5
+ 
+atc: +CMTI: "ME",6
+ 
+atc: +CMTI: "ME",7
+ 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+atc:  
+atc: 
+ 
+atc: RD 
+atc: Y 
+atc:  
+atc: 
+ 
+atc:  
+atc: 
+ 
+atc: + 
+atc: C 
+atc: F 
+atc: UN: 
+atc:   
+atc: 1
+ 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+HeartTime 20 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+21,1,0F0FFFTFFFFT0 
+chgs 1 1 
+21,1,0F0FFFTFFFFT0 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+HeartTime 30 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+atc:  
+atc: 
+ 
+atc: RD 
+atc: Y 
+atc: + 
+atc: C 
+atc: F 
+atc: U 
+atc: N 
+atc: :  
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+atc:  
+atc: 
+ 
+atc: R 
+atc: D 
+atc: Y 
+atc:  
+atc: 
+ 
+atc:  
+atc: 
+ 
+atc: + 
+atc: C 
+atc: FU 
+atc: N 
+atc: : 
+atc:   
+atc: 1 
+atc:  
+atc: 
+ 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+atc:  
+atc: 
+ 
+atc: R 
+atc: DY 
+atc:  
+atc: 
+ 
+atc:  
+atc: 
+ 
+atc: + 
+atc: C 
+atc: F 
+atc: U 
+atc: N 
+atc: : 
+atc:  1 
+atc:  
+atc: 
+ 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+atc:  
+atc: 
+ 
+atc: + 
+atc: E 
+atc: N 
+atc: C 
+atc: R 
+atc: E 
+atc: T 
+atc: :  
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+atc:  
+atc: 
+ 
+atc: R 
+atc: D 
+atc: Y 
+atc:  
+atc: 
+ 
+atc:  
+atc: 
+ 
+atc: + 
+atc: CF 
+atc: U 
+atc: N 
+atc: : 
+atc:   
+atc: 1 
+atc:  
+atc: 
+ 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+atc:  
+atc: 
+ 
+atc: R 
+atc: DY 
+atc:  
+atc: 
+ 
+atc: +CF 
+atc: U 
+atc: N: 
+atc:   
+atc: 1 
+atc: 
+ 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+atc:  
+atc: 
+ 
+atc: R 
+atc: DY 
+atc:  
+atc: 
+ 
+atc: +C 
+atc: F 
+atc: U 
+atc: N 
+atc: :  
+atc: 1 
+atc:  
+atc: 
+ 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+atc:  
+atc: 
+ 
+atc: +E 
+atc: N 
+atc: CR 
+atc: ET 
+atc: : 
+atc:   
+atc: 0 
+atc:  
+atc: 
+ 
+atc:  
+atc: 
+ 
+atc: +CPI 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+atc:  
+atc: 
+ 
+atc: R 
+atc: DY 
+atc:  
+atc: 
+ 
+atc:  
+atc: 
+ 
+atc: + 
+atc: C 
+atc: FU 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+atc:  
+atc: 
+ 
+atc: R 
+atc: D 
+atc: Y 
+atc:  
+atc: 
+ 
+atc: + 
+atc: C 
+atc: F 
+atc: U 
+atc: N 
+atc: :  
+atc: 1 
+atc:  
+atc: 
+ 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+atc:  
+atc: 
+ 
+atc: + 
+atc: E 
+atc: N 
+atc: CR 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+atc:  
+atc: 
+ 
+atc: RD 
+atc: Y 
+atc:  
+atc: 
+ 
+atc:  
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+atc: +CFUN: 1
+ 
+atc: +ENCRET: 0
+ 
+atc: +CPIN: READY
+ 
+atc: CALL READY
+ 
+atc: SMS READY
+ 
+chgs 1 1 
+2,1,0F0FFFTFFFFT0 
+chgs 1 1 
+2,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+4,1,0F0FFFTFFFFT0 
+chgs 1 1 
+4,1,0F0FFFTFFFFT0 
+chgs 1 1 
+6,1,0F0FFFTFFFFT0 
+chgs 1 1 
+6,1,0F0FFFTFFFFT0 
+restart sys 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+atc: RDY
+ 
+atc: +CFUN: 1
+ 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+atc: +CSIMTYPE: 0,0
+ 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+atc: +ENCRET: 0
+ 
+atc: +CPIN: READY
+ 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+atc: CALL READY
+ 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+atc: SMS READY
+ 
+chgs 1 1 
+12,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+14,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+16,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chgs 1 1 
+18,1,0F0FFFTFFFFT0 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+HeartTime 20 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+20,1,0F0FFFTFFFFT0 
+chgs 1 1 
+21,1,0F0FFFTFFFFT0 
+chgs 1 1 
+22,1,0F0FFFTFFFFT0 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+chgs 1 1 
+24,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+chgs 1 1 
+26,1,0F0FFFTFFFFT0 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+chgs 1 1 
+28,1,0F0FFFTFFFFT0 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+HeartTime 30 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+30,0F0FFFTFFFFT0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+chgs 1 1 
+32,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+33,0F0FFFTFFFFT0 
+chgs 1 1 
+34,0F0FFFTFFFFT0 
+chgs 1 1 
+35,0F0FFFTFFFFT0 
+chgs 1 1 
+36,0F0FFFTFFFFT0 
+chgs 1 1 
+37,0F0FFFTFFFFT0 
+chgs 1 1 
+38,0F0FFFTFFFFT0 
+chgs 1 1 
+39,0F0FFFTFFFFT0 
+HeartTime 40 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+40,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+41,0F0FFFTFFFFT0 
+chgs 1 1 
+42,0F0FFFTFFFFT0 
+chgs 1 1 
+43,0F0FFFTFFFFT0 
+chgs 1 1 
+44,0F0FFFTFFFFT0 
+chgs 1 1 
+45,0F0FFFTFFFFT0 
+chgs 1 1 
+46,0F0FFFTFFFFT0 
+chgs 1 1 
+47,0F0FFFTFFFFT0 
+chgs 1 1 
+48,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+restart sys 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+sendat: ATE0 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+2,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+atc: RDY
+ 
+atc: +CFUN: 1
+ 
+chgs 1 1 
+4,1,0F0FFFTFFFFT0 
+atc: +CSIMTYPE: 0,0
+ 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+atc: +ENCRET: 0
+ 
+atc: +CPIN: READY
+ 
+chgs 1 1 
+6,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+8,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+10,1,0F0FFFTFFFFT0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+12,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+atc: CALL READY
+ 
+chgs 1 1 
+14,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+atc: SMS READY
+ 
+chgs 1 1 
+16,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chgs 1 1 
+18,1,0F0FFFTFFFFT0 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+HeartTime 20 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+20,1,0F0FFFTFFFFT0 
+chgs 1 1 
+21,1,0F0FFFTFFFFT0 
+chgs 1 1 
+21,1,0F0FFFTFFFFT0 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+HeartTime 30 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+33,0F0FFFTFFFFT0 
+chgs 1 1 
+33,0F0FFFTFFFFT0 
+chgs 1 1 
+35,0F0FFFTFFFFT0 
+chgs 1 1 
+35,0F0FFFTFFFFT0 
+chgs 1 1 
+37,0F0FFFTFFFFT0 
+chgs 1 1 
+37,0F0FFFTFFFFT0 
+chgs 1 1 
+39,0F0FFFTFFFFT0 
+chgs 1 1 
+39,0F0FFFTFFFFT0 
+HeartTime 40 21 20 0 20 0 -280 300 0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+41,0F0FFFTFFFFT0 
+chgs 1 1 
+41,0F0FFFTFFFFT0 
+chgs 1 1 
+43,0F0FFFTFFFFT0 
+chgs 1 1 
+43,0F0FFFTFFFFT0 
+chgs 1 1 
+45,0F0FFFTFFFFT0 
+chgs 1 1 
+45,0F0FFFTFFFFT0 
+chgs 1 1 
+47,0F0FFFTFFFFT0 
+restart sys 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+2,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+4,1,0F0FFFTFFFFT0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+6,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+8,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+atc: RDY
+ 
+atc: +CFUN: 1
+ 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+atc: +CSIMTYPE: 0,0
+ 
+chgs 1 1 
+10,1,0F0FFFTFFFFT0 
+atc: +ENCRET: 0
+ 
+atc: +CPIN: READY
+ 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+12,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+14,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+16,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chgs 1 1 
+18,1,0F0FFFTFFFFT0 
+atc: CALL READY
+ 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+HeartTime 20 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+20,1,0F0FFFTFFFFT0 
+atc: SMS READY
+ 
+chgs 1 1 
+21,1,0F0FFFTFFFFT0 
+chgs 1 1 
+22,1,0F0FFFTFFFFT0 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+chgs 1 1 
+24,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+chgs 1 1 
+26,1,0F0FFFTFFFFT0 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+chgs 1 1 
+28,1,0F0FFFTFFFFT0 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+HeartTime 30 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+30,0F0FFFTFFFFT0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+chgs 1 1 
+32,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+33,0F0FFFTFFFFT0 
+chgs 1 1 
+34,0F0FFFTFFFFT0 
+chgs 1 1 
+35,0F0FFFTFFFFT0 
+chgs 1 1 
+36,0F0FFFTFFFFT0 
+chgs 1 1 
+37,0F0FFFTFFFFT0 
+chgs 1 1 
+38,0F0FFFTFFFFT0 
+chgs 1 1 
+39,0F0FFFTFFFFT0 
+HeartTime 40 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+40,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+41,0F0FFFTFFFFT0 
+chgs 1 1 
+42,0F0FFFTFFFFT0 
+chgs 1 1 
+43,0F0FFFTFFFFT0 
+chgs 1 1 
+44,0F0FFFTFFFFT0 
+chgs 1 1 
+45,0F0FFFTFFFFT0 
+chgs 1 1 
+46,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+2,1,0F0FFFTFFFFT0 
+chgs 1 1 
+2,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+4,1,0F0FFFTFFFFT0 
+chgs 1 1 
+4,1,0F0FFFTFFFFT0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+atc: +CFUN: 1
+ 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+atc: +CSIMTYPE: 0,0
+ 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+atc: +ENCRET: 0
+ 
+atc: +CPIN: READY
+ 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+14,1,0F0FFFTFFFFT0 
+atc: CALL READY
+ 
+atc: SMS READY
+ 
+restart sys 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+0,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+atc: +CFUN: 1
+ 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+atc: +CSIMTYPE: 0,0
+ 
+chgs 1 1 
+2,1,0F0FFFTFFFFT0 
+atc: +ENCRET: 0
+ 
+atc: +CPIN: READY
+ 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+atc: RDY
+ 
+atc: +CFUN: 1
+ 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+atc: +CSIMTYPE: 0,0
+ 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+atc: +ENCRET: 0
+ 
+atc: +CPIN: READY
+ 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+atc: CALL READY
+ 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+atc: SMS READY
+ 
+chgs 1 1 
+16,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+17,1,0F0FFFTFFFFT0 
+chgs 1 1 
+18,1,0F0FFFTFFFFT0 
+chgs 1 1 
+19,1,0F0FFFTFFFFT0 
+HeartTime 20 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+20,1,0F0FFFTFFFFT0 
+chgs 1 1 
+21,1,0F0FFFTFFFFT0 
+chgs 1 1 
+22,1,0F0FFFTFFFFT0 
+chgs 1 1 
+23,1,0F0FFFTFFFFT0 
+chgs 1 1 
+24,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+25,1,0F0FFFTFFFFT0 
+chgs 1 1 
+26,1,0F0FFFTFFFFT0 
+chgs 1 1 
+27,1,0F0FFFTFFFFT0 
+chgs 1 1 
+28,1,0F0FFFTFFFFT0 
+chgs 1 1 
+29,1,0F0FFFTFFFFT0 
+HeartTime 30 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+30,0F0FFFTFFFFT0 
+chgs 1 1 
+31,0F0FFFTFFFFT0 
+chgs 1 1 
+32,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+33,0F0FFFTFFFFT0 
+chgs 1 1 
+34,0F0FFFTFFFFT0 
+chgs 1 1 
+35,0F0FFFTFFFFT0 
+chgs 1 1 
+36,0F0FFFTFFFFT0 
+chgs 1 1 
+37,0F0FFFTFFFFT0 
+chgs 1 1 
+38,0F0FFFTFFFFT0 
+chgs 1 1 
+39,0F0FFFTFFFFT0 
+HeartTime 40 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+40,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+41,0F0FFFTFFFFT0 
+chgs 1 1 
+42,0F0FFFTFFFFT0 
+chgs 1 1 
+43,0F0FFFTFFFFT0 
+chgs 1 1 
+44,0F0FFFTFFFFT0 
+chgs 1 1 
+45,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: /lua/access.lua:130: bad argument #1 to 'concat' (table expected, got no value)
+stack traceback:
+	[C]: in function 'concat'
+	/lua/access.lua:130: in function 'proc'
+	/lua/access.lua:303: in function 'parse'
+	/lua/access.lua:327: in function '?'
+	/lua/sys.lua:217: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ? 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+chgs 1 1 
+46,0F0FFFTFFFFT0 
+chgs 1 1 
+47,0F0FFFTFFFFT0 
+atc: RDY
+ 
+atc: +CFUN: 1
+ 
+restart sys 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: (command line):1295: uart.setup error ret(0)
+stack traceback:
+	[C]: in function 'setup'
+	(command line):1295: in function 'sysinit'
+	(command line):3536: in function 'init'
+	(command line):3570: in main chunk
+	[C]: ? 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+atc: RDY
+ 
+atc: +CFUN: 1
+ 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+atc: +CSIMTYPE: 0,0
+ 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+atc: +ENCRET: 0
+ 
+atc: +CPIN: READY
+ 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+atc: CALL READY
+ 
+atc: SMS READY
+ 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: (command line):1295: uart.setup error ret(0)
+stack traceback:
+	[C]: in function 'setup'
+	(command line):1295: in function 'sysinit'
+	(command line):3536: in function 'init'
+	(command line):3570: in main chunk
+	[C]: ? 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+2,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chgs 1 1 
+4,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: (command line):1295: uart.setup error ret(0)
+stack traceback:
+	[C]: in function 'setup'
+	(command line):1295: in function 'sysinit'
+	(command line):3536: in function 'init'
+	(command line):3570: in main chunk
+	[C]: ? 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: (command line):1295: uart.setup error ret(0)
+stack traceback:
+	[C]: in function 'setup'
+	(command line):1295: in function 'sysinit'
+	(command line):3536: in function 'init'
+	(command line):3570: in main chunk
+	[C]: ? 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+atc: RDY
+ 
+atc: +CFUN: 1
+ 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+atc: +CSIMTYPE: 0,0
+ 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+atc: +ENCRET: 0
+ 
+atc: +CPIN: READY
+ 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+chgs 1 1 
+8,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+8,1,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: (command line):1295: uart.setup error ret(0)
+stack traceback:
+	[C]: in function 'setup'
+	(command line):1295: in function 'sysinit'
+	(command line):3536: in function 'init'
+	(command line):3570: in main chunk
+	[C]: ? 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+atc: +CSIMTYPE: 0,0
+ 
+atc: ATE0 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: 0000000000
+ 
+atc: OK
+ 
+sn: 0000000000 
+atc: 359759002514931
+ 
+atc: OK
+ 
+imei: 359759002514931 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: +ENCRET: 0
+ 
+atc: OK
+ 
+atc: SW_V2907_AM001
+ 
+atc: OK
+ 
+SOFTVERSION SW_V2907_AM001 
+atc: +AMFGM: 118784
+ 
+atc: OK
+ 
+atc: +AMFGL: 
+atc: OK
+ 
+atc: +CPIN: READY
+ 
+atc: 460020822287527
+ 
+atc: OK
+ 
+imsi: 460020822287527 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+atc: ERROR
+ 
+atc: +CSQ: 99,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,0
+ 
+network: 2,0 
+atc: OK
+ 
+atc: +CREG: 2
+ 
+network: 2 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+atc: +CSQ: 99,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,2
+ 
+network: 2,2 
+atc: OK
+ 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+atc: +CSQ: 99,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,2
+ 
+network: 2,2 
+atc: OK
+ 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+atc: +CSQ: 13,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,2
+ 
+network: 2,2 
+atc: OK
+ 
+atc: CALL READY
+ 
+atc: +CREG: 1,"60b1","6129"
+ 
+network: 1,"60b1","6129" 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+atc: +CSQ: 8,99
+ 
+atc: OK
+ 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+atc: +CREG: 2,1,"60b1","6129"
+ 
+network: 2,1,"60b1","6129" 
+CELL 24753 24873 
+atc: OK
+ 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+atc: SMS READY
+ 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+atc: +CSQ: 8,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,1,"60b1","6129"
+ 
+network: 2,1,"60b1","6129" 
+atc: OK
+ 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+atc: +CGATT: 1
+ 
+atc: OK
+ 
+cgatt: 1 
+atc: +CSQ: 14,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,1,"60b1","6129"
+ 
+network: 2,1,"60b1","6129" 
+atc: OK
+ 
+chgs 1 1 
+13,1,0F0FFTTFFFFT0 
+chgs 1 1 
+13,1,0F0FFTTFFFFT0 
+setupip.status: 
+atc: OK
+ 
+atc: OK
+ 
+chgs 1 1 
+15,1,0F0FFTTFFFFT0 
+atc: OK
+ 
+atc: 010.134.084.147
+ 
+atc: OK
+ 
+atc: OK
+ 
+chgs 1 1 
+15,1,0F0FFTTFFFFT0 
+atc: OK
+ 
+atc: STATE: IP STATUS
+ 
+ipstatus: IP STATUS IP STATUS 
+atc: C: 0,,"","","","INITIAL"
+ 
+atc: C: 1,,"","","","INITIAL"
+ 
+atc: C: 2,,"","","","INITIAL"
+ 
+atc: C: 3,,"","","","INITIAL"
+ 
+atc: C: 4,,"","","","INITIAL"
+ 
+atc: C: 5,,"","","","INITIAL"
+ 
+atc: C: 6,,"","","","INITIAL"
+ 
+atc: C: 7,,"","","","INITIAL"
+ 
+atc: OK
+ 
+atc: 1,CONNECT OK
+ 
+id.state: 1 CONNECTED 
+Air CONNECTED 
+Msg type A1 
+atc: >  
+gprsdata 1 1 B0081001359759002514931,1,3.1.3.0,0,0,0,0,0,0,1,0,0370101,359759002514931,460020822287527E 
+atc: 1,SEND OK
+ 
+Air SEND OK 
+chgs 1 1 
+17,1,0F0FFTTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+17,1,0F0FFTTFFFFT0 
+atc: +RECEIVE,1,13:
+ 
+atc: B0002001OKE
+ 
+airack 1 B0002001OKE OK 
+chgs 1 1 
+18,1,0F0FFTTFFFFT0 
+chgs 1 1 
+18,1,0F0FFTTFFFFT0 
+HeartTime 20 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+20,1,0F0FFTTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: (command line):1295: uart.setup error ret(0)
+stack traceback:
+	[C]: in function 'setup'
+	(command line):1295: in function 'sysinit'
+	(command line):3536: in function 'init'
+	(command line):3570: in main chunk
+	[C]: ? 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: (command line):1295: uart.setup error ret(0)
+stack traceback:
+	[C]: in function 'setup'
+	(command line):1295: in function 'sysinit'
+	(command line):3536: in function 'init'
+	(command line):3570: in main chunk
+	[C]: ? 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+atc: +CSIMTYPE: 0,0
+ 
+atc: ATE0 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: 0000000000
+ 
+atc: OK
+ 
+sn: 0000000000 
+atc: 359759002514931
+ 
+atc: OK
+ 
+imei: 359759002514931 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: +ENCRET: 0
+ 
+atc: OK
+ 
+atc: SW_V2907_AM001
+ 
+atc: OK
+ 
+SOFTVERSION SW_V2907_AM001 
+atc: +AMFGM: 118272
+ 
+atc: OK
+ 
+atc: +AMFGL: 
+atc: OK
+ 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+atc: ERROR
+ 
+atc: +CSQ: 99,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,0
+ 
+network: 2,0 
+atc: OK
+ 
+atc: +CPIN: READY
+ 
+atc: 460020822287527
+ 
+atc: OK
+ 
+imsi: 460020822287527 
+atc: +CREG: 2
+ 
+network: 2 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+atc: +CSQ: 99,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,2
+ 
+network: 2,2 
+atc: OK
+ 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+atc: +CSQ: 99,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,2
+ 
+network: 2,2 
+atc: OK
+ 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+atc: +CSQ: 13,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,2
+ 
+network: 2,2 
+atc: OK
+ 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+atc: CALL READY
+ 
+atc: +CREG: 1,"60b1","6129"
+ 
+network: 1,"60b1","6129" 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+atc: +CSQ: 13,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,1,"60b1","6129"
+ 
+network: 2,1,"60b1","6129" 
+CELL 24753 24873 
+atc: OK
+ 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+atc: +CSQ: 13,99
+ 
+atc: OK
+ 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+atc: +CREG: 2,1,"60b1","6129"
+ 
+network: 2,1,"60b1","6129" 
+atc: OK
+ 
+atc: SMS READY
+ 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+atc: +CGATT: 1
+ 
+atc: OK
+ 
+cgatt: 1 
+atc: +CSQ: 14,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,1,"60b1","6129"
+ 
+network: 2,1,"60b1","6129" 
+atc: OK
+ 
+chgs 1 1 
+13,1,0F0FFTTFFFFT0 
+chgs 1 1 
+13,1,0F0FFTTFFFFT0 
+setupip.status: 
+atc: OK
+ 
+atc: OK
+ 
+chgs 1 1 
+15,1,0F0FFTTFFFFT0 
+atc: OK
+ 
+atc: 010.108.152.114
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: STATE: IP STATUS
+ 
+ipstatus: IP STATUS IP STATUS 
+atc: C: 0,,"","","","INITIAL"
+ 
+atc: C: 1,,"","","","INITIAL"
+ 
+atc: C: 2,,"","","","INITIAL"
+ 
+atc: C: 3,,"","","","INITIAL"
+ 
+atc: C: 4,,"","","","INITIAL"
+ 
+atc: C: 5,,"","","","INITIAL"
+ 
+atc: C: 6,,"","","","INITIAL"
+ 
+atc: C: 7,,"","","","INITIAL"
+ 
+chgs 1 1 
+15,1,0F0FFTTFFFFT0 
+atc: OK
+ 
+atc: 1,CONNECT OK
+ 
+id.state: 1 CONNECTED 
+Air CONNECTED 
+Msg type A1 
+atc: >  
+gprsdata 1 1 B0081001359759002514931,1,3.1.3.0,0,0,0,0,0,0,1,0,0370101,359759002514931,460020822287527E 
+atc: 1,SEND OK
+ 
+Air SEND OK 
+chgs 1 1 
+17,1,0F0FFTTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+atc: +RECEIVE,1,13:
+ 
+atc: B0002001OKE
+ 
+airack 1 B0002001OKE OK 
+chgs 1 1 
+17,1,0F0FFTTFFFFT0 
+chgs 1 1 
+18,1,0F0FFTTFFFFT0 
+chgs 1 1 
+19,1,0F0FFTTFFFFT0 
+HeartTime 20 0 20 0 20 0 -280 300 0 
+chgs 1 1 
+20,1,0F0FFTTFFFFT0 
+Msg type A1 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: (command line):3573: interrupted!
+stack traceback:
+	[C]: in function 'receive'
+	(command line):3573: in main chunk
+	[C]: ? 
+no luazip 
+config_r 3.1.3 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+atc: +CSIMTYPE: 0,0
+ 
+atc: ATE0 
+atc: OK
+ 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: 0000000000
+ 
+atc: OK
+ 
+sn: 0000000000 
+atc: 359759002514931
+ 
+atc: OK
+ 
+imei: 359759002514931 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: +ENCRET: 0
+ 
+atc: OK
+ 
+atc: SW_V2907_AM001
+ 
+atc: OK
+ 
+SOFTVERSION SW_V2907_AM001 
+atc: +AMFGM: 118272
+ 
+atc: OK
+ 
+atc: +AMFGL: 
+atc: OK
+ 
+atc: ERROR
+ 
+atc: +CSQ: 99,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,0
+ 
+network: 2,0 
+atc: OK
+ 
+atc: +CPIN: READY
+ 
+atc: 460020822287527
+ 
+atc: OK
+ 
+imsi: 460020822287527 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+atc: +CREG: 2
+ 
+network: 2 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+atc: +CSQ: 99,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,2
+ 
+network: 2,2 
+atc: OK
+ 
+chgs 1 1 
+3,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+atc: +CSQ: 99,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,2
+ 
+network: 2,2 
+atc: OK
+ 
+chgs 1 1 
+5,1,0F0FFFTFFFFT0 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+atc: +CSQ: 99,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,2
+ 
+network: 2,2 
+atc: OK
+ 
+chgs 1 1 
+7,1,0F0FFFTFFFFT0 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+atc: +CSQ: 7,99
+ 
+atc: OK
+ 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+atc: +CREG: 2,2
+ 
+network: 2,2 
+atc: OK
+ 
+chgs 1 1 
+9,1,0F0FFFTFFFFT0 
+HeartTime 10 0 20 0 20 0 -280 300 0 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+atc: +CSQ: 6,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,2
+ 
+network: 2,2 
+atc: OK
+ 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+atc: CALL READY
+ 
+atc: +CREG: 1,"60b1","6127"
+ 
+network: 1,"60b1","6127" 
+atc: SMS READY
+ 
+chgs 1 1 
+11,1,0F0FFFTFFFFT0 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+atc: +CSQ: 6,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,1,"60b1","6127"
+ 
+network: 2,1,"60b1","6127" 
+CELL 24753 24871 
+atc: OK
+ 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+chgs 1 1 
+13,1,0F0FFFTFFFFT0 
+atc: +CGATT: 0
+ 
+atc: OK
+ 
+cgatt: 0 
+atc: +CSQ: 6,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,1,"60b1","6127"
+ 
+network: 2,1,"60b1","6127" 
+atc: OK
+ 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+chgs 1 1 
+15,1,0F0FFFTFFFFT0 
+atc: +CGATT: 1
+ 
+atc: OK
+ 
+cgatt: 1 
+atc: +CSQ: 12,99
+ 
+atc: OK
+ 
+atc: +CREG: 2,1,"60b1","6127"
+ 
+network: 2,1,"60b1","6127" 
+atc: OK
+ 
+chgs 1 1 
+17,1,0F0FFTTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+17,1,0F0FFTTFFFFT0 
+setupip.status: 
+atc: OK
+ 
+atc: OK
+ 
+chgs 1 1 
+19,1,0F0FFTTFFFFT0 
+atc: OK
+ 
+atc: 010.123.007.075
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: OK
+ 
+atc: STATE: IP STATUS
+ 
+ipstatus: IP STATUS IP STATUS 
+atc: C: 0,,"","","","INITIAL"
+ 
+atc: C: 1,,"","","","INITIAL"
+ 
+atc: C: 2,,"","","","INITIAL"
+ 
+atc: C: 3,,"","","","INITIAL"
+ 
+atc: C: 4,,"","","","INITIAL"
+ 
+atc: C: 5,,"","","","INITIAL"
+ 
+atc: C: 6,,"","","","INITIAL"
+ 
+atc: C: 7,,"","","","INITIAL"
+ 
+chgs 1 1 
+19,1,0F0FFTTFFFFT0 
+HeartTime 20 0 20 0 20 0 -280 300 0 
+atc: OK
+ 
+atc: 1,CONNECT OK
+ 
+id.state: 1 CONNECTED 
+Air CONNECTED 
+Msg type A1 
+atc: >  
+gprsdata 1 1 B0081001359759002514931,1,3.1.3.0,0,0,0,0,0,0,1,0,0370101,359759002514931,460020822287527E 
+atc: 1,SEND OK
+ 
+Air SEND OK 
+Msg type A1 
+rsp msg not recv 1 B0081001359759002514931,1,3.1.3.0,0,0,0,0,0,0,1,0,0370101,359759002514931,460020822287527E 
+chgs 1 1 
+21,1,0F0FFTTFFFFT0 
+atc: >  
+gprsdata 1 2 B0081002359759002514931,1,3.1.3.0,0,0,0,0,0,0,1,0,0370101,359759002514931,460020822287527E 
+atc: 1,SEND OK
+ 
+Air SEND OK 
+atc: +RECEIVE,1,13:
+ 
+atc: B0002001OKE
+ 
+airack 1 B0002001OKE OK 
+chgs 1 1 
+21,1,0F0FFTTFFFFT0 
+atc: +RECEIVE,1,13:
+ 
+atc: B0002002OKE
+ 
+airack 2 B0002002OKE OK 
+chgs 1 1 
+22,1,0F0FFTTFFFFT0 
+chgs 1 1 
+23,1,0F0FFTTFFFFT0 
+chgs 1 1 
+24,1,0F0FFTTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+25,1,0F0FFTTFFFFT0 
+chgs 1 1 
+26,1,0F0FFTTFFFFT0 
+chgs 1 1 
+27,1,0F0FFTTFFFFT0 
+chgs 1 1 
+28,1,0F0FFTTFFFFT0 
+chgs 1 1 
+29,1,0F0FFTTFFFFT0 
+HeartTime 30 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+30,0F0FFTTFFFFT0 
+chgs 1 1 
+31,0F0FFTTFFFFT0 
+chgs 1 1 
+32,0F0FFTTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+33,0F0FFTTFFFFT0 
+chgs 1 1 
+34,0F0FFTTFFFFT0 
+chgs 1 1 
+35,0F0FFTTFFFFT0 
+chgs 1 1 
+36,0F0FFTTFFFFT0 
+chgs 1 1 
+37,0F0FFTTFFFFT0 
+chgs 1 1 
+38,0F0FFTTFFFFT0 
+chgs 1 1 
+39,0F0FFTTFFFFT0 
+HeartTime 40 21 20 0 20 0 -280 300 0 
+chgs 1 1 
+40,0F0FFTTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+41,0F0FFTTFFFFT0 
+Msg type A1 
+chgs 1 1 
+42,0F0FFTTFFFFT0 
+chgs 1 1 
+43,0F0FFTTFFFFT0 
+chgs 1 1 
+44,0F0FFTTFFFFT0 
+chgs 1 1 
+45,0F0FFTTFFFFT0 
+chgs 1 1 
+46,0F0FFTTFFFFT0 
+chgs 1 1 
+47,0F0FFTTFFFFT0 
+chgs 1 1 
+48,0F0FFTTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+49,0F0FFTTFFFFT0 
+HeartTime 50 42 20 0 20 0 -280 300 0 
+chgs 1 1 
+50,0F0FFTTFFFFT0 
+chgs 1 1 
+51,0F0FFTTFFFFT0 
+chgs 1 1 
+52,0F0FFTTFFFFT0 
+chgs 1 1 
+53,0F0FFTTFFFFT0 
+chgs 1 1 
+54,0F0FFTTFFFFT0 
+chgs 1 1 
+55,0F0FFTTFFFFT0 
+chgs 1 1 
+56,0F0FFTTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+57,0F0FFTTFFFFT0 
+chgs 1 1 
+58,0F0FFTTFFFFT0 
+chgs 1 1 
+59,0F0FFTTFFFFT0 
+HeartTime 60 42 20 0 20 0 -280 300 0 
+chgs 1 1 
+60,0303112021,0F0FFTTFFFFT0 
+chgs 1 1 
+61,0F0FFTTFFFFT0 
+chgs 1 1 
+62,0F0FFTTFFFFT0 
+Msg type A1 
+chgs 1 1 
+63,0F0FFTTFFFFT0 
+chgs 1 1 
+64,0F0FFTTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+65,0F0FFTTFFFFT0 
+chgs 1 1 
+66,0F0FFTTFFFFT0 
+chgs 1 1 
+67,0F0FFTTFFFFT0 
+chgs 1 1 
+68,0F0FFTTFFFFT0 
+chgs 1 1 
+69,0F0FFTTFFFFT0 
+HeartTime 70 63 20 0 20 0 -280 300 0 
+chgs 1 1 
+70,0F0FFTTFFFFT0 
+chgs 1 1 
+71,0F0FFTTFFFFT0 
+chgs 1 1 
+72,0F0FFTTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+73,0F0FFTTFFFFT0 
+chgs 1 1 
+74,0F0FFTTFFFFT0 
+chgs 1 1 
+75,0F0FFTTFFFFT0 
+chgs 1 1 
+76,0F0FFTTFFFFT0 
+chgs 1 1 
+77,0F0FFTTFFFFT0 
+chgs 1 1 
+78,0F0FFTTFFFFT0 
+chgs 1 1 
+79,0F0FFTTFFFFT0 
+HeartTime 80 63 20 0 20 0 -280 300 0 
+chgs 1 1 
+80,0F0FFTTFFFFT0 
+chg msg true 80 4100 true 0 
+int neg1 num: 7 
+chgs 1 1 
+81,0F0FFTTFFFFT0 
+chgs 1 1 
+82,0F0FFTTFFFFT0 
+chgs 1 1 
+83,0F0FFTTFFFFT0 
+Msg type A1 
+chgs 1 1 
+84,0F0FFTTFFFFT0 
+chgs 1 1 
+85,0F0FFTTFFFFT0 
+chgs 1 1 
+86,0F0FFTTFFFFT0 
+chgs 1 1 
+87,0F0FFTTFFFFT0 
+chgs 1 1 
+88,0F0FFTTFFFFT0 
+chg msg true 80 4100 true 0 
+int pos1 num: 7 
+chgs 1 1 
+89,0F0FFTTFFFFT0 
+HeartTime 90 84 20 0 20 0 -280 300 0 
+chgs 1 1 
+90,0F0FFTTFFFFT0 
+restart sys 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: (command line):3573: interrupted!
+stack traceback:
+	[C]: in function 'receive'
+	(command line):3573: in main chunk
+	[C]: ? 
+sendat: ATE0 
+luazipsize 20023 
+config_r 3.1.3 
+config_w s1.clouddatasrv.com 
+WriteResetC 8018,20,20,600,300,120,300,120,1,0,0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+2,1,0F0FFFTFFFFT0 
+chgs 1 1 
+2,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: (command line):3573: interrupted!
+stack traceback:
+	[C]: in function 'receive'
+	(command line):3573: in main chunk
+	[C]: ? 
+sendat: ATE0 
+luazipsize 20023 
+config_r 3.1.4 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+ACCLOCK 1 GPIO1 enabled! 
+acc init 0 0 
+
+lua.lasterr: (command line):3573: interrupted!
+stack traceback:
+	[C]: in function 'receive'
+	(command line):3573: in main chunk
+	[C]: ? 
+sendat: ATE0 
+luazipsize 20023 
+config_r 3.1.4 
+config_r s1.clouddatasrv.com 
+config_r 8018,20,20,600,300,120,300,120,1,0,0 
+read resetC 8018,20,20,600,300,120,300,120,1,0,0 rlt 8018 20 20 600 300 120 300 120 1 0 0 
+config_r 3,3 
+gps open 
+setupip.status: 
+setupip: wait cgatt 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+1,1,0F0FFFTFFFFT0 
+chgs 1 1 
+2,1,0F0FFFTFFFFT0 
+chgs 1 1 
+2,1,0F0FFFTFFFFT0 
+chg msg true 80 4100 true 0 
+chgs 1 1 
+4,1,0F0FFFTFFFFT0 
+chgs 1 1 
+4,1,0F0FFFTFFFFT0 

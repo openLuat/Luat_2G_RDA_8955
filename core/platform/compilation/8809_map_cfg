@@ -1,0 +1,713 @@
+LOGICAL_MAP
+{
+    cached            @0x80000000 to 0x9fffffff and_mask 0x1fffffff;
+    uncached        @0xa0000000 to 0xbfffffff and_mask 0x1fffffff;
+}
+
+PHYSICAL_MAP
+{
+    flash    @0x08000000 size 128M
+    {
+#########################################
+# Define the flash models mapping below
+#########################################
+        flsh_en71pl064b0:    load
+        {
+            filename "flash.lod"
+            sectormap (8 x 8K, 126 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_en71pl032a0:    load
+        {
+            filename "flash.lod"
+            sectormap (8 x 8K, 62 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on            
+        }
+        flsh_svme3216uta:    load
+        {
+            filename "flash.lod"
+            sectormap (63 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on            
+        }
+        flsh_svme320buta:    load
+        {
+            filename "flash.lod"
+            sectormap (63 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on            
+        }        
+        flsh_en71gl032a0:    load
+        {
+            filename "flash.lod"
+            sectormap (8 x 8K, 62 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on            
+        }
+        flsh_m36l0r7050l3zs:    load
+        {
+            filename "flash.lod"
+            sectormap (4 x 32K, 127 x 128K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_m36l0r7050u3zsm0:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 128K, 4 x 32K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }        
+        flsh_m36l0r7050u3zs:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 128K, 4 x 32K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_m36l0r7050u3zs_twn:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 128K, 4 x 32K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }        
+        flsh_m36wor6050u4zs:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_m36wor6050u4zsfm1:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }        
+        flsh_k5l2731caa_d770:    load
+        {
+            filename "flash.lod"
+            sectormap (8 x 8K, 254 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_s71ns256pc0:    load
+        {
+            filename "flash.lod"
+            sectormap (255 x 128K, 4 x 32K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_s71pl256nc0:    load
+        {
+            filename "flash.lod"
+            sectormap (4 x 64K, 126 x 256K, 4 x 64K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_s71pl064ja0:    load
+        {
+            filename "flash.lod"
+            sectormap (8 x 8K, 126 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_s71pl064jb0:    load
+        {
+            filename "flash.lod"
+            sectormap (8 x 8K, 126 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_s71pl127nb0:    load
+        {
+            filename "flash.lod"
+            sectormap (4 x 64K, 62 x 256K, 4 x 64K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_s71pl127jb0:    load
+        {
+            filename "flash.lod"
+            sectormap (8 x 8K, 254 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_s71ws256nc0:    load
+        {
+            filename "flash.lod"
+            sectormap (4 x 32K, 254 x 128K, 4 x 32K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_s71ws256pd0:    load
+        {
+            filename "flash.lod"
+            sectormap (4 x 32K, 254 x 128K, 4 x 32K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_k5a6317ctm_d770:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_tv00560002edgb:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_tv00570002cdgb:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 128K, 8 x 16K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_k5l6331caa_d270:    load
+        {
+            filename "flash.lod"
+            sectormap (8 x 8K, 126 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_k5l3316cam_d770:    load
+        {
+            filename "flash.lod"
+            sectormap (8 x 8K, 62 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_fake16m:    load
+        {
+            filename "flash.lod"
+            sectormap (8 x 8K, 254 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_i34my3dea9447720z441016a:    load
+        {
+            filename "flash.lod"
+            sectormap (64 x 256K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }        
+        flsh_k5l2731caa_d770:    load
+        {
+            filename "flash.lod"
+            sectormap (8 x 8K, 254 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }                
+        flsh_i34my3dea9447720z441016a:    load
+        {
+            filename "flash.lod"
+            sectormap (64 x 256K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_m36wot6050t3aqwo:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_m36wor6050u4zsw0vatwn:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }                
+        flsh_m36wor50406loqqq802b:    load
+        {
+            filename "flash.lod"
+            sectormap (64 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }                
+        flsh_m36wor6050u4zs:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }    
+        flsh_m36p0r8060n0zs:    load
+        {
+            filename "flash.lod"
+            sectormap (64 x 256K)
+            fillvalue 0xffffffff
+            fill on
+             saveheader on
+        }
+        flsh_en71gl064b0:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+             saveheader on
+        }
+        flsh_fm91l03216ua:    load
+        {
+            filename "flash.lod"
+            sectormap (63 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+             saveheader on
+        }
+        flsh_en71gl032a0:    load
+        {
+            filename "flash.lod"
+            sectormap (8 x 8K, 62 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+             saveheader on
+        }        
+        flsh_en71pl032a0:    load
+        {
+            filename "flash.lod"
+            sectormap (8 x 8K, 62 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+             saveheader on
+        }                    
+        flsh_svme3216uta:    load
+        {
+            filename "flash.lod"
+            sectormap (63 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+             saveheader on
+        }        
+        flsh_m36cow5040tozsp:    load
+        {
+            filename "flash.lod"
+            sectormap (63 x 64K ,8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+             saveheader on
+        }
+        flsh_m36cow6050tozsp:	load
+        {
+            filename "flash.lod"
+            sectormap (127 x 64K ,8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+             saveheader on
+        }
+        flsh_tv00560002edgb:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+             saveheader on
+        }
+        flsh_3216_normal:	load
+        {
+            filename "flash.lod"
+            sectormap (512 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on            
+        }
+        flsh_6432_normal:	load
+        {
+            filename "flash.lod"
+            sectormap (512 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on            
+        }
+        flsh_kix6432athy11040ka:	load
+        {
+            filename "flash.lod"
+            sectormap (127 x 64K, 8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on            
+        }
+        flsh_kix3216dthy11050ka:	load
+        {
+            filename "flash.lod"
+            sectormap (63 x 64K,8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on            
+        }                           
+        flsh_k5n2866atebq12:    load
+        {
+            filename "flash.lod"
+            sectormap (255 x 64K,8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_k5n6433atm:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 64K,8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_s71gl064nb0bhwoz:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 64K,8 x 8K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        } 
+        flsh_svme6432utb:    load
+        {
+            filename "flash.lod"
+            sectormap (128 x 64K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }   
+        flsh_gd25q32:    load
+        {
+            filename "flash.lod"
+            sectormap (1024 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_gd25q32x2:    load
+        {
+            filename "flash.lod"
+            sectormap (2048 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_gd25q64:    load
+        {
+            filename "flash.lod"
+            sectormap (2048 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_gd25q64x2:    load
+        {
+            filename "flash.lod"
+            sectormap (4096 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_w25q64dwtim:    load
+        {
+            filename "flash.lod"
+            sectormap (2048 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_w25q64bysig:    load
+        {
+            filename "flash.lod"
+            sectormap (2048 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_m36l0r7050t4zsp_twn:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 128K, 4 x 32K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_m36l0t7050t3zsp_twn:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 128K, 4 x 32K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }  
+        flsh_w25q64bysig:    load
+        {
+            filename "flash.lod"
+            sectormap (2048 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }	    
+        flsh_pm25l0032:    load
+        {
+            filename "flash.lod"
+            sectormap (1024 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        } 
+        flsh_fm25q32a1a1a4:    load
+        {
+            filename "flash.lod"
+            sectormap (1024 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }  
+        flsh_en71ns064b0:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 64K,8 x 8K )
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        } 
+        flsh_en71ns032a0:    load
+        {
+            filename "flash.lod"
+            sectormap (63 x 64K,8 x 8K )
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }                   
+        flsh_s71gl032na0bhwof:    load
+        {
+            filename "flash.lod"
+            sectormap (63 x 64K,8 x 8K )
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }  
+        flsh_mx25u6435e:    load
+        {
+            filename "flash.lod"
+            sectormap (2048 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_en71ns128b0:    load
+        {
+            filename "flash.lod"
+            sectormap (127 x 128K, 4 x 32K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_en71gl128b0:    load
+        {
+            filename "flash.lod"
+            sectormap (128 x 128K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_spi64m:    load
+        {
+            filename "flash.lod"
+            sectormap (112 x 64K, 256 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_spi32m:    load
+        {
+            filename "flash.lod"
+            #+\NEW\lifei\2012.07.02\增加AMC区域#
+	    #+\NEW WM-474\lifei\2012.12.12\新增OpenAT功能#
+        #+\BUG WM-360\rufei\2013.3.13\优化NVM存储#
+            sectormap (54 x 64K, 160 x 4K)
+        #-\BUG WM-360\rufei\2013.3.13\优化NVM存储#
+	    #-\NEW WM-474\lifei\2012.12.12\新增OpenAT功能#
+            #-\NEW\lifei\2012.07.02\增加AMC区域#
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_spi32x2m:    load
+        {
+            filename "flash.lod"
+            sectormap (112 x 64K, 256 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_spi64x2m:    load
+        {
+            filename "flash.lod"
+            sectormap (224 x 64K, 512 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_gd25lq128yig:    load
+        {
+            filename "flash.lod"
+            sectormap (4096 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_n25w128a11e40:    load
+        {
+            filename "flash.lod"
+            sectormap (256 x 64K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_n25w64a11e40:    load
+        {
+            filename "flash.lod"
+            sectormap (128 x 64K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+        flsh_n25w32a11e40:    load
+        {
+            filename "flash.lod"
+            sectormap (64 x 64K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+       flsh_mx25u12835e:    load
+        {
+            filename "flash.lod"
+            sectormap (4096 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }         
+          flsh_spi128m:    load
+        {
+            filename "flash.lod"
+            sectormap (224 x 64K, 512 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }
+	#+\NEW\zhangwei\2012.10.08\增加flash类型#
+        flsh_spi16m:    load
+        {
+            filename "flash.lod"
+            sectormap (512 x 4K)
+            fillvalue 0xffffffff
+            fill on
+            saveheader on
+        }    
+	#-\NEW\zhangwei\2012.10.08\增加flash类型#
+################################################
+# Do Not edit below this line - Used for RAMRUN
+################################################
+        preload:    load
+        {
+            filename "flash.lod"
+            sectorsize 8K
+            fillvalue 0xffffffff
+            fill off
+        }
+
+    }
+    
+    ram        @0x02000000 size 32M
+    {
+        preload:    load
+        {
+            filename "ram.lod"
+        }
+    }
+    
+    dualportsram    @0x01b00000 size 1M
+    {
+         preload:    load
+        {
+            filename "dpsram.lod"
+        }       
+    }
+    
+    intsram    @0x01c00000 size 1M
+    {
+         preload:    load
+        {
+            filename "intsram.lod"
+        }       
+    }
+    
+    bbsram    @0x01900000 size 32K
+    {
+         preload:    load
+        {
+            filename "bbsram.lod"
+        }       
+    }
+
+    introm @0x01e00000 size 512K
+    {
+         rom:    load
+        {
+            filename "introm.lod"
+            sectormap (32 x 16K)
+            fill on
+
+        }       
+    }
+
+    bcpurom @0x01e80000 size 512K
+    {
+         rom:    load
+        {
+            filename "bcpurom.lod"
+            sectormap (32 x 16K)
+            fill on
+
+        }       
+    }
+}
+

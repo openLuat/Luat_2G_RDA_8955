@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="elua_simulator" />
+		<Option platforms="Windows;" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Win32 Release">
+				<Option output="D:/code/LUA_trunk/cust_src/elua/platform/win32/workspace/elua_simulator/Release/elua_simulator" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Release" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-W" />
+					<Add option="-fexceptions" />
+					<Add option="-O2" />
+					<Add option="-DWIN32" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-D_MBCS" />
+				</Compiler>
+				<Linker>
+					<Add library="kernel32" />
+					<Add library="user32" />
+					<Add library="gdi32" />
+					<Add library="winspool" />
+					<Add library="comdlg32" />
+					<Add library="advapi32" />
+					<Add library="shell32" />
+					<Add library="ole32" />
+					<Add library="oleaut32" />
+					<Add library="uuid" />
+					<Add library="odbc32" />
+					<Add library="odbccp32" />
+				</Linker>
+			</Target>
+			<Target title="Win32 Debug">
+				<Option output="release/core" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Debug" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-W" />
+					<Add option="-fexceptions" />
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-D_MBCS" />
+					<Add option="-DAM_LUA_SUPPORT" />
+					<Add option="-DLUA_USE_COOLSAND_SXR" />
+					<Add option="-DLUA_IO_LIB" />
+					<Add option="-DLUA_DEBUG_LIB" />
+					<Add option="-DLUA_FILE_LOAD_SUPPORT" />
+					<Add option="-DLUA_TTY_SUPPORT" />
+					<Add option="-DLUA_SCRIPT_SIZE=384*1024" />
+					<Add option="-DUSE_DL_PREFIX" />
+					<Add option="-DUSE_DLMALLOC_AS_LUA_ALLOCF" />
+					<Add option="-DUSE_DLMALLOC" />
+					<Add option="-DAM_LZMA_SUPPORT" />
+					<Add option="-DLUA_DISP_SUPPORT_HZ" />
+					<Add option="-DLUA_ICONV_LIB" />
+					<Add option="-DLUA_OS_LIB" />
+					<Add option="-DLUA_OPTIMIZE_MEMORY=0" />
+					<Add option="-Dfopen=elua_fopen" />
+					<Add option="-Dgetenv=lualibc_getenv" />
+					<Add option="-DLUA_SAVE_LAST_ERROR" />
+					<Add option="-DDEFAULT_GRANULARITY=512*1024" />
+					<Add option='-D__FUNCTION__=\&quot;func\&quot;' />
+					<Add option="-DLUA_ZLIB_LIB" />
+					<Add option="-Dprintf=elua_printf" />
+					<Add option="-Dfprintf=elua_fprintf" />
+					<Add option="-Dvfprintf=elua_vfprintf" />
+					<Add option="-Dfwrite=elua_fwrite" />
+					<Add option="-Dfputs=elua_fputs" />
+					<Add option="-Doff64_t=__int64" />
+					<Add directory="../../../../lua/include" />
+					<Add directory="../../../../lib/lzma/include" />
+					<Add directory="../../../../lib/zlib/include" />
+					<Add directory="../../../../lib/zlib/zlib_pal/include" />
+					<Add directory="../../../../lib/iconv/include" />
+					<Add directory="../../../../lib/iconv/src" />
+					<Add directory="../../../../lua/src/" />
+					<Add directory="../../../../modules/include" />
+					<Add directory="../../../include" />
+					<Add directory="../../include" />
+				</Compiler>
+				<Linker>
+					<Add library="kernel32" />
+					<Add library="user32" />
+					<Add library="gdi32" />
+					<Add library="winspool" />
+					<Add library="comdlg32" />
+					<Add library="advapi32" />
+					<Add library="shell32" />
+					<Add library="ole32" />
+					<Add library="oleaut32" />
+					<Add library="uuid" />
+					<Add library="odbc32" />
+					<Add library="odbccp32" />
+					<Add library="ws2_32" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="../../../../lib/iconv/include/iconv.h" />
+		<Unit filename="../../../../lib/iconv/src/gb2312_to_ucs2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/iconv/src/gb2312_to_ucs2_table.h" />
+		<Unit filename="../../../../lib/iconv/src/iconv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/iconv/src/prv_iconv.h" />
+		<Unit filename="../../../../lib/iconv/src/ucs2_to_gb2312.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/iconv/src/ucs2_to_gb2312_offset.h" />
+		<Unit filename="../../../../lib/iconv/src/ucs2_to_gb2312_table.h" />
+		<Unit filename="../../../../lib/iconv/src/utf8_to_ucs2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/lzma/include/LzmaLib.h" />
+		<Unit filename="../../../../lib/lzma/src/7zFile.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/lzma/src/7zFile.h" />
+		<Unit filename="../../../../lib/lzma/src/7zStream.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/lzma/src/LzFind.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/lzma/src/LzFind.h" />
+		<Unit filename="../../../../lib/lzma/src/LzHash.h" />
+		<Unit filename="../../../../lib/lzma/src/LzmaDec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/lzma/src/LzmaDec.h" />
+		<Unit filename="../../../../lib/lzma/src/LzmaLib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/lzma/src/Types.h" />
+		<Unit filename="../../../../lib/zlib/include/zconf.h" />
+		<Unit filename="../../../../lib/zlib/include/zlib.h" />
+		<Unit filename="../../../../lib/zlib/src/adler32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/zlib/src/compress.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/zlib/src/crc32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/zlib/src/crc32.h" />
+		<Unit filename="../../../../lib/zlib/src/deflate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/zlib/src/deflate.h" />
+		<Unit filename="../../../../lib/zlib/src/gzclose.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/zlib/src/gzguts.h" />
+		<Unit filename="../../../../lib/zlib/src/gzlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/zlib/src/gzread.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/zlib/src/gzwrite.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/zlib/src/infback.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/zlib/src/inffast.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/zlib/src/inffast.h" />
+		<Unit filename="../../../../lib/zlib/src/inffixed.h" />
+		<Unit filename="../../../../lib/zlib/src/inflate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/zlib/src/inflate.h" />
+		<Unit filename="../../../../lib/zlib/src/inftrees.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/zlib/src/inftrees.h" />
+		<Unit filename="../../../../lib/zlib/src/trees.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/zlib/src/trees.h" />
+		<Unit filename="../../../../lib/zlib/src/uncompr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/zlib/src/zutil.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lib/zlib/src/zutil.h" />
+		<Unit filename="../../../../lib/zlib/zlib_pal/src/example.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/include/lauxlib.h" />
+		<Unit filename="../../../../lua/include/lua.h" />
+		<Unit filename="../../../../lua/include/luaconf.h" />
+		<Unit filename="../../../../lua/src/lapi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lapi.h" />
+		<Unit filename="../../../../lua/src/lauxlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lbaselib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lcode.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lcode.h" />
+		<Unit filename="../../../../lua/src/ldblib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/ldebug.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/ldebug.h" />
+		<Unit filename="../../../../lua/src/ldo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/ldo.h" />
+		<Unit filename="../../../../lua/src/ldump.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lfunc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lfunc.h" />
+		<Unit filename="../../../../lua/src/lgc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lgc.h" />
+		<Unit filename="../../../../lua/src/linit.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/liolib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/llex.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/llex.h" />
+		<Unit filename="../../../../lua/src/llimits.h" />
+		<Unit filename="../../../../lua/src/lmathlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lmem.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lmem.h" />
+		<Unit filename="../../../../lua/src/loadlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lobject.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lobject.h" />
+		<Unit filename="../../../../lua/src/lopcodes.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lopcodes.h" />
+		<Unit filename="../../../../lua/src/loslib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lparser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lparser.h" />
+		<Unit filename="../../../../lua/src/lrodefs.h" />
+		<Unit filename="../../../../lua/src/lrotable.h" />
+		<Unit filename="../../../../lua/src/lstate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lstate.h" />
+		<Unit filename="../../../../lua/src/lstring.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lstring.h" />
+		<Unit filename="../../../../lua/src/lstrlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/ltable.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/ltable.h" />
+		<Unit filename="../../../../lua/src/ltablib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/ltm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/ltm.h" />
+		<Unit filename="../../../../lua/src/lua.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lualib.h" />
+		<Unit filename="../../../../lua/src/lundump.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lundump.h" />
+		<Unit filename="../../../../lua/src/lvm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lvm.h" />
+		<Unit filename="../../../../lua/src/lzio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../lua/src/lzio.h" />
+		<Unit filename="../../../../lua/src/print.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../modules/include/auxmods.h" />
+		<Unit filename="../../../../modules/src/adc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../modules/src/audio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../modules/src/bit.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../modules/src/bitarray.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../modules/src/cpu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../modules/src/disp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../modules/src/i2c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../modules/src/lpack.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../modules/src/luaiconv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../modules/src/lzlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../modules/src/pio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../modules/src/pmd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../modules/src/rtos.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../modules/src/uart.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../../shell/src/shell.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../include/buf.h" />
+		<Unit filename="../../../include/common.h" />
+		<Unit filename="../../../include/dlmalloc.h" />
+		<Unit filename="../../../include/elua_int.h" />
+		<Unit filename="../../../include/platform.h" />
+		<Unit filename="../../../include/platform_audio.h" />
+		<Unit filename="../../../include/platform_disp.h" />
+		<Unit filename="../../../include/platform_i2c.h" />
+		<Unit filename="../../../include/platform_lcd.h" />
+		<Unit filename="../../../include/platform_pmd.h" />
+		<Unit filename="../../../include/platform_rtos.h" />
+		<Unit filename="../../../include/platform_stubs.h" />
+		<Unit filename="../../../include/preload.h" />
+		<Unit filename="../../../include/sermux.h" />
+		<Unit filename="../../../include/utils.h" />
+		<Unit filename="../../../src/buf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/common.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/common_disp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/common_tmr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/common_uart.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/dlmalloc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/elua_int.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../../src/preload.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../include/assert.h" />
+		<Unit filename="../../include/cycle_queue.h" />
+		<Unit filename="../../include/devman.h" />
+		<Unit filename="../../include/dlconfig.h" />
+		<Unit filename="../../include/genstd.h" />
+		<Unit filename="../../include/pal_mmap.h" />
+		<Unit filename="../../include/platform_conf.h" />
+		<Unit filename="../../include/platform_fs.h" />
+		<Unit filename="../../include/type.h" />
+		<Unit filename="../../src/cycle_queue.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/daemon.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/elua_libc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/event.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/event.h" />
+		<Unit filename="../../src/list.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/list.h" />
+		<Unit filename="../../src/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/platform.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/platform_audio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/platform_lcd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/platform_pmd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/platform_rtos.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/platform_uart.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/sim_gpio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/sim_key.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/thread_daemon.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/util.h" />
+		<Unit filename="../../src/win_msg.h" />
+		<Unit filename="../../src/win_trace.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/win_trace.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

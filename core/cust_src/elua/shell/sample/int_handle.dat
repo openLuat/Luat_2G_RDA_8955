@@ -1,0 +1,24 @@
+"\
+local function gpio_negedge_handler(resnum)                                      \r\n\
+	local port,pin = pio.decode(resnum)                                            \r\n\
+	print(string.format(\"gpio negedge int on port %d, pin %d\", port, pin))       \r\n\
+end                                                                              \r\n\
+                                                                                 \r\n\
+local function gpio_posedge_handler(resnum)                                      \r\n\
+	local port,pin = pio.decode(resnum)                                            \r\n\
+	print(string.format(\"gpio posedge int on port %d, pin %d\", port, pin))       \r\n\
+end                                                                              \r\n\
+                                                                                 \r\n\
+local count = 0                                                                  \r\n\
+                                                                                 \r\n\
+cpu.set_int_handler(cpu.INT_GPIO_NEGEDGE, gpio_negedge_handler)                  \r\n\
+cpu.set_int_handler(cpu.INT_GPIO_POSEDGE, gpio_posedge_handler)                  \r\n\
+                                                                                 \r\n\
+while true do                                                                    \r\n\
+  uart.sleep(1000)                                                               \r\n\
+  count = count + 1                                                              \r\n\
+  if count%5 == 0 then                                                           \r\n\
+    print(string.format(\"count :%d\", count))                                   \r\n\
+  end                                                                            \r\n\
+end                                                                              \r\n\
+"

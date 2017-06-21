@@ -1,0 +1,162 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: luac - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\Users\Jack\AppData\Local\Temp\RSPBA7E.tmp" with contents
+[
+/nologo /ML /W3 /GX /O2 /I "..\..\..\..\lua\include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "LUA_IO_LIB" /D "LUA_DEBUG_LIB" /D "LUA_FILE_LOAD_SUPPORT" /D "LUA_TTY_SUPPORT" /D "LUA_COMPILER" /D "LUA_USE_COOLSAND_SXR" /FR"Release/" /Fo"Release/" /Fd"Release/" /FD /c 
+"M:\code\lua_trunk\cust_src\elua\lua\src\lapi.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\lauxlib.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\lbaselib.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\lcode.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\ldblib.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\ldebug.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\ldo.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\ldump.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\lfunc.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\lgc.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\linit.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\liolib.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\llex.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\lmathlib.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\lmem.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\loadlib.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\lobject.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\lopcodes.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\loslib.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\lparser.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\lstate.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\lstring.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\lstrlib.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\ltable.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\ltablib.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\ltm.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\luac.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\lundump.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\lvm.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\lzio.c"
+"M:\code\lua_trunk\cust_src\elua\lua\src\print.c"
+]
+Creating command line "cl.exe @C:\Users\Jack\AppData\Local\Temp\RSPBA7E.tmp" 
+Creating temporary file "C:\Users\Jack\AppData\Local\Temp\RSPBA7F.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"Release/luac.pdb" /machine:I386 /out:"luac.exe" 
+.\Release\lapi.obj
+.\Release\lauxlib.obj
+.\Release\lbaselib.obj
+.\Release\lcode.obj
+.\Release\ldblib.obj
+.\Release\ldebug.obj
+.\Release\ldo.obj
+.\Release\ldump.obj
+.\Release\lfunc.obj
+.\Release\lgc.obj
+.\Release\linit.obj
+.\Release\liolib.obj
+.\Release\llex.obj
+.\Release\lmathlib.obj
+.\Release\lmem.obj
+.\Release\loadlib.obj
+.\Release\lobject.obj
+.\Release\lopcodes.obj
+.\Release\loslib.obj
+.\Release\lparser.obj
+.\Release\lstate.obj
+.\Release\lstring.obj
+.\Release\lstrlib.obj
+.\Release\ltable.obj
+.\Release\ltablib.obj
+.\Release\ltm.obj
+.\Release\luac.obj
+.\Release\lundump.obj
+.\Release\lvm.obj
+.\Release\lzio.obj
+.\Release\print.obj
+]
+Creating command line "link.exe @C:\Users\Jack\AppData\Local\Temp\RSPBA7F.tmp"
+<h3>Output Window</h3>
+Compiling...
+lapi.c
+lauxlib.c
+lbaselib.c
+lcode.c
+ldblib.c
+ldebug.c
+ldo.c
+ldump.c
+lfunc.c
+lgc.c
+linit.c
+liolib.c
+llex.c
+lmathlib.c
+lmem.c
+loadlib.c
+lobject.c
+lopcodes.c
+loslib.c
+lparser.c
+Generating Code...
+Compiling...
+lstate.c
+lstring.c
+lstrlib.c
+ltable.c
+ltablib.c
+ltm.c
+luac.c
+lundump.c
+lvm.c
+lzio.c
+print.c
+Generating Code...
+Linking...
+Creating temporary file "C:\Users\Jack\AppData\Local\Temp\RSPBD9B.tmp" with contents
+[
+/nologo /o"Release/luac.bsc" 
+.\Release\lapi.sbr
+.\Release\lauxlib.sbr
+.\Release\lbaselib.sbr
+.\Release\lcode.sbr
+.\Release\ldblib.sbr
+.\Release\ldebug.sbr
+.\Release\ldo.sbr
+.\Release\ldump.sbr
+.\Release\lfunc.sbr
+.\Release\lgc.sbr
+.\Release\linit.sbr
+.\Release\liolib.sbr
+.\Release\llex.sbr
+.\Release\lmathlib.sbr
+.\Release\lmem.sbr
+.\Release\loadlib.sbr
+.\Release\lobject.sbr
+.\Release\lopcodes.sbr
+.\Release\loslib.sbr
+.\Release\lparser.sbr
+.\Release\lstate.sbr
+.\Release\lstring.sbr
+.\Release\lstrlib.sbr
+.\Release\ltable.sbr
+.\Release\ltablib.sbr
+.\Release\ltm.sbr
+.\Release\luac.sbr
+.\Release\lundump.sbr
+.\Release\lvm.sbr
+.\Release\lzio.sbr
+.\Release\print.sbr]
+Creating command line "bscmake.exe @C:\Users\Jack\AppData\Local\Temp\RSPBD9B.tmp"
+Creating browse info file...
+<h3>Output Window</h3>
+
+
+
+<h3>Results</h3>
+luac.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

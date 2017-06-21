@@ -1,0 +1,133 @@
+# depslib dependency file v1.0
+1390559430 source:d:\code\lua_trunk\cust_src\elua\lib\iconv\src\gb2312_to_ucs2.c
+	"stdio.h"
+	"errno.h"
+	"type.h"
+	"gb2312_to_ucs2_table.h"
+
+1388141389 d:\code\lua_trunk\cust_src\elua\platform\win32\include\type.h
+
+1390559430 d:\code\lua_trunk\cust_src\elua\lib\iconv\src\gb2312_to_ucs2_table.h
+
+1385529197 source:d:\code\lua_trunk\cust_src\elua\lib\iconv\src\iconv.c
+	<string.h>
+	"iconv.h"
+	"prv_iconv.h"
+
+1375175751 d:\code\lua_trunk\cust_src\elua\lib\iconv\include\iconv.h
+	"stddef.h"
+
+1385529231 d:\code\lua_trunk\cust_src\elua\lib\iconv\src\prv_iconv.h
+
+1385529255 source:d:\code\lua_trunk\cust_src\elua\lib\iconv\src\ucs2_to_gb2312.c
+	"stdio.h"
+	"errno.h"
+	"type.h"
+	"ucs2_to_gb2312_table.h"
+	"ucs2_to_gb2312_offset.h"
+
+1387291598 d:\code\lua_trunk\cust_src\elua\lib\iconv\src\ucs2_to_gb2312_table.h
+
+1375175752 d:\code\lua_trunk\cust_src\elua\lib\iconv\src\ucs2_to_gb2312_offset.h
+
+1386848923 source:d:\code\lua_trunk\cust_src\elua\lib\iconv\src\utf8_to_ucs2.c
+	"stdio.h"
+	"errno.h"
+
+1370046044 source:d:\code\lua_trunk\cust_src\elua\lib\lzma\src\7zfile.c
+	"7zFile.h"
+	<errno.h>
+
+1370046044 d:\code\lua_trunk\cust_src\elua\lib\lzma\src\7zfile.h
+	<windows.h>
+	<stdio.h>
+	"Types.h"
+
+1397493564 d:\code\lua_trunk\cust_src\elua\lib\lzma\src\types.h
+	<stddef.h>
+	<windows.h>
+
+1370046044 source:d:\code\lua_trunk\cust_src\elua\lib\lzma\src\7zstream.c
+	<string.h>
+	"Types.h"
+
+1370046044 source:d:\code\lua_trunk\cust_src\elua\lib\lzma\src\lzfind.c
+	<string.h>
+	"LzFind.h"
+	"LzHash.h"
+
+1370046044 d:\code\lua_trunk\cust_src\elua\lib\lzma\src\lzfind.h
+	"Types.h"
+
+1370046044 d:\code\lua_trunk\cust_src\elua\lib\lzma\src\lzhash.h
+
+1370046044 source:d:\code\lua_trunk\cust_src\elua\lib\lzma\src\lzmadec.c
+	"LzmaDec.h"
+	<string.h>
+
+1370046044 d:\code\lua_trunk\cust_src\elua\lib\lzma\src\lzmadec.h
+	"Types.h"
+
+1397120905 source:d:\code\lua_trunk\cust_src\elua\lib\lzma\src\lzmalib.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"dlmalloc.h"
+	"7zFile.h"
+	"LzmaDec.h"
+
+1370046040 d:\code\lua_trunk\cust_src\elua\platform\include\dlmalloc.h
+	<stddef.h>
+
+1390559430 source:d:\code\lua_trunk\cust_src\elua\lib\zlib\src\adler32.c
+	"zutil.h"
+
+1390559430 d:\code\lua_trunk\cust_src\elua\lib\zlib\src\zutil.h
+	"zlib.h"
+	<stddef.h>
+	<string.h>
+	<stdlib.h>
+	<alloc.h>
+	<malloc.h>
+	<malloc.h>
+	<unix.h>
+	<stdio.h>
+
+1392185950 d:\code\lua_trunk\cust_src\elua\lib\zlib\include\zlib.h
+	"zconf.h"
+	"zlib_pal.h"
+
+1392129377 d:\code\lua_trunk\cust_src\elua\lib\zlib\include\zconf.h
+	<windows.h>
+	<limits.h>
+	<sys/types.h>
+	<stdarg.h>
+	<stddef.h>
+	<unistd.h>
+	<unixio.h>
+
+1391764030 d:\code\lua_trunk\cust_src\elua\lib\zlib\zlib_pal\include\sys\types.h
+
+1392970357 d:\code\lua_trunk\cust_src\elua\lib\zlib\zlib_pal\include\zlib_pal.h
+	"reent.h"
+	"assert.h"
+
+1391996459 d:\code\lua_trunk\cust_src\elua\platform\win32\include\assert.h
+
+1390559430 source:d:\code\lua_trunk\cust_src\elua\lib\zlib\src\compress.c
+	"zlib.h"
+
+1390559430 source:d:\code\lua_trunk\cust_src\elua\lib\zlib\src\crc32.c
+	<stdio.h>
+	"zutil.h"
+	"crc32.h"
+
+1390559430 d:\code\lua_trunk\cust_src\elua\lib\zlib\src\crc32.h
+
+1390559430 source:d:\code\lua_trunk\cust_src\elua\lib\zlib\src\deflate.c
+	"deflate.h"
+	"stdio.h"
+
+1390559430 d:\code\lua_trunk\cust_src\elua\lib\zlib\src\deflate.h
+	"zutil.h"
+

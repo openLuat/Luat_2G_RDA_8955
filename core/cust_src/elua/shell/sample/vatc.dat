@@ -1,0 +1,20 @@
+"\
+uart.setup(0, 115200, 8, uart.PAR_NONE, uart.STOP_1)\r\n\
+uart.setup(uart.ATC, 0, 0, uart.PAR_NONE, uart.STOP_1)\r\n\
+uart.write(0, \"start test lua app.\")\r\n\
+while true do\r\n\
+    local s = uart.read(uart.ATC, \"*l\", 0)\r\n\
+    if string.len(s) == 0 then\r\n\
+       do\r\n\
+           s = uart.read(0, \"*l\", 0)\r\n\
+           if string.len(s) == 0 then\r\n\
+               uart.sleep(1000)\r\n\
+           else\r\n\
+               uart.write(uart.ATC, s)\r\n\
+           end\r\n\
+       end\r\n\
+    else\r\n\
+       uart.write(0, \"atc:\", s)\r\n\
+    end\r\n\
+end\r\n\
+"

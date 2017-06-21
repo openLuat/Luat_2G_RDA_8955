@@ -1,0 +1,120 @@
+
+#=====================================
+##  1 ##
+######## 芯片描述信息 ########
+## ASIC type: gallite/8808/8809
+CT_ASIC         ?= 8955
+
+#=====================================
+##  2 ##
+######### FLASH类型 #########
+## FLASH type: flsh_spi16m/flsh_spi32m
+FLSH_MODEL      ?= flsh_spi32m
+
+## RAM SIZE
+ifeq "${strip ${FLSH_MODEL}}" "flsh_spi16m"
+    RAM_SIZE_FLAG:= __16Mbit__
+endif
+ifeq "${strip ${FLSH_MODEL}}" "flsh_spi32m"
+    RAM_SIZE_FLAG:= __32Mbit__ #8851BL芯片
+endif
+
+#=====================================
+##  3 ##
+######### OpenAT宏 #########
+AM_OPENAT_SUPPORT := TRUE
+LOCAL_EXPORT_FLAG += PRO_AIR200_VERSION
+
+#=====================================
+##  4 ##
+######### 平台模块类型 #########
+## AM MODEL type: A6300A/A6300V/A9351
+AM_MODEL ?= Air202_LUA_TTS3
+
+# 开启代码压缩
+CT_COMPRESS_CODE_SECTION := yes
+
+#+\NEW\liweiqiang\2013.5.11\开机自解压luazip目录下文件支持,压缩算法lzma
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# lzma压缩功能支持
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+export AM_LZMA_SUPPORT := TRUE
+
+ifeq ($(strip $(AM_LUA_SUPPORT)), TRUE)
+    LOCAL_EXPORT_FLAG += AM_LZMA_SUPPORT
+endif
+#-\NEW\liweiqiang\2013.5.11\开机自解压luazip目录下文件支持,压缩算法lzma
+
+#+\NEW\zhutianhua\2014.1.21\添加zlib库
+export AM_ZLIB_SUPPORT := TRUE
+
+ifeq ($(strip $(AM_ZLIB_SUPPORT)), TRUE)
+    LOCAL_EXPORT_FLAG += AM_ZLIB_SUPPORT
+endif
+#-\NEW\zhutianhua\2014.1.21\添加zlib库 
+
+#+\NEW\zhutianhua\2014.1.24\添加libpng库
+export AM_LPNG_SUPPORT := TRUE
+
+ifeq ($(strip $(AM_LPNG_SUPPORT)), TRUE)
+    LOCAL_EXPORT_FLAG += AM_LPNG_SUPPORT
+endif
+#-\NEW\zhutianhua\2014.1.24\添加libpng库
+
+#+\NEW\zhuth\2014.2.17\通过文件记录表访问luadb中未压缩的文件
+export AM_LUA_UNCOMPRESS_SCRIPT_TABLE_ACESS_SUPPORT := TRUE
+
+ifeq ($(strip $(AM_LUA_UNCOMPRESS_SCRIPT_TABLE_ACESS_SUPPORT)), TRUE)
+    LOCAL_EXPORT_FLAG += AM_LUA_UNCOMPRESS_SCRIPT_TABLE_ACESS_SUPPORT
+endif
+#-\NEW\zhuth\2014.2.17\通过文件记录表访问luadb中未压缩的文件
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# LUA脚本功能支持
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+export AM_LUA_SUPPORT := TRUE       ###
+                                    # Option1: TRUE     #enable
+                                    # Option1: FALSE    #disable
+
+ifeq ($(strip $(AM_LUA_SUPPORT)), TRUE)
+    export AM_LUA_PLATFORM:=coolsand
+    
+    LOCAL_EXPORT_FLAG += AM_LUA_SUPPORT
+    
+    LOCAL_EXPORT_FLAG += LUA_SCRIPT_SIZE=${LUA_SCRIPT_SIZE}
+    LOCAL_EXPORT_FLAG += LUA_USE_COOLSAND_SXR
+    
+    #将lua执行的错误保存在文件luaerrinfo.txt中
+    LOCAL_EXPORT_FLAG += LUA_SAVE_LAST_ERROR
+
+    #lua内存优化,目前尚未调试暂时关闭
+    LOCAL_EXPORT_FLAG += LUA_OPTIMIZE_MEMORY=0
+    
+    #定义DLMALLOC内存池大小为512K
+    LOCAL_EXPORT_FLAG += DLMALLOC_DEFAULT_GRANULARITY=\(512U*1024U\)
+
+    #支持汉字显示
+    LOCAL_EXPORT_FLAG += LUA_DISP_SUPPORT_HZ
+    
+    #内存分配器dlmalloc
+    LOCAL_EXPORT_FLAG += USE_DLMALLOC
+    #dlmalloc配置
+    LOCAL_EXPORT_FLAG += USE_DL_PREFIX
+    #使用dlmalloc作为lua的内存分配器
+    LOCAL_EXPORT_FLAG += USE_DLMALLOC_AS_LUA_ALLOCF
+
+    # 需要加载的功能库
+    LOCAL_EXPORT_FLAG += LUA_ICONV_LIB
+    LOCAL_EXPORT_FLAG += LUA_ZLIB_LIB  
+
+    LOCAL_EXPORT_FLAG += DSS_CONFIG_EX_WATCH_DOG
+	
+
+    LOCAL_EXPORT_FLAG += AM_LUA_CRYPTO_SUPPORT
+endif
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 版本定义
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+include ${SOFT_WORKDIR}/project/${PROJ_NAME}/build/version.mk
+

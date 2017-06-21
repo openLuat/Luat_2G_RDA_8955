@@ -1,0 +1,4 @@
+编辑elua_simulator\release\simulator.wlua，注释掉luawinio.popen_show("core.exe")
+双击运行elua_simulator\release\simulator.wlua，设置好文件和端口(如果调试过程中修改了lua或者wlua，需要重新运行)
+打开workspace\elua_simulator\elua_simulator.dsw
+Debug设置窗口设置好executable for debug session和working directory：release\core.exe和release

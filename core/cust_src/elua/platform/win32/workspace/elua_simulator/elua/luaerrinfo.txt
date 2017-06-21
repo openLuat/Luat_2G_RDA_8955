@@ -1,0 +1,6 @@
+/lua/sys.lua:208: interrupted!
+stack traceback:
+	[C]: in function 'receive'
+	/lua/sys.lua:208: in function 'run'
+	/lua/main.lua:41: in main chunk
+	[C]: ?
