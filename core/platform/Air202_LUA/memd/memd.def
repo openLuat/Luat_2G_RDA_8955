@@ -11,9 +11,9 @@
 	USER_DATA_BLOCK_SIZE:=	0x00000200         
 	AM_CONFIG_BASE:=				0x002BC000               
 	AM_CONFIG_SIZE:=				0x00001000 								
-	LUA_SCRIPT_BASE:=				0x002A0000              
-	LUA_SCRIPT_SIZE:=				0x00070000               
+	LUA_SCRIPT_BASE:=				0x00290000              
+	LUA_SCRIPT_SIZE:=				0x00080000               
 	AM_OPENAT_RAM_BASE:=		0x003FA000            
 	AM_OPENAT_RAM_SIZE:=		0x00006000  				  
-	AM_OPENAT_ROM_BASE:=		0x00260000            
+	AM_OPENAT_ROM_BASE:=		0x00250000            
 	AM_OPENAT_ROM_SIZE:=		0x00040000  				  
