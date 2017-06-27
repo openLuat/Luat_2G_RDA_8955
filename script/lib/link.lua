@@ -48,7 +48,7 @@ local connectnoretinterval
 --dbging：是否正在执行dbg功能(dbg.lua)
 --ntping：是否正在执行NTP时间同步功能(ntp.lua)
 --shutpending：是否有等待处理的进入AT+CIPSHUT请求
-local apnflag,checkciicrtm,flymode,updating,dbging,ntping,shutpending=true
+local apnflag,checkciicrtm,ciicrerrcb,flymode,updating,dbging,ntping,shutpending=true
 
 --[[
 函数名：setapn
@@ -314,6 +314,7 @@ function connect(id,protocol,address,port)
 	if validaction(id,"CONNECT") == false or linklist[id].state == "CONNECTED" then
 		return false
 	end
+	print("link.connect",id,protocol,address,port,ipstatus,shuting,shutpending)
 
 	linklist[id].state = "CONNECTING"
 
@@ -326,7 +327,7 @@ function connect(id,protocol,address,port)
 
 	local connstr = string.format("AT+CIPSTART=%d,\"%s\",\"%s\",%s",id,protocol,address,port)
 
-	if (ipstatus ~= "IP STATUS" and ipstatus ~= "IP PROCESSING") or shuting then
+	if (ipstatus ~= "IP STATUS" and ipstatus ~= "IP PROCESSING") or shuting or shutpending then
 		--ip环境未准备好先加入等待
 		linklist[id].pending = connstr
 	else
@@ -585,6 +586,15 @@ function regipstatusind()
 	ipstatusind = true
 end
 
+local function ciicrerrtmfnc()
+	print("ciicrerrtmfnc")
+	if ciicrerrcb then
+		ciicrerrcb()
+	else
+		sys.restart("ciicrerrtmfnc")
+	end
+end
+
 --[[
 函数名：setIPStatus
 功能  ：设置IP网络状态
@@ -598,11 +608,16 @@ local function setIPStatus(status)
 	if ipstatusind and ipstatus~=status then
 		sys.dispatch("IP_STATUS_IND",status=="IP GPRSACT" or status=="IP PROCESSING" or status=="IP STATUS")
 	end
+	
+	if not sim.getstatus() then
+		status = "IP INITIAL"
+	end
 
 	if ipstatus ~= status or status=="IP START" or status == "IP CONFIG" or status == "IP GPRSACT" or status == "PDP DEACT" then
 		if status=="IP GPRSACT" and checkciicrtm then
 			--关闭“AT+CIICR后，IP网络超时未激活成功”的定时器
-			sys.timer_stop(sys.restart,"checkciicr")
+			print("ciicrerrtmfnc stop")
+			sys.timer_stop(ciicrerrtmfnc)
 		end
 		ipstatus = status
 		if ipstatus == "IP PROCESSING" then
@@ -662,9 +677,10 @@ local function shutcnf(result)
 		--req("AT+CIPSTATUS")
 		sys.timer_start(req,10000,"AT+CIPSTATUS")
 	end
-	if checkciicrtm then
+	if checkciicrtm and result=="SHUT OK" then
 		--关闭“AT+CIICR后，IP网络超时未激活成功”的定时器
-		sys.timer_stop(sys.restart,"checkciicr")
+		print("ciicrerrtmfnc stop")
+		sys.timer_stop(ciicrerrtmfnc)
 	end
 end
 --[[
@@ -827,9 +843,10 @@ local function rsp(cmd,success,response,intermediate)
 	elseif prefix == "+CIICR" then
 		if success then
 			--成功后，底层会去激活IP网络，lua应用需要发送AT+CIPSTATUS查询IP网络状态
-			if checkciicrtm and not sys.timer_is_active(sys.restart,"checkciicr") then
+			if checkciicrtm and not sys.timer_is_active(ciicrerrtmfnc) then
 				--启动“激活IP网络超时”定时器
-				sys.timer_start(sys.restart,checkciicrtm,"checkciicr")
+				print("ciicrerrtmfnc start")
+				sys.timer_start(ciicrerrtmfnc,checkciicrtm)
 			end
 		else
 			shut()
@@ -1015,6 +1032,17 @@ end
 function checkciicr(tm)
 	checkciicrtm = tm
 	ril.regrsp("+CIICR",rsp)
+end
+
+--[[
+函数名：setiperrcb
+功能  ：设置"激活IP网络请求后，超时未成功"的用户回调函数
+参数  ：
+		cb：回调函数
+返回值：无
+]]
+function setiperrcb(cb)
+	ciicrerrcb = cb
 end
 
 --注册本模块关注的内部消息的处理函数
