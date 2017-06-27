@@ -242,7 +242,7 @@ end
 ∑µªÿ÷µ£∫Œﬁ
 ]]
 function restart(r)
-	writerr(true,"RST:" .. (r or "") .. ";")
+	writerr(true,"dbg.restart:" .. (r or "") .. ";")
 	rtos.restart()
 end
 
