@@ -1,5 +1,5 @@
-Air200模块的Flash总空间为4MB
-Air200目前有四种底层软件：
+Air202模块的Flash总空间为4MB
+Air202目前有四种底层软件：
 Luat_VXXX_Air202.lod：不支持SSL和TTS功能
 Luat_VXXX_Air202_SSL_TTS.lod：支持SSL和TTS功能
 Luat_VXXXX_Air202_SSL.lod：支持SSL功能、不支持TTS功能
