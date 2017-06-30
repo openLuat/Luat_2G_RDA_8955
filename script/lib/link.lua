@@ -677,7 +677,7 @@ local function shutcnf(result)
 		--req("AT+CIPSTATUS")
 		sys.timer_start(req,10000,"AT+CIPSTATUS")
 	end
-	if checkciicrtm and result=="SHUT OK" then
+	if checkciicrtm and result=="SHUT OK" and not ciicrerrcb then
 		--关闭“AT+CIICR后，IP网络超时未激活成功”的定时器
 		print("ciicrerrtmfnc stop")
 		sys.timer_stop(ciicrerrtmfnc)

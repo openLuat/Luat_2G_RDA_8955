@@ -25,9 +25,9 @@ local assert = base.assert
 local tonumber = base.tonumber
 
 --lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "1.0.1"
---支持lib脚本的最小core软件版本号
-CORE_MIN_VER = "Luat_V0001_Air202"
+SCRIPT_LIB_VER = "1.0.2"
+--脚本发布时的最新core软件版本号
+CORE_MIN_VER = "Luat_V0003_Air202"
 
 --“是否需要刷新界面”的标志，有GUI的项目才会用到此标志
 local refreshflag = false
@@ -372,7 +372,7 @@ local function checkcorever()
 	
 	--lib脚本需要的底层软件版本号大于底层软件的实际版本号
 	if tonumber(string.match(CORE_MIN_VER,"Luat_V(%d+)_Air202"))>tonumber(buildver) then
-		appenderr("checkcorever[core ver match warn]"..realver..","..CORE_MIN_VER..";")
+		print("checkcorever[core ver match warn]"..realver..","..CORE_MIN_VER..";")
 	end
 end
 

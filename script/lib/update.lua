@@ -55,7 +55,7 @@ local state = "IDLE"
 local projectid,total,last
 --packid：当前包的索引
 --getretries：获取每个包已经重试的次数
-local packid,getretries = 1,1
+local packid,getretries = 1,0
 
 --时区，本模块支持设置系统时间功能，但是需要服务器返回当前时间
 timezone = nil
@@ -103,7 +103,7 @@ end
 ]]
 local function retry(param)
 	--升级状态已结束直接退出
-	if state ~= "UPDATE" and state ~= "CHECK" then
+	if state~="CONNECT" and state~="UPDATE" and state~="CHECK" then
 		return
 	end
 	--停止重试
@@ -119,9 +119,13 @@ local function retry(param)
 	end
 	--重试次数加1
 	getretries = getretries + 1
-		if getretries < CMD_GET_RETRY_TIMES then
+	if getretries < CMD_GET_RETRY_TIMES then
 		-- 未达重试次数,继续尝试获取升级包
-		if state == "UPDATE" then
+		if state == "CONNECT" then
+			link.close(lid)
+			lid = nil
+			connect()
+		elseif state == "UPDATE" then
 			reqget(packid)
 		else
 			reqcheck()
@@ -236,6 +240,7 @@ function upend(succ)
 	--断开链接
 	link.close(lid)
 	lid = nil
+	getretries = 0
 	--升级成功并且是自动升级模式则重启
 	if succ == true and updmode == 0 then
 		sys.restart("update.upend")
@@ -278,6 +283,7 @@ end
 local function nofity(id,evt,val)
 	--连接结果
 	if evt == "CONNECT" then
+		state = "CONNECT"
 		--产生一个内部消息UPDATE_BEGIN_IND，目前与飞行模式配合使用
 		dispatch("UPDATE_BEGIN_IND")
 		--连接成功
@@ -285,7 +291,7 @@ local function nofity(id,evt,val)
 			reqcheck()
 		--连接失败
 		else
-			upend(false)
+			sys.timer_start(retry,CMD_GET_TIMEOUT)
 		end
 	--连接被动断开
 	elseif evt == "STATE" and val == "CLOSED" then		 
