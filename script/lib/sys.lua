@@ -25,9 +25,9 @@ local assert = base.assert
 local tonumber = base.tonumber
 
 --lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "1.0.2"
+SCRIPT_LIB_VER = "1.0.3"
 --脚本发布时的最新core软件版本号
-CORE_MIN_VER = "Luat_V0003_Air202"
+CORE_MIN_VER = "Luat_V0005_Air202"
 
 --“是否需要刷新界面”的标志，有GUI的项目才会用到此标志
 local refreshflag = false

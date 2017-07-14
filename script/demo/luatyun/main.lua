@@ -21,8 +21,8 @@ require"sys"
 require"test"
 
 sys.init(0,0)
-ril.request("AT*EXASSERT=1")
-ril.request("AT*TRACE=\"DSS\",1,0")
-ril.request("AT*TRACE=\"RDA\",1,0")
-ril.request("AT*TRACE=\"SXS\",1,0")
+ril.request("AT*EXASSERT=0")
+ril.request("AT*TRACE=\"DSS\",0,0")
+ril.request("AT*TRACE=\"RDA\",0,0")
+ril.request("AT*TRACE=\"SXS\",0,0")
 sys.run()
