@@ -1,3 +1,12 @@
+发布时间：2017/7/7 11:44
+修改记录：
+    一、lib脚本修改
+        lib脚本版本号：1.0.3
+        (1)link.lua：新增“设置连接过程和数据发送过程中TCP协议的重连参数”的接口setretrymode
+        (2)mqtt.lua,mqttssl.lua：publish接口支持retain参数的设置
+
+
+
 发布时间：2017/6/30 22:34
 修改记录：
     一、lib脚本修改
