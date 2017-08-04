@@ -10,15 +10,14 @@ local string = require"string"
 local sys = require "sys"
 local ril = require "ril"
 local pio = require"pio"
-require"sim"
+local sim = require "sim"
 module("net")
 
 --加载常用的全局函数至本地
 local dispatch = sys.dispatch
 local req = ril.request
-local smatch = string.match
+local smatch,ssub = string.match,string.sub
 local tonumber,tostring,print = base.tonumber,base.tostring,base.print
-
 --GSM网络状态：
 --INIT：开机初始化中的状态
 --REGISTERED：注册上GSM网络
@@ -61,6 +60,28 @@ local ledstate,ledontime,ledofftime,usersckconnect = "INIT",0,0
 --ledidleon,ledidleoff,ledcregon,ledcregoff,ledcgatton,ledcgattoff,ledsckon,ledsckoff：IDLE,CREG,CGATT,SCK状态下指示灯的点亮和熄灭时长(毫秒)
 local ledflg,ledpin,ledvalid,ledflymodeon,ledflymodeoff,ledsimerron,ledsimerroff,ledidleon,ledidleoff,ledcregon,ledcregoff,ledcgatton,ledcgattoff,ledsckon,ledsckoff = false,pio.P1_1,1,0,0xFFFF,300,5700,300,3700,300,1700,300,700,100,100
 
+local creg3 --标志参数
+--[[
+函数名：checkCRSM
+功能：如果注册被拒绝，运行此函数，先判断是否取得imsi号，再判断是否是中国移动卡
+如果确定是中国移动卡，则进行SIM卡限制访问
+参数：
+返回值：
+]]
+local function checkCRSM()
+	local imsi=sim.getimsi()
+	if imsi and imsi~="" then
+		if ssub(imsi,1,3)=="460" then
+			local mnc=ssub(imsi,4,5)
+			if (mnc=="00" or mnc=="02" or mnc=="04" or mnc=="07") and creg3 then
+				req("AT+CRSM=176,28539,0,0,12")
+			end
+		end
+	else 
+		sys.timer_start(checkCRSM,5000)
+	end
+end
+
 --[[
 函数名：creg
 功能  ：解析CREG信息
@@ -78,11 +99,16 @@ local function creg(data)
 			return
 		end
 	end
+	creg3 = false
 	--已注册
 	if p1 == "1" or p1 == "5" then
-		s = "REGISTERED"
+		s = "REGISTERED"		
 	--未注册
 	else
+		if p1=="3" then
+			creg3 = true
+			checkCRSM()
+		end
 		s = "UNREGISTER"
 	end
 	--注册状态发生了改变
@@ -178,6 +204,31 @@ local function ceng(data)
 	end
 end
 
+local crsmupdcnt = 0
+--[[
+函数名：crsmrsp
+功能  ：更新FPLMN的应答处理
+参数  ：
+		cmd：此应答对应的AT命令
+		success：AT命令执行结果，true或者false
+		response：AT命令的应答中的执行结果字符串
+		intermediate：AT命令的应答中的中间信息
+返回值：无
+]]
+function crsmrsp(cmd,success,response,intermediate)
+	print("crsmrsp",success)
+	if success then
+		sys.restart("crsmrsp suc")
+	else
+		crsmupdcnt = crsmupdcnt+1
+		if crsmupdcnt>=3 then
+			sys.restart("crsmrsp tmout")
+		else
+			req("AT+CRSM=214,28539,0,0,12,\"64f01064f03064f002fffff\"",nil,crsmrsp)
+		end
+	end
+end
+
 --[[
 函数名：neturc
 功能  ：本功能模块内“注册的底层core通过虚拟串口主动上报的通知”的处理
@@ -195,6 +246,11 @@ local function neturc(data,prefix)
 	elseif prefix == "+CENG" then
 		--解析ceng信息
 		ceng(data)
+	elseif prefix=="+CRSM" then
+		local str = string.lower(data)
+		if smatch(str,"64f000") or smatch(str,"64f020") or smatch(str,"64f040") or smatch(str,"64f070") then
+			req("AT+CRSM=214,28539,0,0,12,\"64f01064f03064f002fffff\"",nil,crsmrsp)
+		end
 	end
 end
 
@@ -720,6 +776,7 @@ sys.regapp(procer)
 --注册+CREG和+CENG通知的处理函数
 ril.regurc("+CREG",neturc)
 ril.regurc("+CENG",neturc)
+ril.regurc("+CRSM",neturc)
 --注册AT+CCSQ和AT+CENG?命令的应答处理函数
 ril.regrsp("+CSQ",rsp)
 ril.regrsp("+CENG",rsp)

@@ -10,9 +10,10 @@ require"sys"
 如果写在后面的其他位置，很有可能无法输出错误信息，从而增加调试难度
 ]]
 --sys.opntrace(true,1)
---require"wdt"
+require"wdt"
 require"linkair"
-require"factory"
+require"factory1"
+require"factory2"
 
 sys.init(0,0)
 sys.run()

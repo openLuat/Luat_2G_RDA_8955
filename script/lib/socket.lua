@@ -276,13 +276,14 @@ function send(idx,data,para,pos,ins)
 		else
 			return
 		end
-		return true
 	else
 		if scks[idx].sndingitem.data or scks[idx].waitingrspitem.data then
 			table.insert(scks[idx].sndpending,pos or tail,item)
 		else
 			if link.send(sckid,data) then  --·¢ËÍÊı¾İ
 				scks[idx].sndingitem = item
+			else
+				return
 			end
 		end
 	end

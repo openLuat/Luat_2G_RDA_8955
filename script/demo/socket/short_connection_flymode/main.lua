@@ -17,6 +17,8 @@ dbg.setup("udp","www.test.com",9072)
 require"update"
 update.setup("udp","www.test.com",2233)
 require"test"
+--S6开发板：硬件上已经打开了看门狗功能，使用S6开发板的用户，要打开这行注释的代码"--require"wdt""，否则4分钟左右会重启一次
+--require"wdt"
 
 net.setled(true)
 sys.init(0,0)

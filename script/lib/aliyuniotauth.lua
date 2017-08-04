@@ -238,7 +238,7 @@ local function parsedatasvr()
 	
 	print("parsedatasvr",host,#ports,clientid,username)
 	if host and #ports>0 and clientid and username then
-		sys.dispatch("ALIYUN_DATA_BGN",host,ports,clientid,username,productkey,getdevice("name"))
+		sys.dispatch("ALIYUN_DATA_BGN",host,ports,clientid,username)
 	end
 	
 	return host and #ports>0 and clientid and username
@@ -410,7 +410,7 @@ local function parse()
 	if smatch(headstr,"Transfer%-Encoding: chunked") or smatch(headstr,"Transfer%-Encoding: Chunked") then
 		contentflg = "chunk"
 	elseif smatch(headstr,"Content%-Length: %d+") then
-		contentflg = tonumber(smatch(headstr,"Content-Length: (%d+)"))
+		contentflg = tonumber(smatch(headstr,"Content%-Length: (%d+)"))
 	end
 	if not contentflg then print("parse contentflg error") return end
 	
