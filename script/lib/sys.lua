@@ -25,9 +25,9 @@ local assert = base.assert
 local tonumber = base.tonumber
 
 --lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "1.0.3"
+SCRIPT_LIB_VER = "1.0.4"
 --脚本发布时的最新core软件版本号
-CORE_MIN_VER = "Luat_V0005_Air202"
+CORE_MIN_VER = "Luat_V0006_Air202"
 
 --“是否需要刷新界面”的标志，有GUI的项目才会用到此标志
 local refreshflag = false
@@ -204,6 +204,7 @@ function timer_stop(val,...)
 	--val为定时器id
 	if type(val) == "number" then
 		tpool[val],para[val],loop[val] = nil
+		rtos.timer_stop(val)
 	else
 		for k,v in pairs(tpool) do
 			--回调函数相同
@@ -685,7 +686,7 @@ end
 功能  ：注册物理串口的数据发送完成处理函数
 参数  ：
 		id：物理串口号，1表示UART1，2表示UART2
-		fnc：数据接收处理函数名
+		fnc：调用uart.write接口发送数据，数据发送完成后的回调函数
 返回值：无
 ]] 
 function reguartx(id,fnc)
@@ -712,7 +713,7 @@ function run()
 		msg,msgpara = rtos.receive(rtos.INF_TIMEOUT)
 
 		--电池电量为0%，用户应用脚本中没有定义“低电关机处理程序”，并且没有启动自动关机定时器		
-		if not lprfun and not lpring and type(msg) == "table" and msg.id == rtos.MSG_PMD and msg.level == 0 then
+		if --[[not lprfun and ]]not lpring and type(msg) == "table" and msg.id == rtos.MSG_PMD and msg.level == 0 then
 			--启动自动关机定时器，60秒后关机
 			lpring = true
 			timer_start(rtos.poweroff,60000,"r1")

@@ -67,6 +67,7 @@ end
 ]]
 local function rcvmessagecb(topic,payload,qos)
 	print("rcvmessagecb",topic,payload,qos)
+	aliyuniotssl.publish("/"..PRODUCT_KEY.."/"..misc.getimei().."/update","device receive:"..payload,qos)
 end
 
 --[[

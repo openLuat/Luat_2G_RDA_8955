@@ -356,8 +356,8 @@ end
 
 --注册底层上报的rtos.MSG_AUDIO外部消息的处理函数
 sys.regmsg(rtos.MSG_AUDIO,audiomsg)
---默认音频通道设置为RECEIVER，因为Air200模块只支持RECEIVER通道
-setaudiochannel(audio.HANDSET)
+--默认音频通道设置为LOUDSPEAKER，因为Air202模块只支持LOUDSPEAKER通道
+setaudiochannel(audio.LOUDSPEAKER)
 --默认音量等级设置为4级，4级是中间等级，最低为0级，最高为7级
 setspeakervol(audio.VOL4)
 --默认MIC音量等级设置为1级，最低为0级，最高为15级

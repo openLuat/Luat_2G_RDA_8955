@@ -11,7 +11,7 @@ local function print(...)
 end
 
 --i2cuse：引脚当前是否做为i2c功能使用，true表示是，其余的表示不是
-local i2cid,i2cuse = 1,true
+local i2cid,i2cuse = 0,true
 --[[
 函数名：i2copn
 功能  ：打开i2c

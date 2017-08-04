@@ -6,7 +6,7 @@ require"common"
 加解密算法结果，可对照
 http://tool.oschina.net/encrypt?type=2
 http://www.ip33.com/crc.html
-http://www.seacha.com/tools/aes.html
+http://tool.chacuo.net/cryptaes
 进行测试
 ]]
 
@@ -78,7 +78,7 @@ end
 ]]
 local function aestest()
 	local originstr = "123456crypto.base64_encodemodule(...,package.seeall)sys.timer_start(test,5000)jdklasdjklaskdjklsa"
-	
+	--加密模式:ECB，填充:zeropadding，数据块:128位
 	local encodestr = crypto.aes128_ecb_encrypt(originstr,slen(originstr),"1234567890123456",16)
 	print("aes128_ecb_encrypt",common.binstohexs(encodestr))
 	print("aes128_ecb_decrypt",crypto.aes128_ecb_decrypt(encodestr,slen(encodestr),"1234567890123456",16))

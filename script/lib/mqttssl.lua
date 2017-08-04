@@ -18,9 +18,6 @@ require"mqttdup"
 local slen,sbyte,ssub,sgsub,schar,srep,smatch,sgmatch = string.len,string.byte,string.sub,string.gsub,string.char,string.rep,string.match,string.gmatch
 --报文类型
 CONNECT,CONNACK,PUBLISH,PUBACK,PUBREC,PUBREL,PUBCOMP,SUBSCRIBE,SUBACK,UNSUBSCRIBE,UNSUBACK,PINGREQ,PINGRSP,DISCONNECT = 1,2,3,4,5,6,7,8,9,10,11,12,13,14
-
-local CLEANSESS = 1
-
 --报文序列号
 local seq = 1
 
@@ -95,12 +92,12 @@ end
 ]]
 local function pack(mqttver,typ,...)
 	local para = {}
-	local function connect(alive,id,twill,user,pwd)
+	local function connect(alive,id,twill,user,pwd,cleansess)
 		local ret = lpack.pack(">bAbbHA",
 						CONNECT*16,
 						encutf8(mqttver=="3.1.1" and "MQTT" or "MQIsdp"),
 						mqttver=="3.1.1" and 4 or 3,
-						(user and 1 or 0)*128+(pwd and 1 or 0)*64+twill.retain*32+twill.qos*8+twill.flg*4+CLEANSESS*2,
+						(user and 1 or 0)*128+(pwd and 1 or 0)*64+twill.retain*32+twill.qos*8+twill.flg*4+(cleansess or 1)*2,
 						alive,
 						encutf8(id))
 		if twill.flg==1 then
@@ -303,7 +300,8 @@ function mqttconndata(sckidx)
 					payload=tclients[mqttclientidx].willpayload or "",
 				},
 				tclients[mqttclientidx].user,
-				tclients[mqttclientidx].password)
+				tclients[mqttclientidx].password,
+				tclients[mqttclientidx].cleansession or 1)
 end
 
 --[[
@@ -454,7 +452,7 @@ function mqttsnd(sckidx,typ,usrtag)
 	elseif mqttyp==PINGREQ then
 		snd(sckidx,dat,{key=tmqttpack[typ].sndpara})
 	elseif mqttyp==DISCONNECT then
-		if not snd(sckidx,dat,{key=tmqttpack[typ].sndpara}) and tmqttpack[typ].sndcb then
+		if not snd(sckidx,dat,{key=tmqttpack[typ].sndpara,usertag=usrtag}) and tmqttpack[typ].sndcb then
 			tmqttpack[typ].sndcb(sckidx,false,{key=tmqttpack[typ].sndpara,usertag=usrtag})
 		end		
 	end	
@@ -892,6 +890,12 @@ end
 返回值：无
 ]]
 function tmqtt:disconnect(discb)
+	print("tmqtt:disconnect",self.discing,self.mqttconnected,self.sckconnected)
+	sys.timer_stop(datinactive,self.sckidx)
+	if self.discing or not self.mqttconnected or not self.sckconnected then
+		if discb then discb() end
+		return
+	end
 	self.discb = discb
 	if not disconnect(self.sckidx,"USER") and discb then discb() end
 end
@@ -913,6 +917,17 @@ function tmqtt:configwill(flg,qos,retain,topic,payload)
 	self.willretain=retain or 0
 	self.willtopic=topic or ""
 	self.willpayload=payload or ""
+end
+
+--[[
+函数名：setcleansession
+功能  ：配置clean session标志
+参数  ：
+		flg：number类型，clean session标志，仅支持0和1，默认为1
+返回值：无
+]]
+function tmqtt:setcleansession(flg)
+	self.cleansession=flg or 1
 end
 
 --[[

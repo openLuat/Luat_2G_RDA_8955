@@ -221,7 +221,7 @@ end
 ∑µªÿ÷µ£∫Œﬁ
 ]]
 local function initcrt()
-	local fconfig = io.open("/ldata/servercrt.mp3","rb")
+	local fconfig = io.open("/ldata/ca_crt.mp3","rb")
 	if not fconfig then print("initcrt err open") return end
 	local s = fconfig:read("*a")
 	fconfig:close()

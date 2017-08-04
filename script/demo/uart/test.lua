@@ -130,4 +130,12 @@ sys.reguart(UART_ID,read)
 --配置并且打开串口
 uart.setup(UART_ID,115200,8,uart.PAR_NONE,uart.STOP_1)
 
+--[[
+如果需要打开“串口发送数据完成后，通过异步消息通知”的功能，则按照如下配置
+local function txdone()
+	print("txdone")
+end
+uart.setup(UART_ID,115200,8,uart.PAR_NONE,uart.STOP_1,nil,1)
+sys.reguartx(UART_ID,txdone)
+]]
 

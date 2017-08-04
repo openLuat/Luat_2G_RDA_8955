@@ -14,6 +14,7 @@ local function upevt(ind,para)
 			sys.restart("updapp suc")
 		else
 			if retry<3 then
+				link.shut()
 				sys.timer_start(update.request,5000)
 				retry = retry+1
 			else

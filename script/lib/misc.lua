@@ -16,7 +16,7 @@ local pmd = require"pmd"
 module(...)
 
 --加载常用的全局函数至本地
-local tonumber,tostring,print,req,smatch = base.tonumber,base.tostring,base.print,ril.request,string.match
+local type,assert,tonumber,tostring,print,req,smatch = base.type,base.assert,base.tonumber,base.tostring,base.print,ril.request,string.match
 
 --sn：序列号
 --snrdy：是否已经成功读取过序列号
@@ -196,6 +196,7 @@ end
 功能  ：获取IMEI
 参数  ：无
 返回值：IMEI号，如果未获取到返回""
+注意：开机lua脚本运行之后，会发送at命令去查询imei，所以需要一定时间才能获取到imei。开机后立即调用此接口，基本上返回""
 ]]
 function getimei()
 	return imei or ""
@@ -287,6 +288,42 @@ end
 function getvbatvolt()
 	local v1,v2,v3,v4,v5 = pmd.param_get()
 	return v2
+end
+
+--[[
+函数名：openpwm
+功能  ：打开并且配置PWM(支持2路PWM，仅支持输出)
+参数  ：
+		id：number类型，PWM输出通道，仅支持0和1，0用的是uart2 tx，1用的是uart2 rx
+		period：number类型
+				当id为0时，period表示频率，单位为Hz，取值范围为80-1625，仅支持整数
+				当id为1时，取值范围为0-7，仅支持整数，表示时钟周期，单位为毫秒，0-7分别对应125、250、512、1024、1536、2048、2560、3072毫秒
+		level：number类型
+				当id为0时，level表示频率，单位为level%，取值范围为1-100，仅支持整数
+				当id为1时，取值范围为1-15，仅支持整数，表示一个时钟周期内的高电平时间，单位为毫秒
+				1-15分别对应15.6、31.2、46.9、62.5、78.1、93.7、110、125、141、156、172、187、203、219、234毫秒
+返回值：无
+]]
+function openpwm(id,period,level)
+	assert(type(id)=="number" and type(period)=="number" and type(level)=="number","openpwm type error")
+	assert(id==0 or id==1,"openpwm id error: "..id)
+	local pmin,pmax,lmin,lmax = 80,1625,1,100
+	if id==1 then pmin,pmax,lmin,lmax = 0,7,1,15 end
+	assert(period>=pmin and period<=pmax,"openpwm period error: "..period)
+	assert(level>=lmin and level<=lmax,"openpwm level error: "..level)
+	req("AT+SPWM="..id..","..period..","..level)
+end
+
+--[[
+函数名：closepwm
+功能  ：关闭PWM
+参数  ：
+		id：number类型，PWM输出通道，仅支持0和1，0用的是uart2 tx，1用的是uart2 rx
+返回值：无
+]]
+function closepwm(id)
+	assert(id==0 or id==1,"closepwm id error: "..id)
+	req("AT+SPWM="..id..",0,0")
 end
 
 --[[

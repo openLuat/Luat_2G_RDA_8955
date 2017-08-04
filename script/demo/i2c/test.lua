@@ -1,6 +1,6 @@
 module(...,package.seeall)
 
-local i2cid = 1
+local i2cid = 0
 
 --[[
 º¯ÊýÃû£ºprint
