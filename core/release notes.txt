@@ -1,3 +1,10 @@
+版本号：Luat_V0006_Air202.lod、Luat_V0006_Air202_SSL.lod、Luat_V0006_Air202_TTS1.lod、Luat_V0006_Air202_UI.lod
+发布时间：2017/8/5 00:35
+修改记录：
+    (1)支持SSL、TTS、PWM、SPI LCD功能
+
+
+
 版本号：Luat_V0005_Air202.lod
 发布时间：2017/7/14 11:16
 修改记录：

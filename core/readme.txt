@@ -1,33 +1,25 @@
-Air200模块的Flash总空间为4MB
-Air200目前有四种底层软件：
-Luat_VXXX_Air202.lod：不支持SSL和TTS功能
-Luat_VXXX_Air202_SSL_TTS.lod：支持SSL和TTS功能
-Luat_VXXXX_Air202_SSL.lod：支持SSL功能、不支持TTS功能
-Luat_VXXXX_Air202_TTSX.lod：支持TTS功能、不支持SSL功能
+Air202模块的Flash总空间为4MB
+Air202目前有四种底层软件：
+Luat_VXXXX_Air202.lod：不支持SSL、TTS、SPI接口的LCD功能
+Luat_VXXXX_Air202_SSL.lod：支持SSL功能
+Luat_VXXXX_Air202_TTSX.lod：支持TTS功能
+Luat_VXXXX_Air202_UI.lod：支持SPI接口的LCD功能
 
 Luat_VXXX_Air202.lod：
 Lua脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件）可用512KB
-文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用1008KB
+文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用694KB
 
 Luat_VXXX_Air202_SSL.lod：
-LuaDB脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件）可用512KB
-文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用748KB
-
-Luat_VXXX_Air202_SSL_TTS.lod：
-LuaDB脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件）可用256KB
-文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用108KB
+LuaDB脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件）可用640KB
+文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用643KB
 
 Luat_VXXX_Air202_TTS1.lod：
 LuaDB脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件）可用128KB
-文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用492KB
+文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用284KB
 
-Luat_VXXX_Air202_TTS2.lod：
-LuaDB 脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件）可用320KB
-文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用300KB 
-
-Luat_VXXX_Air202_TTS3.lod：
-LuaDB 脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件）可用448KB
-文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用172KB  
+Luat_VXXX_Air202_UI.lod：
+LuaDB 脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件，图片文件）可用512KB
+文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用694KB
 
 
 无论是哪一种底层软件，关于文件系统空间的使用，注意以下几点：
@@ -36,5 +28,5 @@ LuaDB 脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件）可用448K
 
 
 
-Air200模块的RAM总空间为4MB
+Air202模块的RAM总空间为4MB
 其中Lua运行内存512KB，Luat框架引用的一些lua模块需要占用一定的运行内存，可通过sys.lua中的run函数中的代码--print("mem:",base.collectgarbage("count"))实时打印已占用的空间
