@@ -1,3 +1,25 @@
+发布时间：2017/7/26 11:19
+修改记录：
+    一、lib脚本修改
+        lib脚本版本号：1.0.4
+        (1)net.lua：修正“移动PLMN被放入FLPMN列表中导致无法注册网络”的问题
+        (2)mqtt.lua、mqttssl.lua：
+		修正“tmqtt:disconnect接口断开连接后，又自动重连”的问题
+		新增tmqtt:setcleansession接口
+	(3)aliyuniotssl.lua、aliyuniotsslauth.lua：支持阿里云华东2节点
+        (4)misc.lua：支持pwm输出功能
+    二、demo脚本修改
+        (1)socket_ssl\long_connection的demo：更换服务器CA证书文件
+        (2)新增fs：演示文件操作接口的使用
+        (3)新增format_string：演示数据格式转换接口的使用
+        (4)uart：新增“uart发送数据完成后，异步消息通知”功能的使用说明
+        (5)新增adc：演示adc功能的使用说明
+        (6)crypto：完善注释
+        (7)mqtt、mqtt_ssl：演示tmqtt:setcleansession接口的使用说明
+        (8)新增aliyun_ssl_huadong2：支持阿里云华东2节点
+        (9)新增pwm：支持pwm输出功能
+
+
 发布时间：2017/7/7 11:44
 修改记录：
     一、lib脚本修改

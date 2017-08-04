@@ -188,6 +188,8 @@ local function imeirdy()
 	mqttclient = mqtt.create(PROT,ADDR,PORT--[[,"3.1.1"]])
 	--配置遗嘱参数,如果有需要，打开下面一行代码，并且根据自己的需求调整will参数
 	--mqttclient:configwill(1,0,0,"/willtopic","will payload")
+	--配置clean session标志，如果有需要，打开下面一行代码，并且根据自己的需求配置cleansession；如果不配置，默认为1
+	--mqttclient:setcleansession(0)
 	--查询client状态测试
 	--sys.timer_loop_start(statustest,1000)
 	connect()

@@ -10,7 +10,7 @@ module(...,package.seeall)
 --模块复位单片机引脚
 local RST_SCMWD_PIN = pio.P0_6
 --模块和单片机相互喂狗引脚
-local WATCHDOG_PIN = pio.P0_5
+local WATCHDOG_PIN = pio.P0_11
 
 --scm_active：单片机是否运行正常，true表示正常，false或nil表示异常
 --get_scm_cnt：“检测单片机对模块喂狗是否正常”的剩余次数

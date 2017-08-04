@@ -60,6 +60,14 @@ GPS_NO_CHIP_EVT = 4
 GPS_HAS_CHIP_EVT = 5
 --GPS定位成功事件（还没有过滤前段时间的数据）
 GPS_LOCATION_UNFILTER_SUC_EVT = 6
+--GOKE GPS切换BINARY模式应答事件
+GPS_BINARY_ACK_EVT = 7
+--GOKE GPS写GPD应答事件
+GPS_BINW_ACK_EVT = 8
+--GOKE GPS写GPD结束应答事件
+GPS_BINW_END_ACK_EVT = 9
+--GPS 3D定位成功事件
+GPS_LOCATION_SUC_3D_EVT = 10
 
 --省电模式
 GPS_POWER_SAVE_MODE = 0
@@ -369,6 +377,19 @@ local function proc(s)
 	if s == "" or s == nil then
 		return
 	end
+	
+	print("syy proc",s)
+	
+	if ("AAF00C0001009500039B0D0A" == common.binstohexs(s)) then
+		sys.dispatch(GPS_STATE_IND,GPS_BINARY_ACK_EVT)
+	elseif string.find(common.binstohexs(s),"^AAF00C000300") then
+		if string.find(common.binstohexs(s),"^AAF00C000300FFFF") then
+			sys.dispatch(GPS_STATE_IND,GPS_BINW_END_ACK_EVT)			
+		else
+			sys.dispatch(GPS_STATE_IND,GPS_BINW_ACK_EVT)
+		end		
+	elseif string.find(s,"$PGKC001,105,3") then
+	end
 
 	gps.find = ""
 
@@ -407,6 +428,7 @@ local function proc(s)
 		getstrength(s)
 	--GSA数据
 	elseif smatch(s,"GSA") then
+		gps.fix = smatch(s,"GSA,%w*,(%d*),") or 0
 		local satesn = smatch(s,"GSA,%w*,%d*,(%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,)") or ""
 		local mtch,num = true
 		if gps.gsaprefix == "GP" then			
@@ -435,7 +457,12 @@ local function proc(s)
 			return
 		end
 	end
-
+	
+	if gps.fix == "3" and gps.find == "S" and gps.ds3d == 0 then
+		sys.dispatch(GPS_STATE_IND,GPS_LOCATION_SUC_3D_EVT)
+		gps.ds3d = 1
+	end
+			
 	--可见卫星个数
 	numofsate = tonumber(numofsate or "0")
 	if numofsate > 9 then
@@ -702,6 +729,11 @@ local function writedata()
 	end
 end
 
+function writegk(data)
+	print("syy writegk",data)
+	uart.write(gps.uartid,data)	
+end
+
 function write()
 	if gps.curwritem then return end
 
@@ -817,7 +849,7 @@ function opengps(tag)
 			pio.pin.setlow(gps.io)
 		end
 	end
-	pmd.ldoset(7,pmd.LDO_VASW)
+	pmd.ldoset(7,pmd.LDO_VCAM)
 	gps.gnsschange = false
 	--writegps(GPS_NMEA_VERSION)
 	print("gps open")
@@ -854,7 +886,7 @@ function closegps(tag)
 			pio.pin.sethigh(gps.io)
 		end
 	end
-	pmd.ldoset(0,pmd.LDO_VASW)
+	pmd.ldoset(0,pmd.LDO_VCAM)
 	closeuart()
 	pm.sleep("gps")	
 	gps.open = false
@@ -881,6 +913,7 @@ function closegps(tag)
 	gps.sates = ""
 	gps.gsv = ""
 	gps.gnsschange = false
+	gps.ds3d = 0
 	print("gps close")
 	sys.dispatch(GPS_STATE_IND,GPS_CLOSE_EVT)
 	stoppaccqry()
@@ -1020,6 +1053,16 @@ function isfix()
 end
 
 --[[
+is3dfix
+功能  ：检查GPS是否3D定位成功
+参数  ：无
+返回值：true为定位成功，false为失败
+]]
+function is3dfix()
+	return gps.fix == "3"
+end
+
+--[[
 函数名：isopen
 功能  ：检查GPS是否打开
 参数  ：无
@@ -1145,6 +1188,8 @@ function init(ionum,dir,edge,period,id,baud,databits,parity,stopbits,apgspwronup
 	gps.gnsschange = false
 	gps.filterbgn = nil
 	gps.filtertime = 5
+	gps.fix = 0
+	gps.ds3d = 0
 	gps.timezone = nil
 	gps.spdtyp = GPS_KILOMETER_SPD	
 	gps.opentags = {}
@@ -1165,14 +1210,14 @@ function init(ionum,dir,edge,period,id,baud,databits,parity,stopbits,apgspwronup
 	gps.errD = 600
 
 	gps.io = ionum
-	gps.edge = edge
+	gps.edge = true
 
-	gps.period = period
-	gps.uartid = id
-	gps.baud = baud
-	gps.databits = databits
-	gps.parity = parity
-	gps.stopbits = stopbits
+	gps.period = 1000
+	gps.uartid = 2
+	gps.baud = 115200
+	gps.databits = 8
+	gps.parity = uart.PAR_NONE
+	gps.stopbits = uart.STOP_1
 
 	if ionum then
 		pio.pin.setdir(pio.OUTPUT,ionum)

@@ -52,7 +52,7 @@ function connect(change)
 	--配置遗嘱参数,如果有需要，打开下面一行代码，并且根据自己的需求调整will参数
 	--mqttclient:configwill(1,0,0,"/willtopic","will payload")
 	--连接mqtt服务器
-	mqttclient:connect(gclientid,600,gusername,"",gconnectedcb,gconnecterrcb,sckerrcb)
+	mqttclient:connect(gclientid,240,gusername,"",gconnectedcb,gconnecterrcb,sckerrcb)
 end
 
 --[[

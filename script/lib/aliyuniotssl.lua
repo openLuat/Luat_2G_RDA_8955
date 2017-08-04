@@ -2,11 +2,10 @@
 local base = _G
 local sys  = require"sys"
 local mqttssl = require"mqttssl"
-require"aliyuniotauth"
 module(...,package.seeall)
 
 --mqtt客户端对象,数据服务器地址,数据服务器端口表
-local mqttclient,gaddr,gports,gclientid,gusername
+local mqttclient,gaddr,gports,gclientid,gusername,gpassword
 --目前使用的gport表中的index
 local gportidx = 1
 local gconnectedcb,gconnecterrcb
@@ -51,7 +50,7 @@ function connect(change)
 	--配置遗嘱参数,如果有需要，打开下面一行代码，并且根据自己的需求调整will参数
 	--mqttclient:configwill(1,0,0,"/willtopic","will payload")
 	--连接mqtt服务器
-	mqttclient:connect(gclientid,600,gusername,"",gconnectedcb,gconnecterrcb,sckerrcb)
+	mqttclient:connect(gclientid,240,gusername,gpassword,gconnectedcb,gconnecterrcb,sckerrcb)
 end
 
 --[[
@@ -60,8 +59,8 @@ end
 参数  ：无		
 返回值：无
 ]]
-local function databgn(host,ports,clientid,username)
-	gaddr,gports,gclientid,gusername = host or gaddr,ports or gports,clientid,username
+local function databgn(host,ports,clientid,username,password)
+	gaddr,gports,gclientid,gusername,gpassword = host or gaddr,ports or gports,clientid,username,password or ""
 	gportidx = 1
 	connect()
 end
@@ -83,6 +82,11 @@ sys.regapp(procer)
 返回值：无
 ]]
 function config(productkey,productsecret)
+	if productsecret then
+		require"aliyuniotauth"
+	else
+		require"aliyuniotauthssl"
+	end
 	sys.dispatch("ALIYUN_AUTH_BGN",productkey,productsecret)
 end
 

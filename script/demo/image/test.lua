@@ -22,11 +22,9 @@ local function test_print()
 end
 
 local function test_main_obj()
-    local image_object = image.load("/ldata/test.jpg")
+    local image_object = image.load("/ldata/test1.jpg")
 
     print("test_main_obj load",image_object)
-
-    if not image_object then return end
 
     local wd,ht,fm = image_object:info()
 
@@ -36,7 +34,7 @@ local function test_main_obj()
 
     print("test_main_obj buffer",buf)
 
-   image_object:destory()
+   --image_object:destory()
 
     print("test_main_obj destory")
 end
