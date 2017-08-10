@@ -24,7 +24,7 @@ GitHub：https://github.com/airm2m-open/Luat_Air202
 
 ## 开源用户须知
 
-我司提供的开源/script代码中，/demo里是各个功能的示例程序。/lib下是demo以及所有用户代码都需要调用的库文件。
+Luat开源/script代码中，/demo里是各个功能的示例程序。/lib下是demo以及所有用户代码都需要调用的库文件。
 
 一般用户只需修改我司提供的lua脚本，即可快速完成二次开发，而不用修改core基础软件。这部分用户，请参考：合宙开源项目lua开发须知
 
