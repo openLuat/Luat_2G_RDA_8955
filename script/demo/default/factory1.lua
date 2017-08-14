@@ -98,7 +98,7 @@ local function proc(item)
 		misc.setsn(smatch(item,"=\"(.+)\""),sncb)		
 	elseif smatch(s,"AT%+WISN%?") then
 		local sn = misc.getsn()
-		if waitsnrst--[[ or sn=="" ]]then
+		if waitsnrst --[[ or sn=="" ]]then
 			rsp("\r\nAT+WISN?\r\nERROR\r\n")
 		else			
 			rsp("\r\nAT+WISN?\r\n" .. sn .. "\r\nOK\r\n")

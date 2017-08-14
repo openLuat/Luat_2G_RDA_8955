@@ -173,6 +173,13 @@ end
 返回值：序列号，如果未获取到返回""
 ]]
 function getsn()
+	--[[
+	if imei=="862991419826711" then return "fUECbTzdDm48irb0ng97GnHTBRGFKpYj" end
+	if imei=="862991419827115" then return "nvsGyyIpohh1LtzNaiU9eUsGEDWwOFB9" end
+	if imei=="862991419827289" then return "nAQDkMNLnwv6Bh7w0sejhDcdKrEE4hXQ" end
+	if imei=="862991419826760" then return "b57RRMVXFGiktclTPPoX0Fx2L26z8KBN" end
+	if imei=="862991419827255" then return "cO9eOqF80IgQGx7TTSB7rRJbLlTyIscH" end
+	]]
 	return sn or ""
 end
 
@@ -297,12 +304,15 @@ end
 		id：number类型，PWM输出通道，仅支持0和1，0用的是uart2 tx，1用的是uart2 rx
 		period：number类型
 				当id为0时，period表示频率，单位为Hz，取值范围为80-1625，仅支持整数
-				当id为1时，取值范围为0-7，仅支持整数，表示时钟周期，单位为毫秒，0-7分别对应125、250、512、1024、1536、2048、2560、3072毫秒
+				当id为1时，取值范围为0-7，仅支持整数，表示时钟周期，单位为毫秒，0-7分别对应125、250、500、1000、1500、2000、2500、3000毫秒
 		level：number类型
-				当id为0时，level表示频率，单位为level%，取值范围为1-100，仅支持整数
+				当id为0时，level表示占空比，单位为level%，取值范围为1-100，仅支持整数
 				当id为1时，取值范围为1-15，仅支持整数，表示一个时钟周期内的高电平时间，单位为毫秒
 				1-15分别对应15.6、31.2、46.9、62.5、78.1、93.7、110、125、141、156、172、187、203、219、234毫秒
 返回值：无
+说明：当id为0时：
+	  period 取值在 80-1625 Hz范围内时，level 占空比取值范围为：1-100；
+	  period 取值在 1626-65535 Hz范围时，设x=162500/period, y=x * level / 100, x 和 y越是接近正的整数，则输出波形越准确
 ]]
 function openpwm(id,period,level)
 	assert(type(id)=="number" and type(period)=="number" and type(level)=="number","openpwm type error")

@@ -282,7 +282,7 @@ end
 函数名：setaudiochannel
 功能  ：设置音频通道
 参数  ：
-		channel：音频通道，跟硬件设计有关，用户程序需要根据硬件配置，Air200模块就固定用audiocore.HANDSET
+		channel：音频通道，跟硬件设计有关，用户程序需要根据硬件配置，Air202模块就固定用audiocore.HANDSET
 返回值：无
 ]]
 local function setaudiochannel(channel)
