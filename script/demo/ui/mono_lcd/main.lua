@@ -1,7 +1,7 @@
 --必须在这个位置定义PROJECT和VERSION变量
 --PROJECT：ascii string类型，可以随便定义，只要不使用,就行
 --VERSION：ascii string类型，如果使用Luat物联云平台固件升级的功能，必须按照"X.X.X"定义，X表示1位数字；否则可随便定义
-PROJECT = "XIAOMAN_GPS_TEST"
+PROJECT = "UI"
 VERSION = "1.0.0"
 require"sys"
 --[[
@@ -10,8 +10,14 @@ require"sys"
 如果写在后面的其他位置，很有可能无法输出错误信息，从而增加调试难度
 ]]
 --sys.opntrace(true,1)
-require"wdt153b"
-require"testgps"
+require"msc"
+require"lcd_ssd1306"
+--require"lcd_st7567"
+require"uiwin"
+require"logo"
+require"ntp"
+--S6开发板：硬件上已经打开了看门狗功能，使用S6开发板的用户，要打开这行注释的代码"--require"wdt""，否则4分钟左右会重启一次
+--require"wdt"
 
 sys.init(0,0)
 sys.run()

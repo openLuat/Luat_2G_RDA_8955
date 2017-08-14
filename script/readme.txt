@@ -88,7 +88,3 @@ wdt：开启开发板上的硬件看门狗功能项目
 
 write_sn：写SN号到设备的demo项目
 
-xiaoman_gps_tracker\whole_test：针对小蛮GPS定位器硬件写的一个完整的demo项目，支持硬件的各种功能，只能用于小蛮GPS定位器硬件，不能用于开发板，也不能配合时间线APP使用，注意修改sck.lua中的后台地址
-
-xiaoman_gps_tracker\gps_test：针对小蛮GPS定位器硬件写的一个测试gps的demo项目，只能用于小蛮GPS定位器硬件，不能用于开发板，也不能配合时间线APP使用。gps接口的使用参考testgps.lua
-

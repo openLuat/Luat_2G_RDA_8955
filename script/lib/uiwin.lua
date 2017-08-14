@@ -6,20 +6,13 @@
 local base = _G
 local sys = require"sys"
 local table = require"table"
-local print,assert,type = base.print,base.assert,base.type
+local print,assert,type,ipairs = base.print,base.assert,base.type,base.ipairs
 module(...)
 
 --窗口管理栈
 local stack = {}
 --当前分配的窗口ID
 local winid = 0
-
-local mtwindefault = {
-	__index = function(t,evt)
-		print("uiwin default process:",t.name,evt)
-		return function() end
-	end
-}
 
 local function allocid()
 	winid = winid + 1
@@ -47,7 +40,6 @@ function add(wnd)
 	end
 	--上一个窗口执行失去焦点的处理函数
 	losefocus()
-	setmetatable(wnd,mtwindefault)
 	--为新窗口分配窗口ID
 	wnd.id = allocid()
 	--新窗口请求入栈
