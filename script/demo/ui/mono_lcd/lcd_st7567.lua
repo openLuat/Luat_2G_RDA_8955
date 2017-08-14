@@ -1,17 +1,41 @@
+--[[
+模块名称：ST 7567驱动芯片命令配置
+模块功能：初始化芯片命令
+模块最后修改时间：2017.08.08
+]]
+
+--[[
+disp库目前仅支持SPI接口的屏，硬件连线图如下：
+Air模块			LCD
+GND-------------GND
+SPI_CS----------CS
+SPI_CLK---------SCK
+SPI_DO----------SDA
+SPI_DI----------RS
+VDDIO-----------VDD
+UART1_CTS-------RST
+注意：Air202早期的开发板，UART1的CTS和RTS的丝印反了
+]]
+
 module(...,package.seeall)
---https://wenku.baidu.com/view/16ad716df8c75fbfc67db231.html
+
+--[[
+函数名：init
+功能  ：初始化LCD参数
+参数  ：无
+返回值：无
+]]
 local function init()
 	local para =
 	{
-		width = 128,
-		height = 64,
-		bpp = 1,
-		--xoffset = 32,
-		--yoffset = 64,
-		bus = disp.BUS_SPI,
-		hwfillcolor = 0xFFFF,
-		pinrst = pio.P0_2,
-		pinrs = pio.P0_12,
+		width = msc.WIDTH, --分辨率宽度，128像素；用户根据屏的参数自行修改
+		height = msc.HEIGHT, --分辨率高度，64像素；用户根据屏的参数自行修改
+		bpp = 1, --位深度，1表示单色。单色屏就设置为1，不可修改
+		bus = disp.BUS_SPI, --led位标准SPI接口，不可修改
+		hwfillcolor = 0xFFFF, --填充色，黑色
+		pinrst = pio.P0_3, --reset，复位引脚
+		pinrs = pio.P0_12, --rs，命令/数据选择引脚
+		--初始化命令
 		initcmd =
 		{
 			0xE2, --soft reset
@@ -26,26 +50,18 @@ local function init()
 			0x60, --设置显示存储器的显示初始行,可设置值为0X40~0X7F,分别代表第0～63行，针对该液晶屏一般设置为0x60
 			0xAF, --显示开/关: 0XAE:关，0XAF：开
 		},
+		--休眠命令
 		sleepcmd = {
 			0xAE,
 		},
+		--唤醒命令
 		wakecmd = {
 			0xAF,
 		}
 	}
-	print("lcd init")
 	disp.init(para)
-	disp.clear()
-	disp.puttext("欢迎使用Luat",16,24)
-	disp.update()
 end
 
-local function displogo()
-	disp.clear()
-	disp.putimage("/ldata/logo.bmp",0,0)
-	disp.update()
-end
-
+--控制SPI引脚的电压域
 pmd.ldoset(6,pmd.LDO_VMMC)
 init()
-sys.timer_start(displogo,3000)

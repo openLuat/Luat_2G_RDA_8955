@@ -2,7 +2,9 @@
 --PROJECT：ascii string类型，可以随便定义，只要不使用,就行
 --VERSION：ascii string类型，如果使用Luat物联云平台固件升级的功能，必须按照"X.X.X"定义，X表示1位数字；否则可随便定义
 PROJECT = "ALIYUN_SSL_HUADONG2"
-VERSION = "1.0.0"
+VERSION = "1.0.1"
+--Air内部测试设置为true
+--DEBUG_AIR = true
 require"sys"
 --[[
 如果使用UART输出trace，打开这行注释的代码"--sys.opntrace(true,1)"即可，第2个参数1表示UART1输出trace，根据自己的需要修改这个参数
@@ -12,10 +14,13 @@ require"sys"
 --sys.opntrace(true,1)
 require"test"
 --S6开发板：硬件上已经打开了看门狗功能，使用S6开发板的用户，要打开这行注释的代码"--require"wdt""，否则4分钟左右会重启一次
---require"wdt"
+require"wdt"
 
 sys.init(0,0)
-ril.request("AT*TRACE=\"DSS\",0,0")
-ril.request("AT*TRACE=\"RDA\",0,0")
-ril.request("AT*TRACE=\"SXS\",0,0")
+if DEBUG_AIR then
+	ril.request("AT*EXASSERT=1")
+	ril.request("AT*TRACE=\"DSS\",1,0")
+	ril.request("AT*TRACE=\"RDA\",1,0")
+	ril.request("AT*TRACE=\"SXS\",1,0")
+end
 sys.run()

@@ -15,8 +15,6 @@ local ssub,schar,smatch,sbyte,slen,sgmatch,sgsub,srep = string.sub,string.char,s
 local gpsupport = false
 --如果支持gps，则打开gps
 if gpsupport then
-	require"agps"
-	require"gps"
 	gps.init()
 	gps.open(gps.DEFAULT,{cause="linkair"})
 end
