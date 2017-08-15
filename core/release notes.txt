@@ -1,3 +1,11 @@
+版本号：Luat_V0007_Air202.lod、Luat_V0007_Air202_SSL.lod、Luat_V0007_Air202_TTS1.lod、Luat_V0007_Air202_UI.lod
+发布时间：2017/8/15 22:56
+修改记录：
+    (1)Lua运行RAM扩大为1024KB
+    (2)调整TTS项目flash分区
+    (3)修正“串口收发数据时的重启”问题
+
+
 版本号：Luat_V0006_Air202.lod、Luat_V0006_Air202_SSL.lod、Luat_V0006_Air202_TTS1.lod、Luat_V0006_Air202_UI.lod
 发布时间：2017/8/5 00:35
 修改记录：
