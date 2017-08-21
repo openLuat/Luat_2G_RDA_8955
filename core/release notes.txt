@@ -1,3 +1,13 @@
+版本号：Luat_V0008_Air202.lod、Luat_V0008_Air202_SSL.lod、Luat_V0008_Air202_TTS1.lod、Luat_V0008_Air202_TTS_UI.lod、Luat_V0008_Air202_UI.lod
+发布时间：2017/8/21 20:41
+修改记录：
+    (1)修正“休眠时GPIO电压不稳”的问题
+    (2)修正“串口收发数据时的重启”的问题
+    (3)修正“通话无声以及通话死机”的问题
+    (4)修正“TTS功能失效”的问题
+    (5)支持“uart发送数据后异步消息通知”的功能
+
+
 版本号：Luat_V0007_Air202.lod、Luat_V0007_Air202_SSL.lod、Luat_V0007_Air202_TTS1.lod、Luat_V0007_Air202_UI.lod
 发布时间：2017/8/15 22:56
 修改记录：
