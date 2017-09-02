@@ -89,7 +89,7 @@ end
 返回值：true表示最前显示，其余表示非最前显示
 ]]
 function isactive(winid)
-	return stack[#stack]==winid
+	return stack[#stack].id==winid
 end
 
  sys.regapp({

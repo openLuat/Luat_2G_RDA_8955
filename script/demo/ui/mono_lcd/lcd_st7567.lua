@@ -28,8 +28,8 @@ module(...,package.seeall)
 local function init()
 	local para =
 	{
-		width = msc.WIDTH, --分辨率宽度，128像素；用户根据屏的参数自行修改
-		height = msc.HEIGHT, --分辨率高度，64像素；用户根据屏的参数自行修改
+		width = 128, --分辨率宽度，128像素；用户根据屏的参数自行修改
+		height = 64, --分辨率高度，64像素；用户根据屏的参数自行修改
 		bpp = 1, --位深度，1表示单色。单色屏就设置为1，不可修改
 		bus = disp.BUS_SPI, --led位标准SPI接口，不可修改
 		hwfillcolor = 0xFFFF, --填充色，黑色
@@ -60,6 +60,8 @@ local function init()
 		}
 	}
 	disp.init(para)
+	disp.clear()
+	disp.update()
 end
 
 --控制SPI引脚的电压域
