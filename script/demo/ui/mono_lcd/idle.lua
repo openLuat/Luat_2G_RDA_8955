@@ -22,14 +22,14 @@ local appid
 local function refresh()
 	--清空LCD显示缓冲区
 	disp.clear()
-	disp.puttext("待机界面",msc.getxpos("待机界面"),0)
+	disp.puttext("待机界面",lcd.getxpos("待机界面"),0)
 	local clkstr = "20"..misc.getclockstr()
 	local datestr = ssub(clkstr,1,4).."-"..ssub(clkstr,5,6).."-"..ssub(clkstr,7,8)
 	local timestr = ssub(clkstr,9,10)..":"..ssub(clkstr,11,12)
 	--显示日期
-	disp.puttext(datestr,msc.getxpos(datestr),24)
+	disp.puttext(datestr,lcd.getxpos(datestr),24)
 	--显示时间
-	disp.puttext(timestr,msc.getxpos(timestr),44)
+	disp.puttext(timestr,lcd.getxpos(timestr),44)
 	--刷新LCD显示缓冲区到LCD屏幕上
 	disp.update()
 end
@@ -47,7 +47,9 @@ local winapp =
 返回值：无
 ]]
 local function clkind()
-	refresh()
+	if uiwin.isactive(appid) then
+		refresh()
+	end
 end
 
 --非窗口类型的消息处理函数表

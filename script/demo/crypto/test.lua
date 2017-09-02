@@ -59,6 +59,29 @@ local function md5test()
 end
 
 --[[
+函数名：hmacsha1test
+功能  ：hmac_sha1算法测试
+参数  ：无
+返回值：无
+]]
+local function hmacsha1test()
+	local originstr = "asdasdsadasweqcdsjghjvcb"
+	local signkey = "12345689012345"
+	print("hmac_sha1",crypto.hmac_sha1(originstr,slen(originstr),signkey,slen(signkey)))
+end
+
+--[[
+函数名：sha1test
+功能  ：sha1算法测试
+参数  ：无
+返回值：无
+]]
+local function sha1test()
+	local originstr = "sdfdsfdsfdsffdsfdsfsdfs1234"
+	print("sha1",crypto.sha1(originstr,slen(originstr)))
+end
+
+--[[
 函数名：crctest
 功能  ：crc算法测试
 参数  ：无
@@ -99,6 +122,8 @@ local function test()
 	base64test()
 	hmacmd5test()
 	md5test()
+	hmacsha1test()
+	sha1test()
 	crctest()
 	aestest()
 end

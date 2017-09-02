@@ -10,10 +10,7 @@ require"sys"
 如果写在后面的其他位置，很有可能无法输出错误信息，从而增加调试难度
 ]]
 --sys.opntrace(true,1)
-require"msc"
-require"lcd_ssd1306"
---require"lcd_st7567"
-require"uiwin"
+require"lcd"
 require"logo"
 require"ntp"
 --S6开发板：硬件上已经打开了看门狗功能，使用S6开发板的用户，要打开这行注释的代码"--require"wdt""，否则4分钟左右会重启一次

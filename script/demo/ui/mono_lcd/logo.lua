@@ -6,6 +6,7 @@
 
 module(...,package.seeall)
 
+require"uiwin"
 require"prompt"
 require"idle"
 

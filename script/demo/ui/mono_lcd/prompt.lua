@@ -27,13 +27,13 @@ local pos =
 local function refresh()
 	disp.clear()
 	if str3 then
-		disp.puttext(str3,msc.getxpos(str3),pos[3][3])
+		disp.puttext(str3,lcd.getxpos(str3),pos[3][3])
 	end
 	if str2 then
-		disp.puttext(str2,msc.getxpos(str2),pos[str3 and 3 or 2][2])
+		disp.puttext(str2,lcd.getxpos(str2),pos[str3 and 3 or 2][2])
 	end
 	if str1 then
-		disp.puttext(str1,msc.getxpos(str1),pos[str3 and 3 or (str2 and 2 or 1)][1])
+		disp.puttext(str1,lcd.getxpos(str1),pos[str3 and 3 or (str2 and 2 or 1)][1])
 	end
 	disp.update()
 end
@@ -49,6 +49,7 @@ local function close()
 	sys.timer_stop(close)
 	if callback then callback(callbackpara) end
 	uiwin.remove(appid)
+	appid = nil
 end
 
 --窗口的消息处理函数表

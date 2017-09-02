@@ -25,9 +25,9 @@ local assert = base.assert
 local tonumber = base.tonumber
 
 --lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "1.0.5"
+SCRIPT_LIB_VER = "1.0.6"
 --脚本发布时的最新core软件版本号
-CORE_MIN_VER = "Luat_V0006_Air202"
+CORE_MIN_VER = "Luat_V0008_8955"
 
 --“是否需要刷新界面”的标志，有GUI的项目才会用到此标志
 local refreshflag = false
@@ -292,7 +292,7 @@ local function writetxt(f,v)
 end
 
 --[[
-函数名：restart
+函数名：appenderr
 功能  ：追加错误信息到LIB_ERR_FILE文件中
 参数  ：
 		s：错误信息，用户自定义，一般是string类型，重启后的trace中会打印出此错误信息
@@ -364,7 +364,7 @@ local function checkcorever()
 		return
 	end
 	
-	local buildver = string.match(realver,"Luat_V(%d+)_Air202")
+	local buildver = string.match(realver,"Luat_V(%d+)_")
 	--如果底层软件版本号格式错误
 	if not buildver then
 		appenderr("checkcorever[core ver format error]"..realver..";")
@@ -372,7 +372,7 @@ local function checkcorever()
 	end
 	
 	--lib脚本需要的底层软件版本号大于底层软件的实际版本号
-	if tonumber(string.match(CORE_MIN_VER,"Luat_V(%d+)_Air202"))>tonumber(buildver) then
+	if tonumber(string.match(CORE_MIN_VER,"Luat_V(%d+)_"))>tonumber(buildver) then
 		print("checkcorever[core ver match warn]"..realver..","..CORE_MIN_VER..";")
 	end
 end
@@ -393,7 +393,7 @@ function init(mode,lprfnc)
 	require"net"
 	--设置AT命令的虚拟串口
 	uart.setup(uart.ATC,0,0,uart.PAR_NONE,uart.STOP_1)
-	print("poweron reason:",rtos.poweron_reason(),base.PROJECT,base.VERSION,SCRIPT_LIB_VER,CORE_MIN_VER,getcorever())
+	print("poweron reason:",rtos.poweron_reason(),base.PROJECT,base.VERSION,SCRIPT_LIB_VER,getcorever())
 	if mode == 1 then
 		--充电开机
 		if rtos.poweron_reason() == rtos.POWERON_CHARGER then

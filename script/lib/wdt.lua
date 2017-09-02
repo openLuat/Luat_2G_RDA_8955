@@ -171,8 +171,32 @@ function test()
 	end
 end
 
---模块复位单片机引脚，默认输出高电平
-pio.pin.setdir(pio.OUTPUT1,RST_SCMWD_PIN)
-pio.pin.setval(1,RST_SCMWD_PIN)
 
-open()
+--[[
+函数名：begin
+功能  ：启动喂狗流程
+参数  ：无
+返回值：无
+]]
+local function begin()
+	--模块复位单片机引脚，默认输出高电平
+	pio.pin.setdir(pio.OUTPUT1,RST_SCMWD_PIN)
+	pio.pin.setval(1,RST_SCMWD_PIN)
+	open()
+end
+
+--[[
+函数名：setup
+功能  ：配置喂狗使用的两个引脚
+参数  ：
+		rst：模块复位单片机引脚
+		wd：模块和单片机相互喂狗引脚
+返回值：无
+]]
+function setup(rst,wd)
+	RST_SCMWD_PIN,WATCHDOG_PIN = rst,wd
+	sys.timer_stop(begin)
+	begin()
+end
+
+sys.timer_start(begin,2000)
