@@ -81,6 +81,9 @@ end
 
 
 --每次打开下面的一行代码进行测试
-sys.timer_start(testplayfile,5000)
---sys.timer_start(testplaytts,5000)
+if string.match(sys.getcorever(),"TTS") then
+	sys.timer_start(testplaytts,5000)
+else
+	sys.timer_start(testplayfile,5000)
+end
 --sys.timer_start(testplayconflict,5000)
