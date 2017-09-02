@@ -1,4 +1,18 @@
+版本号：Luat_V0009_8955.lod、Luat_V0009_8955_SSL.lod、Luat_V0009_8955_TTS1.lod、Luat_V0009_8955_TTS_UI.lod、Luat_V0009_8955_UI.lod
+发布时间：2017/8/31 22:39
+修改记录：
+    (1)支持“i2c外设无寄存器地址的读写”功能
+    (2)修正“开机配置GPIO输出时，会有一个几微秒的异常高电平”的问题
+    (3)支持“sha1和hmac_sha1算法”
+    (4)修正“小概率写文件出错”的问题
+    (5)SSL功能：支持AES算法、AT命令发送数据修改为同步返回发送结果的方式
+    (6)修正“休眠后某些GPIO输出电平不稳”的问题
+    (7)支持“黑白屏脚本中X offset偏移设置”的功能
+
+
+
 版本号：Luat_V0008_Air202.lod、Luat_V0008_Air202_SSL.lod、Luat_V0008_Air202_TTS1.lod、Luat_V0008_Air202_TTS_UI.lod、Luat_V0008_Air202_UI.lod
+        Luat_V0008_Air800.lod、Luat_V0008_Air800_SSL.lod、Luat_V0008_Air800_TTS1.lod、Luat_V0008_Air800_TTS_UI.lod、Luat_V0008_Air800_UI.lod
 发布时间：2017/8/21 20:41
 修改记录：
     (1)修正“休眠时GPIO电压不稳”的问题
@@ -8,12 +22,16 @@
     (5)支持“uart发送数据后异步消息通知”的功能
 
 
+
 版本号：Luat_V0007_Air202.lod、Luat_V0007_Air202_SSL.lod、Luat_V0007_Air202_TTS1.lod、Luat_V0007_Air202_UI.lod
+        Luat_V0007_Air800.lod、Luat_V0007_Air800_SSL.lod、Luat_V0007_Air800_TTS1.lod、Luat_V0007_Air800_UI.lod
 发布时间：2017/8/15 22:56
 修改记录：
     (1)Lua运行RAM扩大为1024KB
-    (2)调整TTS项目flash分区
-    (3)修正“串口收发数据时的重启”问题
+    (2)发布Air800的core文件
+    (3)调整TTS项目flash分区
+    (4)修正“串口收发数据时的重启”问题
+
 
 
 版本号：Luat_V0006_Air202.lod、Luat_V0006_Air202_SSL.lod、Luat_V0006_Air202_TTS1.lod、Luat_V0006_Air202_UI.lod
