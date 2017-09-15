@@ -5,8 +5,7 @@ require "common"
 require"socket"
 local lpack=require"pack"
 
-local sfind, slen,sbyte,ssub,sgsub,schar,srep,smatch,sgmatch = string.find ,string.len,string.byte,string.sub,string.gsub,string.char,string.rep,string.match,string.gmatch
-
+local sfind, slen,sbyte,ssub,sgsub,schar,srep,smatch,sgmatch= string.find ,string.len,string.byte,string.sub,string.gsub,string.char,string.rep,string.match,string.gmatch
 --[[
 函数名：print
 功能  ：打印接口，此文件中的所有打印都会加上test前缀
@@ -107,6 +106,7 @@ function reconn(sckidx)
 	end
 end
 
+
 --[[
 函数名：ntfy
 功能  ：socket状态的处理函数
@@ -148,14 +148,18 @@ function ntfy(idx,evt,result,item)
 		tclients[httpclientidx].httpconnected=false
 		tclients[httpclientidx].sckconning = false
 		--长连接时使用
---		reconn(idx)
+		if tclients[httpclientidx].mode then
+			reconn(idx)
+		end
 	--连接主动断开（调用link.shut后的异步事件）
 	elseif evt == "STATE" and result == "SHUTED" then
 		tclients[httpclientidx].sckconnected=false
 		tclients[httpclientidx].httpconnected=false
 		tclients[httpclientidx].sckconning = false
 		--长连接时使用
---		reconn(idx)
+		if tclients[httpclientidx].mode then
+			reconn(idx)
+		end
 	--连接主动断开（调用socket.disconnect后的异步事件）
 	elseif evt == "DISCONNECT" then
 		tclients[httpclientidx].sckconnected=false
@@ -166,7 +170,9 @@ function ntfy(idx,evt,result,item)
 			tclients[httpclientidx].discing = false
 		end	
 	--长连接时使用
---		reconn(idx)
+		if tclients[httpclientidx].mode then
+			reconn(idx)
+		end
 	--连接主动断开并且销毁（调用socket.close后的异步事件）
 	elseif evt == "CLOSE" then
 		local cb = tclients[httpclientidx].destroycb
@@ -204,6 +210,7 @@ function  timerfnc(httpclientidx)
 	tclients[httpclientidx].statuscode=nil
 	tclients[httpclientidx].data=nil
 end
+
 --[[
 函数名：数据接收处理函数
 功能：将服务器返回的数据进行处理
@@ -247,9 +254,12 @@ function rcv(idx,data)
 		if	tclients[httpclientidx].rcvhead	and tclients[httpclientidx].rcvcb then
 			--是否头部为Transfer-Encoding=chunked，若是则采用的是分块传输编码
 			if	chunked	then
-				if	sfind(ssub(tclients[httpclientidx].data,h1+2,-1),"\r\n0%s-\r\n")	then
-					local h3=sfind(ssub(tclients[httpclientidx].data,h1+2,-1),"\r\n0%s-\r\n")					
-					tclients[httpclientidx].rcvbody=ssub(tclients[httpclientidx].data,h2+1,h3)
+				if	sfind(ssub(tclients[httpclientidx].data,h2,-1),"\r\n%s-0%s-\r\n")	then
+					local	chunkedbody = ""
+					for k in sgmatch(ssub(tclients[httpclientidx].data,h2+1,-1),"%x-\r\n(.-)\r\n") do
+						chunkedbody=chunkedbody..k
+					end
+					tclients[httpclientidx].rcvbody=chunkedbody
 					tclients[httpclientidx].result=4
 					tclients[httpclientidx].rcvcb(tclients[httpclientidx].result,tclients[httpclientidx].statuscode,tclients[httpclientidx].rcvhead,tclients[httpclientidx].rcvbody)
 					sys.timer_stop(timerfnc,httpclientidx)
@@ -333,10 +343,10 @@ function connect(sckidx,prot,host,port)
 end
 
 
-
 --创立元表时所用
 local thttp = {}
 thttp.__index = thttp
+
 
 
 --[[
@@ -376,8 +386,6 @@ function create(host,port)
 	return(http_client)
 end
 
-
-
 --[[
 函数名：connect
 功能  ：连接http服务器
@@ -399,6 +407,15 @@ function thttp:connect(connectedcb,sckerrcb)
     end
 end
 
+--[[
+函数名：setconnectionmode
+功能：设置连接模式，长连接还是短链接
+参数：v，true为长连接，false为短链接
+返回：
+]]
+function thttp:setconnectionmode(v)
+	self.mode=v
+end
 
 --[[
 函数名：disconnect
@@ -479,7 +496,7 @@ function thttp:request(cmdtyp,rcvcb)
 	--默认首部为Connection: keep-alive
 	if	not	self.head	then
 		self.head={}
-		self.head["Host"]="36.7.87.100"
+--		self.head["Host"]="36.7.87.100"
 		self.head["Connection"]="keep-alive"
 	end
 	--默认实体为空

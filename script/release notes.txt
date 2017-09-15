@@ -1,3 +1,23 @@
+发布时间：2017/9/5 11:58
+修改记录：
+    一、lib脚本修改
+        lib脚本版本号：1.0.7
+        (1)keypad：新增powerkey按键的处理功能
+        (2)sms：修正“收到的长短信没有自动拼接”的问题
+        (3)sys、update、dbg：新增“远程升级或者dbg上报过程中，禁止“语法错误或者sys.restart接口”的重启功能”	
+        (4)patch.lua：重新封装json.decode接口，增加decode的返回值。使用方式参考json的demo
+        (5)http.lua：修正“chunk传输数据时解包错误”的问题
+        (6)nvm.lua：修正“table类型参数如果旧值是空表，设置新值时失败”的问题
+        (7)mqtt.lua、mqttssl.lua：支持“用户自定义异常处理程序”的功能
+    二、demo脚本修改
+        (1)default：支持“开机运行过程中长按power key按键，自动关机”功能
+        (2)json：json.decode接口增加返回值表示解析结果
+        (3)mqtt、mqttssl：支持一种默认的异常处理程序
+        (4)i2c：规范代码
+        (5)update：添加<重要提醒.txt>
+
+
+
 发布时间：2017/8/18 10:31
 修改记录：
     一、lib脚本修改

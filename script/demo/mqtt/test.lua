@@ -156,21 +156,24 @@ end
 
 --[[
 函数名：sckerrcb
-功能  ：SOCKET失败回调函数
+功能  ：SOCKET异常回调函数（注意：此处是恢复异常的一种方式<进入飞行模式，半分钟后退出飞信模式>，如果无法满足自己的需求，可自己进行异常处理）
 参数  ：
 		r：string类型，失败原因值
 			CONNECT：mqtt内部，socket一直连接失败，不再尝试自动重连
+			SVRNODATA：mqtt内部，3倍KEEP ALIVE时间+半分钟，终端和服务器没有任何数据通信，则认为出现通信异常
 返回值：无
 ]]
 local function sckerrcb(r)
 	print("sckerrcb",r)
+	misc.setflymode(true)
+	sys.timer_start(misc.setflymode,30000,false)
 end
 
 function connect()
 	--连接mqtt服务器
-	--mqtt lib中，如果socket一直重连失败，默认会自动重启软件
-	--注意sckerrcb参数，如果打开了注释掉的sckerrcb，则mqtt lib中socket一直重连失败时，不会自动重启软件，而是调用sckerrcb函数
-	mqttclient:connect(misc.getimei(),600,"user","password",connectedcb,connecterrcb--[[,sckerrcb]])
+	--mqtt lib中，如果socket出现异常，默认会自动重启软件
+	--注意sckerrcb参数，如果打开了注释掉的sckerrcb，则mqtt lib中socket出现异常时，不再自动重启软件，而是调用sckerrcb函数
+	mqttclient:connect(misc.getimei(),240,"user","password",connectedcb,connecterrcb--[[,sckerrcb]])
 end
 
 local function statustest()

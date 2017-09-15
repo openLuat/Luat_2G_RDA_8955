@@ -241,6 +241,8 @@ function upend(succ)
 	link.close(lid)
 	lid = nil
 	getretries = 0
+	sys.setrestart(true,1)
+	sys.timer_stop(sys.setrestart,true,1)
 	--升级成功并且是自动升级模式则重启
 	if succ == true and updmode == 0 then
 		sys.restart("update.upend")
@@ -449,3 +451,5 @@ function request()
 end
 
 sys.timer_start(defaultbgn,10000)
+sys.setrestart(false,1)
+sys.timer_start(sys.setrestart,300000,true,1)

@@ -699,7 +699,16 @@ mqttcmds = {
 ∑µªÿ÷µ£∫Œﬁ
 ]]
 local function datinactive(sckidx)
-    sys.restart("SVRNODATA")
+	local mqttclientidx = getclient(sckidx)
+	if tclients[mqttclientidx].sckerrcb then
+		socketssl.disconnect(sckidx)
+		link.shut()
+		tclients[mqttclientidx].sckreconncnt=0
+		tclients[mqttclientidx].sckreconncyclecnt=0
+		tclients[mqttclientidx].sckerrcb("SVRNODATA")
+	else
+		sys.restart("SVRNODATA")
+	end
 end
 
 --[[
