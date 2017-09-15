@@ -1,3 +1,14 @@
+版本号：Luat_V0010_8955.lod、Luat_V0010_8955_SSL.lod、Luat_V0010_8955_TTS1.lod、Luat_V0010_8955_TTS_UI.lod、Luat_V0010_8955_UI.lod
+发布时间：2017/8/31 22:39
+修改记录：
+    (1)修正“字符串过长时，utf8接口转换出错”的问题
+    (2)修正“脚本中，黑白屏设置起始行地址无效”的问题
+    (3)增加get_fs_free_size接口，脚本中使用方式为rtos.get_fs_free_size()
+    (4)修正“捷德SIM卡掉卡”的问题
+    (5)修正“TTS播放有杂音”的问题
+
+
+
 版本号：Luat_V0009_8955.lod、Luat_V0009_8955_SSL.lod、Luat_V0009_8955_TTS1.lod、Luat_V0009_8955_TTS_UI.lod、Luat_V0009_8955_UI.lod
 发布时间：2017/8/31 22:39
 修改记录：
