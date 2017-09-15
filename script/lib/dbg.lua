@@ -20,7 +20,7 @@ local FREQ,prot,addr,port,lid,linksta = 1800000
 local DBG_FILE,inf,luaerr,d1,d2 = "/dbg.txt",""
 
 --[[
-函数名：writetxt
+函数名：readtxt
 功能  ：读取文本文件中的全部内容
 参数  ：
 		f：文件路径
@@ -150,12 +150,14 @@ local function reconn()
 end
 
 --[[
-函数名：reconn
+函数名：endntfy
 功能  ：一个dbg功能周期结束
 参数  ：无
 返回值：无
 ]]
 function endntfy()
+	sys.setrestart(true,2)
+	sys.timer_stop(sys.setrestart,true,2)
 	sys.dispatch("DBG_END_IND")
 	sys.timer_stop(sys.dispatch,"DBG_END_IND")
 end
@@ -231,6 +233,9 @@ local function init()
 		end
 		sys.dispatch("DBG_BEGIN_IND")
 		sys.timer_start(sys.dispatch,120000,"DBG_END_IND")
+	else
+		sys.setrestart(true,2)
+		sys.timer_stop(sys.setrestart,true,2)
 	end
 end
 
@@ -273,3 +278,6 @@ function setup(inProt,inAddr,inPort)
 		init()
 	end
 end
+
+sys.setrestart(false,2)
+sys.timer_start(sys.setrestart,120000,true,2)

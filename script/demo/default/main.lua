@@ -2,7 +2,7 @@
 --PROJECT：ascii string类型，可以随便定义，只要不使用,就行
 --VERSION：ascii string类型，如果使用Luat物联云平台固件升级的功能，必须按照"X.X.X"定义，X表示1位数字；否则可随便定义
 PROJECT = "DEFAULT"
-VERSION = "1.0.2"
+VERSION = "1.0.3"
 require"sys"
 --[[
 如果使用UART输出trace，打开这行注释的代码"--sys.opntrace(true,1)"即可，第2个参数1表示UART1输出trace，根据自己的需要修改这个参数
@@ -14,6 +14,7 @@ require"wdt"
 require"linkair"
 require"factory1"
 require"factory2"
+require"keypad"
 
 sys.init(0,0)
 sys.run()

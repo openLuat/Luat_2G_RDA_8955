@@ -45,7 +45,7 @@ local function init()
 			0xc8, --Set COM Output Scan Direction
 			0x00, ---set low column address
 			0x10, ---set high column address
-			0x40, --set start line address
+			0x60, --set start line address
 			0x81, --set contrast control register
 			0xdf, --
 			0xa1, --set segment re-map 0 to 127

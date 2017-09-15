@@ -152,12 +152,8 @@ end
 ∑µªÿ÷µ£∫true
 ]]
 function set(k,v,r,s)
-	local bchg
-	if type(v) == "table" then
-		for kk,vv in pairs(para[k]) do
-			if vv ~= v[kk] then bchg = true break end
-		end
-	else
+	local bchg = true
+	if type(v) ~= "table" then
 		bchg = (para[k] ~= v)
 	end
 	print("set",bchg,k,v,r,s)

@@ -48,3 +48,28 @@ end
 --Lua自带的os.date接口指向自定义的safeosdate接口
 os.date = safeosdate
 
+--保存Lua自带的json.decode接口
+local oldjsondecode = json.decode
+
+--[[
+函数名：safejsondecode
+功能  ：封装自定义的json.decode接口
+参数  ：
+		s：json格式的字符串
+返回值：
+		第一个返回值为解析json字符串后的table
+		第二个返回值为解析结果(true表示成功，false失败)
+		第三个返回值可选（只有第二个返回值为false时，才有意义），表示出错信息
+]]
+function safejsondecode(s)
+	local result,info = pcall(oldjsondecode,s)
+	if result then
+		return info,true
+	else
+		return {},false,info
+	end
+end
+
+--Lua自带的json.decode接口指向自定义的safejsondecode接口
+json.decode = safejsondecode
+

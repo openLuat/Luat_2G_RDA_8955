@@ -28,6 +28,8 @@ require"sys"
 require"update"
 --update.setperiod(3600)
 --sys.timer_start(update.request,120000)
+require"dbg"
+sys.timer_start(dbg.setup,12000,"UDP","ota.airm2m.com",9072)
 require"test"
 --S6开发板：硬件上已经打开了看门狗功能，使用S6开发板的用户，要打开这行注释的代码"--require"wdt""，否则4分钟左右会重启一次
 --require"wdt"

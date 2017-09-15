@@ -25,9 +25,12 @@ local assert = base.assert
 local tonumber = base.tonumber
 
 --lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "1.0.6"
+SCRIPT_LIB_VER = "1.0.7"
 --脚本发布时的最新core软件版本号
-CORE_MIN_VER = "Luat_V0008_8955"
+CORE_MIN_VER = "Luat_V0010_8955"
+
+--是否允许“脚本异常时 或者 脚本调用sys.restart接口时”的重启，是否有挂起的等待重启的事件
+local restartflg,restartpending = 0
 
 --“是否需要刷新界面”的标志，有GUI的项目才会用到此标志
 local refreshflag = false
@@ -299,9 +302,11 @@ end
 返回值：无
 ]]
 local function appenderr(s)
-	print("appenderr",s)
-	liberr = liberr..s
-	writetxt(LIB_ERR_FILE,liberr)	
+	print("appenderr",string.len(liberr),s)
+	if string.len(liberr)<2048 then
+		liberr = liberr..s
+		writetxt(LIB_ERR_FILE,liberr)
+	end	
 end
 
 --[[
@@ -327,6 +332,18 @@ function getextliberr()
 	return extliberr or (readtxt(LIB_ERR_FILE) or "")
 end
 
+
+local function saferestart(r)
+	print("saferestart",r,restartflg)
+	appenderr(r or "")
+	if restartflg==0 then
+		rtos.restart()
+	else		
+		restartpending = true
+	end
+end
+
+
 --[[
 函数名：restart
 功能  ：软件重启
@@ -336,8 +353,7 @@ end
 ]]
 function restart(r)
 	assert(r and r ~= "","sys.restart cause null")
-	appenderr("restart["..r.."];")
-	rtos.restart()
+	saferestart("restart["..r.."];")
 end
 
 --[[
@@ -694,19 +710,25 @@ function reguartx(id,fnc)
 end
 
 --[[
-函数名：run
-功能  ：lua应用程序运行框架入口
-参数  ：无
+函数名：setrestart(警告：此接口只允许update.lua和dbg.lua调用，其他地方不要使用)
+功能  ：设置是否允许“脚本异常时 或者 脚本调用sys.restart接口时”的重启功能
+参数  ：
+		flg：true允许重启，其余不允许重启
+		tag：1或者2，1表示update，2表示dbg
 返回值：无
-
-运行框架基于消息处理机制，目前一共两种消息：内部消息和外部消息
-内部消息：lua脚本调用本文件dispatch接口产生的消息，消息存储在qmsg表中
-外部消息：底层core软件产生的消息，lua脚本通过rtos.receive接口读取这些外部消息
 ]] 
-function run()
-	local msg,msgpara
+function setrestart(flg,tag)
+	if flg then
+		if bit.band(restartflg,tag)~=0 then restartflg = restartflg-tag end
+	else
+		if bit.band(restartflg,tag)==0 then restartflg = restartflg+tag end
+	end
+	if flg and restartflg==0 and restartpending then restart("restartpending") end
+end
 
-	while true do
+local msg,msgpara
+local function saferun()
+	--while true do
 		--处理内部消息
 		runqmsg()
 		--阻塞读取外部消息
@@ -772,5 +794,27 @@ function run()
 		end
 		--打印lua脚本程序占用的内存，单位是K字节
 		--print("mem:",base.collectgarbage("count"))
+	--end
+end
+
+--[[
+函数名：run
+功能  ：lua应用程序运行框架入口
+参数  ：无
+返回值：无
+
+运行框架基于消息处理机制，目前一共两种消息：内部消息和外部消息
+内部消息：lua脚本调用本文件dispatch接口产生的消息，消息存储在qmsg表中
+外部消息：底层core软件产生的消息，lua脚本通过rtos.receive接口读取这些外部消息
+]] 
+function run()
+	local status,err
+	while true do
+		status,err = pcall(saferun)
+		--运行出错
+		if not status then
+			print("run",status,err)
+			saferestart(err or "")			
+		end
 	end
 end

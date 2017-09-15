@@ -11,7 +11,7 @@ require"common"
 ]]
 local ssub,schar,smatch,sbyte,slen = string.sub,string.char,string.match,string.byte,string.len
 --测试时请先写出IP地址和端口，后面所写的首部要与这里的host一致，下面的值都是默认的值
-local ADDR,PORT ="36.7.87.100",81
+local ADDR,PORT ="www.linuxhub.org",80
 --测试POST方法时所用地址
 --local ADDR,PORT ="www.luam2m.com",80
 local httpclient
@@ -44,7 +44,8 @@ local function rcvcb(result,statuscode,head,body)
 			print(k..": "..v)
 		end
 	end
-	print("bodyrcvcb:",body)
+	print("bodyrcvcb:")
+	print(body)
 	httpclient:disconnect(discb)
 end
 
@@ -60,8 +61,8 @@ local function connectedcb()
 	--设置URL
 	httpclient:seturl("/")
 	--添加首部，注意Host首部的值与上面的addr，port一致
-	httpclient:addhead("Host","36.7.87.100")
-	httpclient:addhead("Connection","keep-alive")
+	httpclient:addhead("Host","112.29.250.194")
+--	httpclient:addhead("Connection","keep-alive")
 	--添加实体内容
 	httpclient:setbody("")
 	--调用此函数才会发送报文,需要使用POST方式时，将GET改为POST
