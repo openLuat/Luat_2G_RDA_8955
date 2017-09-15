@@ -1,3 +1,4 @@
+require"common"
 module(...,package.seeall)
 
 local i2cid = 2
@@ -35,7 +36,7 @@ local function init()
 	local cmd,i = {0x1B,0x00,0x6A,0x01,0x1E,0x20,0x21,0x04,0x1B,0x00,0x1B,0xDA,0x1B,0xDA}
 	for i=1,#cmd,2 do
 		i2c.write(i2cid,cmd[i],cmd[i+1])
-		print("init",string.format("%02X",cmd[i]),string.format("%02X",string.byte(i2c.read(i2cid,cmd[i],1))))
+		print("init",string.format("%02X",cmd[i]),common.binstohexs(i2c.read(i2cid,cmd[i],1)))
 	end
 end
 

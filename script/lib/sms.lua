@@ -552,7 +552,7 @@ end
 		name：短信号码对应的联系人姓名，暂时没用
 返回值：无
 ]]
-local function readcnf(result,num,data,pos,datetime,name)
+local function readcnf(result,num,data,pos,datetime,name,total,idx,isn)
 	--过滤号码中的86和+86
 	local d1,d2 = string.find(num,"^([%+]*86)")
 	if d1 and d2 then
@@ -562,6 +562,11 @@ local function readcnf(result,num,data,pos,datetime,name)
 	delete(tnewsms[1])
 	--从短信接收位置表中删除此短信的位置
 	table.remove(tnewsms,1)
+	if total and total >1 then
+		sys.dispatch("LONG_SMS_MERGE",num,data,datetime,name,total,idx,isn)  
+		readsms()--读取下一条新短信
+		return
+	end
 	if data then
 		--短信内容转换为GB2312字符串格式
 		data = common.ucs2betogb2312(common.hexstobins(data))
@@ -572,6 +577,16 @@ local function readcnf(result,num,data,pos,datetime,name)
 	readsms()
 end
 
+local function longsmsmergecnf(res,num,data,datetime)
+	--print("longsmsmergecnf",num,data,datetime)
+	if data then
+		--短信内容转换为GB2312字符串格式
+		data = common.ucs2betogb2312(common.hexstobins(data))
+		--用户应用程序处理短信
+		if newsmscb then newsmscb(num,data,datetime) end
+	end
+end
+
 --短信模块的内部消息处理表
 local smsapp =
 {
@@ -579,6 +594,7 @@ local smsapp =
 	SMS_READ_CNF = readcnf, --调用sms.read读取短信之后，sms.lua会抛出SMS_READ_CNF消息
 	SMS_SEND_CNF = sendcnf, --调用sms.send发送短信之后，sms.lua会抛出SMS_SEND_CNF消息
 	SMS_READY = sndnxt, --底层短信模块准备就绪
+	LONG_SMS_MERGR_CNF = longsmsmergecnf,
 }
 
 --注册消息处理函数

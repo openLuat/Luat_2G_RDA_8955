@@ -260,7 +260,7 @@ ril.regrsp("+QTTS",audiorsp,0)
 函数名：setspeakervol
 功能  ：设置音频通道的输出音量
 参数  ：
-		vol：音量等级，取值范围为audio.VOL0到audio.VOL7，audio.VOL0为静音
+		vol：音量等级，取值范围为audiocore.VOL0到audiocore.VOL7，audiocore.VOL0为静音
 返回值：无
 ]]
 function setspeakervol(vol)
