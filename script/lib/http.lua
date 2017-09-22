@@ -1,32 +1,33 @@
 
 module(...,package.seeall)
 
-require "common"
-require"socket"
+local common = require "common"
+local socket = require "socket"
+local socketssl = require "socketssl"
 local lpack=require"pack"
 
 local sfind, slen,sbyte,ssub,sgsub,schar,srep,smatch,sgmatch= string.find ,string.len,string.byte,string.sub,string.gsub,string.char,string.rep,string.match,string.gmatch
 --[[
-º¯ÊıÃû£ºprint
-¹¦ÄÜ  £º´òÓ¡½Ó¿Ú£¬´ËÎÄ¼şÖĞµÄËùÓĞ´òÓ¡¶¼»á¼ÓÉÏtestÇ°×º
-²ÎÊı  £ºÎŞ
-·µ»ØÖµ£ºÎŞ
+å‡½æ•°åï¼šprint
+åŠŸèƒ½  ï¼šæ‰“å°æ¥å£ï¼Œæ­¤æ–‡ä»¶ä¸­çš„æ‰€æœ‰æ‰“å°éƒ½ä¼šåŠ ä¸Štestå‰ç¼€
+å‚æ•°  ï¼šæ— 
+è¿”å›å€¼ï¼šæ— 
 ]]
 local function print(...)
-	_G.print("http",...)
+	_G.print("myhttplib",...)
 end
 
 
 
---http clients´æ´¢±í
+--http clientså­˜å‚¨è¡¨
 local tclients = {}
 
 --[[
-º¯ÊıÃû£ºgetclient
-¹¦ÄÜ  £º·µ»ØÒ»¸öhttp clientÔÚtclientsÖĞµÄË÷Òı
-²ÎÊı  £º
-	  sckidx£ºhttp client¶ÔÓ¦µÄsocketË÷Òı
-·µ»ØÖµ£ºsckidx¶ÔÓ¦µÄhttp clientÔÚtclientsÖĞµÄË÷Òı
+å‡½æ•°åï¼šgetclient
+åŠŸèƒ½  ï¼šè¿”å›ä¸€ä¸ªhttp clientåœ¨tclientsä¸­çš„ç´¢å¼•
+å‚æ•°  ï¼š
+	  sckidxï¼šhttp clientå¯¹åº”çš„socketç´¢å¼•
+è¿”å›å€¼ï¼šsckidxå¯¹åº”çš„http clientåœ¨tclientsä¸­çš„ç´¢å¼•
 ]]
 local function getclient(sckidx)
 	for k,v in pairs(tclients) do
@@ -37,11 +38,11 @@ end
 
 
 --[[
-º¯ÊıÃû£ºdatinactive
-¹¦ÄÜ  £ºÊı¾İÍ¨ĞÅÒì³£´¦Àí
-²ÎÊı  £º
-		sckidx£ºsocket idx
-·µ»ØÖµ£ºÎŞ
+å‡½æ•°åï¼šdatinactive
+åŠŸèƒ½  ï¼šæ•°æ®é€šä¿¡å¼‚å¸¸å¤„ç†
+å‚æ•°  ï¼š
+		sckidxï¼šsocket idx
+è¿”å›å€¼ï¼šæ— 
 ]]
 local function datinactive(sckidx)
     sys.restart("SVRNODATA")
@@ -49,16 +50,17 @@ end
 
 
 --[[
-º¯ÊıÃû£ºsnd
-¹¦ÄÜ  £ºµ÷ÓÃ·¢ËÍ½Ó¿Ú·¢ËÍÊı¾İ
-²ÎÊı  £º
-		sckidx£ºsocket idx
-        data£º·¢ËÍµÄÊı¾İ£¬ÔÚ·¢ËÍ½á¹ûÊÂ¼ş´¦Àíº¯ÊıntfyÖĞ£¬»á¸³Öµµ½item.dataÖĞ
-		para£º·¢ËÍµÄ²ÎÊı£¬ÔÚ·¢ËÍ½á¹ûÊÂ¼ş´¦Àíº¯ÊıntfyÖĞ£¬»á¸³Öµµ½item.paraÖĞ 
-·µ»ØÖµ£ºµ÷ÓÃ·¢ËÍ½Ó¿ÚµÄ½á¹û£¨²¢²»ÊÇÊı¾İ·¢ËÍÊÇ·ñ³É¹¦µÄ½á¹û£¬Êı¾İ·¢ËÍÊÇ·ñ³É¹¦µÄ½á¹ûÔÚntfyÖĞµÄSENDÊÂ¼şÖĞÍ¨Öª£©£¬trueÎª³É¹¦£¬ÆäËûÎªÊ§°Ü
+å‡½æ•°åï¼šsnd
+åŠŸèƒ½  ï¼šè°ƒç”¨å‘é€æ¥å£å‘é€æ•°æ®
+å‚æ•°  ï¼š
+		sock:socket or socketssl
+		sckidxï¼šsocket idx
+        dataï¼šå‘é€çš„æ•°æ®ï¼Œåœ¨å‘é€ç»“æœäº‹ä»¶å¤„ç†å‡½æ•°ntfyä¸­ï¼Œä¼šèµ‹å€¼åˆ°item.dataä¸­
+		paraï¼šå‘é€çš„å‚æ•°ï¼Œåœ¨å‘é€ç»“æœäº‹ä»¶å¤„ç†å‡½æ•°ntfyä¸­ï¼Œä¼šèµ‹å€¼åˆ°item.paraä¸­ 
+è¿”å›å€¼ï¼šè°ƒç”¨å‘é€æ¥å£çš„ç»“æœï¼ˆå¹¶ä¸æ˜¯æ•°æ®å‘é€æ˜¯å¦æˆåŠŸçš„ç»“æœï¼Œæ•°æ®å‘é€æ˜¯å¦æˆåŠŸçš„ç»“æœåœ¨ntfyä¸­çš„SENDäº‹ä»¶ä¸­é€šçŸ¥ï¼‰ï¼Œtrueä¸ºæˆåŠŸï¼Œå…¶ä»–ä¸ºå¤±è´¥
 ]]
-function snd(sckidx,data,para)
-    return socket.send(sckidx,data,para)
+function snd(sock,sckidx,data,para)
+    return sock.send(sckidx,data,para)
 end
 
 
@@ -68,28 +70,28 @@ local RECONN_MAX_CNT,RECONN_PERIOD,RECONN_CYCLE_MAX_CNT,RECONN_CYCLE_PERIOD = 3,
 
 
 --[[
-º¯ÊıÃû£ºreconn
-¹¦ÄÜ  £ºsocketÖØÁ¬ºóÌ¨´¦Àí
-        Ò»¸öÁ¬½ÓÖÜÆÚÄÚµÄ¶¯×÷£ºÈç¹ûÁ¬½ÓºóÌ¨Ê§°Ü£¬»á³¢ÊÔÖØÁ¬£¬ÖØÁ¬¼ä¸ôÎªRECONN_PERIODÃë£¬×î¶àÖØÁ¬RECONN_MAX_CNT´Î
-        Èç¹ûÒ»¸öÁ¬½ÓÖÜÆÚÄÚ¶¼Ã»ÓĞÁ¬½Ó³É¹¦£¬ÔòµÈ´ıRECONN_CYCLE_PERIODÃëºó£¬ÖØĞÂ·¢ÆğÒ»¸öÁ¬½ÓÖÜÆÚ
-        Èç¹ûÁ¬ĞøRECONN_CYCLE_MAX_CNT´ÎµÄÁ¬½ÓÖÜÆÚ¶¼Ã»ÓĞÁ¬½Ó³É¹¦£¬ÔòÖØÆôÈí¼ş
-²ÎÊı  £º
-		sckidx£ºsocket idx
-·µ»ØÖµ£ºÎŞ
+å‡½æ•°åï¼šreconn
+åŠŸèƒ½  ï¼šsocketé‡è¿åå°å¤„ç†
+        ä¸€ä¸ªè¿æ¥å‘¨æœŸå†…çš„åŠ¨ä½œï¼šå¦‚æœè¿æ¥åå°å¤±è´¥ï¼Œä¼šå°è¯•é‡è¿ï¼Œé‡è¿é—´éš”ä¸ºRECONN_PERIODç§’ï¼Œæœ€å¤šé‡è¿RECONN_MAX_CNTæ¬¡
+        å¦‚æœä¸€ä¸ªè¿æ¥å‘¨æœŸå†…éƒ½æ²¡æœ‰è¿æ¥æˆåŠŸï¼Œåˆ™ç­‰å¾…RECONN_CYCLE_PERIODç§’åï¼Œé‡æ–°å‘èµ·ä¸€ä¸ªè¿æ¥å‘¨æœŸ
+        å¦‚æœè¿ç»­RECONN_CYCLE_MAX_CNTæ¬¡çš„è¿æ¥å‘¨æœŸéƒ½æ²¡æœ‰è¿æ¥æˆåŠŸï¼Œåˆ™é‡å¯è½¯ä»¶
+å‚æ•°  ï¼š
+		sckidxï¼šsocket idx
+è¿”å›å€¼ï¼šæ— 
 ]]
 function reconn(sckidx)
 	local httpclientidx = getclient(sckidx)
 	print("reconn"--[[,httpclientidx,tclients[httpclientidx].sckreconncnt,tclients[httpclientidx].sckconning,tclients[httpclientidx].sckreconncyclecnt]])
-	--sckconning±íÊ¾ÕıÔÚ³¢ÊÔÁ¬½ÓºóÌ¨£¬Ò»¶¨ÒªÅĞ¶Ï´Ë±äÁ¿£¬·ñÔòÓĞ¿ÉÄÜ·¢Æğ²»±ØÒªµÄÖØÁ¬£¬µ¼ÖÂsckreconncntÔö¼Ó£¬Êµ¼ÊµÄÖØÁ¬´ÎÊı¼õÉÙ
+	--sckconningè¡¨ç¤ºæ­£åœ¨å°è¯•è¿æ¥åå°ï¼Œä¸€å®šè¦åˆ¤æ–­æ­¤å˜é‡ï¼Œå¦åˆ™æœ‰å¯èƒ½å‘èµ·ä¸å¿…è¦çš„é‡è¿ï¼Œå¯¼è‡´sckreconncntå¢åŠ ï¼Œå®é™…çš„é‡è¿æ¬¡æ•°å‡å°‘
 	if tclients[httpclientidx].sckconning then return end
-	--Ò»¸öÁ¬½ÓÖÜÆÚÄÚµÄÖØÁ¬
+	--ä¸€ä¸ªè¿æ¥å‘¨æœŸå†…çš„é‡è¿
 	if tclients[httpclientidx].sckreconncnt < RECONN_MAX_CNT then		
 		tclients[httpclientidx].sckreconncnt = tclients[httpclientidx].sckreconncnt+1
 		link.shut()
 		for k,v in pairs(tclients) do
-			connect(v.sckidx,v.prot,v.host,v.port)
+			connect(v.sock,v.sckidx,v.prot,v.host,v.port)
 		end
-	--Ò»¸öÁ¬½ÓÖÜÆÚµÄÖØÁ¬¶¼Ê§°Ü
+	--ä¸€ä¸ªè¿æ¥å‘¨æœŸçš„é‡è¿éƒ½å¤±è´¥
 	else
 		tclients[httpclientidx].sckreconncnt,tclients[httpclientidx].sckreconncyclecnt = 0,tclients[httpclientidx].sckreconncyclecnt+1
 		if tclients[httpclientidx].sckreconncyclecnt >= RECONN_CYCLE_MAX_CNT then
@@ -108,59 +110,59 @@ end
 
 
 --[[
-º¯ÊıÃû£ºntfy
-¹¦ÄÜ  £ºsocket×´Ì¬µÄ´¦Àíº¯Êı
-²ÎÊı  £º
-        idx£ºnumberÀàĞÍ£¬socketÖĞÎ¬»¤µÄsocket idx£¬¸úµ÷ÓÃsocket.connectÊ±´«ÈëµÄµÚÒ»¸ö²ÎÊıÏàÍ¬£¬³ÌĞò¿ÉÒÔºöÂÔ²»´¦Àí
-        evt£ºstringÀàĞÍ£¬ÏûÏ¢ÊÂ¼şÀàĞÍ
-		result£º boolÀàĞÍ£¬ÏûÏ¢ÊÂ¼ş½á¹û£¬trueÎª³É¹¦£¬ÆäËûÎªÊ§°Ü
-		item£ºtableÀàĞÍ£¬{data=,para=}£¬ÏûÏ¢»Ø´«µÄ²ÎÊıºÍÊı¾İ£¬Ä¿Ç°Ö»ÊÇÔÚSENDÀàĞÍµÄÊÂ¼şÖĞÓÃµ½ÁË´Ë²ÎÊı£¬ÀıÈçµ÷ÓÃsocket.sendÊ±´«ÈëµÄµÚ2¸öºÍµÚ3¸ö²ÎÊı·Ö±ğÎªdatºÍpar£¬Ôòitem={data=dat,para=par}
-·µ»ØÖµ£ºÎŞ
+å‡½æ•°åï¼šntfy
+åŠŸèƒ½  ï¼šsocketçŠ¶æ€çš„å¤„ç†å‡½æ•°
+å‚æ•°  ï¼š
+        idxï¼šnumberç±»å‹ï¼Œsocketä¸­ç»´æŠ¤çš„socket idxï¼Œè·Ÿè°ƒç”¨socket.connectæ—¶ä¼ å…¥çš„ç¬¬ä¸€ä¸ªå‚æ•°ç›¸åŒï¼Œç¨‹åºå¯ä»¥å¿½ç•¥ä¸å¤„ç†
+        evtï¼šstringç±»å‹ï¼Œæ¶ˆæ¯äº‹ä»¶ç±»å‹
+		resultï¼š boolç±»å‹ï¼Œæ¶ˆæ¯äº‹ä»¶ç»“æœï¼Œtrueä¸ºæˆåŠŸï¼Œå…¶ä»–ä¸ºå¤±è´¥
+		itemï¼štableç±»å‹ï¼Œ{data=,para=}ï¼Œæ¶ˆæ¯å›ä¼ çš„å‚æ•°å’Œæ•°æ®ï¼Œç›®å‰åªæ˜¯åœ¨SENDç±»å‹çš„äº‹ä»¶ä¸­ç”¨åˆ°äº†æ­¤å‚æ•°ï¼Œä¾‹å¦‚è°ƒç”¨socket.sendæ—¶ä¼ å…¥çš„ç¬¬2ä¸ªå’Œç¬¬3ä¸ªå‚æ•°åˆ†åˆ«ä¸ºdatå’Œparï¼Œåˆ™item={data=dat,para=par}
+è¿”å›å€¼ï¼šæ— 
 ]]
 function ntfy(idx,evt,result,item)
 	local httpclientidx = getclient(idx)
 	print("ntfy",evt,result,item)
-	--Á¬½Ó½á¹û£¨µ÷ÓÃsocket.connectºóµÄÒì²½ÊÂ¼ş£©
+	--è¿æ¥ç»“æœï¼ˆè°ƒç”¨socket.connectåçš„å¼‚æ­¥äº‹ä»¶ï¼‰
 	if evt == "CONNECT" then
 		tclients[httpclientidx].sckconning = false
-		--Á¬½Ó³É¹¦
+		--è¿æ¥æˆåŠŸ
 		if result then
 			tclients[httpclientidx].sckconnected=true
 			tclients[httpclientidx].sckreconncnt=0
 			tclients[httpclientidx].sckreconncyclecnt=0
-			--Í£Ö¹ÖØÁ¬¶¨Ê±Æ÷
+			--åœæ­¢é‡è¿å®šæ—¶å™¨
 			sys.timer_stop(reconn,idx)
 			tclients[httpclientidx].connectedcb()
 		--	snd(idx,"GET / HTTP/1.1\r\nHost: www.openluat.com\r\nConnection: keep-alive\r\n\r\n","GET")
-		--   Á¬½ÓÊ§°Ü
+		--   è¿æ¥å¤±è´¥
 		else
-			--RECONN_PERIODÃëºóÖØÁ¬
+			--RECONN_PERIODç§’åé‡è¿
 			sys.timer_start(reconn,RECONN_PERIOD*1000,idx)
 		end	
-	--Êı¾İ·¢ËÍ½á¹û£¨µ÷ÓÃsocket.sendºóµÄÒì²½ÊÂ¼ş£©
+	--æ•°æ®å‘é€ç»“æœï¼ˆè°ƒç”¨socket.sendåçš„å¼‚æ­¥äº‹ä»¶ï¼‰
 	elseif evt == "SEND" then
 		if not result then
 			print("error code")	     	
 		end
-	--Á¬½Ó±»¶¯¶Ï¿ª
+	--è¿æ¥è¢«åŠ¨æ–­å¼€
 	elseif evt == "STATE" and result == "CLOSED" then
 		tclients[httpclientidx].sckconnected=false
 		tclients[httpclientidx].httpconnected=false
 		tclients[httpclientidx].sckconning = false
-		--³¤Á¬½ÓÊ±Ê¹ÓÃ
+		--é•¿è¿æ¥æ—¶ä½¿ç”¨
 		if tclients[httpclientidx].mode then
 			reconn(idx)
 		end
-	--Á¬½ÓÖ÷¶¯¶Ï¿ª£¨µ÷ÓÃlink.shutºóµÄÒì²½ÊÂ¼ş£©
+	--è¿æ¥ä¸»åŠ¨æ–­å¼€ï¼ˆè°ƒç”¨link.shutåçš„å¼‚æ­¥äº‹ä»¶ï¼‰
 	elseif evt == "STATE" and result == "SHUTED" then
 		tclients[httpclientidx].sckconnected=false
 		tclients[httpclientidx].httpconnected=false
 		tclients[httpclientidx].sckconning = false
-		--³¤Á¬½ÓÊ±Ê¹ÓÃ
+		--é•¿è¿æ¥æ—¶ä½¿ç”¨
 		if tclients[httpclientidx].mode then
 			reconn(idx)
 		end
-	--Á¬½ÓÖ÷¶¯¶Ï¿ª£¨µ÷ÓÃsocket.disconnectºóµÄÒì²½ÊÂ¼ş£©
+	--è¿æ¥ä¸»åŠ¨æ–­å¼€ï¼ˆè°ƒç”¨socket.disconnectåçš„å¼‚æ­¥äº‹ä»¶ï¼‰
 	elseif evt == "DISCONNECT" then
 		tclients[httpclientidx].sckconnected=false
 		tclients[httpclientidx].httpconnected=false
@@ -169,35 +171,35 @@ function ntfy(idx,evt,result,item)
 			if tclients[httpclientidx].discb then tclients[httpclientidx].discb(idx) end
 			tclients[httpclientidx].discing = false
 		end	
-	--³¤Á¬½ÓÊ±Ê¹ÓÃ
+	--é•¿è¿æ¥æ—¶ä½¿ç”¨
 		if tclients[httpclientidx].mode then
 			reconn(idx)
 		end
-	--Á¬½ÓÖ÷¶¯¶Ï¿ª²¢ÇÒÏú»Ù£¨µ÷ÓÃsocket.closeºóµÄÒì²½ÊÂ¼ş£©
+	--è¿æ¥ä¸»åŠ¨æ–­å¼€å¹¶ä¸”é”€æ¯ï¼ˆè°ƒç”¨socket.closeåçš„å¼‚æ­¥äº‹ä»¶ï¼‰
 	elseif evt == "CLOSE" then
 		local cb = tclients[httpclientidx].destroycb
 		table.remove(tclients,httpclientidx)
 		if cb then cb() end
 	end
-	--ÆäËû´íÎó´¦Àí£¬¶Ï¿ªÊı¾İÁ´Â·£¬ÖØĞÂÁ¬½Ó
+	--å…¶ä»–é”™è¯¯å¤„ç†ï¼Œæ–­å¼€æ•°æ®é“¾è·¯ï¼Œé‡æ–°è¿æ¥
 	if smatch((type(result)=="string") and result or "","ERROR") then
 		link.shut()
 	end
 end
 
 --[[
-º¯ÊıÃû£ºrcv
-¹¦ÄÜ  £ºsocket½ÓÊÕÊı¾İµÄ´¦Àíº¯Êı
-²ÎÊı  £º
-        idx £ºsocketÖĞÎ¬»¤µÄsocket idx£¬¸úµ÷ÓÃsocket.connectÊ±´«ÈëµÄµÚÒ»¸ö²ÎÊıÏàÍ¬£¬³ÌĞò¿ÉÒÔºöÂÔ²»´¦Àí
-        data£º½ÓÊÕµ½µÄÊı¾İ
-·µ»ØÖµ£ºÎŞ
+å‡½æ•°åï¼šrcv
+åŠŸèƒ½  ï¼šsocketæ¥æ”¶æ•°æ®çš„å¤„ç†å‡½æ•°
+å‚æ•°  ï¼š
+        idx ï¼šsocketä¸­ç»´æŠ¤çš„socket idxï¼Œè·Ÿè°ƒç”¨socket.connectæ—¶ä¼ å…¥çš„ç¬¬ä¸€ä¸ªå‚æ•°ç›¸åŒï¼Œç¨‹åºå¯ä»¥å¿½ç•¥ä¸å¤„ç†
+        dataï¼šæ¥æ”¶åˆ°çš„æ•°æ®
+è¿”å›å€¼ï¼šæ— 
 ]]
 --[[
-º¯ÊıÃû£ºTimerfnc
-¹¦ÄÜ£ºµ±½ÓÊÕÊı¾İ³¬Ê±Ê±Æô¶¯¶¨Ê±Æ÷
-²ÎÊı£º¿Í»§¶Ë¶ÔÓ¦µÄSOCKERµÄID
-·µ»ØÖµ£º
+å‡½æ•°åï¼šTimerfnc
+åŠŸèƒ½ï¼šå½“æ¥æ”¶æ•°æ®è¶…æ—¶æ—¶å¯åŠ¨å®šæ—¶å™¨
+å‚æ•°ï¼šå®¢æˆ·ç«¯å¯¹åº”çš„SOCKERçš„ID
+è¿”å›å€¼ï¼š
 ]]
 function  timerfnc(httpclientidx)
 	tclients[httpclientidx].result=3
@@ -212,34 +214,34 @@ function  timerfnc(httpclientidx)
 end
 
 --[[
-º¯ÊıÃû£ºÊı¾İ½ÓÊÕ´¦Àíº¯Êı
-¹¦ÄÜ£º½«·şÎñÆ÷·µ»ØµÄÊı¾İ½øĞĞ´¦Àí
-²ÎÊı£ºidx£º¿Í»§¶ËËù¶ÔÓ¦µÄ¶Ë¿ÚID data£º·şÎñÆ÷·µ»ØµÄÊı¾İ
-·µ»ØÖµ£ºÎŞ
+å‡½æ•°åï¼šæ•°æ®æ¥æ”¶å¤„ç†å‡½æ•°
+åŠŸèƒ½ï¼šå°†æœåŠ¡å™¨è¿”å›çš„æ•°æ®è¿›è¡Œå¤„ç†
+å‚æ•°ï¼šidxï¼šå®¢æˆ·ç«¯æ‰€å¯¹åº”çš„ç«¯å£ID dataï¼šæœåŠ¡å™¨è¿”å›çš„æ•°æ®
+è¿”å›å€¼ï¼šæ— 
 ]]
 function rcv(idx,data)
     local httpclientidx = getclient(idx)
-	--ÉèÖÃÒ»¸ö¶¨Ê±Æ÷£¬Ê±¼äÎª5Ãë
+	--è®¾ç½®ä¸€ä¸ªå®šæ—¶å™¨ï¼Œæ—¶é—´ä¸º5ç§’
 	sys.timer_start(timerfnc,5000,httpclientidx)
-	--Èç¹ûÃ»ÓĞÊı¾İ
+	--å¦‚æœæ²¡æœ‰æ•°æ®
 	if not data then 
 		print("rcv: no data receive")
-	--Èç¹û´æÔÚ½ÓÊÕ·´À¡º¯Êı
+	--å¦‚æœå­˜åœ¨æ¥æ”¶åé¦ˆå‡½æ•°
 	elseif tclients[httpclientidx].rcvcb then 
-		--´´½¨½ÓÊÕÊı¾İ
+		--åˆ›å»ºæ¥æ”¶æ•°æ®
 		if not tclients[httpclientidx].data then tclients[httpclientidx].data="" end 
 		tclients[httpclientidx].data=tclients[httpclientidx].data..data
 		local h1,h2 = sfind(tclients[httpclientidx].data,"\r\n\r\n")
-		--µÃµ½×´Ì¬ĞĞºÍÊ×²¿£¬ÅĞ¶Ï×´Ì¬
-		--½âÎö×´Ì¬ĞĞºÍËùÓĞÍ·
+		--å¾—åˆ°çŠ¶æ€è¡Œå’Œé¦–éƒ¨ï¼Œåˆ¤æ–­çŠ¶æ€
+		--è§£æçŠ¶æ€è¡Œå’Œæ‰€æœ‰å¤´
 		if sfind(tclients[httpclientidx].data,"\r\n\r\n") and not tclients[httpclientidx].status then 
-			--ÉèÖÃ×´Ì¬²ÎÊı£¬Èç¹ûÎªÕæÏÂ´Î¾Í²»ĞèÒªÔËĞĞ´Ë¹ı³Ì
+			--è®¾ç½®çŠ¶æ€å‚æ•°ï¼Œå¦‚æœä¸ºçœŸä¸‹æ¬¡å°±ä¸éœ€è¦è¿è¡Œæ­¤è¿‡ç¨‹
 			tclients[httpclientidx].status=true 
 			local totil=ssub(tclients[httpclientidx].data,1,h2+1)
 			tclients[httpclientidx].statuscode=smatch(totil,"%s(%d+)%s")
 			tclients[httpclientidx].contentlen=tonumber(smatch(totil,":%s(%d+)\r\n"),10)
 			local total=smatch(totil,"\r\n(.+\r\n)\r\n")
-			--ÅĞ¶ÏtotalÊÇ·ñÎª¿Õ
+			--åˆ¤æ–­totalæ˜¯å¦ä¸ºç©º
 			if	total~=""	then	
 				if	not tclients[httpclientidx].rcvhead	 then	tclients[httpclientidx].rcvhead={}	end
 				for k,v in sgmatch(total,"(.-):%s(.-)\r\n") do
@@ -250,9 +252,9 @@ function rcv(idx,data)
 				end
 			end
 		end
-		--Èç¹ûÒÑ¾­µÃµ½Ê×²¿ÇÒ´æÔÚ½ÓÊÕ·´À¡º¯Êı
+		--å¦‚æœå·²ç»å¾—åˆ°é¦–éƒ¨ä¸”å­˜åœ¨æ¥æ”¶åé¦ˆå‡½æ•°
 		if	tclients[httpclientidx].rcvhead	and tclients[httpclientidx].rcvcb then
-			--ÊÇ·ñÍ·²¿ÎªTransfer-Encoding=chunked£¬ÈôÊÇÔò²ÉÓÃµÄÊÇ·Ö¿é´«Êä±àÂë
+			--æ˜¯å¦å¤´éƒ¨ä¸ºTransfer-Encoding=chunkedï¼Œè‹¥æ˜¯åˆ™é‡‡ç”¨çš„æ˜¯åˆ†å—ä¼ è¾“ç¼–ç 
 			if	chunked	then
 				if	sfind(ssub(tclients[httpclientidx].data,h2,-1),"\r\n%s-0%s-\r\n")	then
 					local	chunkedbody = ""
@@ -272,13 +274,13 @@ function rcv(idx,data)
 					tclients[httpclientidx].status=false
 					chunked=false
 				end		
-			--ÊÇ·ñµÃµ½ÊµÌå£¬Èç¹ûÊÇÔËĞĞÏÂÃæ	
+			--æ˜¯å¦å¾—åˆ°å®ä½“ï¼Œå¦‚æœæ˜¯è¿è¡Œä¸‹é¢	
 			elseif ssub(tclients[httpclientidx].data,h2+1,-1) then
-				--ÓĞÊµÌåÇÒÊµÌå³¤¶ÈµÈÓÚÊµ¼Ê³¤¶È
+				--æœ‰å®ä½“ä¸”å®ä½“é•¿åº¦ç­‰äºå®é™…é•¿åº¦
 				if	 slen(ssub(tclients[httpclientidx].data,h2+1,-1)) == tclients[httpclientidx].contentlen	then
 					tclients[httpclientidx].result=0
 					tclients[httpclientidx].rcvbody=ssub(tclients[httpclientidx].data,h2+1,-1)
-					--»ñµÃÊµÌå
+					--è·å¾—å®ä½“
 					tclients[httpclientidx].rcvcb(tclients[httpclientidx].result,tclients[httpclientidx].statuscode,tclients[httpclientidx].rcvhead,tclients[httpclientidx].rcvbody)
 					sys.timer_stop(timerfnc,httpclientidx)
 					tclients[httpclientidx].result=nil
@@ -289,7 +291,7 @@ function rcv(idx,data)
 					tclients[httpclientidx].data=""
 					tclients[httpclientidx].status=false
 				elseif	slen(ssub(tclients[httpclientidx].data,h2+1,-1)) > tclients[httpclientidx].contentlen	then
-					--ÓĞÊµÌåÇÒÊµÌå³¤¶È´óÓÚÊµ¼Ê³¤¶È
+					--æœ‰å®ä½“ä¸”å®ä½“é•¿åº¦å¤§äºå®é™…é•¿åº¦
 					tclients[httpclientidx].result=2
 					tclients[httpclientidx].rcvbody=nil
 					tclients[httpclientidx].rcvcb(tclients[httpclientidx].result,tclients[httpclientidx].statuscode,tclients[httpclientidx].rcvhead)
@@ -301,7 +303,7 @@ function rcv(idx,data)
 					tclients[httpclientidx].data=""
 					tclients[httpclientidx].status=false										
 				end
-			--´æÔÚÊ×²¿£¬µ«ÊÇÊµÌå³¤¶ÈÎª0
+			--å­˜åœ¨é¦–éƒ¨ï¼Œä½†æ˜¯å®ä½“é•¿åº¦ä¸º0
 			elseif	 tclients[httpclientidx].contentlen==0	then
 				tclients[httpclientidx].result=1
 				tclients[httpclientidx].rcvcb(tclients[httpclientidx].result,tclients[httpclientidx].statuscode,tclients[httpclientidx].rcvhead)
@@ -313,7 +315,7 @@ function rcv(idx,data)
 				tclients[httpclientidx].data=""
 				tclients[httpclientidx].status=false
 			end
-		--ÓĞÊı¾İÇÒÃ»½ÓÊÕ·´À¡º¯Êı	
+		--æœ‰æ•°æ®ä¸”æ²¡æ¥æ”¶åé¦ˆå‡½æ•°	
 		elseif	not tclients[httpclientidx].rcvhead	then
 			print("no message reback")
 		else
@@ -325,49 +327,69 @@ end
 
 
 --[[
-º¯ÊıÃû£ºconnect
-¹¦ÄÜ  £º´´½¨µ½ºóÌ¨·şÎñÆ÷µÄsocketÁ¬½Ó£»
-        Èç¹ûÊı¾İÍøÂçÒÑ¾­×¼±¸ºÃ£¬»áÀí½âÁ¬½ÓºóÌ¨£»·ñÔò£¬Á¬½ÓÇëÇó»á±»¹ÒÆğ£¬µÈÊı¾İÍøÂç×¼±¸¾ÍĞ÷ºó£¬×Ô¶¯È¥Á¬½ÓºóÌ¨
-		ntfy£ºsocket×´Ì¬µÄ´¦Àíº¯Êı
-		rcv£ºsocket½ÓÊÕÊı¾İµÄ´¦Àíº¯Êı
-²ÎÊı  £º
-		sckidx£ºsocket idx
-		prot£ºstringÀàĞÍ£¬´«Êä²ãĞ­Òé£¬½öÖ§³Ö"TCP"
-		host£ºstringÀàĞÍ£¬·şÎñÆ÷µØÖ·£¬Ö§³ÖÓòÃûºÍIPµØÖ·[±ØÑ¡]
-		port£ºnumberÀàĞÍ£¬·şÎñÆ÷¶Ë¿Ú[±ØÑ¡]
-·µ»ØÖµ£ºÎŞ
+å‡½æ•°åï¼šconnect
+åŠŸèƒ½  ï¼šåˆ›å»ºåˆ°åå°æœåŠ¡å™¨çš„socketè¿æ¥ï¼›
+        å¦‚æœæ•°æ®ç½‘ç»œå·²ç»å‡†å¤‡å¥½ï¼Œä¼šç†è§£è¿æ¥åå°ï¼›å¦åˆ™ï¼Œè¿æ¥è¯·æ±‚ä¼šè¢«æŒ‚èµ·ï¼Œç­‰æ•°æ®ç½‘ç»œå‡†å¤‡å°±ç»ªåï¼Œè‡ªåŠ¨å»è¿æ¥åå°
+		ntfyï¼šsocketçŠ¶æ€çš„å¤„ç†å‡½æ•°
+		rcvï¼šsocketæ¥æ”¶æ•°æ®çš„å¤„ç†å‡½æ•°
+å‚æ•°  ï¼š
+		sock:socket or socketssl
+		sckidxï¼šsocket idx
+		protï¼šstringç±»å‹ï¼Œä¼ è¾“å±‚åè®®ï¼Œä»…æ”¯æŒ"TCP"
+		hostï¼šstringç±»å‹ï¼ŒæœåŠ¡å™¨åœ°å€ï¼Œæ”¯æŒåŸŸåå’ŒIPåœ°å€[å¿…é€‰]
+		portï¼šnumberç±»å‹ï¼ŒæœåŠ¡å™¨ç«¯å£[å¿…é€‰]
+è¿”å›å€¼ï¼šæ— 
 ]]
-function connect(sckidx,prot,host,port)
-	socket.connect(sckidx,prot,host,port,ntfy,rcv)
+function connect(sock,sckidx,prot,host,port)
+	sock.connect(sckidx,prot,host,port,ntfy,rcv)
 	tclients[getclient(sckidx)].sckconning=true
 end
 
 
---´´Á¢Ôª±íÊ±ËùÓÃ
+--åˆ›ç«‹å…ƒè¡¨æ—¶æ‰€ç”¨
 local thttp = {}
 thttp.__index = thttp
 
 
 
 --[[
-º¯ÊıÃû£ºcreate
-¹¦ÄÜ  £º´´½¨Ò»¸öhttp client
-²ÎÊı  £º
-		prot£ºstringÀàĞÍ£¬´«Êä²ãĞ­Òé£¬½öÖ§³Ö"TCP"
-		host£ºstringÀàĞÍ£¬·şÎñÆ÷µØÖ·£¬Ö§³ÖÓòÃûºÍIPµØÖ·[±ØÑ¡]
-		port£ºnumberÀàĞÍ£¬·şÎñÆ÷¶Ë¿Ú[±ØÑ¡]
-·µ»ØÖµ£ºÎŞ
+å‡½æ•°åï¼šcreate
+åŠŸèƒ½  ï¼šåˆ›å»ºä¸€ä¸ªhttp client
+å‚æ•°  ï¼š
+		protï¼šstringç±»å‹ï¼Œä¼ è¾“å±‚åè®®ï¼Œä»…æ”¯æŒ"TCP"
+		hostï¼šstringç±»å‹ï¼ŒæœåŠ¡å™¨åœ°å€ï¼Œæ”¯æŒåŸŸåå’ŒIPåœ°å€[å¿…é€‰]
+		portï¼šnumberç±»å‹ï¼ŒæœåŠ¡å™¨ç«¯å£[å¿…é€‰]
+è¿”å›å€¼ï¼šæ— 
 ]]
 function create(host,port)
 	if #tclients>=4 then assert(false,"tclients maxcnt error") return end
+	if not host then return
+	end
+	--"http://xxx.xxx" or "https://xxx.xxx"
+	local s,e = string.find(host,"https?://")
+	if s~=1 or not e then return
+	end
+
+	local sck
+	if ssub(host,s,e) == "http://" then
+		sck = socket
+		port = port or 80
+	else
+		sck = socketssl
+		port = port or 443
+	end
+
+	host = ssub(host,e+1,-1)
+	if not host or slen(host)==0 then return
+	end
+
 	local http_client =
 	{
 		prot="TCP",
-		--Ä¬ÈÏÎª"www.openluat.com"
-		host=host or "36.7.87.100",
-		--Ä¬ÈÏ¶Ë¿ÚÎª80
-		port=port or 81 ,		
-		sckidx=socket.SCK_MAX_CNT-#tclients,
+		sock = sck,
+		host=host,
+		port=port,
+		sckidx=sck.SCK_MAX_CNT-#tclients,
 		sckconning=false,
 		sckconnected=false,
 		sckreconncnt=0,
@@ -387,12 +409,12 @@ function create(host,port)
 end
 
 --[[
-º¯ÊıÃû£ºconnect
-¹¦ÄÜ  £ºÁ¬½Óhttp·şÎñÆ÷
-²ÎÊı  £º
-        connectedcb:functionÀàĞÍ£¬socket connected ³É¹¦»Øµ÷º¯Êı	
-		sckerrcb£ºfunctionÀàĞÍ£¬socketÁ¬½ÓÊ§°ÜµÄ»Øµ÷º¯Êı[¿ÉÑ¡]
-·µ»ØÖµ£ºÎŞ
+å‡½æ•°åï¼šconnect
+åŠŸèƒ½  ï¼šè¿æ¥httpæœåŠ¡å™¨
+å‚æ•°  ï¼š
+        connectedcb:functionç±»å‹ï¼Œsocket connected æˆåŠŸå›è°ƒå‡½æ•°	
+		sckerrcbï¼šfunctionç±»å‹ï¼Œsocketè¿æ¥å¤±è´¥çš„å›è°ƒå‡½æ•°[å¯é€‰]
+è¿”å›å€¼ï¼šæ— 
 ]]
 function thttp:connect(connectedcb,sckerrcb)
 	self.connectedcb=connectedcb
@@ -402,68 +424,68 @@ function thttp:connect(connectedcb,sckerrcb)
 	
 	if self.httpconnected then print("thttp:connect already connected") return end
 	if not self.sckconnected then
-		--Ö´ĞĞ
-		connect(self.sckidx,self.prot,self.host,self.port) 
+		--æ‰§è¡Œ
+		connect(self.sock,self.sckidx,self.prot,self.host,self.port) 
     end
 end
 
 --[[
-º¯ÊıÃû£ºsetconnectionmode
-¹¦ÄÜ£ºÉèÖÃÁ¬½ÓÄ£Ê½£¬³¤Á¬½Ó»¹ÊÇ¶ÌÁ´½Ó
-²ÎÊı£ºv£¬trueÎª³¤Á¬½Ó£¬falseÎª¶ÌÁ´½Ó
-·µ»Ø£º
+å‡½æ•°åï¼šsetconnectionmode
+åŠŸèƒ½ï¼šè®¾ç½®è¿æ¥æ¨¡å¼ï¼Œé•¿è¿æ¥è¿˜æ˜¯çŸ­é“¾æ¥
+å‚æ•°ï¼švï¼Œtrueä¸ºé•¿è¿æ¥ï¼Œfalseä¸ºçŸ­é“¾æ¥
+è¿”å›ï¼š
 ]]
 function thttp:setconnectionmode(v)
 	self.mode=v
 end
 
 --[[
-º¯ÊıÃû£ºdisconnect
-¹¦ÄÜ  £º¶Ï¿ªÒ»¸öhttp client£¬²¢ÇÒ¶Ï¿ªsocket
-²ÎÊı  £º
-		discb£ºfunctionÀàĞÍ£¬¶Ï¿ªºóµÄ»Øµ÷º¯Êı[¿ÉÑ¡]
-·µ»ØÖµ£ºÎŞ
+å‡½æ•°åï¼šdisconnect
+åŠŸèƒ½  ï¼šæ–­å¼€ä¸€ä¸ªhttp clientï¼Œå¹¶ä¸”æ–­å¼€socket
+å‚æ•°  ï¼š
+		discbï¼šfunctionç±»å‹ï¼Œæ–­å¼€åçš„å›è°ƒå‡½æ•°[å¯é€‰]
+è¿”å›å€¼ï¼šæ— 
 ]]
 function thttp:disconnect(discb)
 	print("thttp:disconnect")
 	self.discb=discb
 	self.discing = true
-	socket.disconnect(self.sckidx,"USER")
+	self.sock.disconnect(self.sckidx,"USER")
 end
 
 --[[
-º¯ÊıÃû£ºdestroy
-¹¦ÄÜ  £ºÏú»ÙÒ»¸öhttp client
-²ÎÊı  £º
-		destroycb£ºfunctionÀàĞÍ£¬mqtt clientÏú»ÙºóµÄ»Øµ÷º¯Êı[¿ÉÑ¡]
-·µ»ØÖµ£ºÎŞ
+å‡½æ•°åï¼šdestroy
+åŠŸèƒ½  ï¼šé”€æ¯ä¸€ä¸ªhttp client
+å‚æ•°  ï¼š
+		destroycbï¼šfunctionç±»å‹ï¼Œmqtt clienté”€æ¯åçš„å›è°ƒå‡½æ•°[å¯é€‰]
+è¿”å›å€¼ï¼šæ— 
 ]]
 function thttp:destroy(destroycb)
 	local k,v
 	self.destroycb = destroycb
 	for k,v in pairs(tclients) do
 		if v.sckidx==self.sckidx then
-			socket.close(v.sckidx)
+			self.sock.close(v.sckidx)
 		end
 	end
 end
 
 
 --[[
-º¯ÊıÃû£ºseturl
-¹¦ÄÜ£º½«Ëù¸øµÄ²ÎÊıÌí¼Ó½ø±íÀï
-²ÎÊı£ºurl   Ò»ÖÖÍ¨ÓÃ±êÊ¶·û£¬ÃèÊö»ñÈ¡×ÊÔ´µÄÂ·¾¶
-·µ»ØÖµ£º
+å‡½æ•°åï¼šseturl
+åŠŸèƒ½ï¼šå°†æ‰€ç»™çš„å‚æ•°æ·»åŠ è¿›è¡¨é‡Œ
+å‚æ•°ï¼šurl   ä¸€ç§é€šç”¨æ ‡è¯†ç¬¦ï¼Œæè¿°è·å–èµ„æºçš„è·¯å¾„
+è¿”å›å€¼ï¼š
 ]]
 function thttp:seturl(url) 
 	url=url
 	self.url=url
 end
 --[[
-º¯ÊıÃû:addhead
-¹¦ÄÜ£ºÌí¼ÓÊ×²¿
-²ÎÊı£ºname ,val  µÚÒ»¸ö²ÎÊıÊÇÊ×²¿µÄÃû×Ö£¬µÚ¶ş¸ö²ÎÊıÊÇÊ×²¿µÄÖµ£¬Ê×²¿µÄ·½·¨
-·µ»ØÖµ£º
+å‡½æ•°å:addhead
+åŠŸèƒ½ï¼šæ·»åŠ é¦–éƒ¨
+å‚æ•°ï¼šname ,val  ç¬¬ä¸€ä¸ªå‚æ•°æ˜¯é¦–éƒ¨çš„åå­—ï¼Œç¬¬äºŒä¸ªå‚æ•°æ˜¯é¦–éƒ¨çš„å€¼ï¼Œé¦–éƒ¨çš„æ–¹æ³•
+è¿”å›å€¼ï¼š
 ]]
 function thttp:addhead(name,val)
 	if not self.head then self.head = {} end
@@ -471,35 +493,35 @@ function thttp:addhead(name,val)
 end
 
 --[[
-º¯ÊıÃû£ºsetbody
-¹¦ÄÜ£ºÌí¼ÓÊµÌå
-²ÎÊı£ºbody   ÊµÌåÄÚÈİ
-·µ»ØÖµ£º
+å‡½æ•°åï¼šsetbody
+åŠŸèƒ½ï¼šæ·»åŠ å®ä½“
+å‚æ•°ï¼šbody   å®ä½“å†…å®¹
+è¿”å›å€¼ï¼š
 ]]
 function thttp:setbody(body)
 	self.body=body
 end
  
 --[[
-º¯ÊıÃû£ºrequest
-¹¦ÄÜ£º½«±¨ÎÄÊı¾İÕûºÏ£¬È»ºó°´ÕÕËù¸øµÄÃüÁî·¢ËÍ
-²ÎÊı£ºcmdtyp  (·¢ËÍ±¨ÎÄµÄ·½·¨)
-·µ»ØÖµ£ºÎŞ
+å‡½æ•°åï¼šrequest
+åŠŸèƒ½ï¼šå°†æŠ¥æ–‡æ•°æ®æ•´åˆï¼Œç„¶åæŒ‰ç…§æ‰€ç»™çš„å‘½ä»¤å‘é€
+å‚æ•°ï¼šcmdtyp  (å‘é€æŠ¥æ–‡çš„æ–¹æ³•)
+è¿”å›å€¼ï¼šæ— 
 ]]
 function thttp:request(cmdtyp,rcvcb)
 	self.cmdttyp=cmdtye
 	self.rcvcb=rcvcb
-	--Ä¬ÈÏurlÂ·¾¶Îª¸ùÄ¿Â¼
+	--é»˜è®¤urlè·¯å¾„ä¸ºæ ¹ç›®å½•
     if	not	self.url	then
 		self.url="/"
 	end
-	--Ä¬ÈÏÊ×²¿ÎªConnection: keep-alive
+	--é»˜è®¤é¦–éƒ¨ä¸ºConnection: keep-alive
 	if	not	self.head	then
 		self.head={}
 --		self.head["Host"]="36.7.87.100"
 		self.head["Connection"]="keep-alive"
 	end
-	--Ä¬ÈÏÊµÌåÎª¿Õ
+	--é»˜è®¤å®ä½“ä¸ºç©º
 	if 	not	self.body	then
 		self.body=""
 	end
@@ -512,17 +534,17 @@ function thttp:request(cmdtyp,rcvcb)
 			val=val.."\r\n"..self.body
 		end
 	end 	
-	snd(self.sckidx,val,cmdtyp)	
+	snd(self.sock,self.sckidx,val,cmdtyp)	
 end
 
 --[[
-º¯ÊıÃû£ºgetstatus
-¹¦ÄÜ  £º»ñÈ¡HTTP CLIENTµÄ×´Ì¬
-²ÎÊı  £ºÎŞ
-·µ»ØÖµ£ºHTTP CLIENTµÄ×´Ì¬£¬stringÀàĞÍ£¬¹²3ÖÖ×´Ì¬£º
-		DISCONNECTED£ºÎ´Á¬½Ó×´Ì¬
-		CONNECTING£ºÁ¬½ÓÖĞ×´Ì¬
-		CONNECTED£ºÁ¬½Ó×´Ì¬
+å‡½æ•°åï¼šgetstatus
+åŠŸèƒ½  ï¼šè·å–HTTP CLIENTçš„çŠ¶æ€
+å‚æ•°  ï¼šæ— 
+è¿”å›å€¼ï¼šHTTP CLIENTçš„çŠ¶æ€ï¼Œstringç±»å‹ï¼Œå…±3ç§çŠ¶æ€ï¼š
+		DISCONNECTEDï¼šæœªè¿æ¥çŠ¶æ€
+		CONNECTINGï¼šè¿æ¥ä¸­çŠ¶æ€
+		CONNECTEDï¼šè¿æ¥çŠ¶æ€
 ]]
 function thttp:getstatus()
 	if self.httpconnected then
