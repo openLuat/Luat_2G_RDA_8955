@@ -3,24 +3,22 @@ require"misc"
 require"http"
 require"common"
 --[[
-¹¦ÄÜ½éÉÜ£ºhttp¶ÌÁ¬½Ó£¬Ê×ÏÈÐèÒªÌá¹©ADDRºÍPORT£¬¸ÃÊý¾Ý¾ÍÊÇ¿Í»§¶ËÐèÒªÁ¬½ÓµÄ¿Í»§¶Ë
-1.ÐèÒªµ÷ÓÃº¯Êý£¬À´ÉèÖÃurl£¬Ìí¼ÓÍ·²¿£¬Ìí¼ÓÊµÌå£¬ÕâÀï×¢ÒâÌí¼ÓÊ×²¿HostÊ±£¬ÓëÇ°ÃæµÄADDRºÍPORTÒ»ÖÂ,ÀûÓÃµÄÊÇsocketµÄ³¤Á¬½Ó
-2.µ÷ÓÃrequestº¯Êý£¬¸Ãº¯ÊýÊÇ·¢ËÍ±¨ÎÄËù±ØÐèÐèÒªµ÷ÓÃµÄ
-3.rcvcbº¯ÊýÊÇ½ÓÊÕ»Øµ÷º¯Êý£¬»á·µ»Ø½á¹û£¬×´Ì¬Âë£¬Ê×²¿£¨Ò»¸ö±í£©£¬ÊµÌå£¬¸Ãº¯ÊýÊÇ×Ô¶¨Òåº¯Êý£¬¿Í»§¿ÉÒÔ¸ù¾Ý×Ô¼ºµÄÐèÇó×Ô¼º¶¨Òå
-4.½ÓÊÕÊý¾Ýºó£¬Èç¹ûÎåÃëÄÚÃ»ÓÐÔÙ´¦Àí£¬»áÖØÆô£¬»áÖØÐÂÁ¬½Ó
+åŠŸèƒ½ä»‹ç»ï¼šhttpçŸ­è¿žæŽ¥ï¼Œå…ˆè°ƒç”¨http.createå‡½æ•°è¿”å›žä¸€ä¸ªhttpclientå¥æŸ„ï¼Œè®¾å®šåŸŸå http://xxx.xxx æˆ– https://xxx.xxx åŠ
+ç«¯å£
+1.éœ€è¦è°ƒç”¨å‡½æ•°ï¼Œæ¥è®¾ç½®urlï¼Œæ·»åŠ å¤´éƒ¨ï¼Œæ·»åŠ å®žä½“ï¼Œè¿™é‡Œæ³¨æ„æ·»åŠ é¦–éƒ¨Hostæ—¶ï¼Œä¸Žå‰é¢çš„ADDRå’ŒPORTä¸€è‡´,åˆ©ç”¨çš„æ˜¯socketçš„é•¿è¿žæŽ¥
+2.è°ƒç”¨requestå‡½æ•°ï¼Œè¯¥å‡½æ•°æ˜¯å‘é€æŠ¥æ–‡æ‰€å¿…éœ€éœ€è¦è°ƒç”¨çš„
+3.rcvcbå‡½æ•°æ˜¯æŽ¥æ”¶å›žè°ƒå‡½æ•°ï¼Œä¼šè¿”å›žç»“æžœï¼ŒçŠ¶æ€ç ï¼Œé¦–éƒ¨ï¼ˆä¸€ä¸ªè¡¨ï¼‰ï¼Œå®žä½“ï¼Œè¯¥å‡½æ•°æ˜¯è‡ªå®šä¹‰å‡½æ•°ï¼Œå®¢æˆ·å¯ä»¥æ ¹æ®è‡ªå·±çš„éœ€æ±‚è‡ªå·±å®šä¹‰
+4.æŽ¥æ”¶æ•°æ®åŽï¼Œå¦‚æžœäº”ç§’å†…æ²¡æœ‰å†å¤„ç†ï¼Œä¼šé‡å¯ï¼Œä¼šé‡æ–°è¿žæŽ¥
 ]]
 local ssub,schar,smatch,sbyte,slen = string.sub,string.char,string.match,string.byte,string.len
---²âÊÔÊ±ÇëÏÈÐ´³öIPµØÖ·ºÍ¶Ë¿Ú£¬ºóÃæËùÐ´µÄÊ×²¿ÒªÓëÕâÀïµÄhostÒ»ÖÂ£¬ÏÂÃæµÄÖµ¶¼ÊÇÄ¬ÈÏµÄÖµ
-local ADDR,PORT ="www.linuxhub.org",80
---²âÊÔPOST·½·¨Ê±ËùÓÃµØÖ·
---local ADDR,PORT ="www.luam2m.com",80
+
 local httpclient
 
 --[[
-º¯ÊýÃû£ºprint
-¹¦ÄÜ  £º´òÓ¡½Ó¿Ú£¬´ËÎÄ¼þÖÐµÄËùÓÐ´òÓ¡¶¼»á¼ÓÉÏtestÇ°×º
-²ÎÊý  £ºÎÞ
-·µ»ØÖµ£ºÎÞ
+å‡½æ•°åï¼šprint
+åŠŸèƒ½  ï¼šæ‰“å°æŽ¥å£ï¼Œæ­¤æ–‡ä»¶ä¸­çš„æ‰€æœ‰æ‰“å°éƒ½ä¼šåŠ ä¸Štestå‰ç¼€
+å‚æ•°  ï¼šæ— 
+è¿”å›žå€¼ï¼šæ— 
 ]]
 local function print(...)
 	_G.print("test",...)
@@ -28,10 +26,10 @@ end
 
 
 --[[
-º¯ÊýÃû£ºrcvcb
-¹¦ÄÜ£º½ÓÊÕ»Øµ÷º¯Êý£¬ÓÃ»§×Ô¶¨Òå¶Ô½ÓÊÕ²ÎÊý½øÐÐ²Ù×÷
-²ÎÊý£ºresult£º0£º±íÊ¾ ½ÓÊÕÊµÌå³¤¶ÈÓëÊµ¼ÊÏàÍ¬£¬ÕýÈ·Êä³ö 1£º±íÊ¾Ã»ÓÐÊµÌå	2£º±íÊ¾ÊµÌå³¬³öÊµ¼ÊÊµÌå£¬´íÎó£¬²»Êä³öÊµÌåÄÚÈÝ	3£º½ÓÊÕ³¬Ê±	4:±íÊ¾·þÎñÆ÷½øÐÐµÄÊÇ·Ö¿é´«ÊäÄ£Ê½
-·µ»ØÖµ£º
+å‡½æ•°åï¼šrcvcb
+åŠŸèƒ½ï¼šæŽ¥æ”¶å›žè°ƒå‡½æ•°ï¼Œç”¨æˆ·è‡ªå®šä¹‰å¯¹æŽ¥æ”¶å‚æ•°è¿›è¡Œæ“ä½œ
+å‚æ•°ï¼šresultï¼š0ï¼šè¡¨ç¤º æŽ¥æ”¶å®žä½“é•¿åº¦ä¸Žå®žé™…ç›¸åŒï¼Œæ­£ç¡®è¾“å‡º 1ï¼šè¡¨ç¤ºæ²¡æœ‰å®žä½“	2ï¼šè¡¨ç¤ºå®žä½“è¶…å‡ºå®žé™…å®žä½“ï¼Œé”™è¯¯ï¼Œä¸è¾“å‡ºå®žä½“å†…å®¹	3ï¼šæŽ¥æ”¶è¶…æ—¶	4:è¡¨ç¤ºæœåŠ¡å™¨è¿›è¡Œçš„æ˜¯åˆ†å—ä¼ è¾“æ¨¡å¼
+è¿”å›žå€¼ï¼š
 ]]
 local function rcvcb(result,statuscode,head,body)
 	print("resultrcvcb: ",result)  
@@ -39,7 +37,7 @@ local function rcvcb(result,statuscode,head,body)
 	if	head==nil	then	print("headrcvcb:	nil")
 	else
 		print("headrcvcb:")
-		--±éÀú´òÓ¡³öËùÓÐÍ·²¿£¬¼üÎªÊ×²¿Ãû×Ö£¬¼üËù¶ÔÓ¦µÄÖµÎªÊ×²¿µÄ×Ö¶ÎÖµ
+		--éåŽ†æ‰“å°å‡ºæ‰€æœ‰å¤´éƒ¨ï¼Œé”®ä¸ºé¦–éƒ¨åå­—ï¼Œé”®æ‰€å¯¹åº”çš„å€¼ä¸ºé¦–éƒ¨çš„å­—æ®µå€¼
 		for k,v in pairs(head) do		
 			print(k..": "..v)
 		end
@@ -51,73 +49,74 @@ end
 
 
 --[[
-º¯ÊýÃû£ºconnectedcb
-¹¦ÄÜ  £ºSOCKET connected ³É¹¦»Øµ÷º¯Êý
-²ÎÊý  £º
-·µ»ØÖµ£º
+å‡½æ•°åï¼šconnectedcb
+åŠŸèƒ½  ï¼šSOCKET connected æˆåŠŸå›žè°ƒå‡½æ•°
+å‚æ•°  ï¼š
+è¿”å›žå€¼ï¼š
 ]]
 local function connectedcb()
-	--GETÄ¬ÈÏ·½·¨
-	--ÉèÖÃURL
+	--GETé»˜è®¤æ–¹æ³•
+	--è®¾ç½®URL
 	httpclient:seturl("/")
-	--Ìí¼ÓÊ×²¿£¬×¢ÒâHostÊ×²¿µÄÖµÓëÉÏÃæµÄaddr£¬portÒ»ÖÂ
-	httpclient:addhead("Host","112.29.250.194")
---	httpclient:addhead("Connection","keep-alive")
-	--Ìí¼ÓÊµÌåÄÚÈÝ
+	--æ·»åŠ é¦–éƒ¨ï¼Œæ³¨æ„Hosté¦–éƒ¨çš„å€¼ä¸Žä¸Šé¢çš„addrï¼Œportä¸€è‡´
+	--httpclient:addhead("Host","112.29.250.194")
+	--httpclient:addhead("Connection","keep-alive")
+	--æ·»åŠ å®žä½“å†…å®¹
 	httpclient:setbody("")
-	--µ÷ÓÃ´Ëº¯Êý²Å»á·¢ËÍ±¨ÎÄ,ÐèÒªÊ¹ÓÃPOST·½Ê½Ê±£¬½«GET¸ÄÎªPOST
+	--è°ƒç”¨æ­¤å‡½æ•°æ‰ä¼šå‘é€æŠ¥æ–‡,éœ€è¦ä½¿ç”¨POSTæ–¹å¼æ—¶ï¼Œå°†GETæ”¹ä¸ºPOST
     httpclient:request("GET",rcvcb)
 end 
 
 --[[
-º¯ÊýÃû£ºsckerrcb
-¹¦ÄÜ  £ºSOCKETÊ§°Ü»Øµ÷º¯Êý
-²ÎÊý  £º
-		r£ºstringÀàÐÍ£¬Ê§°ÜÔ­ÒòÖµ
-		CONNECT: socketÒ»Ö±Á¬½ÓÊ§°Ü£¬²»ÔÙ³¢ÊÔ×Ô¶¯ÖØÁ¬
-·µ»ØÖµ£ºÎÞ
+å‡½æ•°åï¼šsckerrcb
+åŠŸèƒ½  ï¼šSOCKETå¤±è´¥å›žè°ƒå‡½æ•°
+å‚æ•°  ï¼š
+		rï¼šstringç±»åž‹ï¼Œå¤±è´¥åŽŸå› å€¼
+		CONNECT: socketä¸€ç›´è¿žæŽ¥å¤±è´¥ï¼Œä¸å†å°è¯•è‡ªåŠ¨é‡è¿ž
+è¿”å›žå€¼ï¼šæ— 
 ]]
 local function sckerrcb(r)
 	print("sckerrcb",r)
 end
 --[[
-º¯ÊýÃû£ºconnect
-¹¦ÄÜ£ºÁ¬½Ó·þÎñÆ÷
-²ÎÊý£º
-	 connectedcb:Á¬½Ó³É¹¦»Øµ÷º¯Êý
-	 sckerrcb£ºhttp libÖÐsocketÒ»Ö±ÖØÁ¬Ê§°ÜÊ±£¬²»»á×Ô¶¯ÖØÆôÈí¼þ£¬¶øÊÇµ÷ÓÃsckerrcbº¯Êý
-·µ»Ø£º
+å‡½æ•°åï¼šconnect
+åŠŸèƒ½ï¼šè¿žæŽ¥æœåŠ¡å™¨
+å‚æ•°ï¼š
+	 connectedcb:è¿žæŽ¥æˆåŠŸå›žè°ƒå‡½æ•°
+	 sckerrcbï¼šhttp libä¸­socketä¸€ç›´é‡è¿žå¤±è´¥æ—¶ï¼Œä¸ä¼šè‡ªåŠ¨é‡å¯è½¯ä»¶ï¼Œè€Œæ˜¯è°ƒç”¨sckerrcbå‡½æ•°
+è¿”å›žï¼š
 ]]
 local function connect()
 	httpclient:connect(connectedcb,sckerrcb)
 end
 --[[
-º¯ÊýÃû£ºdiscb
-¹¦ÄÜ  £ºHTTPÁ¬½Ó¶Ï¿ªºóµÄ»Øµ÷
-²ÎÊý  £ºÎÞ		
-·µ»ØÖµ£ºÎÞ
+å‡½æ•°åï¼šdiscb
+åŠŸèƒ½  ï¼šHTTPè¿žæŽ¥æ–­å¼€åŽçš„å›žè°ƒ
+å‚æ•°  ï¼šæ— 		
+è¿”å›žå€¼ï¼šæ— 
 ]]
 function discb()
 	print("http discb")
-	--20ÃëºóÖØÐÂ½¨Á¢HTTPÁ¬½Ó
+	--20ç§’åŽé‡æ–°å»ºç«‹HTTPè¿žæŽ¥
 	sys.timer_start(connect,20000)
 end
 
 --[[
-º¯ÊýÃû£ºhttp_run
-¹¦ÄÜ  £º´´½¨http¿Í»§¶Ë£¬²¢½øÐÐÁ¬½Ó
-²ÎÊý  £ºÎÞ		
-·µ»ØÖµ£ºÎÞ
+å‡½æ•°åï¼šhttp_run
+åŠŸèƒ½  ï¼šåˆ›å»ºhttpå®¢æˆ·ç«¯ï¼Œå¹¶è¿›è¡Œè¿žæŽ¥
+å‚æ•°  ï¼šæ— 		
+è¿”å›žå€¼ï¼šæ— 
 ]]
 function http_run()
-	--ÒòÎªhttpÐ­Òé±ØÐë»ùÓÚ¡°TCP¡±Ð­Òé£¬ËùÒÔ²»±Ø´«ÈëPROT²ÎÊý
-	httpclient=http.create(ADDR,PORT)	
-	--½¨Á¢httpÁ¬½Ó
+	--httpclient=http.create("https://www.lua.org",443)
+	--ä¸ä¼ å…¥ç«¯å£çš„æ—¶ï¼Œhttp.createå°†ä¼šä½¿ç”¨é»˜è®¤ç«¯å£ï¼Œhttpçš„é»˜è®¤ç«¯å£æ˜¯80ï¼Œhttpsçš„é»˜è®¤ç«¯å£æ˜¯443
+	httpclient=http.create("https://www.lua.org")
+	--å»ºç«‹httpè¿žæŽ¥
 	connect()	
 end
 
 
---µ÷ÓÃº¯ÊýÔËÐÐ
+--è°ƒç”¨å‡½æ•°è¿è¡Œ
 http_run()
 
 
