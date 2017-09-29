@@ -25,9 +25,9 @@ local assert = base.assert
 local tonumber = base.tonumber
 
 --lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "1.0.7"
+SCRIPT_LIB_VER = "1.0.8"
 --脚本发布时的最新core软件版本号
-CORE_MIN_VER = "Luat_V0010_8955"
+CORE_MIN_VER = "Luat_V0011_8955"
 
 --是否允许“脚本异常时 或者 脚本调用sys.restart接口时”的重启，是否有挂起的等待重启的事件
 local restartflg,restartpending = 0
@@ -403,8 +403,8 @@ end
 返回值：无
 ]]
 function init(mode,lprfnc)
-	--用户应用脚本中必须定义PROJECT和VERSION两个全局变量，否则会死机重启，如何定义请参考各个demo中的main.lua
-	assert(base.PROJECT and base.PROJECT ~= "" and base.VERSION and base.VERSION ~= "","Undefine PROJECT or VERSION")
+	--用户应用脚本main.lua中必须定义MODULE_TYPE、PROJECT和VERSION三个全局变量，否则会死机重启，如何定义请参考各个demo中的main.lua
+	assert(base.MODULE_TYPE and base.MODULE_TYPE ~= "" and base.PROJECT and base.PROJECT ~= "" and base.VERSION and base.VERSION ~= "","Undefine MODULE_TYPE、PROJECT or VERSION")
 	base.collectgarbage("setpause",80)
 	require"net"
 	--设置AT命令的虚拟串口

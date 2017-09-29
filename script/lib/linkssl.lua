@@ -55,19 +55,6 @@ local function init()
 end
 
 --[[
-函数名：term
-功能  ：关闭ssl功能模块
-参数  ：无
-返回值：无
-]]
-local function term()
-	if inited then
-		inited = false
-		req("AT+SSLTERM")
-	end
-end
-
---[[
 函数名：emptylink
 功能  ：获取可用的socket id
 参数  ：无
@@ -426,6 +413,9 @@ function statusind(id,state)
 		print("statusind:nil id",id)
 		return
 	end	
+	if linklist[id].state == "CONNECTING" and string.match(state,"SEND ERROR") then
+		return
+	end	
 
 	local evt
 	--socket如果处于正在连接的状态，或者返回了连接成功的状态通知
@@ -593,6 +583,38 @@ local function getresult(str)
 	return str == "ERROR" and str or string.match(str,"%d, *([%u :%d]+)")
 end
 
+local function emptylink()
+	for i = 0,MAXLINKS do
+		if linklist[i] == nil then
+			return i
+		end
+	end
+
+	return nil
+end
+
+--[[
+函数名：term
+功能  ：关闭ssl功能模块
+参数  ：无
+返回值：无
+]]
+local function term()
+	if inited then
+		local valid,i
+		for i = 0,MAXLINKS do
+			if linklist[i] and linklist[i].state~="CLOSED" and linklist[i].state~="INITIAL" then
+				valid = true
+				break
+			end
+		end
+		if not valid then
+			inited = false
+			req("AT+SSLTERM")
+		end
+	end
+end
+
 --[[
 函数名：rsp
 功能  ：本功能模块内“通过虚拟串口发送到底层core软件的AT命令”的应答处理
@@ -618,6 +640,7 @@ local function rsp(cmd,success,response,intermediate)
 	--关闭socket的应答
 	elseif prefix == "+SSLDESTROY" then
 		closecnf(id,getresult(response))	
+		term()
 	end
 end
 

@@ -8,9 +8,9 @@
 module(...,package.seeall)
 
 --模块复位单片机引脚
-local RST_SCMWD_PIN = pio.P0_6
+local RST_SCMWD_PIN = pio.P0_30
 --模块和单片机相互喂狗引脚
-local WATCHDOG_PIN = pio.P0_11
+local WATCHDOG_PIN = pio.P0_31
 
 --scm_active：单片机是否运行正常，true表示正常，false或nil表示异常
 --get_scm_cnt：“检测单片机对模块喂狗是否正常”的剩余次数
@@ -132,7 +132,7 @@ end
 
 --[[
 函数名：open
-功能  ：打开Air202开发板上的硬件看门狗功能，并立即喂狗
+功能  ：打开开发板上的硬件看门狗功能，并立即喂狗
 参数  ：无
 返回值：无
 ]]
@@ -144,7 +144,7 @@ end
 
 --[[
 函数名：close
-功能  ：关闭Air202开发板上的硬件看门狗功能
+功能  ：关闭开发板上的硬件看门狗功能
 参数  ：无
 返回值：无
 ]]
@@ -160,7 +160,7 @@ end
 
 --[[
 函数名：test
-功能  ：测试“Air202开发板上的硬件看门狗复位Air202模块”的功能
+功能  ：测试“开发板上的硬件看门狗复位Air模块”的功能
 参数  ：无
 返回值：无
 ]]

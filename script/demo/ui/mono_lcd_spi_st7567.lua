@@ -5,16 +5,16 @@
 ]]
 
 --[[
+注意：此文件的配置，硬件上使用的是LCD专用的SPI引脚，不是标准的SPI引脚
 disp库目前仅支持SPI接口的屏，硬件连线图如下：
 Air模块			LCD
-GND-------------GND
-SPI_CS----------CS
-SPI_CLK---------SCK
-SPI_DO----------SDA
-SPI_DI----------RS
-VDDIO-----------VDD
-UART1_CTS-------RST
-注意：Air202早期的开发板，UART1的CTS和RTS的丝印反了
+GND-------------地
+LCD_CS----------片选
+LCD_CLK---------时钟
+LCD_DATA--------数据
+LCD_DC----------数据/命令选择
+VDDIO-----------电源
+LCD_RST---------复位
 ]]
 
 module(...,package.seeall)
@@ -31,11 +31,11 @@ local function init()
 		width = 128, --分辨率宽度，128像素；用户根据屏的参数自行修改
 		height = 64, --分辨率高度，64像素；用户根据屏的参数自行修改
 		bpp = 1, --位深度，1表示单色。单色屏就设置为1，不可修改
-		bus = disp.BUS_SPI, --led位标准SPI接口，不可修改
+		bus = disp.BUS_SPI4LINE, --LCD专用SPI引脚接口，不可修改
 		hwfillcolor = 0xFFFF, --填充色，黑色
 		yoffset = 1,
-		pinrst = pio.P0_3, --reset，复位引脚
-		pinrs = pio.P0_12, --rs，命令/数据选择引脚
+		pinrst = pio.P0_14, --reset，复位引脚
+		pinrs = pio.P0_18, --rs，命令/数据选择引脚
 		--初始化命令
 		initcmd =
 		{
@@ -80,5 +80,5 @@ local function init()
 end
 
 --控制SPI引脚的电压域
-pmd.ldoset(6,pmd.LDO_VMMC)
+pmd.ldoset(6,pmd.LDO_VLCD)
 init()

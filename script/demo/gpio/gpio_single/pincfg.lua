@@ -20,8 +20,8 @@ IO配置为输入或者中断时，外设输入的高电平电压必须与配置的电压等级的电压匹配
 
 电压域与控制的GPIO的对应关系如下：
 pmd.LDO_VMMC：GPIO8、GPIO9、GPIO10、GPIO11、GPIO12、GPIO13
-pmd.LDO_LCD：GPIO14、GPIO15、GPIO16、GPIO17、GPIO18
-pmd.LDO_CAM：GPIO19、GPIO20、GPIO21、GPIO22、GPIO23、GPIO24
+pmd.LDO_VLCD：GPIO14、GPIO15、GPIO16、GPIO17、GPIO18
+pmd.LDO_VCAM：GPIO19、GPIO20、GPIO21、GPIO22、GPIO23、GPIO24
 一旦设置了某一个电压域的电压等级，受该电压域控制的所有GPIO的高电平都与设置的电压等级一致
 
 例如：GPIO8输出电平时，要求输出2.8V，则调用pmd.ldoset(5,pmd.LDO_VMMC)
@@ -29,11 +29,11 @@ pmd.LDO_CAM：GPIO19、GPIO20、GPIO21、GPIO22、GPIO23、GPIO24
 
 --如下配置了开源模块中所有可用作GPIO的引脚，每个配置只是演示需要
 --用户最终需根据自己的需求自行修改
---Air202的所有GPIO都支持中断
+--模块的所有GPIO都支持中断
 
 --pin值定义如下：
---pio.P0_XX：表示GPIOXX，例如pio.P0_15，表示GPIO15
---pio.P1_XX：表示GPIO(XX+32)，例如pio.P1_2，表示GPIO34
+--pio.P0_XX：表示GPIOXX，可表示GPIO 0 到 GPIO 31，例如pio.P0_15，表示GPIO15
+--pio.P1_XX：表示GPIO(XX+32)，可表示GPIO 32以上的GPIO，例如pio.P1_2，表示GPIO34
 
 --dir值定义如下（默认值为pio.OUTPUT）：
 --pio.OUTPUT：表示输出，初始化是输出低电平

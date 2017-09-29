@@ -1,3 +1,20 @@
+发布时间：2017/9/18 16:49
+修改记录：
+    一、lib脚本修改
+        lib脚本版本号：1.0.8
+        (1)sms：修正“长短信自动拼接”的问题
+        (2)wdt：修改硬件狗使用的默认引脚
+        (3)linkssl、mqttssl：优化ssl的控制逻辑
+        (4)sys：新增对MODULE_TYPE配置的强制检查
+    二、demo脚本修改
+        (1)gpio_single：修正ldo对gpio控制的注释说明
+        (2)所有main.lua中增加对MODULE_TYPE的配置
+        (3)ui：完善SPI接口的LCD显示功能（标准SPI引脚、LCD专用SPI引脚、黑白屏、彩屏）
+        (4)spi：新增spi的demo
+        (5)fs：新增文件系统剩余空间、创建目录的功能使用示例
+
+
+
 发布时间：2017/9/5 11:58
 修改记录：
     一、lib脚本修改

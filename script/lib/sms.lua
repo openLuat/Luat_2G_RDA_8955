@@ -254,8 +254,13 @@ local function rsp(cmd,success,response,intermediate)
 			offset = offset+2
 			data = ssub(pdu,offset,offset+txtlen*2-1)--短信文本
 			if longsms then
-				isn,total,idx = tonumber("0x" .. ssub(data, 7,8)),tonumber("0x" .. ssub(data, 9,10)),tonumber("0x" .. ssub(data, 11,12))
-				data = ssub(data, 13,-1)--去掉报头6个字节
+				if tonumber("0x" .. ssub(data, 5,6))==3 then
+					isn,total,idx = tonumber("0x" .. ssub(data, 7,8)),tonumber("0x" .. ssub(data, 9,10)),tonumber("0x" .. ssub(data, 11,12))
+					data = ssub(data, 13,-1)--去掉报头6个字节
+				elseif tonumber("0x" .. ssub(data, 5,6))==4 then
+					isn,total,idx = tonumber("0x" .. ssub(data, 7,10)),tonumber("0x" .. ssub(data, 11,12)),tonumber("0x" .. ssub(data, 13,14))
+					data = ssub(data, 15,-1)--去掉报头7个字节
+				end
 			end
 	  
 			print("TP-PID : ",flag, "dcs: ", dcs, "tz: ",tz, "data: ",data,"txtlen",txtlen)
@@ -316,7 +321,6 @@ end
 local function urc(data,prefix)
     --短信准备好
 	if data == "SMS READY" then
-		ready = true
 		--req("AT+CSMP=17,167,0,8")--设置短信TEXT 模式参数
         --使用PDU模式发送
 		req("AT+CMGF=0")
@@ -345,24 +349,20 @@ end
 --[[
 函数名：mergelongsms
 功能  ：合并长短信
-参数  ：无
+参数  ：
+		tag：长短信标记(ISN和总条数的拼接字符串)
 返回值：无
 ]]
-local function mergelongsms()
-	local data,num,t,alpha=""
+local function mergelongsms(tag)
+	local data=""
     --按表中的顺序，一次拼接短消息内容
-	for i=1, #tlongsms do
-		if tlongsms[i] and tlongsms[i].dat and tlongsms[i].dat~="" then
-			data,num,t,alpha = data .. tlongsms[i].dat,tlongsms[i].num,tlongsms[i].t,tlongsms[i].nam 
-		end
-	end
-    --删除表中的短消息项，以确保下次长短信合并的正确
-	for i=1, #tlongsms do
-		table.remove(tlongsms)
+	for i=1,tlongsms[tag]["total"] do
+		data = data .. (tlongsms[tag]["dat"][i] or "")
 	end
     --分发长短信合并确认消息
-	sys.dispatch("LONG_SMS_MERGR_CNF",true,num,data,t,alpha)
-	print("mergelongsms", "num:",num, "data", data)
+	sys.dispatch("LONG_SMS_MERGR_CNF",true,tlongsms[tag]["num"],data,tlongsms[tag]["t"],tlongsms[tag]["nam"])
+	print("mergelongsms", "num:",tlongsms[tag]["num"], "data", data)
+	tlongsms[tag]["dat"],tlongsms[tag] = nil
 end
 
 --[[
@@ -372,38 +372,30 @@ end
 返回值：无
 ]]
 local function longsmsind(id,num, data,datetime,name,total,idx,isn)
-	print("longsmsind", "total:",total, "idx:",idx,"data", data)
-    --如果是长短信的第一包，直接插入tlongsms表中
-	if #tlongsms==0 then
-		tlongsms[idx] = {dat=data,udhi=total .. isn,num=num,t=datetime,nam=name}
+	print("longsmsind", "isn",isn,"total:",total, "idx:",idx,"data", data)
+	
+	if tlongsms[isn..total] then
+		if not tlongsms[isn..total]["dat"] then tlongsms[isn..total]["dat"]={} end
+		tlongsms[isn..total]["dat"][idx] = data
 	else
-		local oldudhi = ""
-        --获取之前收到的包中的udhi值，用于鉴别这次收到的短信是否跟表中收到的短信是来自同一条长短信
-		for i=1,#tlongsms do
-			if tlongsms[i] and tlongsms[i].udhi and tlongsms[i].udhi~="" then
-				oldudhi = tlongsms[i].udhi
-				break
-			end
-		end
-        --这次收到的短信是否跟表中收到的短信是来自同一条长短信，将本包插入表中
-        --否则先合并表中的长短信，再将本包短信插入tlongsms表中
-		if oldudhi==total .. isn then
-			tlongsms[idx] = {dat=data,udhi=total .. isn,num=num,t=datetime,nam=name}
-		else
-			sys.timer_stop(mergelongsms)
-			mergelongsms()
-			tlongsms[idx] = {dat=data,udhi=total .. isn,num=num,t=datetime,nam=name}
-		end
+		tlongsms[isn..total] = {}
+		tlongsms[isn..total]["total"],tlongsms[isn..total]["num"],tlongsms[isn..total]["t"],tlongsms[isn..total]["nam"]=total,num,datetime,name
+		tlongsms[isn..total]["dat"]={}
+		tlongsms[isn..total]["dat"][idx] = data
 	end
-  
-    --长短信的总条数已收完毕，开始合并长短信
-	if total==#tlongsms then
-		sys.timer_stop(mergelongsms)
-		mergelongsms()
+
+	local totalrcv = 0
+	for i=1,tlongsms[isn..total]["total"] do
+		if tlongsms[isn..total]["dat"][i] then totalrcv=totalrcv+1 end
+	end
+	--长短信接收完整
+	if tlongsms[isn..total]["total"]==totalrcv then
+		sys.timer_stop(mergelongsms,isn..total)
+		mergelongsms(isn..total)
 	else
-        --如果2分钟后长短信还没收完整，2分钟后将自动合并已收到的长短信
-		sys.timer_start(mergelongsms,120000)
-	end
+		--如果2分钟后长短信还没收完整，2分钟后将自动合并已收到的长短信
+		sys.timer_start(mergelongsms,120000,isn..total)
+	end    
 end
 
 --注册长短信合并处理函数
@@ -587,13 +579,18 @@ local function longsmsmergecnf(res,num,data,datetime)
 	end
 end
 
+local function rdy()
+	ready = true
+	sndnxt()
+end
+
 --短信模块的内部消息处理表
 local smsapp =
 {
 	SMS_NEW_MSG_IND = newsms, --收到新短信，sms.lua会抛出SMS_NEW_MSG_IND消息
 	SMS_READ_CNF = readcnf, --调用sms.read读取短信之后，sms.lua会抛出SMS_READ_CNF消息
 	SMS_SEND_CNF = sendcnf, --调用sms.send发送短信之后，sms.lua会抛出SMS_SEND_CNF消息
-	SMS_READY = sndnxt, --底层短信模块准备就绪
+	SMS_READY = rdy, --底层短信模块准备就绪
 	LONG_SMS_MERGR_CNF = longsmsmergecnf,
 }
 
