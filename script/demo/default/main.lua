@@ -1,8 +1,10 @@
---必须在这个位置定义PROJECT和VERSION变量
+--重要提醒：必须在这个位置定义MODULE_TYPE、PROJECT和VERSION变量
+--MODULE_TYPE：模块型号，目前仅支持Air201、Air202、Air800
 --PROJECT：ascii string类型，可以随便定义，只要不使用,就行
 --VERSION：ascii string类型，如果使用Luat物联云平台固件升级的功能，必须按照"X.X.X"定义，X表示1位数字；否则可随便定义
+MODULE_TYPE = "Air202"
 PROJECT = "DEFAULT"
-VERSION = "1.0.3"
+VERSION = "1.0.4"
 require"sys"
 --[[
 如果使用UART输出trace，打开这行注释的代码"--sys.opntrace(true,1)"即可，第2个参数1表示UART1输出trace，根据自己的需要修改这个参数
@@ -13,7 +15,9 @@ require"sys"
 require"wdt"
 require"linkair"
 require"factory1"
+if MODULE_TYPE~="Air800" then
 require"factory2"
+end
 require"keypad"
 
 sys.init(0,0)

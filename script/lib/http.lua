@@ -359,7 +359,7 @@ thttp.__index = thttp
 返回值：无
 ]]
 function create(host,port)
-	if #tclients>=4 then assert(false,"tclients maxcnt error") return end
+	if #tclients>=2 then assert(false,"tclients maxcnt error") return end
 	local http_client =
 	{
 		prot="TCP",
@@ -367,7 +367,7 @@ function create(host,port)
 		host=host or "36.7.87.100",
 		--默认端口为80
 		port=port or 81 ,		
-		sckidx=socket.SCK_MAX_CNT-#tclients,
+		sckidx=socket.SCK_MAX_CNT-#tclients-2,
 		sckconning=false,
 		sckconnected=false,
 		sckreconncnt=0,
@@ -448,70 +448,36 @@ function thttp:destroy(destroycb)
 	end
 end
 
-
---[[
-函数名：seturl
-功能：将所给的参数添加进表里
-参数：url   一种通用标识符，描述获取资源的路径
-返回值：
-]]
-function thttp:seturl(url) 
-	url=url
-	self.url=url
-end
---[[
-函数名:addhead
-功能：添加首部
-参数：name ,val  第一个参数是首部的名字，第二个参数是首部的值，首部的方法
-返回值：
-]]
-function thttp:addhead(name,val)
-	if not self.head then self.head = {} end
-	self.head[name]=val
-end
-
---[[
-函数名：setbody
-功能：添加实体
-参数：body   实体内容
-返回值：
-]]
-function thttp:setbody(body)
-	self.body=body
-end
  
 --[[
 函数名：request
 功能：将报文数据整合，然后按照所给的命令发送
-参数：cmdtyp  (发送报文的方法)
+参数：cmdtyp:(发送报文的方法，例如GET，POST)，rcvcb :接收数据的回调函数,例如rcvcb(result,statuscode,rcvhead,rcvbody)
+url: 路径 例如："/"表示根目录下。head: table类型，键值必须是XXXX :XXXX格式，例如"Connection: keep-alive"。body: 实体内容。
 返回值：无
 ]]
-function thttp:request(cmdtyp,rcvcb)
-	self.cmdttyp=cmdtye
-	self.rcvcb=rcvcb
-	--默认url路径为根目录
-    if	not	self.url	then
-		self.url="/"
-	end
-	--默认首部为Connection: keep-alive
-	if	not	self.head	then
-		self.head={}
---		self.head["Host"]="36.7.87.100"
-		self.head["Connection"]="keep-alive"
-	end
+function thttp:request(cmdtyp,url,head,body,rcvcb)
+	local val="" 
+	--默认传送方式为"GET"
+	self.cmdtyp=cmdtyp or "GET"
+	--默认为根目录
+	self.url=url or "/"
+	self.head=head or ""
 	--默认实体为空
-	if 	not	self.body	then
-		self.body=""
+	self.body=body or ""
+	self.rcvcb=rcvcb or ""
+	--默认首部为Connection: keep-alive
+	if not head then
+		self.head={}
+		self.head["1"]="Connection: keep-alive"
 	end
-	if	cmdtyp	then
-		val=cmdtyp.." "..self.url.." HTTP/1.1"..'\r\n'
-		for k,v in pairs(self.head) do
-			val=val..k..": "..v..'\r\n'
-		end
-		if self.body then 
-			val=val.."\r\n"..self.body
-		end
-	end 	
+	val=cmdtyp.." "..self.url.." HTTP/1.1"..'\r\n'
+	for k,v in pairs(self.head) do
+		val=val..v..'\r\n'
+	end
+	if self.body then 
+		val=val.."\r\n"..self.body
+	end		
 	snd(self.sckidx,val,cmdtyp)	
 end
 

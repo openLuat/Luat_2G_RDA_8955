@@ -131,7 +131,6 @@ local function proc(item)
 			sys.timer_start(looptimeout,tonumber(smatch(item,",(%d+)"))*1000,"CSQ")
 		end
 	elseif smatch(s,"AT%+GPIO") then
-		pmd.ldoset(6,pmd.LDO_VMMC)
 		tgpio = {}
 		local k,v,kk
 		for v in string.gmatch(item,"(%d+)") do
@@ -224,4 +223,7 @@ end
 uart.setup(UART_ID,115200,8,uart.PAR_NONE,uart.STOP_1)
 sys.reguart(UART_ID,read)
 pm.wake("factory2")
+pmd.ldoset(6,pmd.LDO_VMMC)
+pmd.ldoset(6,pmd.LDO_VLCD)
+pmd.ldoset(7,pmd.LDO_VIB)
 --wake()

@@ -5,6 +5,7 @@
 ]]
 
 --[[
+注意：此文件的配置，硬件上使用的是标准的SPI引脚，不是LCD专用的SPI引脚
 disp库目前仅支持SPI接口的屏，硬件连线图如下：
 Air模块			LCD
 GND-------------地
@@ -32,6 +33,7 @@ local function init()
 		height = 64, --分辨率高度，64像素；用户根据屏的参数自行修改
 		bpp = 1, --位深度，1表示单色。单色屏就设置为1，不可修改
 		bus = disp.BUS_SPI, --led位标准SPI接口，不可修改
+		yoffset = 32, --Y轴偏移
 		hwfillcolor = 0xFFFF, --填充色，黑色
 		pinrst = pio.P0_3, --reset，复位引脚
 		pinrs = pio.P0_12, --rs，命令/数据选择引脚

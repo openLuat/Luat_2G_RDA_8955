@@ -1,8 +1,8 @@
---用户根据自己的产品定义，修改PROJECT和PRODUCT_KEY两个变量值
-
---必须在这个位置定义PROJECT和VERSION变量
+--重要提醒：必须在这个位置定义MODULE_TYPE、PROJECT和VERSION变量
+--MODULE_TYPE：模块型号，目前仅支持Air201、Air202、Air800
 --PROJECT：ascii string类型，可以随便定义，只要不使用,就行
 --VERSION：ascii string类型，如果使用Luat物联云平台固件升级的功能，必须按照"X.X.X"定义，X表示1位数字；否则可随便定义
+MODULE_TYPE = "Air202"
 PROJECT = "LUAT_IOT_SERVER_DAEMON"
 VERSION = "0.0.0"
 UPDMODE = 1
@@ -26,8 +26,9 @@ require"updapp"
 --sys.timer_start(update.request,120000)
 require"dbg"
 sys.timer_start(dbg.setup,12000,"UDP","ota.airm2m.com",9072)
---S6开发板：硬件上已经打开了看门狗功能，使用S6开发板的用户，要打开这行注释的代码"--require"wdt""，否则4分钟左右会重启一次
---require"wdt"
+if MODULE_TYPE=="Air201" then
+require"wdt"
+end
 
 sys.init(0,0)
 sys.run()

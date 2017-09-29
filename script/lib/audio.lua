@@ -99,7 +99,7 @@ end
 		duration：录音时长，单位毫秒
 返回值：true
 ]]
-local function endrecord(id,duration)
+function endrecord(id,duration)
 	req(string.format("AT+AUDREC=0,0,0," .. id .. "," .. duration))
 	return true
 end
@@ -112,7 +112,7 @@ end
 		duration：录音时长，单位毫秒
 返回值：true
 ]]
-local function delrecord(id,duration)
+function delrecord(id,duration)
 	req(string.format("AT+AUDREC=0,0,4," .. id .. "," .. duration))
 	return true
 end
@@ -282,7 +282,7 @@ end
 函数名：setaudiochannel
 功能  ：设置音频通道
 参数  ：
-		channel：音频通道，跟硬件设计有关，用户程序需要根据硬件配置，Air202模块就固定用audiocore.HANDSET
+		channel：音频通道，跟硬件设计有关，用户程序需要根据硬件配置，目前的模块仅支持audiocore.LOUDSPEAKER
 返回值：无
 ]]
 local function setaudiochannel(channel)
@@ -356,7 +356,7 @@ end
 
 --注册底层上报的rtos.MSG_AUDIO外部消息的处理函数
 sys.regmsg(rtos.MSG_AUDIO,audiomsg)
---默认音频通道设置为LOUDSPEAKER，因为Air202模块只支持LOUDSPEAKER通道
+--默认音频通道设置为LOUDSPEAKER，因为目前的模块只支持LOUDSPEAKER通道
 setaudiochannel(audio.LOUDSPEAKER)
 --默认音量等级设置为4级，4级是中间等级，最低为0级，最高为7级
 setspeakervol(audio.VOL4)

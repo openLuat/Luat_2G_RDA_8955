@@ -1,5 +1,7 @@
 module(...,package.seeall)--所有程序可见
 
+local USER_DIR_PATH = "/user_dir"
+
 --[[该demo提供四种接口，第一种readfile(filename)读文件，第二种writevala(filename,value)，写文件内容，附加模式，
 第三种function writevalw(filename,value)，写文件内容，覆盖模式，第四种deletefile(filename)，删除文件。--]]
 
@@ -75,15 +77,18 @@ local function deletefile(filename)--删除指定文件夹中的所有内容
 	end
 end
 
+--打印文件系统的剩余空间
+print("get_fs_free_size: "..rtos.get_fs_free_size().." Bytes")
+--成功创建一个目录(目录已存在，也返回true表示创建成功)
+if rtos.make_dir(USER_DIR_PATH) then
+	readfile(USER_DIR_PATH.."/3.txt")
 
+	writevala(USER_DIR_PATH.."/3.txt","great")
 
-readfile("/3.txt")
+	readfile(USER_DIR_PATH.."/3.txt")
+	writevalw(USER_DIR_PATH.."/3.txt","great")
+	readfile(USER_DIR_PATH.."/3.txt")
 
-writevala("/3.txt","great")
-
-readfile("/3.txt")
-writevalw("/3.txt","great")
-readfile("/3.txt")
-
-deletefile("/3.txt")
-readfile("/3.txt")
+	deletefile(USER_DIR_PATH.."/3.txt")
+	readfile(USER_DIR_PATH.."/3.txt")
+end

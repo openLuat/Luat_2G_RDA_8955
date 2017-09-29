@@ -108,7 +108,9 @@ local function proc(item)
 		uart.close(UART_ID)
 		rtos.restart()
 	elseif smatch(s,"AT%+SIM") then
-		if not uart2close then uart2close=true uart.close(2) end
+		if _G.MODULE_TYPE~="Air800" then
+			if not uart2close then uart2close=true uart.close(2) end
+		end
 		if sim.getstatus() then
 			rsp("\r\nAT+SIM\r\nOK\r\n")
 		else
@@ -130,8 +132,7 @@ local function proc(item)
 			sys.timer_loop_start(loopqry,1000,"CSQ")
 			sys.timer_start(looptimeout,tonumber(smatch(item,",(%d+)"))*1000,"CSQ")
 		end
-	elseif smatch(s,"AT%+GPIO") then
-		pmd.ldoset(6,pmd.LDO_VMMC)
+	elseif smatch(s,"AT%+GPIO") then		
 		tgpio = {}
 		local k,v,kk
 		for v in string.gmatch(item,"(%d+)") do
@@ -224,4 +225,7 @@ end
 uart.setup(UART_ID,115200,8,uart.PAR_NONE,uart.STOP_1)
 sys.reguart(UART_ID,read)
 pm.wake("factory1")
+pmd.ldoset(6,pmd.LDO_VMMC)
+pmd.ldoset(6,pmd.LDO_VLCD)
+pmd.ldoset(7,pmd.LDO_VIB)
 --wake()

@@ -57,16 +57,13 @@ end
 返回值：
 ]]
 local function connectedcb()
-	--GET默认方法
-	--设置URL
-	httpclient:seturl("/")
-	--添加首部，注意Host首部的值与上面的addr，port一致
-	httpclient:addhead("Host","112.29.250.194")
---	httpclient:addhead("Connection","keep-alive")
-	--添加实体内容
-	httpclient:setbody("")
-	--调用此函数才会发送报文,需要使用POST方式时，将GET改为POST
-    httpclient:request("GET",rcvcb)
+	local cmdtyp="GET"
+	local url="/"
+	--这里注意，head是table类型，键值必须是XXXX: XXXX格式
+	local head={"Host: 112.29.250.194"}
+	local body=""
+	--调用此函数才会发送报文,request(cmdtyp,url,head,body,rcvcb),回调函数rcvcb(result,statuscode,head,body)
+    httpclient:request(cmdtyp,url,head,body,rcvcb)
 end 
 
 --[[

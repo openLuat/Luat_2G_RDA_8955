@@ -49,7 +49,7 @@ end
 os.date = safeosdate
 
 --保存Lua自带的json.decode接口
-local oldjsondecode = json.decode
+if json and json.decode then oldjsondecode = json.decode end
 
 --[[
 函数名：safejsondecode
@@ -71,5 +71,5 @@ function safejsondecode(s)
 end
 
 --Lua自带的json.decode接口指向自定义的safejsondecode接口
-json.decode = safejsondecode
+if json and json.decode then json.decode = safejsondecode end
 

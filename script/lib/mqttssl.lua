@@ -22,7 +22,7 @@ CONNECT,CONNACK,PUBLISH,PUBACK,PUBREC,PUBREL,PUBCOMP,SUBSCRIBE,SUBACK,UNSUBSCRIB
 local seq = 1
 
 local function print(...)
-	_G.print("mqtt",...)
+	_G.print("mqttssl",...)
 end
 
 local function encutf8(s)
@@ -482,6 +482,7 @@ local function reconn(sckidx)
 			socketssl.disconnect(v.sckidx)
 		end
 		link.shut()
+		tclients[mqttclientidx].sckconning = true
 		--[[for k,v in pairs(tclients) do
 			connect(v.sckidx,v.prot,v.host,v.port,v.chksvrcrt)
 		end]]
@@ -537,7 +538,11 @@ function ntfy(idx,evt,result,item)
 	--数据发送结果（调用socket.send后的异步事件）
 	elseif evt == "SEND" then
 		if not result then
-			link.shut()
+			if tclients[mqttclientidx].sckconnected then
+				--link.shut()
+				reconn(idx)
+				tclients[mqttclientidx].sckconnected = false
+			end
 		else
 			if item.para then
 				if item.para.key=="MQTTPUB" then
@@ -598,7 +603,8 @@ function ntfy(idx,evt,result,item)
 	end
 	--其他错误处理，断开数据链路，重新连接
 	if smatch((type(result)=="string") and result or "","ERROR") then
-		link.shut()
+		--link.shut()
+		reconn(idx)
 	end
 end
 
@@ -733,6 +739,7 @@ end
 ]]
 function rcv(idx,data)
 	local mqttclientidx = getclient(idx)
+	if not mqttclientidx or not tclients[mqttclientidx].sckconnected then return end
 	print("rcv",slen(data)>200 and slen(data) or common.binstohexs(data))
 	sys.timer_start(pingreq,tclients[mqttclientidx].keepalive*1000/2,idx)	
 	tclients[mqttclientidx].sckrcvs = tclients[mqttclientidx].sckrcvs..data

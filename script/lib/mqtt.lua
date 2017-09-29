@@ -205,7 +205,7 @@ local function unpack(mqttver,s)
 	end
 	
 	local function publish(d)
-		print("publish",common.binstohexs(d)) --数据量太大时不能打开，内存不足
+		--print("publish",common.binstohexs(d)) --数据量太大时不能打开，内存不足
 		if slen(d) < 4 then return end
 		local _,tplen = lpack.unpack(ssub(d,1,2),">H")		
 		local pay = (rcvpacket.qos > 0 and 5 or 3)
