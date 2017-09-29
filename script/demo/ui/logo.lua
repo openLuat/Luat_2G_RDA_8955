@@ -12,10 +12,15 @@ require"idle"
 
 --清空LCD显示缓冲区
 disp.clear()
+if lcd.WIDTH==128 and lcd.HEIGHT==128 then
+--显示logo图片
+disp.putimage("/ldata/logo_"..(lcd.BPP==1 and "mono.bmp" or "color.png"),lcd.BPP==1 and 41 or 0,lcd.BPP==1 and 18 or 0)
+else
 --从坐标16,0位置开始显示"欢迎使用Luat"
 disp.puttext("欢迎使用Luat",16,0)
---从坐标41,18位置开始显示图片logo.bmp
-disp.putimage("/ldata/logo.bmp",41,18)
+--显示logo图片
+disp.putimage("/ldata/logo_"..(lcd.BPP==1 and "mono.bmp" or "color.png"),lcd.BPP==1 and 41 or 1,lcd.BPP==1 and 18 or 33)
+end
 --刷新LCD显示缓冲区到LCD屏幕上
 disp.update()
 
