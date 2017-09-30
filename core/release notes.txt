@@ -1,3 +1,10 @@
+版本号：Luat_V0012_8955.lod、Luat_V0012_8955_SSL.lod、Luat_V0012_8955_TTS1.lod、Luat_V0012_8955_TTS_UI.lod、Luat_V0012_8955_UI.lod
+发布时间：2017/9/30 08:36
+修改记录：
+    (1)修正“json功能异常”的问题
+
+
+
 版本号：Luat_V0011_8955.lod、Luat_V0011_8955_SSL.lod、Luat_V0011_8955_TTS1.lod、Luat_V0011_8955_TTS_UI.lod、Luat_V0011_8955_UI.lod
 发布时间：2017/9/28 21:06
 修改记录：
