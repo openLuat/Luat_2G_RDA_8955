@@ -1,3 +1,11 @@
+版本号：Luat_V0013_8955.lod、Luat_V0013_8955_SSL.lod、Luat_V0013_8955_TTS1.lod、Luat_V0013_8955_TTS_UI.lod、Luat_V0013_8955_UI.lod
+发布时间：2017/10/09 13:37
+修改记录：
+    (1)修正V0011和V0012版本中出现的“存在多个socket连接时，socket连接出错”的问题
+    (2)修正“host口输出的trace中包含%时，会丢失字符”的问题
+
+
+
 版本号：Luat_V0012_8955.lod、Luat_V0012_8955_SSL.lod、Luat_V0012_8955_TTS1.lod、Luat_V0012_8955_TTS_UI.lod、Luat_V0012_8955_UI.lod
 发布时间：2017/9/30 08:36
 修改记录：
