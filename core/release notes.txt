@@ -1,3 +1,12 @@
+版本号：Luat_V0014_8955.lod、Luat_V0014_8955_SSL.lod、Luat_V0014_8955_TTS1.lod、Luat_V0014_8955_TTS_UI.lod、Luat_V0014_8955_UI.lod
+发布时间：2017/10/26 10:39
+修改记录：
+    (1)修正“打开uart1之后，使用LCD专用SPI引脚调用disp.init时，软件重启”的问题
+    (2)修正“通过域名连接一个服务器失败后，再通过域名连接其他的服务器概率性失败”的问题
+    (3)新增i2c.send和i2c.recv接口
+
+
+
 版本号：Luat_V0013_8955.lod、Luat_V0013_8955_SSL.lod、Luat_V0013_8955_TTS1.lod、Luat_V0013_8955_TTS_UI.lod、Luat_V0013_8955_UI.lod
 发布时间：2017/10/09 13:37
 修改记录：
