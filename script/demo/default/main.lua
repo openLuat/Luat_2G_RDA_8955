@@ -15,7 +15,7 @@ require"sys"
 require"wdt"
 require"linkair"
 require"factory1"
-if MODULE_TYPE~="Air800" then
+if MODULE_TYPE~="Air800" and MODULE_TYPE~="Air801" then
 require"factory2"
 end
 require"keypad"

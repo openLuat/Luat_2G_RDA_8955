@@ -564,6 +564,8 @@ function urc(data,prefix)
 	--socket״̬֪ͨ
 	else
 		local lid,lstate = string.match(data,"(%d), *([%u :%d]+)")
+		
+		if string.find(lstate,"ERROR:")==1 then return end
 
 		if lid then
 			lid = tonumber(lid)

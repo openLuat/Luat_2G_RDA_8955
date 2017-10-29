@@ -171,7 +171,7 @@ function clrsnding(idx)
 	iscks[idx].sndpending = {}
 end
 
-local function init(idx,id,cause,prot,addr,port,rsp,rcv,discause,chksvrcrt)
+local function init(idx,id,cause,prot,addr,port,rsp,rcv,discause,chksvrcrt,crtconfig)
 	scks[idx] =
 	{
 		id = id,
@@ -188,6 +188,7 @@ local function init(idx,id,cause,prot,addr,port,rsp,rcv,discause,chksvrcrt)
 		concause = cause,
 		discause = discause,
 		chksvrcrt = chksvrcrt,
+		crtconfig = crtconfig,
 	}
 end
 
@@ -202,12 +203,13 @@ end
 		rsp：function类型，socket的状态处理函数
 		rcv：function类型，socket的数据接收处理函数
 		chksvrcrt：boolean类型，是否检验服务器端证书
+		crtconfig：table类型，{verifysvrcerts={"filepath1","filepath2",...},clientcert="filepath",clientcertpswd="password",clientkey="filepath"}
 		cause：暂时无用，后续扩展使用
 返回值：true表示成功创建了socket，false表示没有成功创建
 ]]
-function create(idx,prot,addr,port,rsp,rcv,chksvrcrt,cause)
+function create(idx,prot,addr,port,rsp,rcv,chksvrcrt,crtconfig,cause)
 	if not checkidx(0,idx,"create") or checkidx(1,idx,"create") then return end
-	init(idx,linkssl.open(sckrsp,sckrcv),cause,prot,addr,port,rsp,rcv,nil,chksvrcrt)
+	init(idx,linkssl.open(sckrsp,sckrcv),cause,prot,addr,port,rsp,rcv,nil,chksvrcrt,crtconfig)
 	return true
 end
 
@@ -251,7 +253,7 @@ function connect(idx,prot,addr,port,rsp,rcv,chksvrcrt,crtconfig,cause)
 			return false
 		end
 	end
-	init(idx,sckid,cause,prot,addr,port,rsp,rcv,discause,chksvrcrt)
+	init(idx,sckid,cause,prot,addr,port,rsp,rcv,discause,chksvrcrt,crtconfig)
 
 	return true
 end

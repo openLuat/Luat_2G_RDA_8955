@@ -204,7 +204,7 @@ local function audiourc(data,prefix)
 	elseif prefix == "+QTTS" then
 		local flag = string.match(data,": *(%d)",string.len(prefix)+1)
 		--停止播放tts
-		if flag == "0" or flag == "1" then
+		if flag == "0" --[[or flag == "1"]] then
 			playend()
 		end	
 	end
@@ -372,7 +372,8 @@ setmicrophonegain(audio.MIC_VOL1)
 --sdup：当前播放的音频是否需要重复播放
 --sduprd：如果sdup为true，此值表示重复播放的间隔(单位毫秒)，默认无间隔
 --spending：将要播放的音频是否需要正在播放的音频异步结束后，再播放
-local spriority,styp,spath,svol,scb,sdup,sduprd
+--sstrategy：优先级相同时的播放策略，0(表示继续播放正在播放的音频，忽略请求播放的新音频)，1(表示停止正在播放的音频，播放请求播放的新音频)
+local spriority,styp,spath,svol,scb,sdup,sduprd,sstrategy
 
 --[[
 函数名：playbegin
@@ -410,6 +411,19 @@ local function playbegin(priority,typ,path,vol,cb,dup,duprd)
 end
 
 --[[
+函数名：setstrategy
+功能  ：设置优先级相同时的播放策略
+参数  ：
+		strategy：优先级相同时的播放策略
+				0：表示继续播放正在播放的音频，忽略请求播放的新音频
+				1：表示停止正在播放的音频，播放请求播放的新音频
+返回值：无
+]]
+function setstrategy(strategy)
+	sstrategy=strategy
+end
+
+--[[
 函数名：play
 功能  ：播放音频
 参数  ：
@@ -432,7 +446,7 @@ function play(priority,typ,path,vol,cb,dup,duprd)
 	--有音频正在播放
 	if styp then
 		--将要播放的音频优先级 高于 正在播放的音频优先级
-		if priority > spriority then
+		if priority > spriority or (sstrategy==1 and priority==spriority) then
 			--如果正在播放的音频有回调函数，则执行回调，传入参数2
 			if scb then scb(2) end
 			--停止正在播放的音频
@@ -441,15 +455,8 @@ function play(priority,typ,path,vol,cb,dup,duprd)
 				return
 			end
 		--将要播放的音频优先级 低于 正在播放的音频优先级
-		elseif priority < spriority then
-			--直接返回nil，不允许播放
-			return
-		--将要播放的音频优先级 等于 正在播放的音频优先级，有两种情况(1、正在循环播放；2、用户重复调用接口播放同一音频类型)
-		else
-			--如果是第2种情况，直接返回；第1中情况，直接往下走
-			if not sdup then
-				return
-			end
+		elseif priority < spriority or (sstrategy~=1 and priority==spriority) then
+			if not sdup then return	end	
 		end
 	end
 

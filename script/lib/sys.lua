@@ -25,12 +25,14 @@ local assert = base.assert
 local tonumber = base.tonumber
 
 --lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "1.0.8"
+SCRIPT_LIB_VER = "1.0.9"
 --脚本发布时的最新core软件版本号
-CORE_MIN_VER = "Luat_V0011_8955"
+CORE_MIN_VER = "Luat_V0014_8955"
 
---是否允许“脚本异常时 或者 脚本调用sys.restart接口时”的重启，是否有挂起的等待重启的事件
-local restartflg,restartpending = 0
+--是否允许“脚本异常时 或者 脚本调用sys.restart接口时”的重启
+--是否有挂起的等待重启的事件
+--是否存在lua运行期间的语法错误
+local restartflg,restartpending,luarunerr = 0,false,0
 
 --“是否需要刷新界面”的标志，有GUI的项目才会用到此标志
 local refreshflag = false
@@ -332,12 +334,26 @@ function getextliberr()
 	return extliberr or (readtxt(LIB_ERR_FILE) or "")
 end
 
-
+--[[
+函数名：luaerrexit
+功能  ：故意产生一个语法错误，使core中的Lua虚拟机重启，如果当前运行的脚本是远程升级的脚本，会自动删除当前运行脚本，回退到原始烧写的脚本
+参数  ：无
+返回值：无
+]]
+local function luaerrexit()
+	luaerrexitfnc()
+end
 local function saferestart(r)
-	print("saferestart",r,restartflg)
+	print("saferestart",r,restartflg,rtos.remove_dir)
 	appenderr(r or "")
 	if restartflg==0 then
-		rtos.restart()
+		if luarunerr==1 then
+			luarunerr = 2
+			regapp(luaerrexit,"LUA_ERR_EXIT")
+			dispatch("LUA_ERR_EXIT")
+		else
+			rtos.restart()
+		end
 	else		
 		restartpending = true
 	end
@@ -409,7 +425,7 @@ function init(mode,lprfnc)
 	require"net"
 	--设置AT命令的虚拟串口
 	uart.setup(uart.ATC,0,0,uart.PAR_NONE,uart.STOP_1)
-	print("poweron reason:",rtos.poweron_reason(),base.PROJECT,base.VERSION,SCRIPT_LIB_VER,getcorever())
+	print("poweron reason:",rtos.poweron_reason(),base.MODULE_TYPE,base.PROJECT,base.VERSION,SCRIPT_LIB_VER,getcorever())
 	if mode == 1 then
 		--充电开机
 		if rtos.poweron_reason() == rtos.POWERON_CHARGER then
@@ -727,7 +743,7 @@ function setrestart(flg,tag)
 end
 
 local msg,msgpara
-local function saferun()
+function saferun()
 	--while true do
 		--处理内部消息
 		runqmsg()
@@ -810,11 +826,16 @@ end
 function run()
 	local status,err
 	while true do
-		status,err = pcall(saferun)
-		--运行出错
-		if not status then
-			print("run",status,err)
-			saferestart(err or "")			
+		if luarunerr==2 or restartflg==0 then
+			saferun()
+		else		
+			status,err = pcall(saferun)
+			--运行出错
+			if not status then
+				print("run",status,err)
+				luarunerr = 1
+				saferestart(err or "")			
+			end
 		end
 	end
 end
