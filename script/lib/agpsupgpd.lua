@@ -82,15 +82,14 @@ local function reconn()
 	--一个连接周期内的重连
 	if reconncnt < RECONN_MAX_CNT then		
 		reconncnt = reconncnt+1
-		link.shut()
-		connect()
+		socket.disconnect(SCK_IDX)
 	--一个连接周期的重连都失败
 	else
 		reconncnt,reconncyclecnt = 0,reconncyclecnt+1
 		if reconncyclecnt >= RECONN_CYCLE_MAX_CNT then
 			sys.restart("connect fail")
 		end
-		sys.timer_start(reconn,RECONN_CYCLE_PERIOD*1000)
+		link.shut()
 	end
 end
 
@@ -124,24 +123,22 @@ function ntfy(idx,evt,result,item)
 	elseif evt == "SEND" then
 		--发送失败，RECONN_PERIOD秒后重连后台，不要调用reconn，此时socket状态仍然是CONNECTED，会导致一直连不上服务器
 		if not result then sys.timer_start(reconn,RECONN_PERIOD*1000) end
-		if not result then link.shut() end
+		if not result then socket.disconnect(idx) end
 	--连接被动断开
 	elseif evt == "STATE" and result == "CLOSED" then
 		linksta = false
-		--reconn()
 	--连接主动断开（调用link.shut后的异步事件）
 	elseif evt == "STATE" and result == "SHUTED" then
 		linksta = false
+		connect()
 	--连接主动断开（调用socket.disconnect后的异步事件）
 	elseif evt == "DISCONNECT" then
 		linksta = false
-		--reconn()		
+		connect()
 	end
 	--其他错误处理，断开数据链路，重新连接
 	if smatch((type(result)=="string") and result or "","ERROR") then
-		--RECONN_PERIOD秒后重连，不要调用reconn，此时socket状态仍然是CONNECTED，会导致一直连不上服务器
-		--sys.timer_start(reconn,RECONN_PERIOD*1000)
-		link.shut()
+		socket.disconnect(idx)
 	end
 end
 
@@ -365,8 +362,6 @@ function checkup()
 	end
 end
 
---为GPS提供32K时钟
-rtos.sys32k_clk_out(1)
 --注册GPS消息处理函数
 sys.regapp(proc,"AGPS_WRDATE_SUC")
 sys.regapp(gpsstateind,gps.GPS_STATE_IND)
