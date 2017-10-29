@@ -1,11 +1,10 @@
-
 module(...,package.seeall)
 
 require "common"
 require"socket"
 local lpack=require"pack"
 
-local sfind, slen,sbyte,ssub,sgsub,schar,srep,smatch,sgmatch= string.find ,string.len,string.byte,string.sub,string.gsub,string.char,string.rep,string.match,string.gmatch
+local sfind,slen,ssub,smatch,sgmatch= string.find,string.len,string.sub,string.match,string.gmatch
 --[[
 函数名：print
 功能  ：打印接口，此文件中的所有打印都会加上test前缀
@@ -15,8 +14,6 @@ local sfind, slen,sbyte,ssub,sgsub,schar,srep,smatch,sgmatch= string.find ,strin
 local function print(...)
 	_G.print("http",...)
 end
-
-
 
 --http clients存储表
 local tclients = {}
@@ -34,8 +31,6 @@ local function getclient(sckidx)
 	end
 end
 
-
-
 --[[
 函数名：datinactive
 功能  ：数据通信异常处理
@@ -46,7 +41,6 @@ end
 local function datinactive(sckidx)
     sys.restart("SVRNODATA")
 end
-
 
 --[[
 函数名：snd
@@ -61,11 +55,7 @@ function snd(sckidx,data,para)
     return socket.send(sckidx,data,para)
 end
 
-
 local RECONN_MAX_CNT,RECONN_PERIOD,RECONN_CYCLE_MAX_CNT,RECONN_CYCLE_PERIOD = 3,5,3,20
-
-
-
 
 --[[
 函数名：reconn
@@ -79,16 +69,14 @@ local RECONN_MAX_CNT,RECONN_PERIOD,RECONN_CYCLE_MAX_CNT,RECONN_CYCLE_PERIOD = 3,
 ]]
 function reconn(sckidx)
 	local httpclientidx = getclient(sckidx)
-	print("reconn"--[[,httpclientidx,tclients[httpclientidx].sckreconncnt,tclients[httpclientidx].sckconning,tclients[httpclientidx].sckreconncyclecnt]])
+	print("reconn",tclients[httpclientidx].sckreconncnt,tclients[httpclientidx].sckconning,tclients[httpclientidx].sckreconncyclecnt)
 	--sckconning表示正在尝试连接后台，一定要判断此变量，否则有可能发起不必要的重连，导致sckreconncnt增加，实际的重连次数减少
 	if tclients[httpclientidx].sckconning then return end
 	--一个连接周期内的重连
 	if tclients[httpclientidx].sckreconncnt < RECONN_MAX_CNT then		
 		tclients[httpclientidx].sckreconncnt = tclients[httpclientidx].sckreconncnt+1
-		link.shut()
-		for k,v in pairs(tclients) do
-			connect(v.sckidx,v.prot,v.host,v.port)
-		end
+		socket.disconnect(sckidx)
+		tclients[httpclientidx].sckconning = true
 	--一个连接周期的重连都失败
 	else
 		tclients[httpclientidx].sckreconncnt,tclients[httpclientidx].sckreconncyclecnt = 0,tclients[httpclientidx].sckreconncyclecnt+1
@@ -101,11 +89,14 @@ function reconn(sckidx)
 				sys.restart("connect fail")
 			end
 		else
-			sys.timer_start(reconn,RECONN_CYCLE_PERIOD*1000,sckidx)
+			link.shut()
 		end		
 	end
 end
 
+local function connectitem(httpclientidx)
+	connect(tclients[httpclientidx].sckidx,tclients[httpclientidx].prot,tclients[httpclientidx].host,tclients[httpclientidx].port)
+end
 
 --[[
 函数名：ntfy
@@ -131,8 +122,6 @@ function ntfy(idx,evt,result,item)
 			--停止重连定时器
 			sys.timer_stop(reconn,idx)
 			tclients[httpclientidx].connectedcb()
-		--	snd(idx,"GET / HTTP/1.1\r\nHost: www.openluat.com\r\nConnection: keep-alive\r\n\r\n","GET")
-		--   连接失败
 		else
 			--RECONN_PERIOD秒后重连
 			sys.timer_start(reconn,RECONN_PERIOD*1000,idx)
@@ -149,7 +138,7 @@ function ntfy(idx,evt,result,item)
 		tclients[httpclientidx].sckconning = false
 		--长连接时使用
 		if tclients[httpclientidx].mode then
-			reconn(idx)
+			sys.timer_start(connectitem,RECONN_PERIOD*1000,httpclientidx)
 		end
 	--连接主动断开（调用link.shut后的异步事件）
 	elseif evt == "STATE" and result == "SHUTED" then
@@ -158,7 +147,7 @@ function ntfy(idx,evt,result,item)
 		tclients[httpclientidx].sckconning = false
 		--长连接时使用
 		if tclients[httpclientidx].mode then
-			reconn(idx)
+			connectitem(httpclientidx)
 		end
 	--连接主动断开（调用socket.disconnect后的异步事件）
 	elseif evt == "DISCONNECT" then
@@ -171,7 +160,7 @@ function ntfy(idx,evt,result,item)
 		end	
 	--长连接时使用
 		if tclients[httpclientidx].mode then
-			reconn(idx)
+			connectitem(httpclientidx)
 		end
 	--连接主动断开并且销毁（调用socket.close后的异步事件）
 	elseif evt == "CLOSE" then
@@ -181,34 +170,28 @@ function ntfy(idx,evt,result,item)
 	end
 	--其他错误处理，断开数据链路，重新连接
 	if smatch((type(result)=="string") and result or "","ERROR") then
-		link.shut()
+		socket.disconnect(idx)
 	end
 end
 
+local function resetpara(httpclientidx)
+	tclients[httpclientidx].statuscode=nil
+	tclients[httpclientidx].rcvhead=nil
+	tclients[httpclientidx].rcvbody=nil
+	tclients[httpclientidx].status=nil
+	tclients[httpclientidx].result=nil
+	tclients[httpclientidx].data=""
+end
+
 --[[
-函数名：rcv
-功能  ：socket接收数据的处理函数
-参数  ：
-        idx ：socket中维护的socket idx，跟调用socket.connect时传入的第一个参数相同，程序可以忽略不处理
-        data：接收到的数据
-返回值：无
-]]
---[[
-函数名：Timerfnc
+函数名：timerfnc
 功能：当接收数据超时时启动定时器
 参数：客户端对应的SOCKER的ID
 返回值：
 ]]
-function  timerfnc(httpclientidx)
-	tclients[httpclientidx].result=3
-	tclients[httpclientidx].statuscode=nil
-	tclients[httpclientidx].rcvhead=nil
-	tclients[httpclientidx].rcvbody=nil
-	tclients[httpclientidx].rcvcb(tclients[httpclientidx].result)
-	tclients[httpclientidx].status=false
-	tclients[httpclientidx].result=nil
-	tclients[httpclientidx].statuscode=nil
-	tclients[httpclientidx].data=nil
+function timerfnc(httpclientidx)
+	tclients[httpclientidx].rcvcb(3)
+	resetpara(httpclientidx)
 end
 
 --[[
@@ -219,8 +202,8 @@ end
 ]]
 function rcv(idx,data)
     local httpclientidx = getclient(idx)
-	--设置一个定时器，时间为5秒
-	sys.timer_start(timerfnc,5000,httpclientidx)
+	--设置一个定时器，时间为10秒
+	sys.timer_start(timerfnc,10000,httpclientidx)
 	--如果没有数据
 	if not data then 
 		print("rcv: no data receive")
@@ -230,98 +213,72 @@ function rcv(idx,data)
 		if not tclients[httpclientidx].data then tclients[httpclientidx].data="" end 
 		tclients[httpclientidx].data=tclients[httpclientidx].data..data
 		local h1,h2 = sfind(tclients[httpclientidx].data,"\r\n\r\n")
-		--得到状态行和首部，判断状态
-		--解析状态行和所有头
-		if sfind(tclients[httpclientidx].data,"\r\n\r\n") and not tclients[httpclientidx].status then 
-			--设置状态参数，如果为真下次就不需要运行此过程
-			tclients[httpclientidx].status=true 
-			local totil=ssub(tclients[httpclientidx].data,1,h2+1)
-			tclients[httpclientidx].statuscode=smatch(totil,"%s(%d+)%s")
-			tclients[httpclientidx].contentlen=tonumber(smatch(totil,":%s(%d+)\r\n"),10)
-			local total=smatch(totil,"\r\n(.+\r\n)\r\n")
-			--判断total是否为空
-			if	total~=""	then	
-				if	not tclients[httpclientidx].rcvhead	 then	tclients[httpclientidx].rcvhead={}	end
-				for k,v in sgmatch(total,"(.-):%s(.-)\r\n") do
-					if	v=="chunked"	then
-						chunked=true
+		if h1 and h2 then
+			--得到状态行和首部，判断状态
+			--解析状态行和所有头
+			if sfind(tclients[httpclientidx].data,"\r\n\r\n") and not tclients[httpclientidx].status then 
+				--设置状态参数，如果为真下次就不需要运行此过程
+				tclients[httpclientidx].status=true 
+				local totil=ssub(tclients[httpclientidx].data,1,h2+1)
+				tclients[httpclientidx].statuscode=smatch(totil,"%s(%d+)%s")
+				tclients[httpclientidx].contentlen=tonumber(smatch(totil,":%s(%d+)\r\n"),10)
+				local total=smatch(totil,"\r\n(.+\r\n)\r\n")
+				--判断total是否为空
+				if total~="" then	
+					if not tclients[httpclientidx].rcvhead then tclients[httpclientidx].rcvhead={} end
+					for k,v in sgmatch(total,"(.-):%s(.-)\r\n") do
+						if	v=="chunked"	then
+							chunked=true
+						end
+						tclients[httpclientidx].rcvhead[k]=v
 					end
-					tclients[httpclientidx].rcvhead[k]=v
 				end
 			end
-		end
-		--如果已经得到首部且存在接收反馈函数
-		if	tclients[httpclientidx].rcvhead	and tclients[httpclientidx].rcvcb then
-			--是否头部为Transfer-Encoding=chunked，若是则采用的是分块传输编码
-			if	chunked	then
-				if	sfind(ssub(tclients[httpclientidx].data,h2,-1),"\r\n%s-0%s-\r\n")	then
-					local	chunkedbody = ""
-					for k in sgmatch(ssub(tclients[httpclientidx].data,h2+1,-1),"%x-\r\n(.-)\r\n") do
-						chunkedbody=chunkedbody..k
+			--如果已经得到首部且存在接收反馈函数
+			if	tclients[httpclientidx].rcvhead	and tclients[httpclientidx].rcvcb then
+				--是否头部为Transfer-Encoding=chunked，若是则采用的是分块传输编码
+				if chunked then
+					if sfind(ssub(tclients[httpclientidx].data,h2,-1),"\r\n%s-0%s-\r\n") then
+						local chunkedbody = ""
+						for k in sgmatch(ssub(tclients[httpclientidx].data,h2+1,-1),"%x-\r\n(.-)\r\n") do
+							chunkedbody=chunkedbody..k
+						end
+						tclients[httpclientidx].rcvbody=chunkedbody
+						tclients[httpclientidx].rcvcb(0,tclients[httpclientidx].statuscode,tclients[httpclientidx].rcvhead,tclients[httpclientidx].rcvbody)
+						sys.timer_stop(timerfnc,httpclientidx)
+						resetpara(httpclientidx)
+						chunked=false
+					end		
+				--是否得到实体，如果是运行下面	
+				elseif ssub(tclients[httpclientidx].data,h2+1,-1) then
+					--有实体且实体长度等于实际长度
+					if slen(ssub(tclients[httpclientidx].data,h2+1,-1)) == tclients[httpclientidx].contentlen then
+						tclients[httpclientidx].rcvcb(0,tclients[httpclientidx].statuscode,tclients[httpclientidx].rcvhead,ssub(tclients[httpclientidx].data,h2+1,-1))
+						sys.timer_stop(timerfnc,httpclientidx)
+						resetpara(httpclientidx)
+					elseif slen(ssub(tclients[httpclientidx].data,h2+1,-1)) > tclients[httpclientidx].contentlen then
+						--有实体且实体长度大于实际长度
+						tclients[httpclientidx].rcvcb(2,tclients[httpclientidx].statuscode,tclients[httpclientidx].rcvhead)
+						sys.timer_stop(timerfnc,httpclientidx)
+						resetpara(httpclientidx)										
 					end
-					tclients[httpclientidx].rcvbody=chunkedbody
-					tclients[httpclientidx].result=4
-					tclients[httpclientidx].rcvcb(tclients[httpclientidx].result,tclients[httpclientidx].statuscode,tclients[httpclientidx].rcvhead,tclients[httpclientidx].rcvbody)
+				--存在首部，但是实体长度为0
+				elseif tclients[httpclientidx].contentlen==0 then
+					tclients[httpclientidx].rcvcb(0,tclients[httpclientidx].statuscode,tclients[httpclientidx].rcvhead)
 					sys.timer_stop(timerfnc,httpclientidx)
-					tclients[httpclientidx].result=nil
-					tclients[httpclientidx].statuscode=nil
-					tclients[httpclientidx].statuscode=nil
-					tclients[httpclientidx].rcvhead=nil
-					tclients[httpclientidx].rcvbody=nil
-					tclients[httpclientidx].data=""
-					tclients[httpclientidx].status=false
-					chunked=false
-				end		
-			--是否得到实体，如果是运行下面	
-			elseif ssub(tclients[httpclientidx].data,h2+1,-1) then
-				--有实体且实体长度等于实际长度
-				if	 slen(ssub(tclients[httpclientidx].data,h2+1,-1)) == tclients[httpclientidx].contentlen	then
-					tclients[httpclientidx].result=0
-					tclients[httpclientidx].rcvbody=ssub(tclients[httpclientidx].data,h2+1,-1)
-					--获得实体
-					tclients[httpclientidx].rcvcb(tclients[httpclientidx].result,tclients[httpclientidx].statuscode,tclients[httpclientidx].rcvhead,tclients[httpclientidx].rcvbody)
-					sys.timer_stop(timerfnc,httpclientidx)
-					tclients[httpclientidx].result=nil
-					tclients[httpclientidx].statuscode=nil
-					tclients[httpclientidx].statuscode=nil
-					tclients[httpclientidx].rcvhead=nil
-					tclients[httpclientidx].rcvbody=nil
-					tclients[httpclientidx].data=""
-					tclients[httpclientidx].status=false
-				elseif	slen(ssub(tclients[httpclientidx].data,h2+1,-1)) > tclients[httpclientidx].contentlen	then
-					--有实体且实体长度大于实际长度
-					tclients[httpclientidx].result=2
-					tclients[httpclientidx].rcvbody=nil
-					tclients[httpclientidx].rcvcb(tclients[httpclientidx].result,tclients[httpclientidx].statuscode,tclients[httpclientidx].rcvhead)
-					sys.timer_stop(timerfnc,httpclientidx)
-					tclients[httpclientidx].result=nil
-					tclients[httpclientidx].statuscode=nil
-					tclients[httpclientidx].statuscode=nil
-					tclients[httpclientidx].rcvhead=nil
-					tclients[httpclientidx].data=""
-					tclients[httpclientidx].status=false										
+					resetpara(httpclientidx)
 				end
-			--存在首部，但是实体长度为0
-			elseif	 tclients[httpclientidx].contentlen==0	then
-				tclients[httpclientidx].result=1
-				tclients[httpclientidx].rcvcb(tclients[httpclientidx].result,tclients[httpclientidx].statuscode,tclients[httpclientidx].rcvhead)
-				sys.timer_stop(timerfnc,httpclientidx)
-				tclients[httpclientidx].result=nil
-				tclients[httpclientidx].statuscode=nil
-				tclients[httpclientidx].statuscode=nil
-				tclients[httpclientidx].rcvhead=nil
-				tclients[httpclientidx].data=""
-				tclients[httpclientidx].status=false
+			--有数据且没接收反馈函数	
+			elseif not tclients[httpclientidx].rcvhead	then
+				print("no message reback")
+			else
+				print("rcv",data)
 			end
-		--有数据且没接收反馈函数	
-		elseif	not tclients[httpclientidx].rcvhead	then
-			print("no message reback")
-		else
-			print("rcv",data)
+		else 
+			print("error data format")
 		end
 	end
 end
-
 
 
 --[[
@@ -347,8 +304,6 @@ end
 local thttp = {}
 thttp.__index = thttp
 
-
-
 --[[
 函数名：create
 功能  ：创建一个http client
@@ -363,10 +318,8 @@ function create(host,port)
 	local http_client =
 	{
 		prot="TCP",
-		--默认为"www.openluat.com"
-		host=host or "36.7.87.100",
-		--默认端口为80
-		port=port or 81 ,		
+		host=host,
+		port=port or 80,		
 		sckidx=socket.SCK_MAX_CNT-#tclients-2,
 		sckconning=false,
 		sckconnected=false,
@@ -402,7 +355,6 @@ function thttp:connect(connectedcb,sckerrcb)
 	
 	if self.httpconnected then print("thttp:connect already connected") return end
 	if not self.sckconnected then
-		--执行
 		connect(self.sckidx,self.prot,self.host,self.port) 
     end
 end
@@ -462,15 +414,25 @@ function thttp:request(cmdtyp,url,head,body,rcvcb)
 	self.cmdtyp=cmdtyp or "GET"
 	--默认为根目录
 	self.url=url or "/"
-	self.head=head or ""
 	--默认实体为空
 	self.body=body or ""
-	self.rcvcb=rcvcb or ""
-	--默认首部为Connection: keep-alive
-	if not head then
-		self.head={}
-		self.head["1"]="Connection: keep-alive"
+	self.rcvcb=rcvcb
+
+	if not head or head=="" or (type(head)=="table" and #head==0) then
+		self.head={"Connection: keep-alive", "Host: "..self.host}
+	elseif type(head)=="table" and #head>0 then
+		local connhead,hosthead,k,v
+		for k,v in pairs(head) do
+			if sfind(v,"Connection: ")==1 then connhead = true end
+			if sfind(v,"Host: ")==1 then hosthead = true end
+			table.insert(self.head,v)
+		end
+		if not hosthead then table.insert(self.head,1,"Host: "..self.host) end
+		if not connhead then table.insert(self.head,1,"Connection: keep-alive") end
+	else
+		assert(false,"head format error")
 	end
+	
 	val=cmdtyp.." "..self.url.." HTTP/1.1"..'\r\n'
 	for k,v in pairs(self.head) do
 		val=val..v..'\r\n'

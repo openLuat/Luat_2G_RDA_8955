@@ -93,7 +93,6 @@ local function sndcb(item,result)
 	if item.para=="LOCRPT" then
 		locrptcb(item,result)
 	end
-	if not result then link.shut() end
 end
 
 --[[
@@ -112,8 +111,7 @@ local function reconn()
 	--一个连接周期内的重连
 	if reconncnt < RECONN_MAX_CNT then
 		reconncnt = reconncnt+1
-		link.shut()
-		connect()
+		socket.disconnect(SCK_IDX,"RECONNECT")
 	--一个连接周期的重连都失败
 	else
 		reconncnt,reconncyclecnt = 0,reconncyclecnt+1
@@ -153,10 +151,10 @@ function ntfy(idx,evt,result,item)
 		--连接失败
 		else
 			if not hasconnected then
-				--5秒后重连
+				--RECONN_PERIOD秒后重连
 				sys.timer_start(reconn,RECONN_PERIOD*1000)
 			else				
-				link.shut()
+				socket.disconnect(idx)
 			end			
 		end	
 	--数据发送结果（调用socket.send后的异步事件）
@@ -164,6 +162,9 @@ function ntfy(idx,evt,result,item)
 		if item then
 			sndcb(item,result)
 		end
+		--发送失败，RECONN_PERIOD秒后重连后台，不要调用reconn，此时socket状态仍然是CONNECTED，会导致一直连不上服务器
+		--if not result then sys.timer_start(reconn,RECONN_PERIOD*1000) end
+		if not result then socket.disconnect(idx) end
 	--连接被动断开
 	elseif evt == "STATE" and result == "CLOSED" then
 		linksta = false
@@ -175,12 +176,12 @@ function ntfy(idx,evt,result,item)
 	--连接主动断开（调用socket.disconnect后的异步事件）
 	elseif evt == "DISCONNECT" then
 		linksta = false
+		if item=="RECONNECT" then connect() end
 		--补充自定义功能代码			
 	end
 	--其他错误处理
 	if smatch((type(result)=="string") and result or "","ERROR") then
-		--断开数据链路，重新激活
-		link.shut()
+		socket.disconnect(idx)
 	end
 end
 
