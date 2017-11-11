@@ -16,6 +16,11 @@ require"test"
 if MODULE_TYPE=="Air201" then
 require"wdt"
 end
-
+require"wdt"
+--[[
+DEMO演示，不进入低功耗模式，防止出现异常情况
+]]
+require"pm"
 sys.init(0,0)
+pm.wake("test")
 sys.run()
