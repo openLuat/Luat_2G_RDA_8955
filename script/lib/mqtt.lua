@@ -478,11 +478,8 @@ local function reconn(sckidx)
 	--一个连接周期内的重连
 	if tclients[mqttclientidx].sckreconncnt < RECONN_MAX_CNT then		
 		tclients[mqttclientidx].sckreconncnt = tclients[mqttclientidx].sckreconncnt+1
-		link.shut()
-		for k,v in pairs(tclients) do
-			connect(v.sckidx,v.prot,v.host,v.port)
-		end
-		
+		socket.disconnect(sckidx)
+		tclients[mqttclientidx].sckconning = true		
 	--一个连接周期的重连都失败
 	else
 		tclients[mqttclientidx].sckreconncnt,tclients[mqttclientidx].sckreconncyclecnt = 0,tclients[mqttclientidx].sckreconncyclecnt+1
@@ -495,9 +492,13 @@ local function reconn(sckidx)
 				sys.restart("connect fail")
 			end
 		else
-			sys.timer_start(reconn,RECONN_CYCLE_PERIOD*1000,sckidx)
+			link.shut()
 		end		
 	end
+end
+
+local function connectitem(mqttclientidx)
+	connect(tclients[mqttclientidx].sckidx,tclients[mqttclientidx].prot,tclients[mqttclientidx].host,tclients[mqttclientidx].port)
 end
 
 --[[
@@ -534,7 +535,7 @@ function ntfy(idx,evt,result,item)
 	--数据发送结果（调用socket.send后的异步事件）
 	elseif evt == "SEND" then
 		if not result then
-			link.shut()
+			socket.disconnect(idx)
 		else
 			if item.para then
 				if item.para.key=="MQTTPUB" then
@@ -561,7 +562,7 @@ function ntfy(idx,evt,result,item)
 			if tclients[mqttclientidx].discb then tclients[mqttclientidx].discb() end
 			tclients[mqttclientidx].discing = false
 		else
-			reconn(idx)
+			sys.timer_start(connectitem,RECONN_PERIOD*1000,mqttclientidx)
 		end
 	--连接主动断开（调用link.shut后的异步事件）
 	elseif evt == "STATE" and result == "SHUTED" then
@@ -570,7 +571,7 @@ function ntfy(idx,evt,result,item)
 		tclients[mqttclientidx].sckconnected=false
 		tclients[mqttclientidx].mqttconnected=false
 		tclients[mqttclientidx].sckrcvs=""
-		reconn(idx)
+		connectitem(mqttclientidx)
 	--连接主动断开（调用socket.disconnect后的异步事件）
 	elseif evt == "DISCONNECT" then
 		sys.timer_stop(pingreq,idx)
@@ -582,7 +583,7 @@ function ntfy(idx,evt,result,item)
 			if tclients[mqttclientidx].discb then tclients[mqttclientidx].discb() end
 			tclients[mqttclientidx].discing = false
 		else
-			reconn(idx)
+			connectitem(mqttclientidx)
 		end
 	--连接主动断开并且销毁（调用socket.close后的异步事件）
 	elseif evt == "CLOSE" then
@@ -594,7 +595,7 @@ function ntfy(idx,evt,result,item)
 	end
 	--其他错误处理，断开数据链路，重新连接
 	if smatch((type(result)=="string") and result or "","ERROR") then
-		link.shut()
+		socket.disconnect(idx)
 	end
 end
 
@@ -660,7 +661,7 @@ end
 ]]
 local function svrpublish(sckidx,mqttpacket)
 	local mqttclientidx = getclient(sckidx)
-	print("svrpublish",mqttpacket.topic,mqttpacket.seq,mqttpacket.payload)	
+	print("svrpublish",mqttpacket.topic,mqttpacket.seq,slen(mqttpacket.payload)>200 and slen(mqttpacket.payload) or mqttpacket.payload)
 	if mqttpacket.qos == 1 then snd(sckidx,pack(tclients[mqttclientidx].mqttver,PUBACK,mqttpacket.seq)) end
 	if tclients[mqttclientidx].evtcbs then
 		if tclients[mqttclientidx].evtcbs["MESSAGE"] then tclients[mqttclientidx].evtcbs["MESSAGE"](common.utf8togb2312(mqttpacket.topic),mqttpacket.payload,mqttpacket.qos) end
@@ -697,7 +698,7 @@ mqttcmds = {
 local function datinactive(sckidx)
 	local mqttclientidx = getclient(sckidx)
 	if tclients[mqttclientidx].sckerrcb then
-		link.shut()
+		socket.disconnect(sckidx)
 		tclients[mqttclientidx].sckreconncnt=0
 		tclients[mqttclientidx].sckreconncyclecnt=0
 		tclients[mqttclientidx].sckerrcb("SVRNODATA")
@@ -728,9 +729,11 @@ end
 ]]
 function rcv(idx,data)
 	local mqttclientidx = getclient(idx)
+	if not mqttclientidx or not tclients[mqttclientidx].sckconnected then return end
 	print("rcv",slen(data)>200 and slen(data) or common.binstohexs(data))
 	sys.timer_start(pingreq,tclients[mqttclientidx].keepalive*1000/2,idx)	
 	tclients[mqttclientidx].sckrcvs = tclients[mqttclientidx].sckrcvs..data
+	if slen(tclients[mqttclientidx].sckrcvs)>1024*10 then collectgarbage() end
 
 	local f,h,t = iscomplete(tclients[mqttclientidx].sckrcvs)
 

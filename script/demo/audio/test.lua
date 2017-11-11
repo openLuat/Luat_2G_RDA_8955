@@ -80,9 +80,18 @@ local function testplayconflict()
 end
 
 
+local function testtsnew()
+	--设置优先级相同时的播放策略，1表示停止当前播放，播放新的播放请求
+	audio.setstrategy(1)
+	audio.play(TTS,"TTS",common.binstohexs(common.gb2312toucs2(ttstr)),audiocore.VOL7)
+end
+
+
 --每次打开下面的一行代码进行测试
 if string.match(sys.getcorever(),"TTS") then
 	sys.timer_start(testplaytts,5000)
+	--如果要测试tts播放时，请求播放新的tts，打开下面这段代码
+	--sys.timer_loop_start(testtsnew,5000)
 else
 	sys.timer_start(testplayfile,5000)
 end

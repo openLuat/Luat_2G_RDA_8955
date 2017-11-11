@@ -23,7 +23,7 @@ local function nemacb(data)
 end
 
 --是否支持gps
-local gpsupport = (_G.MODULE_TYPE=="Air800")
+local gpsupport = (_G.MODULE_TYPE=="Air800" or _G.MODULE_TYPE=="Air801")
 --如果支持gps，则打开gps
 if gpsupport then
 	require"agps"

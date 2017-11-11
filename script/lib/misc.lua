@@ -173,13 +173,6 @@ end
 返回值：序列号，如果未获取到返回""
 ]]
 function getsn()
-	--[[
-	if imei=="862991419826711" then return "fUECbTzdDm48irb0ng97GnHTBRGFKpYj" end
-	if imei=="862991419827115" then return "nvsGyyIpohh1LtzNaiU9eUsGEDWwOFB9" end
-	if imei=="862991419827289" then return "nAQDkMNLnwv6Bh7w0sejhDcdKrEE4hXQ" end
-	if imei=="862991419826760" then return "b57RRMVXFGiktclTPPoX0Fx2L26z8KBN" end
-	if imei=="862991419827255" then return "cO9eOqF80IgQGx7TTSB7rRJbLlTyIscH" end
-	]]
 	return sn or ""
 end
 
@@ -303,7 +296,7 @@ end
 参数  ：
 		id：number类型，PWM输出通道，仅支持0和1，0用的是uart2 tx，1用的是uart2 rx
 		period：number类型
-				当id为0时，period表示频率，单位为Hz，取值范围为80-1625，仅支持整数
+				当id为0时，period表示频率，单位为Hz，取值范围为80-65535，仅支持整数
 				当id为1时，取值范围为0-7，仅支持整数，表示时钟周期，单位为毫秒，0-7分别对应125、250、500、1000、1500、2000、2500、3000毫秒
 		level：number类型
 				当id为0时，level表示占空比，单位为level%，取值范围为1-100，仅支持整数
@@ -317,10 +310,10 @@ end
 function openpwm(id,period,level)
 	assert(type(id)=="number" and type(period)=="number" and type(level)=="number","openpwm type error")
 	assert(id==0 or id==1,"openpwm id error: "..id)
-	local pmin,pmax,lmin,lmax = 80,1625,1,100
+	--[[local pmin,pmax,lmin,lmax = 80,1625,1,100
 	if id==1 then pmin,pmax,lmin,lmax = 0,7,1,15 end
 	assert(period>=pmin and period<=pmax,"openpwm period error: "..period)
-	assert(level>=lmin and level<=lmax,"openpwm level error: "..level)
+	assert(level>=lmin and level<=lmax,"openpwm level error: "..level)]]
 	req("AT+SPWM="..id..","..period..","..level)
 end
 

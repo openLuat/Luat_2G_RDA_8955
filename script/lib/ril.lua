@@ -16,8 +16,7 @@ module("ril")
 local setmetatable = base.setmetatable
 local print = base.print
 local type = base.type
-local smatch = string.match
-local sfind = string.find
+local smatch,sfind,slen = string.match,string.find,string.len
 local vwrite = uart.write
 local vread = uart.read
 
@@ -236,7 +235,6 @@ end
 返回值：无
 ]]
 local function procatc(data)
-	print("atc:",data)
 	--如果命令的应答是多行字符串格式
 	if interdata and cmdtype == MLINE then
 		--不出现OK\r\n，则认为应答还未结束
@@ -252,7 +250,10 @@ local function procatc(data)
 	end
 	--如果存在“数据过滤器”
 	if urcfilter then
+		if slen(data)<200 then print("atc:",data) end
 		data,urcfilter = urcfilter(data)
+	else
+		print("atc:",data)
 	end
 	--去掉最后的\r\n
 	if sfind(data,"\r\n",-2) then
@@ -505,7 +506,7 @@ local function atcreader()
 	while true do
 		--每次读取一行
 		s = vread(uart.ATC,"*l",0)
-		if string.len(s) ~= 0 then
+		if slen(s) ~= 0 then
 			if transparentmode then
 				--透传模式下直接转发数据
 				rcvfunc(s)
