@@ -1272,3 +1272,5 @@ function isactive(mode,para)
 end
 
 sys.regapp(gpsstatind,GPS_STATE_IND)
+--为GPS提供32K时钟
+rtos.sys32k_clk_out(1)

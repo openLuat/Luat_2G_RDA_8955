@@ -58,7 +58,7 @@ local ledstate,ledontime,ledofftime,usersckconnect = "INIT",0,0
 --ledpin：网络指示灯控制引脚
 --ledvalid：引脚输出何种电平会点亮指示灯，1为高，0为低
 --ledidleon,ledidleoff,ledcregon,ledcregoff,ledcgatton,ledcgattoff,ledsckon,ledsckoff：IDLE,CREG,CGATT,SCK状态下指示灯的点亮和熄灭时长(毫秒)
-local ledflg,ledpin,ledvalid,ledflymodeon,ledflymodeoff,ledsimerron,ledsimerroff,ledidleon,ledidleoff,ledcregon,ledcregoff,ledcgatton,ledcgattoff,ledsckon,ledsckoff = false,(base.MODULE_TYPE=="Air800" and pio.P0_28 or pio.P1_1),1,0,0xFFFF,300,5700,300,3700,300,1700,300,700,100,100
+local ledflg,ledpin,ledvalid,ledflymodeon,ledflymodeoff,ledsimerron,ledsimerroff,ledidleon,ledidleoff,ledcregon,ledcregoff,ledcgatton,ledcgattoff,ledsckon,ledsckoff = false,((base.MODULE_TYPE=="Air800" or base.MODULE_TYPE=="Air801") and pio.P0_28 or pio.P1_1),1,0,0xFFFF,300,5700,300,3700,300,1700,300,700,100,100
 
 local creg3 --标志参数
 --[[
