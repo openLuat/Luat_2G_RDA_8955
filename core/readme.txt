@@ -1,30 +1,35 @@
-Air202和Air800模块的Flash总空间都为4MB
-Air202和Air800目前都有5种底层软件：
-Luat_VXXXX_Air202.lod、Luat_VXXXX_Air800.lod：不支持SSL、TTS、SPI接口的LCD功能
-Luat_VXXXX_Air202_SSL.lod、Luat_VXXXX_Air800_SSL.lod：支持SSL功能
-Luat_VXXXX_Air202_TTSX.lod、Luat_VXXXX_Air800_TTSX.lod：支持TTS功能
-Luat_VXXXX_Air202_UI.lod、Luat_VXXXX_Air800_UI.lod：支持SPI接口的LCD功能
-Luat_VXXXX_Air202_TTS_UI.lod、Luat_VXXXX_Air800_TTS_UI.lod：支持TTS、SPI接口的LCD功能
+RDA8955芯片的Air模块的Flash总空间都为4MB
+目前有6种底层软件：
+Luat_VXXXX_8955.lod：不支持SSL、TTS、SPI接口的LCD功能
+Luat_VXXXX_8955_SSL.lod：支持SSL功能
+Luat_VXXXX_8955_TTSX.lod：支持TTS功能
+Luat_VXXXX_8955_UI.lod：支持SPI接口的LCD功能
+Luat_VXXXX_8955_TTS_UI.lod：支持TTS、SPI接口的LCD功能
+Luat_VXXXX_8955_SSL_UI.lod：支持SSL、SPI接口的LCD功能
 
-Luat_VXXX_Air202.lod、Luat_VXXXX_Air800.lod：
+Luat_VXXXX_8955.lod：
 Lua脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件）可用512KB
 文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用694KB
 
-Luat_VXXX_Air202_SSL.lod、Luat_VXXXX_Air800_SSL.lod：
+Luat_VXXXX_8955_SSL.lod：
 LuaDB脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件）可用640KB
 文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用591KB
 
-Luat_VXXX_Air202_TTS1.lod、Luat_VXXXX_Air800_TTS1.lod：
+Luat_VXXXX_8955_TTS1.lod：
 LuaDB脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件）可用216KB
 文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用214KB
 
-Luat_VXXX_Air202_UI.lod、Luat_VXXXX_Air800_UI.lod：
+Luat_VXXXX_8955_UI.lod：
 LuaDB 脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件，图片文件）可用512KB
 文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用642KB
 
-Luat_VXXXX_Air202_TTS_UI.lod、Luat_VXXXX_Air800_TTS_UI.lod：
+Luat_VXXXX_8955_TTS_UI.lod：
 LuaDB 脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件，图片文件）可用216KB
 文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用118KB
+
+Luat_VXXXX_8955_SSL_UI.lod：
+LuaDB 脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件，图片文件）可用512KB
+文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用496KB
 
 
 无论是哪一种底层软件，关于文件系统空间的使用，注意以下几点：
