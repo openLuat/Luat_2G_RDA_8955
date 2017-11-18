@@ -311,7 +311,7 @@ function upend(succ)
 	sys.timer_stop(errpack)
 	-- 断开链接
 	link.close(lid)
-	getretries = 0
+	getretries,lid = 0
 	if succ then
 		reconnect = false
 		retries = 0
@@ -506,8 +506,10 @@ end
 返回值：无
 ]]
 local function connectcb()
-	lid = link.open(nofity,rcv)
-	link.connect(lid,PROT,SVR,PORT)
+	if not lid then
+		lid = link.open(nofity,rcv)
+		link.connect(lid,PROT,SVR,PORT)
+	end
 end
 
 --[[

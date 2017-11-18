@@ -1,3 +1,16 @@
+发布时间：2017/11/18 14:47
+修改记录：
+    一、lib脚本修改
+        lib脚本版本号：1.1.0
+        (1)http：修正“request时存在自定义head时异常重启”的问题
+        (2)agps：修正“开机会重复连接1次服务器”的问题
+        (3)agpsupgpd：修正“连接星历服务器的socket id可能和其他socket id冲突”的问题
+        (4)mqtt、mqttssl：新增unsubscribe取消订阅主题的接口
+    二、demo脚本修改
+        (1)socket_ssl：规范ca证书文件的后缀名
+
+
+
 发布时间：2017/10/29 16:33
 修改记录：
     一、lib脚本修改

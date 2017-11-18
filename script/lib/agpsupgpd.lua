@@ -9,13 +9,8 @@ module(...,package.seeall)
 --加载常用的全局函数至本地
 local ssub,schar,smatch,sbyte,slen = string.sub,string.char,string.match,string.byte,string.len
 
-local SCK_IDX,PROT,ADDR,PORT = 2,"TCP","download.openluat.com",80
+local PROT,ADDR,PORT,lid = "TCP","download.openluat.com",80
 
-local linksta
-
-local RECONN_MAX_CNT,RECONN_PERIOD,RECONN_CYCLE_MAX_CNT,RECONN_CYCLE_PERIOD = 3,5,3,20
-
-local reconncnt,reconncyclecnt,conning = 0,0
 local GPD_FILE = "/GPD.txt"
 local GPDTIME_FILE = "/GPDTIME.txt"
 local gpdlen,wxlt
@@ -36,109 +31,47 @@ local str5 = "Host: download.openluat.com:80\n"
 local str6 = "Connection: Keep-Alive\n"
 local str7 = "\n\n"
 local str8 = "Content-Length:0"
-
 local sendstr = str1..str2..str3..str4..str5..str6..str7
-
 local gpd = ""
 
---[[
-函数名：snd
-功能  ：调用发送接口发送数据
-参数  ：
-        data：发送的数据，在发送结果事件处理函数ntfy中，会赋值到item.data中
-		para：发送的参数，在发送结果事件处理函数ntfy中，会赋值到item.para中 
-返回值：调用发送接口的结果（并不是数据发送是否成功的结果，数据发送是否成功的结果在ntfy中的SEND事件中通知），true为成功，其他为失败
-]]
-function snd(data,para)
-	return socket.send(SCK_IDX,data,para)
-end
+local RETRY_TIMES,retries,reconnect = 3,1
 
---[[
-函数名：gpsup
-功能  ：发送“请求星历信息”数据到服务器
-参数  ：无
-返回值：无
-]]
-function gpsup()
-	print("gpsup",linksta)
-	if linksta then
-		snd(sendstr,"GPS")		
-	end
-end
-
---[[
-函数名：reconn
-功能  ：重连后台处理
-        一个连接周期内的动作：如果连接后台失败，会尝试重连，重连间隔为RECONN_PERIOD秒，最多重连RECONN_MAX_CNT次
-        如果一个连接周期内都没有连接成功，则等待RECONN_CYCLE_PERIOD秒后，重新发起一个连接周期
-        如果连续RECONN_CYCLE_MAX_CNT次的连接周期都没有连接成功，则重启软件
-参数  ：无
-返回值：无
-]]
-local function reconn()
-	print("reconn",reconncnt,conning,reconncyclecnt)
-	--conning表示正在尝试连接后台，一定要判断此变量，否则有可能发起不必要的重连，导致reconncnt增加，实际的重连次数减少
-	if conning then return end
-	--一个连接周期内的重连
-	if reconncnt < RECONN_MAX_CNT then		
-		reconncnt = reconncnt+1
-		socket.disconnect(SCK_IDX)
-	--一个连接周期的重连都失败
+function upend(succ)
+	link.close(lid)
+	lid = nil
+	if succ then
+		retries,reconnect = 0
 	else
-		reconncnt,reconncyclecnt = 0,reconncyclecnt+1
-		if reconncyclecnt >= RECONN_CYCLE_MAX_CNT then
-			sys.restart("connect fail")
+		if retries >= RETRY_TIMES then
+			retries,reconnect = 0
+		else
+			reconnect = true
+			retries = retries + 1
 		end
-		link.shut()
 	end
 end
 
---[[
-函数名：ntfy
-功能  ：socket状态的处理函数
-参数  ：
-        idx：number类型，socket.lua中维护的socket idx，跟调用socket.connect时传入的第一个参数相同，程序可以忽略不处理
-        evt：string类型，消息事件类型
-		result： bool类型，消息事件结果，true为成功，其他为失败
-		item：table类型，{data=,para=}，消息回传的参数和数据，目前只是在SEND类型的事件中用到了此参数，例如调用socket.send时传入的第2个和第3个参数分别为dat和par，则item={data=dat,para=par}
-返回值：无
-]]
-function ntfy(idx,evt,result,item)
-	print("ntfy",evt,result,item)
-	--连接结果（调用socket.connect后的异步事件）
+function ntfy(idx,evt,val)
+	print("ntfy",evt,val)
+	--连接结果
 	if evt == "CONNECT" then
-		conning = false
-		--连接成功
-		if result then
-			reconncnt,reconncyclecnt,linksta = 0,0,true
-			--停止重连定时器
-			sys.timer_stop(reconn)
-			gpsup()
-		--连接失败
+		if val == "CONNECT OK" then
+			link.send(lid,sendstr)
 		else
-			--RECONN_PERIOD秒后重连
-			sys.timer_start(reconn,RECONN_PERIOD*1000)
+			upend(false)
 		end	
-	--数据发送结果（调用socket.send后的异步事件）
+	--数据发送结果
 	elseif evt == "SEND" then
-		--发送失败，RECONN_PERIOD秒后重连后台，不要调用reconn，此时socket状态仍然是CONNECTED，会导致一直连不上服务器
-		if not result then sys.timer_start(reconn,RECONN_PERIOD*1000) end
-		if not result then socket.disconnect(idx) end
+		if val ~= "SEND OK" then upend(false) end
 	--连接被动断开
-	elseif evt == "STATE" and result == "CLOSED" then
-		linksta = false
+	elseif evt == "STATE" and val == "CLOSED" then
+		upend(false)
 	--连接主动断开（调用link.shut后的异步事件）
-	elseif evt == "STATE" and result == "SHUTED" then
-		linksta = false
+	elseif evt == "STATE" and val == "SHUTED" then
+		upend(false)
+	--连接主动断开
+	elseif evt == "CLOSE" and reconnect then
 		connect()
-	--连接主动断开（调用socket.disconnect后的异步事件）
-	elseif evt == "DISCONNECT" then
-		linksta = false
-		connect()
-	end
-	--其他错误处理，断开数据链路，重新连接
-	if smatch((type(result)=="string") and result or "","ERROR") then
-		socket.disconnect(idx)
 	end
 end
 
@@ -175,11 +108,6 @@ local writebg
 function writegpdbg()
 	local tmp = 0
 	local str = "$PGKC149,1,115200*15\r\n"
-	--[[for i = 2,slen(str)-1 do
-		tmp = bit.bxor(tmp,sbyte(str,i))
-	end	
-	tmp = string.format("%x",tmp)
-	str = str..tmp.."\r\n"]]
 	print("syy writeapgs str",str,slen(str))
 	writebg = true
 	gps.writegk(str)
@@ -237,19 +165,10 @@ function writegpd()
 	idx = idx+1
 end
 
-function changem(m)
-	for k,v in pairs(month) do
-		if m == v then
-			return k
-		end
-	end
-end
-
 function rcv(idx,data)
 	print("syy rcv!!!!!!!!!!",slen(data))
-	--print("rcv",data)
 	local fs = string.find(data,"HTTP/1.1 400 BAD REQUEST")
-	if fs then socket.close(idx) return end
+	if fs then upend(false) return end
 	local str1 = string.find(data,"Length: ")
 	local t1,t2= string.find(data,"Modified: ")
 	if t2 then
@@ -270,7 +189,7 @@ function rcv(idx,data)
 	end
 	print("syy gpd len:",slen(gpd),tonumber(gpdlen))
 	if slen(gpd) >= tonumber(gpdlen)*2 then
-		socket.close(idx)
+		upend(true)
 		gpd = ssub(gpd,1,tonumber(gpdlen)*2)
 		writegpdbg()
 		writetxt(GPD_FILE,gpd)
@@ -321,10 +240,7 @@ local function uptimeck()
 	local xlt = os.time({year=clk.year,month=clk.month,day=clk.day, hour=clk.hour, min=clk.min, sec=clk.sec})
 	print("uptimeck",xlt,os.time())
 	local nowtime = os.time()
-	if os.difftime(nowtime,xlt) >= 4*3600 then
-		return true
-	end
-		return false
+	return os.difftime(nowtime,xlt) >= 4*3600
 end
 
 --[[
@@ -337,23 +253,22 @@ end
 返回值：无
 ]]
 function connect()
-	print("connect uptime",uptimeck(),gps.isfix())
+	print("connect uptime",uptimeck(),gps.isfix(),lid)
 	if not uptimeck() or gps.isfix() then 
 		sys.dispatch("AGPS_WRDATE_END")
+		retries,reconnect = 0
 		return 
 	end
-	socket.connect(SCK_IDX,PROT,ADDR,PORT,ntfy,rcv)
-	conning = true
+	if not lid then
+		lid = link.open(ntfy,rcv)
+		link.connect(lid,PROT,ADDR,PORT)
+	end	
 end
 
 local function proc(id)
 	print("AGPS_WRDATE_SUC")
-	--writegpdbg()
 	connect()
-	return true
 end
-
---connect()
 
 function checkup()
 	print("checkup",uptimeck())
