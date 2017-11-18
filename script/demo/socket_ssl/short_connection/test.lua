@@ -210,7 +210,7 @@ end
 ]]
 function connect()
 	--verifysvrcerts中的文件名必须跟initcrt中调用linkssl.inputcrt中的第二个参数保持一致
-	socketssl.connect(SCK_IDX,PROT,ADDR,PORT,ntfy,rcv,true,{verifysvrcerts={"server.crt"}})
+	socketssl.connect(SCK_IDX,PROT,ADDR,PORT,ntfy,rcv,true,{verifysvrcerts={"ca.crt"}})
 	conning = true
 end
 
@@ -221,11 +221,11 @@ end
 返回值：无
 ]]
 local function initcrt()
-	local fconfig = io.open("/ldata/ca_crt.mp3","rb")
+	local fconfig = io.open("/ldata/ca.crt","rb")
 	if not fconfig then print("initcrt err open") return end
 	local s = fconfig:read("*a")
 	fconfig:close()
-	linkssl.inputcrt("cacrt","server.crt",s)
+	linkssl.inputcrt("cacrt","ca.crt",s)
 end
 
 initcrt()

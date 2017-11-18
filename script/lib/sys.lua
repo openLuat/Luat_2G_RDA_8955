@@ -25,7 +25,7 @@ local assert = base.assert
 local tonumber = base.tonumber
 
 --lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "1.0.9"
+SCRIPT_LIB_VER = "1.1.0"
 --脚本发布时的最新core软件版本号
 CORE_MIN_VER = "Luat_V0014_8955"
 

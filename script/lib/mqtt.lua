@@ -320,6 +320,21 @@ local function mqttsubcb(sckidx,result,tpara)
 end
 
 --[[
+函数名：mqttunsubcb
+功能  ：发送UNSUBSCRIBE报文后的异步回调函数
+参数  ：		
+		sckidx：socket idx
+		result： bool类型，发送结果，true为成功，其他为失败
+		tpara：table类型，{key="MQTTUNSUB", val=para, usertag=usertag, ackcb=ackcb}
+返回值：无
+]]
+local function mqttunsubcb(sckidx,result,tpara)	
+	--重新封装MQTT UNSUBSCRIBE报文，重复标志设为true，序列号和topic都是用原始值，数据保存起来，如果超时DUP_TIME秒中没有收到UNSUBACK，则会自动重发UNSUBSCRIBE报文
+	--重发的触发开关在mqttdup.lua中
+	mqttdup.ins(sckidx,tpara.key,pack(tclients[getclient(sckidx)].mqttver,UNSUBSCRIBE,tpara.val),tpara.val.seq,tpara.ackcb,tpara.usertag)
+end
+
+--[[
 函数名：mqttpubcb
 功能  ：发送PUBLISH报文后的异步回调函数
 参数  ：		
@@ -542,6 +557,8 @@ function ntfy(idx,evt,result,item)
 					mqttpubcb(idx,result,item.para)
 				elseif item.para.key=="MQTTSUB" then
 					mqttsubcb(idx,result,item.para)
+				elseif item.para.key=="MQTTUNSUB" then
+					mqttunsubcb(idx,result,item.para)
 				elseif item.para.key=="MQTTDUP" then
 					mqttdupcb(idx,result,item.data)
 				else
@@ -636,6 +653,22 @@ local function suback(sckidx,packet)
 end
 
 --[[
+函数名：unsuback
+功能  ：处理服务器下发的MQTT UNSUBACK报文
+参数  ：
+        sckidx：socket idx
+		packet：解析后的报文格式，table类型{seq=对应的UNSUBSCRIBE报文序列号}
+返回值：无
+]]
+local function unsuback(sckidx,packet)
+	local mqttclientidx = getclient(sckidx)
+	local typ,cb,cbtag = mqttdup.getyp(sckidx,packet.seq)
+	print("unsuback",common.binstohexs(packet.seq))
+	mqttdup.rmv(sckidx,nil,nil,packet.seq)
+	if cb then cb(cbtag,true) end
+end
+
+--[[
 函数名：puback
 功能  ：处理服务器下发的MQTT PUBACK报文
 参数  ：
@@ -683,6 +716,7 @@ end
 mqttcmds = {
 	[CONNACK] = connack,
 	[SUBACK] = suback,
+	[UNSUBACK] = unsuback,
 	[PUBACK] = puback,
 	[PUBLISH] = svrpublish,
 	[PINGRSP] = pingrsp,
@@ -743,7 +777,7 @@ function rcv(idx,data)
 		local packet = unpack(tclients[mqttclientidx].mqttver,data)
 		if packet and packet.typ and mqttcmds[packet.typ] then
 			mqttcmds[packet.typ](idx,packet)
-			if packet.typ ~= CONNACK and packet.typ ~= SUBACK then
+			if packet.typ ~= CONNACK and packet.typ ~= SUBACK and packet.typ ~= UNSUBACK then
 				checkdatactive(idx)
 			end
 		end
@@ -1036,6 +1070,34 @@ function tmqtt:subscribe(topics,ackcb,usertag)
 	local tpara = {key="MQTTSUB", val=para, usertag=usertag, ackcb=ackcb}
 	if not snd(self.sckidx,dat,tpara) then
 		mqttsubcb(self.sckidx,false,tpara)
+	end
+end
+
+
+--[[
+函数名：unsubscribe
+功能  ：取消订阅主题
+参数  ：
+		topics：table类型，一个或者多个主题，主题名gb2312编码，{"/topic1","/topic2",...}[必选]
+		ackcb：function类型，表示收到UBSUBACK的回调函数[可选]
+		usertag：string类型，用户回调函数ackcb用到的第一个参数[可选]
+返回值：无
+]]
+function tmqtt:unsubscribe(topics,ackcb,usertag)
+	--检查mqtt连接状态
+	if not self.mqttconnected then
+		print("tmqtt:unsubscribe not connected")
+		if ackcb then ackcb(usertag,false) end
+		return
+	end
+	
+	--打包unsubscribe报文
+	local dat,para = pack(self.mqttver,UNSUBSCRIBE,{topic=topics})
+	
+	--发送
+	local tpara = {key="MQTTUNSUB", val=para, usertag=usertag, ackcb=ackcb}
+	if not snd(self.sckidx,dat,tpara) then
+		mqttunsubcb(self.sckidx,false,tpara)
 	end
 end
 

@@ -415,6 +415,7 @@ function thttp:request(cmdtyp,url,head,body,rcvcb)
 	--默认为根目录
 	self.url=url or "/"
 	--默认实体为空
+	self.head={}
 	self.body=body or ""
 	self.rcvcb=rcvcb
 
