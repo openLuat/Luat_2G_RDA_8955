@@ -1,12 +1,14 @@
 module(...,package.seeall)
 
 require"aliyuniotssl"
-
+require"misc"
 --阿里云华东2节点上创建的productKey，用户如果自己在阿里云上创建项目，根据自己的项目信息，修改此值
 local PRODUCT_KEY = _G.DEBUG_AIR and "b0FMK1Ga5cp" or "OiStgsPb69t"
 --除了上面的PRODUCT_KEY外，还需要DEVICE_NAME和DEVICE_SECRET
 --lib中会使用设备的IMEI和SN号用做DEVICE_NAME和DEVICE_SECRET，所以在阿里云上添加设备时，DEVICE_NAME就用IMEI，然后把生成的DEVICE_SECRET当做SN写入设备中
 
+--获取到证书后，将DEVICE_SECRET赋值给newsn，打开下面的注释,还需要打开最下面的sys.timer_start(setsn,5000)
+--local newsn = ""
 local qos1cnt = 1
 
 --[[
@@ -19,6 +21,11 @@ local function print(...)
 	_G.print("test",...)
 end
 
+local function setsn()
+	if misc.getsn() ~= newsn then
+		misc.setsn(newsn)
+	end
+end
 --[[
 函数名：pubqos1testackcb
 功能  ：发布1条qos为1的消息后收到PUBACK的回调函数
@@ -101,6 +108,7 @@ end
 local function connecterrcb(r)
 	print("connecterrcb",r)
 end
-
+--5秒后开始烧写sn
+--sys.timer_start(setsn,5000)
 aliyuniotssl.config(PRODUCT_KEY)
 aliyuniotssl.regcb(connectedcb,connecterrcb)
