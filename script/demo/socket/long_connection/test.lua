@@ -176,9 +176,9 @@ function ntfy(idx,evt,result,item)
 			--停止重连定时器
 			sys.timer_stop(reconn)
 			--发送心跳包到后台
-			--heartrpt()
+			heartrpt()
 			--发送位置包到后台
-			--locrpt()
+			locrpt()
 		--连接失败
 		else
 			--RECONN_PERIOD秒后重连

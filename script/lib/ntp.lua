@@ -98,8 +98,10 @@ function upend(suc)
 	link.close(lid)
 	--同步时间成功 或者 NTP服务器已经完整遍历
 	if suc or tserveridx>=#tserver then
-		--产生一个内部消息UPDATE_END_IND，目前与飞行模式配合使用
+		--产生一个内部消息NTP_END_IND，目前与飞行模式配合使用
 		dispatch("NTP_END_IND",suc)
+		--产生一个外部消息NTP_IND，供应用脚本使用，suc表示同步时间的结果
+		dispatch("NTP_IND",suc)
 	else
 		tserveridx = tserveridx+1
 		connect()

@@ -25,7 +25,7 @@ local assert = base.assert
 local tonumber = base.tonumber
 
 --lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "1.1.0"
+SCRIPT_LIB_VER = "1.1.1"
 --脚本发布时的最新core软件版本号
 CORE_MIN_VER = "Luat_V0014_8955"
 
@@ -806,6 +806,8 @@ function saferun()
 				if uartxprocs[msgpara] then
 					uartxprocs[msgpara]()				
 				end
+			else
+				handlers[msg](msg)
 			end
 		end
 		--打印lua脚本程序占用的内存，单位是K字节

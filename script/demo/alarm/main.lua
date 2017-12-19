@@ -3,7 +3,7 @@
 --PROJECT：ascii string类型，可以随便定义，只要不使用,就行
 --VERSION：ascii string类型，如果使用Luat物联云平台固件升级的功能，必须按照"X.X.X"定义，X表示1位数字；否则可随便定义
 MODULE_TYPE = "Air202"
-PROJECT = "QRCODE"
+PROJECT = "ALARM"
 VERSION = "1.0.0"
 require"sys"
 --[[
@@ -12,8 +12,7 @@ require"sys"
 如果写在后面的其他位置，很有可能无法输出错误信息，从而增加调试难度
 ]]
 --sys.opntrace(true,1)
-require"color_standard_spi_st7735"
-require"qrcode"
+require"test"
 if MODULE_TYPE=="Air201" then
 require"wdt"
 end
