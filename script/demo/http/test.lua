@@ -4,10 +4,8 @@ require"http"
 require"common"
 
 local ssub,schar,smatch,sbyte,slen = string.sub,string.char,string.match,string.byte,string.len
---测试时请先写出IP地址和端口，后面所写的首部要与这里的host一致，下面的值都是默认的值
-local ADDR,PORT ="www.linuxhub.org",80
---测试POST方法时所用地址
---local ADDR,PORT ="www.luam2m.com",80
+local ADDR,PORT ="www.lua.org",80
+--local ADDR,PORT ="www.linuxhub.org",80
 local httpclient
 
 --[[
@@ -34,7 +32,7 @@ end
 返回值：无
 ]]
 local function rcvcb(result,statuscode,head,body)
-	print("rcvcb",result,statuscode,head,slen(body))
+	print("rcvcb",result,statuscode,head,slen(body or ""))
 	
 	if result==0 then
 		if head then
@@ -51,6 +49,42 @@ local function rcvcb(result,statuscode,head,body)
 	httpclient:disconnect(discb)
 end
 
+--[[
+函数名：rcvcbfile
+功能  ：接收回调函数（下载文件）
+参数  ：result：数据接收结果(此参数为0时，后面的几个参数才有意义)
+				0:成功
+				2:表示实体超出实际实体，错误，不输出实体内容
+				3:接收超时
+		statuscode：http应答的状态码，string类型或者nil
+		head：http应答的头部数据，table类型或者nil
+		filename: 下载文件的完整路径名
+返回值：无
+]]
+local function rcvcbfile(result,statuscode,head,filename)
+	print("rcvcbfile",result,statuscode,head,filename)	
+	
+	local filehandle = io.open(filename,"rb")
+	if not filehandle then print("rcvcbfile open file error") return end
+	local current = filehandle:seek()
+	local size = filehandle:seek("end")
+	filehandle:seek("set", current)
+	--输出文件长度
+	print("rcvcbfile size",size)
+	
+	--输出文件内容，如果文件太大，一次性读出文件内容可能会造成内存不足，分次读出可以避免此问题
+	print("rcvcbfile content:\r\n")
+	if size<=4096 then
+		print(filehandle:read("*all"))
+	else
+		
+	end
+	
+	filehandle:close()
+	--文件使用完之后，如果以后不再需求，需要自行删除
+	os.remove(filename)
+	httpclient:disconnect(discb)
+end
 
 --[[
 函数名：connectedcb
@@ -59,8 +93,9 @@ end
 返回值：
 ]]
 local function connectedcb()
-	--调用此函数才会发送报文,request(cmdtyp,url,head,body,rcvcb),回调函数rcvcb(result,statuscode,head,body)
-    httpclient:request("GET","/",{},"",rcvcb)
+	--调用此函数才会发送报文,request(cmdtyp,url,head,body,rcvcb),回调函数rcvcb(result,statuscode,head,body)	
+	httpclient:request("GET","/",{},"",rcvcb)
+	--httpclient:request("GET","/",{},"",rcvcbfile,"download.bin")
 end 
 
 --[[

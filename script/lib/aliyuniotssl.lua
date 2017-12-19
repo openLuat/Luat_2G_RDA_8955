@@ -79,15 +79,17 @@ sys.regapp(procer)
 参数  ：
 		productkey：string类型，产品标识，必选参数
 		productsecret：string类型，产品密钥，必选参数
+		devicename: string类型，设备名，可选参数
+		devicesecret: string类型，设备证书，可选参数
 返回值：无
 ]]
-function config(productkey,productsecret)
+function config(productkey,productsecret,devicename,devicesecret)
 	if productsecret then
 		require"aliyuniotauth"
 	else
 		require"aliyuniotauthssl"
 	end
-	sys.dispatch("ALIYUN_AUTH_BGN",productkey,productsecret)
+	sys.dispatch("ALIYUN_AUTH_BGN",productkey,productsecret,devicename,devicesecret)
 end
 
 function regcb(connectedcb,connecterrcb)

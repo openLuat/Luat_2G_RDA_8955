@@ -18,6 +18,7 @@ require"factory1"
 if MODULE_TYPE~="Air800" and MODULE_TYPE~="Air801" then
 require"factory2"
 end
+require"factory3"
 require"keypad"
 
 sys.init(0,0)
