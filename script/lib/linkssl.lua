@@ -30,7 +30,8 @@ local MAXLINKS = 7
 local linklist = {}
 -- «∑Ò≥ı ºªØ
 local inited
-local crtpending = {}
+local crtinputed,crtpending = ""
+
 
 local function print(...)
 	_G.print("linkssl",...)
@@ -51,6 +52,7 @@ local function init()
 			item = table.remove(crtpending,1)
 			req(item.cmd,item.arg)
 		end
+		crtpending = nil
 	end
 end
 
@@ -208,13 +210,16 @@ function connect(id,protocol,address,port,chksvrcrt,crtconfig)
 	if crtconfig then
 		if chksvrcrt and crtconfig.verifysvrcerts then
 			for i=1,#crtconfig.verifysvrcerts do
+				inputcrt("cacrt",crtconfig.verifysvrcerts[i])
 				table.insert(configcrtstr,"AT+SSLCERT=1,"..id..",\"cacrt\",\""..crtconfig.verifysvrcerts[i].."\"")
 			end
 		end
 		if crtconfig.clientcert then
+			inputcrt("localcrt",crtconfig.clientcert)
 			table.insert(configcrtstr,"AT+SSLCERT=1,"..id..",\"localcrt\",\""..crtconfig.clientcert.."\",\""..(crtconfig.clientcertpswd or "").."\"")
 		end
 		if crtconfig.clientkey then
+			inputcrt("localprivatekey",crtconfig.clientkey)
 			table.insert(configcrtstr,"AT+SSLCERT=1,"..id..",\"localprivatekey\",\""..crtconfig.clientkey.."\"")
 		end
 	end
@@ -613,6 +618,7 @@ local function term()
 		if not valid then
 			inited = false
 			req("AT+SSLTERM")
+			crtinputed = ""
 		end
 	end
 end
@@ -661,7 +667,18 @@ local function gprsind(s)
 end
 
 function inputcrt(t,f,d)
-	table.insert(crtpending,{cmd="AT+SSLCERT=0,\""..t.."\",\""..f.."\",1,"..string.len(d),arg=d})
+	if string.match(crtinputed,t..f.."&") then return end
+	if not crtpending then crtpending={} end
+	if d then
+		table.insert(crtpending,{cmd="AT+SSLCERT=0,\""..t.."\",\""..f.."\",1,"..string.len(d),arg=d})
+	else
+		local fconfig = io.open("/ldata/"..f,"rb")
+		if not fconfig then print("inputcrt err open","/ldata/"..f) return end
+		local s = fconfig:read("*a")
+		fconfig:close()
+		table.insert(crtpending,{cmd="AT+SSLCERT=0,\""..t.."\",\""..f.."\",1,"..string.len(s),arg=s})
+	end
+	crtinputed = crtinputed..t..f.."&"
 end
 
 local procer =

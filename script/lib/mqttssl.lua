@@ -517,7 +517,8 @@ local function reconn(sckidx)
 end
 
 local function connectitem(mqttclientidx)
-	connect(tclients[mqttclientidx].sckidx,tclients[mqttclientidx].prot,tclients[mqttclientidx].host,tclients[mqttclientidx].port,tclients[mqttclientidx].chksvrcrt)
+	local item = tclients[mqttclientidx]
+	connect(item.sckidx,item.prot,item.host,item.port,item.crtconfig)
 end
 
 --[[
@@ -804,11 +805,11 @@ end
 		prot：string类型，传输层协议，仅支持"TCP"和"UDP"[必选]
 		host：string类型，服务器地址，支持域名和IP地址[必选]
 		port：number类型，服务器端口[必选]
-		chksvrcrt：boolean类型，是否检验服务器端证书[可选，默认false]
+		crtconfig：nil或者table类型，{verifysvrcerts={"filepath1","filepath2",...},clientcert="filepath",clientcertpswd="password",clientkey="filepath"}
 返回值：无
 ]]
-function connect(sckidx,prot,host,port,chksvrcrt)
-	socketssl.connect(sckidx,prot,host,port,ntfy,rcv,chksvrcrt)
+function connect(sckidx,prot,host,port,crtconfig)
+	socketssl.connect(sckidx,prot,host,port,ntfy,rcv,crtconfig and crtconfig.verifysvrcerts,crtconfig)
 	tclients[getclient(sckidx)].sckconning=true
 end
 
@@ -875,6 +876,7 @@ tmqtt.__index = tmqtt
 		host：string类型，服务器地址，支持域名和IP地址[必选]
 		port：number类型，服务器端口[必选]
 		chksvrcrt：boolean类型，是否检验服务器端证书[可选，默认false]
+		crtconfig：nil或者table类型，{verifysvrcerts={"filepath1","filepath2",...},clientcert="filepath",clientcertpswd="password",clientkey="filepath"}
 		ver：string类型，MQTT协议版本号，仅支持"3.1"和"3.1.1"，默认"3.1"
 返回值：无
 ]]
@@ -898,6 +900,18 @@ function create(prot,host,port,chksvrcrt,ver)
 	setmetatable(mqtt_client,tmqtt)
 	table.insert(tclients,mqtt_client)
 	return(mqtt_client)
+end
+
+--[[
+函数名：configcrt
+功能  ：配置证书
+参数  ：
+		crtconfig：nil或者table类型，{verifysvrcerts={"filepath1","filepath2",...},clientcert="filepath",clientcertpswd="password",clientkey="filepath"}
+返回值：成功返回true，失败返回nil
+]]
+function tmqtt:configcrt(crtconfig)
+	self.crtconfig=crtconfig
+	return true
 end
 
 --[[
@@ -1006,7 +1020,7 @@ function tmqtt:connect(clientid,keepalive,user,password,connectedcb,connecterrcb
 	
 	if self.mqttconnected then print("tmqtt:connect already connected") return end
 	if not self.sckconnected then
-		connect(self.sckidx,self.prot,self.host,self.port,self.chksvrcrt)
+		connect(self.sckidx,self.prot,self.host,self.port,self.crtconfig)
 		checkdatactive(self.sckidx)
 	elseif not self.mqttconnected then
 		mqttsnd(self.sckidx,"MQTTCONN")
