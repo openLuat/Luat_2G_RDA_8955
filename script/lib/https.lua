@@ -1,7 +1,7 @@
 module(...,package.seeall)
 
 require"common"
-require"socket"
+require"socketssl"
 local lpack=require"pack"
 
 local sfind,slen,ssub,smatch,sgmatch= string.find,string.len,string.sub,string.match,string.gmatch
@@ -12,7 +12,7 @@ local sfind,slen,ssub,smatch,sgmatch= string.find,string.len,string.sub,string.m
 返回值：无
 ]]
 local function print(...)
-	_G.print("http",...)
+	_G.print("https",...)
 end
 
 --http clients存储表
@@ -52,7 +52,7 @@ end
 返回值：调用发送接口的结果（并不是数据发送是否成功的结果，数据发送是否成功的结果在ntfy中的SEND事件中通知），true为成功，其他为失败
 ]]
 function snd(sckidx,data,para)
-    return socket.send(sckidx,data,para)
+    return socketssl.send(sckidx,data,para)
 end
 
 local RECONN_MAX_CNT,RECONN_PERIOD,RECONN_CYCLE_MAX_CNT,RECONN_CYCLE_PERIOD = 3,5,3,20
@@ -75,7 +75,7 @@ function reconn(sckidx)
 	--一个连接周期内的重连
 	if tclients[hidx].sckreconncnt < RECONN_MAX_CNT then		
 		tclients[hidx].sckreconncnt = tclients[hidx].sckreconncnt+1
-		socket.disconnect(sckidx,"RECONN")
+		socketssl.disconnect(sckidx,"RECONN")
 		tclients[hidx].sckconning = true
 	--一个连接周期的重连都失败
 	else
@@ -89,29 +89,34 @@ function reconn(sckidx)
 				sys.restart("connect fail")
 			end
 		else
+			for k,v in pairs(tclients) do
+				socketssl.disconnect(v.sckidx,"RECONN")
+				v.sckconning = true
+			end
 			link.shut()
 		end		
 	end
 end
 
 local function connectitem(hidx)
-	connect(tclients[hidx].sckidx,tclients[hidx].prot,tclients[hidx].host,tclients[hidx].port)
+	local item = tclients[hidx]
+	connect(item.sckidx,item.prot,item.host,item.port,item.crtconfig)
 end
 
 --[[
 函数名：ntfy
 功能  ：socket状态的处理函数
 参数  ：
-        idx：number类型，socket中维护的socket idx，跟调用socket.connect时传入的第一个参数相同，程序可以忽略不处理
+        idx：number类型，socket中维护的socket idx，跟调用socketssl.connect时传入的第一个参数相同，程序可以忽略不处理
         evt：string类型，消息事件类型
 		result： bool类型，消息事件结果，true为成功，其他为失败
-		item：table类型，{data=,para=}，消息回传的参数和数据，目前只是在SEND类型的事件中用到了此参数，例如调用socket.send时传入的第2个和第3个参数分别为dat和par，则item={data=dat,para=par}
+		item：table类型，{data=,para=}，消息回传的参数和数据，目前只是在SEND类型的事件中用到了此参数，例如调用socketssl.send时传入的第2个和第3个参数分别为dat和par，则item={data=dat,para=par}
 返回值：无
 ]]
 function ntfy(idx,evt,result,item)
 	local hidx = getclient(idx)
 	print("ntfy",evt,result,item)
-	--连接结果（调用socket.connect后的异步事件）
+	--连接结果（调用socketssl.connect后的异步事件）
 	if evt == "CONNECT" then
 		tclients[hidx].sckconning = false
 		--连接成功
@@ -126,7 +131,7 @@ function ntfy(idx,evt,result,item)
 			--RECONN_PERIOD秒后重连
 			sys.timer_start(reconn,RECONN_PERIOD*1000,idx)
 		end	
-	--数据发送结果（调用socket.send后的异步事件）
+	--数据发送结果（调用socketssl.send后的异步事件）
 	elseif evt == "SEND" then
 		if not result then
 			print("error code")	     	
@@ -138,7 +143,7 @@ function ntfy(idx,evt,result,item)
 		tclients[hidx].sckconning = false
 		--长连接时使用
 		if tclients[hidx].mode then
-			sys.timer_start(connectitem,RECONN_PERIOD*1000,hidx)
+			sys.timer_start(reconn,RECONN_PERIOD*1000,idx)
 		end
 	--连接主动断开（调用link.shut后的异步事件）
 	elseif evt == "STATE" and result == "SHUTED" then
@@ -149,7 +154,7 @@ function ntfy(idx,evt,result,item)
 		if tclients[hidx].mode then
 			connectitem(hidx)
 		end
-	--连接主动断开（调用socket.disconnect后的异步事件）
+	--连接主动断开（调用socketssl.disconnect后的异步事件）
 	elseif evt == "DISCONNECT" then
 		tclients[hidx].sckconnected=false
 		tclients[hidx].httpconnected=false
@@ -162,7 +167,7 @@ function ntfy(idx,evt,result,item)
 		if tclients[hidx].mode or item=="RECONN" then
 			connectitem(hidx)
 		end
-	--连接主动断开并且销毁（调用socket.close后的异步事件）
+	--连接主动断开并且销毁（调用socketssl.close后的异步事件）
 	elseif evt == "CLOSE" then
 		local cb = tclients[hidx].destroycb
 		table.remove(tclients,hidx)
@@ -170,7 +175,7 @@ function ntfy(idx,evt,result,item)
 	end
 	--其他错误处理，断开数据链路，重新连接
 	if smatch((type(result)=="string") and result or "","ERROR") then
-		socket.disconnect(idx)
+		socketssl.disconnect(idx)
 	end
 end
 
@@ -307,10 +312,11 @@ end
 		prot：string类型，传输层协议，仅支持"TCP"
 		host：string类型，服务器地址，支持域名和IP地址[必选]
 		port：number类型，服务器端口[必选]
+		crtconfig：nil或者table类型，{verifysvrcerts={"filepath1","filepath2",...},clientcert="filepath",clientcertpswd="password",clientkey="filepath"}
 返回值：无
 ]]
-function connect(sckidx,prot,host,port)
-	socket.connect(sckidx,prot,host,port,ntfy,rcv)
+function connect(sckidx,prot,host,port,crtconfig)
+	socketssl.connect(sckidx,prot,host,port,ntfy,rcv,crtconfig and crtconfig.verifysvrcerts,crtconfig)
 	tclients[getclient(sckidx)].sckconning=true
 end
 
@@ -334,8 +340,8 @@ function create(host,port)
 	{
 		prot="TCP",
 		host=host,
-		port=port or 80,		
-		sckidx=socket.SCK_MAX_CNT-#tclients-2,
+		port=port or 443,		
+		sckidx=socketssl.SCK_MAX_CNT-#tclients-2,
 		sckconning=false,
 		sckconnected=false,
 		sckreconncnt=0,
@@ -355,6 +361,18 @@ function create(host,port)
 end
 
 --[[
+函数名：configcrt
+功能  ：配置证书
+参数  ：
+		crtconfig：nil或者table类型，{verifysvrcerts={"filepath1","filepath2",...},clientcert="filepath",clientcertpswd="password",clientkey="filepath"}
+返回值：成功返回true，失败返回nil
+]]
+function thttp:configcrt(crtconfig)
+	self.crtconfig=crtconfig
+	return true
+end
+
+--[[
 函数名：connect
 功能  ：连接http服务器
 参数  ：
@@ -370,7 +388,7 @@ function thttp:connect(connectedcb,sckerrcb)
 	
 	if self.httpconnected then print("thttp:connect already connected") return end
 	if not self.sckconnected then
-		connect(self.sckidx,self.prot,self.host,self.port) 
+		connect(self.sckidx,self.prot,self.host,self.port,self.crtconfig) 
     end
 end
 
@@ -395,7 +413,7 @@ function thttp:disconnect(discb)
 	print("thttp:disconnect")
 	self.discb=discb
 	self.discing = true
-	socket.disconnect(self.sckidx,"USER")
+	socketssl.disconnect(self.sckidx,"USER")
 end
 
 --[[
@@ -410,7 +428,7 @@ function thttp:destroy(destroycb)
 	self.destroycb = destroycb
 	for k,v in pairs(tclients) do
 		if v.sckidx==self.sckidx then
-			socket.close(v.sckidx)
+			socketssl.close(v.sckidx)
 		end
 	end
 end

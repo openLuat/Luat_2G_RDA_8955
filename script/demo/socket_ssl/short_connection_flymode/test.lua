@@ -224,19 +224,4 @@ function connect()
 	conning = true
 end
 
---[[
-函数名：initcrt
-功能  ：创建证书文件
-参数  ：无
-返回值：无
-]]
-local function initcrt()
-	local fconfig = io.open("/ldata/ca.crt","rb")
-	if not fconfig then print("initcrt err open") return end
-	local s = fconfig:read("*a")
-	fconfig:close()
-	linkssl.inputcrt("cacrt","ca.crt",s)
-end
-
-initcrt()
 connect()

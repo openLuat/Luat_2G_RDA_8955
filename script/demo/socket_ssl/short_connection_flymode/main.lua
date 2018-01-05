@@ -12,6 +12,7 @@ require"sys"
 如果写在后面的其他位置，很有可能无法输出错误信息，从而增加调试难度
 ]]
 --sys.opntrace(true,1)
+--校验服务器端证书时，需要用到当前系统时间，所以加载ntp功能模块同步网络时间
 require"ntp"
 require"test"
 if MODULE_TYPE=="Air201" then
