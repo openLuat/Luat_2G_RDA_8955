@@ -1,3 +1,11 @@
+版本号：Luat_V0016_8955.lod、Luat_V0016_8955_SSL.lod、Luat_V0016_8955_SSL_UI.lod、Luat_V0016_8955_TTS1.lod、Luat_V0016_8955_TTS_UI.lod、Luat_V0016_8955_UI.lod
+发布时间：2018/01/05 15:29
+修改记录：
+    (1)支持TLS1.2
+    (2)优化文件读写操作
+
+
+
 版本号：Luat_V0015_8955.lod、Luat_V0015_8955_SSL.lod、Luat_V0015_8955_SSL_UI.lod、Luat_V0015_8955_TTS1.lod、Luat_V0015_8955_TTS_UI.lod、Luat_V0015_8955_UI.lod
 发布时间：2017/12/19 15:25
 修改记录：
