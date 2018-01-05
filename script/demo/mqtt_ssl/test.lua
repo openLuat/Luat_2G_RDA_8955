@@ -1,6 +1,9 @@
 require"misc"
 require"mqttssl"
 require"common"
+--ssl客户端使用ca证书校验服务器端的证书时，会判断服务器端证书有效期，所以必须保证模块内时间的正确性
+--加载ntp模块会自动同步网络时间到模块中
+require"ntp"
 module(...,package.seeall)
 
 local ssub,schar,smatch,sbyte,slen = string.sub,string.char,string.match,string.byte,string.len
@@ -189,6 +192,7 @@ end
 local function imeirdy()
 	--创建一个mqtt client，默认使用的MQTT协议版本是3.1，如果要使用3.1.1，打开下面的注释--[[,"3.1.1"]]即可
 	mqttclient = mqttssl.create(PROT,ADDR,PORT,nil--[[,"3.1.1"]])
+	mqttclient:configcrt({verifysvrcerts={"ca.crt"}})
 	--配置遗嘱参数,如果有需要，打开下面一行代码，并且根据自己的需求调整will参数
 	--mqttclient:configwill(1,0,0,"/willtopic","will payload")
 	--配置clean session标志，如果有需要，打开下面一行代码，并且根据自己的需求配置cleansession；如果不配置，默认为1

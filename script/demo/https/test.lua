@@ -1,11 +1,13 @@
 module(...,package.seeall)
 require"misc"
-require"http"
+--ssl客户端使用ca证书校验服务器端的证书时，会判断服务器端证书有效期，所以必须保证模块内时间的正确性
+--加载ntp模块会自动同步网络时间到模块中
+require"ntp"
+require"https"
 require"common"
 
 local ssub,schar,smatch,sbyte,slen = string.sub,string.char,string.match,string.byte,string.len
-local ADDR,PORT ="www.lua.org",80
---local ADDR,PORT ="www.linuxhub.org",80
+local ADDR,PORT ="www.baidu.com",443
 local httpclient
 
 --[[
@@ -143,7 +145,8 @@ end
 ]]
 function http_run()
 	--因为http协议必须基于“TCP”协议，所以不必传入PROT参数
-	httpclient=http.create(ADDR,PORT)
+	httpclient=https.create(ADDR,PORT)
+	httpclient:configcrt({verifysvrcerts={"ca.crt"}})
 	--httpclient:setconnectionmode(true)
 	--建立http连接
 	connect()	
