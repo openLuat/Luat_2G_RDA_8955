@@ -13,6 +13,7 @@ require"sys"
 ]]
 --sys.opntrace(true,1)
 require"color_standard_spi_st7735"
+--require"mono_standard_spi_ssd1306"
 require"qrcode"
 if MODULE_TYPE=="Air201" then
 require"wdt"
