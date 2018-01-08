@@ -30,7 +30,7 @@ local MAXLINKS = 7
 local linklist = {}
 -- «∑Ò≥ı ºªØ
 local inited
-local crtinputed,crtpending = ""
+local crtinputed,crtpending = "",{}
 
 
 local function print(...)

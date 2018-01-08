@@ -5,6 +5,9 @@
 
 module(...,package.seeall)
 
+--LCD分辨率的宽度和高度(单位是像素)
+WIDTH,HEIGHT = disp.getlcdinfo()
+
 --- qrencode.encode(string) 创建二维码信息
 -- @param string 二维码字符串
 -- @return width 生成的二维码信息宽度
@@ -21,10 +24,11 @@ local width, data = qrencode.encode('http://www.openluat.com')
 
 --- 二维码显示函数
 local function appQRCode()
-    disp.clear()
-    disp.drawrect(10, 10, 117, 117, WHITE)
-    disp.putqrcode(data, width, 100, 14, 14)
-    disp.update()
+	disp.clear()
+	disp.drawrect(0, 0, WIDTH-1, HEIGHT-1, WHITE)
+	local displayWidth = (WIDTH>HEIGHT and HEIGHT or WIDTH)-4
+	disp.putqrcode(data, width, displayWidth, (WIDTH-displayWidth)/2, (HEIGHT-displayWidth)/2)
+	disp.update()
 end
 
 appQRCode()
