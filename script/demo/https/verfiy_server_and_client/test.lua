@@ -7,7 +7,7 @@ require"https"
 require"common"
 
 local ssub,schar,smatch,sbyte,slen = string.sub,string.char,string.match,string.byte,string.len
-local ADDR,PORT ="www.baidu.com",443
+local ADDR,PORT ="36.7.87.100",4434
 local httpclient
 
 --[[
@@ -146,7 +146,10 @@ end
 function http_run()
 	--因为http协议必须基于“TCP”协议，所以不必传入PROT参数
 	httpclient=https.create(ADDR,PORT)
-	httpclient:configcrt({verifysvrcerts={"ca.crt"}})
+	--verifysvrcerts：校验服务器端证书的CA证书文件 (Base64编码 X.509格式)
+	--clientcert：客户端的证书文件 (Base64编码 X.509格式)
+	--clientkey：客户端的RSA PRIVATE KEY私钥文件(Base64编码 X.509格式)
+	httpclient:configcrt({verifysvrcerts={"ca.crt"},clientcert="client.crt",clientkey="client.key"})
 	--httpclient:setconnectionmode(true)
 	--建立http连接
 	connect()	

@@ -348,9 +348,10 @@ local function procatc(data)
 				respdata = data
 			else
 				isurc = true
-			end
-		elseif cmdhead=="+SSLINIT" or cmdhead=="+SSLCERT" or cmdhead=="+SSLCREATE" or cmdhead=="+SSLCONNECT" or cmdhead=="+SSLSEND" or cmdhead=="+SSLDESTROY" or cmdhead=="+SSLTERM" then
-			if smatch(data,"^SSL&%d,") then
+			end		
+		elseif cmdhead=="+SSLINIT" or cmdhead=="+SSLTERM" then
+			local keystr = smatch(cmdhead,"SSL(%w+)")
+			if smatch(data,"^SSL&%d,"..keystr) then
 				respdata = data
 				if smatch(data,"ERROR") then
 					result = false
@@ -360,6 +361,37 @@ local function procatc(data)
 			else
 				isurc = true
 			end
+		elseif cmdhead=="+SSLCERT" then
+			if smatch(data,"^SSL&%d,INPUT CERT") or smatch(data,"^SSL&%d,CONFIG CERT") then
+				respdata = data
+				if smatch(data,"ERROR") then
+					result = false
+				else
+					result = true
+				end
+			else
+				isurc = true
+			end
+		elseif cmdhead=="+SSLCREATE" or cmdhead=="+SSLCONNECT" or cmdhead=="+SSLSEND" or cmdhead=="+SSLDESTROY" then
+			local keystr = smatch(cmdhead,"SSL(%w+)")
+			local lid,res = smatch(data,"^SSL&(%d),(%w+)")
+			
+			print("ril.ssl",keystr,lid,res,smatch(currcmd,"=(%d)"),smatch(data,"^SSL&%d,(%w+)"))
+			
+			if lid and res then
+				if (lid == smatch(currcmd,"=(%d)")) and (keystr==smatch(data,"^SSL&%d,(%w+)")) then
+					respdata = data
+					if smatch(data,"ERROR") then
+						result = false
+					else
+						result = true
+					end
+				else
+					isurc = true
+				end				
+			else
+				isurc = true
+			end	
 		else
 			isurc = true
 		end

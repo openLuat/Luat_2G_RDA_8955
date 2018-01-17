@@ -192,7 +192,11 @@ end
 local function imeirdy()
 	--创建一个mqtt client，默认使用的MQTT协议版本是3.1，如果要使用3.1.1，打开下面的注释--[[,"3.1.1"]]即可
 	mqttclient = mqttssl.create(PROT,ADDR,PORT,nil--[[,"3.1.1"]])
-	mqttclient:configcrt({verifysvrcerts={"ca.crt"}})
+	--verifysvrcerts：校验服务器端证书的CA证书文件 (Base64编码 X.509格式)
+	--clientcert：客户端的证书文件 (Base64编码 X.509格式)
+	--clientkey：客户端的RSA PRIVATE KEY私钥文件(Base64编码 X.509格式)
+	--如果需要双向认证，打开下面一行代码中的注释部分，并且提供client.crt和client.key文件，可以参考https/verfiy_server_and_client和socket_ssl/long_connecttion_verify_server_and_client两个demo
+	mqttclient:configcrt({verifysvrcerts={"ca.crt"}--[[,clientcert="client.crt",clientkey="client.key"]]})
 	--配置遗嘱参数,如果有需要，打开下面一行代码，并且根据自己的需求调整will参数
 	--mqttclient:configwill(1,0,0,"/willtopic","will payload")
 	--配置clean session标志，如果有需要，打开下面一行代码，并且根据自己的需求配置cleansession；如果不配置，默认为1
