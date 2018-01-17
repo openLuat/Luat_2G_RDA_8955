@@ -10,6 +10,8 @@
 require"mono_standard_spi_ssd1306"
 --require"mono_standard_spi_st7567"
 --require"color_standard_spi_st7735"
+--require"color_standard_spi_ILI9341"
+--require"color_lcd_spi_ILI9341"
 --require"mono_lcd_spi_ssd1306"
 --require"mono_lcd_spi_st7567"
 --require"color_lcd_spi_st7735"

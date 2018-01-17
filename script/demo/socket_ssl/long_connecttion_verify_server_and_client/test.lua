@@ -14,7 +14,7 @@ module(...,package.seeall)
 
 local ssub,schar,smatch,sbyte,slen = string.sub,string.char,string.match,string.byte,string.len
 --测试时请搭建自己的服务器
-local SCK_IDX,PROT,ADDR,PORT = 1,"TCP","36.7.87.100",4433
+local SCK_IDX,PROT,ADDR,PORT = 1,"TCP","36.7.87.100",4434
 --linksta:与后台的socket连接状态
 local linksta
 --一个连接周期内的动作：如果连接后台失败，会尝试重连，重连间隔为RECONN_PERIOD秒，最多重连RECONN_MAX_CNT次
@@ -61,7 +61,7 @@ end
 function httpget()
 	print("httpget",linksta)
 	if linksta then
-		snd(sndata,"HTTPGET")
+		snd(sndata,"HTTPGET")		
 	end
 end
 
@@ -206,7 +206,9 @@ end
 ]]
 function connect()
 	--verifysvrcerts：校验服务器端证书的CA证书文件 (Base64编码 X.509格式)
-	socketssl.connect(SCK_IDX,PROT,ADDR,PORT,ntfy,rcv,true,{verifysvrcerts={"ca.crt"}})
+	--clientcert：客户端的证书文件 (Base64编码 X.509格式)
+	--clientkey：客户端的RSA PRIVATE KEY私钥文件(Base64编码 X.509格式)
+	socketssl.connect(SCK_IDX,PROT,ADDR,PORT,ntfy,rcv,true,{verifysvrcerts={"ca.crt"},clientcert="client.crt",clientkey="client.key"})
 	conning = true
 end
 

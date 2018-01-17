@@ -365,6 +365,7 @@ end
 返回值：无
 ]]
 local function sendcnf(id,result)
+	print("sendcnf",id,result,linklist[id].state)
 	--发送失败
 	if string.match(result,"ERROR") then
 		linklist[id].state = "ERROR"
@@ -387,6 +388,7 @@ function closecnf(id,result)
 		print("closecnf:error",id)
 		return
 	end
+	print("closecnf",id,result,linklist[id].state)
 	--不管任何的close结果,链接总是成功断开了,所以直接按照链接断开处理
 	if linklist[id].state == "DISCONNECTING" then
 		linklist[id].state = "CLOSED"
@@ -413,11 +415,13 @@ end
 返回值：无
 ]]
 function statusind(id,state)
+	print("statusind",id,state,linklist[id])
 	--socket无效
 	if linklist[id] == nil then
 		print("statusind:nil id",id)
 		return
 	end	
+	print("statusind1",linklist[id].state)
 	if linklist[id].state == "CONNECTING" and string.match(state,"SEND ERROR") then
 		return
 	end	
@@ -560,6 +564,7 @@ end
 返回值：无
 ]]
 function urc(data,prefix)	
+	print("urc prefix",prefix)
 	--socket收到服务器发过来的数据
 	if prefix == "+SSL RECEIVE" then
 		local lid,len = string.match(data,",(%d),(%d+)",string.len("+SSL RECEIVE")+1)
@@ -568,7 +573,9 @@ function urc(data,prefix)
 		return rcvdfilter
 	--socket状态通知
 	else
+		
 		local lid,lstate = string.match(data,"(%d), *([%u :%d]+)")
+		print("urc data",data,lid,lstate)
 		
 		if string.find(lstate,"ERROR:")==1 then return end
 
@@ -636,6 +643,8 @@ end
 local function rsp(cmd,success,response,intermediate)
 	local prefix = string.match(cmd,"AT(%+%u+)")
 	local id = tonumber(string.match(cmd,"AT%+%u+=(%d)"))
+	
+	print("rsp",id,prefix,response)
 	
 	if prefix == "+SSLCONNECT" then
 		--statusind(id,getresult(response))
