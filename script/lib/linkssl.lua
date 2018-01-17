@@ -681,8 +681,9 @@ function inputcrt(t,f,d)
 	if d then
 		table.insert(crtpending,{cmd="AT+SSLCERT=0,\""..t.."\",\""..f.."\",1,"..string.len(d),arg=d})
 	else
-		local fconfig = io.open("/ldata/"..f,"rb")
-		if not fconfig then print("inputcrt err open","/ldata/"..f) return end
+		local path = (string.sub(f,1,1)=="/") and f or ("/ldata/"..f)
+		local fconfig = io.open(path,"rb")
+		if not fconfig then print("inputcrt err open",path) return end
 		local s = fconfig:read("*a")
 		fconfig:close()
 		table.insert(crtpending,{cmd="AT+SSLCERT=0,\""..t.."\",\""..f.."\",1,"..string.len(s),arg=s})
