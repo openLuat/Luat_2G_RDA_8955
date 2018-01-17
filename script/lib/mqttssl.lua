@@ -507,10 +507,6 @@ local function reconn(sckidx)
 				sys.restart("connect fail")
 			end
 		else
-			for k,v in pairs(tclients) do
-				socketssl.disconnect(v.sckidx)
-				v.sckconning = true
-			end
 			link.shut()
 		end		
 	end
@@ -596,7 +592,7 @@ function ntfy(idx,evt,result,item)
 		tclients[mqttclientidx].sckconnected=false
 		tclients[mqttclientidx].mqttconnected=false
 		tclients[mqttclientidx].sckrcvs=""
-		connectitem(mqttclientidx)
+		socketssl.disconnect(idx)
 	--连接主动断开（调用socketssl.disconnect后的异步事件）
 	elseif evt == "DISCONNECT" then
 		sys.timer_stop(pingreq,idx)

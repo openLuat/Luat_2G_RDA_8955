@@ -152,7 +152,8 @@ function ntfy(idx,evt,result,item)
 		tclients[hidx].sckconning = false
 		--长连接时使用
 		if tclients[hidx].mode then
-			connectitem(hidx)
+			socketssl.disconnect(idx,"RECONN")
+			tclients[hidx].sckconning = true
 		end
 	--连接主动断开（调用socketssl.disconnect后的异步事件）
 	elseif evt == "DISCONNECT" then

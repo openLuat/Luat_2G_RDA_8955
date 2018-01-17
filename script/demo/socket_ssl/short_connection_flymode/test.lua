@@ -219,7 +219,7 @@ end
 返回值：无
 ]]
 function connect()
-	--verifysvrcerts中的文件名必须跟initcrt中调用linkssl.inputcrt中的第二个参数保持一致
+	--verifysvrcerts：校验服务器端证书的CA证书文件 (Base64编码 X.509格式)
 	socketssl.connect(SCK_IDX,PROT,ADDR,PORT,ntfy,rcv,true,{verifysvrcerts={"ca.crt"}})
 	conning = true
 end

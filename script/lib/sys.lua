@@ -27,7 +27,7 @@ local tonumber = base.tonumber
 --lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
 SCRIPT_LIB_VER = "1.1.3"
 --脚本发布时的最新core软件版本号
-CORE_MIN_VER = "Luat_V0016_8955"
+CORE_MIN_VER = "Luat_V0017_8955"
 
 --是否允许“脚本异常时 或者 脚本调用sys.restart接口时”的重启
 --是否有挂起的等待重启的事件
@@ -339,6 +339,9 @@ end
 功能  ：故意产生一个语法错误，使core中的Lua虚拟机重启，如果当前运行的脚本是远程升级的脚本，会自动删除当前运行脚本，回退到原始烧写的脚本
 参数  ：无
 返回值：无
+说明  ：如果是此接口导致的重启，是因为程序中打开了update或者dbg功能，但是在update和dbg功能还没有执行结束时，其他功能脚本发生了语法错误，此时会把语法错误缓存起来，并不立即重启
+		等update和dbg功能结束后，再通过调用一个非法的luaerrexitfnc接口产生语法错误，触发语法错误类型的重启
+		至于真正导致重启的语法错误，在trace中搜索saferestart去分析
 ]]
 local function luaerrexit()
 	luaerrexitfnc()
