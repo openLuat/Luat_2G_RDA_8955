@@ -133,8 +133,14 @@ function ntfy(idx,evt,result,item)
 		end	
 	--数据发送结果（调用socketssl.send后的异步事件）
 	elseif evt == "SEND" then
-		if not result then
-			print("error code")	     	
+		if result then
+			sys.timer_start(timerfnc,30000,hidx)
+		else
+			if tclients[hidx].sckerrcb then
+				tclients[hidx].sckreconncnt=0
+				tclients[hidx].sckreconncyclecnt=0
+				tclients[hidx].sckerrcb("SEND") 
+			end
 		end
 	--连接被动断开
 	elseif evt == "STATE" and result == "CLOSED" then
@@ -492,7 +498,9 @@ function thttp:request(cmdtyp,url,head,body,rcvcb,filepath)
 	if self.body then 
 		val=val.."\r\n"..self.body
 	end		
-	snd(self.sckidx,val,cmdtyp)	
+	if not snd(self.sckidx,val,cmdtyp) and self.sckerrcb then
+		self.sckerrcb("SEND")
+	end
 end
 
 --[[
