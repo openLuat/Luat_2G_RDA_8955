@@ -107,20 +107,27 @@ end
 参数  ：
 		r：string类型，失败原因值
 		CONNECT: socket一直连接失败，不再尝试自动重连
+		SEND：socket发送数据失败，不再尝试自动重连
 返回值：无
 ]]
 local function sckerrcb(r)
 	print("sckerrcb",r)
+	if r=="CONNECT" then
+		--http.lua中已经断开了连接，根据自己的需求，此处可以直接调用connect()直接重连
+	elseif r=="SEND" then
+		--http.lua中发送数据失败，但是没有断开连接，此处要自己控制断开连接，然后在discb中做后续的逻辑处理
+		httpclient:disconnect(discb)
+	end
 end
 --[[
 函数名：connect
 功能：连接服务器
 参数：
 	 connectedcb:连接成功回调函数
-	 sckerrcb：http lib中socket一直重连失败时，不会自动重启软件，而是调用sckerrcb函数
+	 sckerrcb：http lib中socket一直重连失败或者发送GET、POST请求失败时，不会自动重启软件，而是调用sckerrcb函数
 返回：
 ]]
-local function connect()
+function connect()
 	httpclient:connect(connectedcb,sckerrcb)
 end
 --[[
