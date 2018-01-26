@@ -37,6 +37,7 @@ local gpd = ""
 local RETRY_TIMES,retries,reconnect = 3,1
 
 function upend(succ)
+	sys.timer_stop(upend,false)
 	link.close(lid)
 	lid = nil
 	if succ then
@@ -62,7 +63,11 @@ function ntfy(idx,evt,val)
 		end	
 	--数据发送结果
 	elseif evt == "SEND" then
-		if val ~= "SEND OK" then upend(false) end
+		if val ~= "SEND OK" then 
+			upend(false)
+		else
+			sys.timer_start(upend,30000,false)
+		end
 	--连接被动断开
 	elseif evt == "STATE" and val == "CLOSED" then
 		upend(false)
@@ -110,6 +115,8 @@ function writegpdbg()
 	local str = "$PGKC149,1,115200*15\r\n"
 	print("syy writeapgs str",str,slen(str))
 	writebg = true
+	gps.opengps("AGPSUPGPD")
+	sys.timer_start(gps.closegps,20000,"AGPSUPGPD")
 	gps.writegk(str)
 end
 
@@ -188,6 +195,7 @@ function rcv(idx,data)
 		print("syy gpd",ssub(gpd,1,8),ssub(gpd,slen(gpd)-8))
 	end
 	print("syy gpd len:",slen(gpd),tonumber(gpdlen))
+	sys.timer_start(upend,30000,false)
 	if slen(gpd) >= tonumber(gpdlen)*2 then
 		upend(true)
 		gpd = ssub(gpd,1,tonumber(gpdlen)*2)
@@ -208,8 +216,12 @@ local function gpsstateind(id,data)
 	print("gpsstateind",id,data)
 	if data == gps.GPS_BINARY_ACK_EVT then
 		print("syy gpsind GPS_BINARY_ACK_EVT writebg",writebg)
-		if writebg then writegpd() end
-		if not writebg then  sys.dispatch("AGPS_WRDATE_END") end
+		if writebg then
+			writegpd()
+		else
+			gps.closegps("AGPSUPGPD")
+			sys.timer_stop(gps.closegps,"AGPSUPGPD")
+		end
 	elseif data == gps.GPS_BINW_ACK_EVT then
 		print("syy gpsind GPS_BINW_ACK_EVT idx",idx)
 		if idx <= tonum then
@@ -255,7 +267,6 @@ end
 function connect()
 	print("connect uptime",uptimeck(),gps.isfix(),lid)
 	if not uptimeck() or gps.isfix() then 
-		sys.dispatch("AGPS_WRDATE_END")
 		retries,reconnect = 0
 		return 
 	end

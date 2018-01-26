@@ -27,7 +27,7 @@ local tonumber = base.tonumber
 --lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
 SCRIPT_LIB_VER = "1.1.4"
 --脚本发布时的最新core软件版本号
-CORE_MIN_VER = "Luat_V0017_8955"
+CORE_MIN_VER = "Luat_V0018_8955"
 
 --是否允许“脚本异常时 或者 脚本调用sys.restart接口时”的重启
 --是否有挂起的等待重启的事件
