@@ -53,7 +53,7 @@ end
 ∑µªÿ÷µ£∫Œﬁ
 ]]
 function setup(keylongprd,keylongcb,keyshortcb)
-	longprd,longcb,shortcb = keylongprd,keylongcb,keyshortcb
+	longprd,longcb,shortcb = keylongprd or 3000,keylongcb,keyshortcb
 end
 
 sys.regmsg(rtos.MSG_KEYPAD,keymsg)

@@ -29,7 +29,7 @@ local srep = string.rep
 local send = link.send
 local dispatch = sys.dispatch
 
-local lid,isfix,agpsop
+local lid,isfix
 local ispt,itv,PROT,SVR,PORT,WRITE_INTERVAL = true,(2*3600),"UDP","bs.openluat.com",12412,100
 local mode,pwrcb = 0
 local gpssupport,eph = true,""
@@ -199,21 +199,12 @@ function agpswr()
 		str = str..s..'*'
 		writeapgsdata(s)		
 		writeapgs(str)
-		--gps.closegps("AGPS")
+		sys.timer_start(gps.closegps,1000,"AGPS")
 		sys.dispatch("AGPS_WRDATE_SUC")
+	else
+		gps.closegps("AGPS")
 	end
 	return true	
-end
-
---[[
-函数名：agpsclose
-功能  ：关闭AGPS
-参数：  无
-返回值：无
-]]
-function agpsclose()
-	gps.closegps("AGPS")
-	agpsop = false	
 end
 
 local function bcd(d,n)
@@ -414,8 +405,8 @@ end
 参数  ：后台时间
 返回值：无
 ]]
-local function datetime(m)
-	if slen(m) ~= 6 then return end
+local function datetime(m,cb)
+	if slen(m) ~= 6 then cb(false) return end
 	mt.year = 2000+sbyte(m,1)
 	mt.month = sbyte(m,2)
 	mt.day = sbyte(m,3)
@@ -423,8 +414,13 @@ local function datetime(m)
 	mt.min = sbyte(m,5)
 	mt.sec = sbyte(m,6)
 	print("datetime",mt.year,mt.month,mt.day,mt.hour,mt.min,mt.sec)
-	misc.setclock(mt)
+	misc.setclock(mt,cb)
 	return true
+end
+
+local function setTmCb()
+	agpswr()
+	upend(true)
 end
 
 --[[
@@ -439,9 +435,7 @@ local function rcv(id,data)
 	base.collectgarbage()
 	--sys.timer_stop(retry)
 	print("syy rcv",slen(data),(slen(data)<270) and common.binstohexs(data) or "")
-	if slen(data) >=17 then
-		local tm = ssub(data,12,17)
-		datetime(tm)
+	if slen(data) >=17 then		
 		local lat,lng,latdm,lngdm = trans(unbcd(ssub(data,2,6)),unbcd(ssub(data,7,11)))
 		print("syy rcv",lat,lng)
 		if not lat or not lng then return end
@@ -450,14 +444,8 @@ local function rcv(id,data)
 		if not gps.isfix() then
 			setagpstr(str)
 		end
-		if gps.isopen() then
-			agpswr()	
-		elseif not agpsop then
-			gps.opengps("AGPS")
-			agpsop = true
-			agpswr()
-		end
-		upend(true)
+		gps.opengps("AGPS")
+		datetime(ssub(data,12,17),setTmCb)		
 		return		
 	end	
 
@@ -528,13 +516,8 @@ function connect()
 	end
 end
 
-local procer =
-{
-	AGPS_WRDATE_END = agpsclose
-}
 
 connect()
 
 --注册GPS消息处理函数
 sys.regapp(gpsstateind,gps.GPS_STATE_IND)
-sys.regapp(procer)

@@ -186,14 +186,14 @@ function ntfy(idx,evt,result,item)
 	end
 end
 
-local function resetpara(hidx)
+local function resetpara(hidx,clrdata)
 	tclients[hidx].statuscode=nil
 	tclients[hidx].rcvhead=nil
 	tclients[hidx].rcvbody=nil
 	tclients[hidx].status=nil
 	tclients[hidx].result=nil
 	tclients[hidx].filepath,tclients[hidx].filelen=nil
-	tclients[hidx].data=""
+	if clrdata or clrdata==nil then tclients[hidx].data="" end
 end
 
 --[[
@@ -286,12 +286,13 @@ function rcv(idx,data)
 					else--有实体且实体长度等于实际长度
 						local rcvbodylen = slen(ssub(tclients[hidx].data,h2+1,-1))
 						if not (rcvbodylen < tclients[hidx].contentlen) then
-							tclients[hidx].rcvcb(rcvbodylen==expectlen and 0 or 2,
+							tclients[hidx].rcvcb(0,
 								tclients[hidx].statuscode,
 								tclients[hidx].rcvhead,
-								rcvbodylen==expectlen and ssub(tclients[hidx].data,h2+1,-1) or "")
+								ssub(tclients[hidx].data,h2+1,h2+tclients[hidx].contentlen))
 							sys.timer_stop(timerfnc,hidx)
-							resetpara(hidx)
+							resetpara(hidx,rcvbodylen==tclients[hidx].contentlen)
+							if rcvbodylen~=tclients[hidx].contentlen then tclients[hidx].data=ssub(tclients[hidx].data,h2+tclients[hidx].contentlen+1,-1) end
 						end						
 					end								
 				end
@@ -466,7 +467,7 @@ function thttp:request(cmdtyp,url,head,body,rcvcb,filepath)
 	self.rcvcb=rcvcb
 	if filepath then
 		self.filepath = (ssub(filepath,1,1)~="/" and "/" or "")..filepath
-		if rtos.make_dir and rtos.make_dir("/http_down") then self.filepath = "/http_down"..self.filepath end
+		if ssub(filepath,1,1)~="/" and rtos.make_dir and rtos.make_dir("/http_down") then self.filepath = "/http_down"..self.filepath end
 	end
 
 	if not head or head=="" or (type(head)=="table" and #head==0) then
