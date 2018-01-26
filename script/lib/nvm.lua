@@ -62,9 +62,9 @@ local function serialize(pout,o)
 		pout:write("{\n")
 		for k,v in pairs(o) do
 			if type(k) == "number" then
-				pout:write(" [", k, "] = ")
+				pout:write(" [" .. k .. "] = ")
 			elseif type(k) == "string" then
-				pout:write(" [\"", k,"\"] = ")
+				pout:write(" [\"" .. k .."\"] = ")
 			else
 				error("cannot serialize table key " .. type(o))
 			end
@@ -127,19 +127,22 @@ end
 ]]
 local function save(s)
 	if not s then return end
-	local f = io.open(paraname,"wb")
+	local f = {}
+	f.write = function(self, s) table.insert(self, s) end
 
 	f:write("module(...)\n")
 
 	for k,v in pairs(para) do
 		if k ~= "_M" and k ~= "_NAME" and k ~= "_PACKAGE" then
-			f:write(k, " = ")
+			f:write(k .. " = ")
 			serialize(f,v)
 			f:write("\n")
 		end
 	end
 
-	f:close()
+	local fpara = io.open(paraname, 'wb')
+	fpara:write(table.concat(f))
+	fpara:close()
 end
 
 --[[
