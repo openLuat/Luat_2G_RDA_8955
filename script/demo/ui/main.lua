@@ -15,7 +15,7 @@ require"sys"
 require"lcd"
 require"logo"
 require"ntp"
-if MODULE_TYPE=="Air201" then
+if MODULE_TYPE=="Air201" or MODULE_TYPE=="Air202" then
 require"wdt"
 end
 

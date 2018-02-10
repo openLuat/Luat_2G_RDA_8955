@@ -15,7 +15,7 @@ require"sys"
 require"common" --test模块用到了common.binstohexs接口
 require"pm" --test模块用到了pm.wake接口
 require"test"
-if MODULE_TYPE=="Air201" then
+if MODULE_TYPE=="Air201" or MODULE_TYPE=="Air202" then
 require"wdt"
 end
 

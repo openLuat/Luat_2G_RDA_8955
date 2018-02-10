@@ -15,7 +15,7 @@ require"sys"
 require"color_standard_spi_st7735"
 --require"mono_standard_spi_ssd1306"
 require"qrcode"
-if MODULE_TYPE=="Air201" then
+if MODULE_TYPE=="Air201" or MODULE_TYPE=="Air202" then
 require"wdt"
 end
 

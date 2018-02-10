@@ -27,7 +27,7 @@ update.setup("udp","www.userserver.com",2233)
 require"dbg"
 sys.timer_start(dbg.setup,12000,"UDP","ota.airm2m.com",9072)
 require"test"
-if MODULE_TYPE=="Air201" then
+if MODULE_TYPE=="Air201" or MODULE_TYPE=="Air202" then
 require"wdt"
 end
 

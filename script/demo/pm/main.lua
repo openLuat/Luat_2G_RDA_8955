@@ -14,7 +14,7 @@ require"sys"
 --sys.opntrace(true,1)
 require"pm"
 require"test"
-if MODULE_TYPE=="Air201" then
+if MODULE_TYPE=="Air201" or MODULE_TYPE=="Air202" then
 require"wdt"
 end
 

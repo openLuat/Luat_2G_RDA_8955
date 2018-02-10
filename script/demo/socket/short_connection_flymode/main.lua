@@ -19,7 +19,7 @@ dbg.setup("udp","www.test.com",9072)
 require"update"
 update.setup("udp","www.test.com",2233)
 require"test"
-if MODULE_TYPE=="Air201" then
+if MODULE_TYPE=="Air201" or MODULE_TYPE=="Air202" then
 require"wdt"
 end
 

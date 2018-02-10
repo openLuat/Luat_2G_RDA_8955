@@ -15,7 +15,7 @@ require"sys"
 --校验服务器端证书时，需要用到当前系统时间，所以加载ntp功能模块同步网络时间
 require"ntp"
 require"test"
-if MODULE_TYPE=="Air201" then
+if MODULE_TYPE=="Air201" or MODULE_TYPE=="Air202" then
 require"wdt"
 end
 

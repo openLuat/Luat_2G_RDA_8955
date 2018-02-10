@@ -26,7 +26,7 @@ require"updapp"
 --sys.timer_start(update.request,120000)
 require"dbg"
 sys.timer_start(dbg.setup,12000,"UDP","ota.airm2m.com",9072)
-if MODULE_TYPE=="Air201" then
+if MODULE_TYPE=="Air201" or MODULE_TYPE=="Air202" then
 require"wdt"
 end
 
