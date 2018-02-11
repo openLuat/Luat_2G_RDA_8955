@@ -25,9 +25,9 @@ local assert = base.assert
 local tonumber = base.tonumber
 
 --lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "1.1.4"
+SCRIPT_LIB_VER = "1.1.5"
 --脚本发布时的最新core软件版本号
-CORE_MIN_VER = "Luat_V0018_8955"
+CORE_MIN_VER = "Luat_V0019_8955"
 
 --是否允许“脚本异常时 或者 脚本调用sys.restart接口时”的重启
 --是否有挂起的等待重启的事件
@@ -387,7 +387,7 @@ end
 
 --[[
 函数名：checkcorever
-功能  ：检查底层软件版本号和lib脚本需要的最小底层软件版本号是否匹配
+功能  ：检查底层软件版本号和lib脚本发布时的最新底层软件版本号是否匹配
 参数  ：无
 返回值：无
 ]]
@@ -406,7 +406,7 @@ local function checkcorever()
 		return
 	end
 	
-	--lib脚本需要的底层软件版本号大于底层软件的实际版本号
+	--lib脚本发布时最新的底层软件版本号大于底层软件的实际版本号，只是产生一个警告，提醒用户已经有新的底层软件了，可以考虑使用最新的底层软件
 	if tonumber(string.match(CORE_MIN_VER,"Luat_V(%d+)_"))>tonumber(buildver) then
 		print("checkcorever[core ver match warn]"..realver..","..CORE_MIN_VER..";")
 	end
@@ -710,10 +710,12 @@ local uartxprocs = {}
 参数  ：
 		id：物理串口号，1表示UART1，2表示UART2
 		fnc：数据接收处理函数名
+		clearRcvBuf：是否清空当前接收缓冲区里面的数据，true表示清空，false或者nil表示不清空	
 返回值：无
 ]] 
-function reguart(id,fnc)
+function reguart(id,fnc,clearRcvBuf)
 	uartprocs[id] = fnc
+	if clearRcvBuf and uart.clear then uart.clear(id,uart.RECV_BUF) end
 end
 
 --[[

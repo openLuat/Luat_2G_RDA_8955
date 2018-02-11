@@ -574,6 +574,7 @@ function ntfy(idx,evt,result,item)
 		end
 	--连接被动断开
 	elseif evt == "STATE" and result == "CLOSED" then
+		sys.timer_stop(datinactive,idx)
 		sys.timer_stop(pingreq,idx)
 		mqttdup.rmvall(idx)
 		tclients[mqttclientidx].sckconnected=false
@@ -587,6 +588,7 @@ function ntfy(idx,evt,result,item)
 		end
 	--连接主动断开（调用link.shut后的异步事件）
 	elseif evt == "STATE" and result == "SHUTED" then
+		sys.timer_stop(datinactive,idx)
 		sys.timer_stop(pingreq,idx)
 		mqttdup.rmvall(idx)
 		tclients[mqttclientidx].sckconnected=false
@@ -595,6 +597,7 @@ function ntfy(idx,evt,result,item)
 		socketssl.disconnect(idx)
 	--连接主动断开（调用socketssl.disconnect后的异步事件）
 	elseif evt == "DISCONNECT" then
+		sys.timer_stop(datinactive,idx)
 		sys.timer_stop(pingreq,idx)
 		mqttdup.rmvall(idx)
 		tclients[mqttclientidx].sckconnected=false
@@ -608,6 +611,7 @@ function ntfy(idx,evt,result,item)
 		end
 	--连接主动断开并且销毁（调用socketssl.close后的异步事件）
 	elseif evt == "CLOSE" then
+		sys.timer_stop(datinactive,idx)
 		sys.timer_stop(pingreq,idx)
 		mqttdup.rmvall(idx)
 		local cb = tclients[mqttclientidx].destroycb
@@ -733,7 +737,7 @@ mqttcmds = {
 		sckidx：socket idx
 返回值：无
 ]]
-local function datinactive(sckidx)
+function datinactive(sckidx)
 	local mqttclientidx = getclient(sckidx)
 	if tclients[mqttclientidx].sckerrcb then
 		socketssl.disconnect(sckidx)
@@ -933,6 +937,7 @@ end
 function tmqtt:destroy(destroycb)
 	local k,v
 	self.destroycb = destroycb
+	sys.timer_stop(datinactive,self.sckidx)
 	for k,v in pairs(tclients) do
 		if v.sckidx==self.sckidx then
 			socketssl.close(v.sckidx)

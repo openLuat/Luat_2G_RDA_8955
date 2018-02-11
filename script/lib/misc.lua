@@ -63,10 +63,18 @@ local function rsp(cmd,success,response,intermediate)
 		if not imeirdy then sys.dispatch("IMEI_READY") imeirdy = true end
 	--写IMEI
 	elseif smatch(cmd,"AT%+WIMEI=") then
-		if wimeicb then wimeicb(success) end
+		if wimeicb then
+			wimeicb(success)
+		else			
+			if tonumber(smatch(sys.getcorever(),"Luat_V(%d+)_"))>15 then sys.restart("WIMEI") end
+		end
 	--写序列号
 	elseif smatch(cmd,"AT%+WISN=") then
-		if wsncb then wsncb(success) end
+		if wsncb then
+			wsncb(success)
+		else			
+			if tonumber(smatch(sys.getcorever(),"Luat_V(%d+)_"))>15 then sys.restart("WISN") end
+		end
 	--设置系统时间
 	elseif prefix == "+CCLK" then
 		startclktimer()

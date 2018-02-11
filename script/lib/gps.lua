@@ -897,11 +897,11 @@ function init(ionum,dir,edge,period,id,baud,databits,parity,stopbits,apgspwronup
 	gps.edge = true
 
 	gps.period = 1000
-	gps.uartid = 2
-	gps.baud = 115200
-	gps.databits = 8
-	gps.parity = uart.PAR_NONE
-	gps.stopbits = uart.STOP_1
+	gps.uartid = (id or 2)
+	gps.baud = (baud or 115200)
+	gps.databits = (databits or 8)
+	gps.parity = (parity or uart.PAR_NONE)
+	gps.stopbits = (stopbits or uart.STOP_1)
 
 	if ionum then
 		pio.pin.setdir(pio.OUTPUT,ionum)
