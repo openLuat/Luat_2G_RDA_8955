@@ -46,14 +46,14 @@ end
 local function init()
 	if not inited then
 		inited = true
-		req("AT+SSLINIT")
-		local i,item
-		for i=1,#crtpending do
-			item = table.remove(crtpending,1)
-			req(item.cmd,item.arg)
-		end
-		crtpending = nil
+		req("AT+SSLINIT")		
 	end
+	local i,item
+	for i=1,#crtpending do
+		item = table.remove(crtpending,1)
+		req(item.cmd,item.arg)
+	end
+	crtpending = {}
 end
 
 --[[

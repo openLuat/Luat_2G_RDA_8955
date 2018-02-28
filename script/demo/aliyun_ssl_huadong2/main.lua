@@ -5,8 +5,6 @@
 MODULE_TYPE = "Air202"
 PROJECT = "ALIYUN_SSL_HUADONG2"
 VERSION = "1.0.1"
---Air内部测试设置为true
---DEBUG_AIR = true
 require"sys"
 --[[
 如果使用UART输出trace，打开这行注释的代码"--sys.opntrace(true,1)"即可，第2个参数1表示UART1输出trace，根据自己的需要修改这个参数
@@ -20,10 +18,4 @@ require"wdt"
 end
 
 sys.init(0,0)
-if DEBUG_AIR then
-	ril.request("AT*EXASSERT=1")
-	ril.request("AT*TRACE=\"DSS\",1,0")
-	ril.request("AT*TRACE=\"RDA\",1,0")
-	ril.request("AT*TRACE=\"SXS\",1,0")
-end
 sys.run()

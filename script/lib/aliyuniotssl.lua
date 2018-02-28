@@ -1,14 +1,14 @@
 --定义模块,导入依赖库
-local base = _G
-local sys  = require"sys"
-local mqttssl = require"mqttssl"
+require"sys"
+require"mqttssl"
 module(...,package.seeall)
 
 --mqtt客户端对象,数据服务器地址,数据服务器端口表
 local mqttclient,gaddr,gports,gclientid,gusername,gpassword
 --目前使用的gport表中的index
 local gportidx = 1
-local gconnectedcb,gconnecterrcb
+local gconnectedcb,gconnecterrcb,gevtcbs
+local productKey,deviceName
 
 --[[
 函数名：print
@@ -17,7 +17,7 @@ local gconnectedcb,gconnecterrcb
 返回值：无
 ]]
 local function print(...)
-	base.print("aliyuniotssl",...)
+	_G.print("aliyuniotssl",...)
 end
 
 --[[
@@ -40,6 +40,34 @@ local function sckerrcb(r)
 	end
 end
 
+--[[
+函数名：rcvmessage
+功能  ：收到PUBLISH消息时的回调函数
+参数  ：
+		topic：消息主题（gb2312编码）
+		payload：消息负载（原始编码，收到的payload是什么内容，就是什么内容，没有做任何编码转换）
+		qos：消息质量等级
+返回值：无
+]]
+local function rcvmessagecb(topic,payload,qos)
+	--OTA消息
+	if topic=="/ota/device/upgrade/"..productKey.."/"..(type(deviceName)=="function" and deviceName() or (deviceName or misc.getimei())) then
+		if aliyuniotota and type(aliyuniotota)=="table" and aliyuniotota.upgrade and type(aliyuniotota.upgrade)=="function" then
+			aliyuniotota.upgrade(payload)
+		end
+	--其他消息
+	else
+		gevtcbs.MESSAGE(topic,payload,qos)
+	end
+end
+
+local function consucb()
+	if gconnectedcb then gconnectedcb() end
+	if aliyuniotota and type(aliyuniotota)=="table" and aliyuniotota.connectedCb and type(aliyuniotota.connectedCb)=="function" then
+		aliyuniotota.connectedCb(productKey,type(deviceName)=="function" and deviceName() or (deviceName or misc.getimei()))
+	end
+end
+
 function connect(change)
 	if change then
 		mqttclient:change("TCP",gaddr,gports[gportidx])
@@ -50,7 +78,7 @@ function connect(change)
 	--配置遗嘱参数,如果有需要，打开下面一行代码，并且根据自己的需求调整will参数
 	--mqttclient:configwill(1,0,0,"/willtopic","will payload")
 	--连接mqtt服务器
-	mqttclient:connect(gclientid,240,gusername,gpassword,gconnectedcb,gconnecterrcb,sckerrcb)
+	mqttclient:connect(gclientid,240,gusername,gpassword,consucb,gconnecterrcb,sckerrcb)
 end
 
 --[[
@@ -78,9 +106,9 @@ sys.regapp(procer)
 功能  ：配置阿里云物联网产品信息和设备信息
 参数  ：
 		productkey：string类型，产品标识，必选参数
-		productsecret：string类型，产品密钥，必选参数
-		devicename: string类型，设备名，可选参数
-		devicesecret: string类型，设备证书，可选参数
+		productsecret：string类型，产品密钥，必选参数,如果是阿里云华东2站点，必须传入nil
+		devicename: string类型或者function类型，设备名，可选参数
+		devicesecret: string类型或者function类型，设备证书，可选参数
 返回值：无
 ]]
 function config(productkey,productsecret,devicename,devicesecret)
@@ -89,6 +117,7 @@ function config(productkey,productsecret,devicename,devicesecret)
 	else
 		require"aliyuniotauthssl"
 	end
+	productKey,deviceName = productkey,devicename
 	sys.dispatch("ALIYUN_AUTH_BGN",productkey,productsecret,devicename,devicesecret)
 end
 
@@ -101,7 +130,8 @@ function subscribe(topics,ackcb,usertag)
 end
 
 function regevtcb(evtcbs)
-	mqttclient:regevtcb(evtcbs)
+	gevtcbs = evtcbs
+	mqttclient:regevtcb({MESSAGE=rcvmessagecb})
 end
 
 function publish(topic,payload,qos,ackcb,usertag)

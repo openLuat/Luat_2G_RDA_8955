@@ -2,7 +2,7 @@ require"linkssl"
 module(...,package.seeall)
 
 local lstate,scks = linkssl.getstate,{}
-SCK_MAX_CNT = 5
+SCK_MAX_CNT = 10
 NORMAL,SVR_CHANGE,DISCTHENTRY = 0,1,2
 
 local function print(...)
@@ -10,7 +10,7 @@ local function print(...)
 end
 
 local function checkidx(cause,idx,fnm)
-	if (cause == 0 and idx <= SCK_MAX_CNT) or (cause == 1 and scks[idx]) then
+	if (cause == 0 and idx <= SCK_MAX_CNT+1) or (cause == 1 and scks[idx]) then
 		return true
 	else
 		print("checkidx "..fnm.." err",idx)
@@ -23,7 +23,7 @@ end
 
 local function getidxbyid(id)
 	local i
-	for i=1,SCK_MAX_CNT do
+	for i=1,SCK_MAX_CNT+1 do
 		if scks[i] and scks[i].id == id then return i end
 	end
 end
