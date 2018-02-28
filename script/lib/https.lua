@@ -24,7 +24,7 @@ local tclients = {}
 函数名：getclient
 功能  ：返回一个http client在tclients中的索引
 参数  ：
-	  sckidx：http client对应的socket索引
+        sckidx：http client对应的socket索引
 返回值：sckidx对应的http client在tclients中的索引
 ]]
 local function getclient(sckidx)
@@ -247,9 +247,10 @@ end
 
 --[[
 函数名：timerfnc
-功能：当接收数据超时时启动定时器
-参数：客户端对应的SOCKER的ID
-返回值：
+功能  ：接收数据超时的定时器处理函数
+参数  ：
+        hidx：http client在tclients表中的索引	
+返回值：无
 ]]
 function timerfnc(hidx)
 	if tclients[hidx].filepath then os.remove(tclients[hidx].filepath) end
@@ -258,9 +259,11 @@ function timerfnc(hidx)
 end
 
 --[[
-函数名：数据接收处理函数
-功能：将服务器返回的数据进行处理
-参数：idx：客户端所对应的端口ID data：服务器返回的数据
+函数名：rcv
+功能  ：数据接收处理函数
+参数  ：
+        idx：http client对应的socket id	
+        data：收到的数据
 返回值：无
 ]]
 function rcv(idx,data)
@@ -386,13 +389,13 @@ thttp.__index = thttp
 返回值：无
 ]]
 function create(host,port)
-	if #tclients>=2 then assert(false,"tclients maxcnt error") return end
+	if #tclients>=3 then assert(false,"tclients maxcnt error") return end
 	local http_client =
 	{
 		prot="TCP",
 		host=host,
 		port=port or 443,		
-		sckidx=socketssl.SCK_MAX_CNT-#tclients-2,
+		sckidx=socketssl.SCK_MAX_CNT-#tclients-3,
 		sckconning=false,
 		sckconnected=false,
 		sckreconncnt=0,
@@ -445,9 +448,10 @@ end
 
 --[[
 函数名：setconnectionmode
-功能：设置连接模式，长连接还是短链接
-参数：v，true为长连接，false为短链接
-返回：
+功能  ：设置连接模式，长连接还是短链接
+参数  ：
+		v：true为长连接，false为短链接
+返回值：无
 ]]
 function thttp:setconnectionmode(v)
 	self.mode=v
@@ -608,5 +612,18 @@ function thttp:getstatus()
 	elseif self.disconnect then
 		return "DISCONNECTED"
 	end
+end
+
+--[[
+函数名：getrcvpercent
+功能  ：获取接收到数据的百分比
+参数  ：无
+返回值：百分比，0到100
+]]
+function thttp:getrcvpercent()
+	if not self.rcvChunked and self.rcvLen and self.rcvLen>0 and self.contentlen and self.contentlen>0 then
+		return 100*self.rcvLen/self.contentlen
+	end
+	return 0
 end
 

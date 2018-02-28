@@ -1,22 +1,16 @@
 --定义模块,导入依赖库
-local base = _G
-local string = require"string"
-local io = require"io"
-local os = require"os"
-local sys  = require"sys"
-local misc = require"misc"
-local link = require"link"
-local socketssl = require"socketssl"
-local crypto = require"crypto"
+require"sys"
+require"misc"
+require"link"
+require"socketssl"
+require"crypto"
 module(...,package.seeall)
 
 
 local ssub,schar,smatch,sbyte,slen,sfind = string.sub,string.char,string.match,string.byte,string.len,string.find
-local tonumber = base.tonumber
-
 
 --阿里云鉴权服务器
-local SCK_IDX,PROT,ADDR,PORT = 3,"TCP","iot-auth.cn-shanghai.aliyuncs.com",443
+local SCK_IDX,PROT,ADDR,PORT = socketssl.SCK_MAX_CNT+1,"TCP","iot-auth.cn-shanghai.aliyuncs.com",443
 --与阿里云鉴权服务器的socket连接状态
 local linksta
 --一个连接周期内的动作：如果连接后台失败，会尝试重连，重连间隔为RECONN_PERIOD秒，最多重连RECONN_MAX_CNT次
@@ -40,14 +34,14 @@ local rcvbuf,rcvalidbody = "",""
 返回值：无
 ]]
 local function print(...)
-	base.print("aliyuniotauthssl",...)
+	_G.print("aliyuniotauthssl",...)
 end
 
 local function getdevice(s)
 	if s=="name" then
-		return devicename or misc.getimei()
+		return type(devicename)=="function" and devicename() or (devicename or misc.getimei())
 	elseif s=="secret" then
-		return devicesecret or misc.getsn()
+		return type(devicesecret)=="function" and devicesecret() or (devicesecret or misc.getsn())
 	end
 end
 
@@ -184,7 +178,7 @@ function ntfy(idx,evt,result,item)
 		connect()
 	end
 	--其他错误处理，断开数据链路，重新连接
-	if smatch((base.type(result)=="string") and result or "","ERROR") then
+	if smatch((type(result)=="string") and result or "","ERROR") then
 		socketssl.disconnect(SCK_IDX)
 	end
 end

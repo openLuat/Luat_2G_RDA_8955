@@ -881,7 +881,7 @@ tmqtt.__index = tmqtt
 ·µ»ØÖµ£ºÎÞ
 ]]
 function create(prot,host,port,chksvrcrt,ver)
-	if #tclients>=2 then assert(false,"tclients maxcnt error") return end
+	if #tclients>=3 then assert(false,"tclients maxcnt error") return end
 	local mqtt_client =
 	{
 		prot=prot,

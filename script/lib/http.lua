@@ -24,7 +24,7 @@ local tclients = {}
 函数名：getclient
 功能  ：返回一个http client在tclients中的索引
 参数  ：
-	  sckidx：http client对应的socket索引
+        sckidx：http client对应的socket索引
 返回值：sckidx对应的http client在tclients中的索引
 ]]
 local function getclient(sckidx)
@@ -101,8 +101,6 @@ local function connectitem(hidx)
 	connect(item.sckidx,item.prot,item.host,item.port)
 end
 
---返回
---true,sndidx,sndpos
 --[[
 函数名：getnxtsnd
 功能  ：获取下次发送的数据信息
@@ -244,9 +242,10 @@ end
 
 --[[
 函数名：timerfnc
-功能：当接收数据超时时启动定时器
-参数：客户端对应的SOCKER的ID
-返回值：
+功能  ：接收数据超时的定时器处理函数
+参数  ：
+        hidx：http client在tclients表中的索引	
+返回值：无
 ]]
 function timerfnc(hidx)
 	if tclients[hidx].filepath then os.remove(tclients[hidx].filepath) end
@@ -255,9 +254,11 @@ function timerfnc(hidx)
 end
 
 --[[
-函数名：数据接收处理函数
-功能：将服务器返回的数据进行处理
-参数：idx：客户端所对应的端口ID data：服务器返回的数据
+函数名：rcv
+功能  ：数据接收处理函数
+参数  ：
+        idx：http client对应的socket id	
+        data：收到的数据
 返回值：无
 ]]
 function rcv(idx,data)
@@ -429,9 +430,10 @@ end
 
 --[[
 函数名：setconnectionmode
-功能：设置连接模式，长连接还是短链接
-参数：v，true为长连接，false为短链接
-返回：
+功能  ：设置连接模式，长连接还是短链接
+参数  ：
+		v：true为长连接，false为短链接
+返回值：无
 ]]
 function thttp:setconnectionmode(v)
 	self.mode=v
