@@ -138,12 +138,12 @@ aliyuniotssl.regcb(connectedcb,connecterrcb)
 
 
 --要使用阿里云OTA功能，必须参考本文件136行aliyuniotssl.config(PRODUCT_KEY,nil,getDeviceName,getDeviceSecret)去配置产品key，设备名称和设备证书
---然后加载阿里云OTA功能模块
-require"aliyuniotota"
+--然后加载阿里云OTA功能模块(打开下面的代码注释)
+--require"aliyuniotota"
 --如果利用阿里云OTA功能去下载升级合宙模块的新固件，默认的固件版本号格式为：_G.PROJECT.."_".._G.VERSION.."_"..sys.getcorever()，则到此为止，不需要再看下文说明
 
 
---如果利用阿里云OTA功能去下载其他升级包，例如模块外接的MCU升级包，则根据实际情况，打开如下代码注释，调用设置接口进行配置和处理
+--如果利用阿里云OTA功能去下载其他升级包，例如模块外接的MCU升级包，则根据实际情况，打开下面的代码注释，调用设置接口进行配置和处理
 --设置MCU当前运行的固件版本号
 --aliyuniotota.setVer("MCU_VERSION_1.0.0")
 --设置新固件下载后保存的文件名
