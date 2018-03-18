@@ -14,6 +14,11 @@
 		【新功能说明】：升级包放在阿里云iot控制台上，参考aliyun_ssl_huadong2的demo说明
     二、demo脚本修改
 	(1)aliyun_ssl_huadong2：新增阿里云OTA功能的使用说明
+	(2)proto_buffer：新增"google proto buffer编解码测试demo"，需要配合大于等于0020版本的lod使用
+	(3)crypto：新增"计算文件的md5值"的使用说明，需要配合大于等于0020版本的lod使用
+	(4)default：修改功能，每秒一次，uart1和uart2向外输出“烧写的软件为Luat软件，不是AT软件”的提示
+	(5)http、https：修正“http和https的demo中，获取的数据保存到文件中时，如果保存失败，脚本重启”的问题
+	(6)crypto：新增"aes.encrypt和aes.decrypt"接口的使用说明，需要配合大于等于0020版本的lod使用
 
 
 

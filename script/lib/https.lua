@@ -195,6 +195,9 @@ function ntfy(idx,evt,result,item)
 		tclients[hidx].sckconnected=false
 		tclients[hidx].httpconnected=false
 		tclients[hidx].sckconning = false
+		if tclients[hidx].rcvcb then tclients[hidx].rcvcb(1,tclients[hidx].statuscode,tclients[hidx].rcvhead,tclients[hidx].filepath or tclients[hidx].rcvbody) end
+		sys.timer_stop(timerfnc,hidx)
+		resetpara(hidx,false)
 		--长连接时使用
 		if tclients[hidx].mode then
 			sys.timer_start(reconn,RECONN_PERIOD*1000,idx)
@@ -234,10 +237,10 @@ function ntfy(idx,evt,result,item)
 	end
 end
 
-local function resetpara(hidx,clrdata)
+function resetpara(hidx,clrdata)
 	tclients[hidx].statuscode=nil
 	tclients[hidx].rcvhead=nil
-	tclients[hidx].rcvbody,tclients[hidx].rcvLen=nil
+	tclients[hidx].rcvcb,tclients[hidx].rcvbody,tclients[hidx].rcvLen=nil
 	tclients[hidx].status=nil
 	tclients[hidx].result=nil
 	tclients[hidx].rcvChunked,tclients[hidx].chunkSize=nil
@@ -253,8 +256,7 @@ end
 返回值：无
 ]]
 function timerfnc(hidx)
-	if tclients[hidx].filepath then os.remove(tclients[hidx].filepath) end
-	if tclients[hidx].rcvcb then tclients[hidx].rcvcb(3) end
+	if tclients[hidx].rcvcb then tclients[hidx].rcvcb(3,tclients[hidx].statuscode,tclients[hidx].rcvhead,tclients[hidx].filepath or tclients[hidx].rcvbody) end
 	resetpara(hidx)
 end
 
@@ -443,7 +445,7 @@ function thttp:connect(connectedcb,sckerrcb)
 	if self.httpconnected then print("thttp:connect already connected") return end
 	if not self.sckconnected then
 		connect(self.sckidx,self.prot,self.host,self.port,self.crtconfig) 
-    end
+	end
 end
 
 --[[
@@ -518,7 +520,7 @@ end
 			先发送字符串begin，然后发送文件"/ldata/post.jpg"的内容，最后发送字符串end
 		rcvcb：function类型，应答实体的数据回调函数
 		filepath：string类型，应答实体的数据保存为文件的路径，例如"download.bin"，[可选]
-返回值：无
+返回值：如果传入了filepath，返回处理后的文件保存的完整路径；其余情况没有返回值
 ]]
 function thttp:request(cmdtyp,url,head,body,rcvcb,filepath)
 	local headstr="" 
@@ -593,6 +595,7 @@ function thttp:request(cmdtyp,url,head,body,rcvcb,filepath)
 		clrsndbody(getclient(self.sckidx))
 		if self.sckerrcb then self.sckerrcb("SEND") end
 	end
+	if filepath then return self.filepath end
 end
 
 --[[

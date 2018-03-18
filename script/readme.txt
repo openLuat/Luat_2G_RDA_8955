@@ -56,6 +56,8 @@ pb：电话本读写demo项目
 
 pm：休眠控制demo项目
 
+proto_buffer：google proto buffer编解码测试demo项目
+
 sms：短信demo项目
 
 socket\long_connection：基于TCP的socket长连接通信demo项目（UDP使用方式和TCP完全相同）

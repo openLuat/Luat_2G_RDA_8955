@@ -147,8 +147,9 @@ local function sckrsp(id,evt,val)--对此连接的状态通知和处理的程序
 		end
 		scks[idx].rsp(idx,"DISCONNECT",true,cause)
 	elseif evt == "CLOSE" then
-		scks[idx].rsp(idx,"CLOSE",true)
+		local rspCb = scks[idx].rsp
 		scks[idx] = nil
+		rspCb(idx,"CLOSE",true)	
 	elseif evt == "STATE" and val == "CLOSED" then
 		if #scks[idx].sndpending ~= 0 then
 			--link.connect(id,scks[idx].prot,scks[idx].addr,scks[idx].port)
