@@ -12,7 +12,7 @@ module(..., package.seeall)
 -- @usage locan cnt = io.filesize("/ldata/call.txt")
 function io.filesize(path)
     local size = 0
-    local file = io.open(path, "r")
+    local file = io.open(path or "", "r")
     if file then
         local current = file:seek()
         size = file:seek("end")

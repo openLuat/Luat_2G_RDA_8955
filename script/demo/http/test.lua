@@ -82,9 +82,9 @@ local function rcvcbfile(result,statuscode,head,filename)
 		end
 		
 		filehandle:close()
-		--文件使用完之后，如果以后不再需求，需要自行删除
-		os.remove(filename)
 	end
+	--文件使用完之后，如果以后不再需求，需要自行删除
+	if filename then os.remove(filename) end
 	
 	httpclient:disconnect(discb)
 end

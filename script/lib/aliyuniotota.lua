@@ -17,7 +17,9 @@ local verRpted
 
 --httpClient：下载新固件的http client
 --httpUrl：get命令中的url字段
-local httpClient,httpUrl
+local httpClient,httpHost,httpUrl
+--阿里云后台下的新固件MD5值
+local gFileMD5,gFileSize,gFilePath
 
 --lastStep：最后一次上报的下载新固件的进度
 local lastStep
@@ -101,9 +103,15 @@ end
 返回值：无
 ]]
 local function downloadCb(result,filePath)
-	print("downloadCb",gCb,result,filePath)
+	print("downloadCb",gCb,result,filePath,gFileSize,io.filesize(filePath))
 	sys.setrestart(true,4)
 	sys.timer_stop(sys.setrestart,true,4)
+	--如果使用的lod版本大于等于V0020，则校验MD5
+	if result and tonumber(string.match(sys.getcorever(),"Luat_V(%d+)_"))>=20 then
+		local calMD5 = crypto.md5(filePath,"file")
+		result = (string.upper(calMD5) == string.upper(gFileMD5))
+		print("downloadCb cmp md5",result,calMD5,gFileMD5)		
+	end
 	if gCb then
 		gCb(result,filePath)
 	else
@@ -111,11 +119,21 @@ local function downloadCb(result,filePath)
 	end
 end
 
+local function httpInitConnectCb()
+	httpConnectedCb(true)
+end
+
+local function httpConnect(init)
+	httpClient=https.create(httpHost,443)
+	httpClient:connect((init and httpInitConnectCb or httpConnectedCb),httpErrCb)
+end
+
 --[[
 函数名：httpRcvCb
 功能  ：接收回调函数（下载文件）
 参数  ：result：数据接收结果(此参数为0时，后面的几个参数才有意义)
 				0:成功
+				1:失败，还没有接收完整，被服务器断开了
 				2:表示实体超出实际实体，错误，不输出实体内容
 				3:接收超时
 		statuscode：http应答的状态码，string类型或者nil
@@ -125,9 +143,14 @@ end
 ]]
 local function httpRcvCb(result,statuscode,head,filename)
 	print("httpRcvCb",result,statuscode,head,filename)
-	upgradeStepRpt(result==0 and 100 or -2,result)
-	sys.timer_start(downloadCb,3000,result==0,filename)
-	httpClient:destroy()	
+	gFilePath = filename
+	if result==0 then
+		upgradeStepRpt(100,result)
+		sys.timer_start(downloadCb,3000,true,filename)
+		httpClient:destroy()
+	else
+		httpClient:destroy(httpConnect)
+	end
 end
 
 --[[
@@ -148,10 +171,13 @@ end
 函数名：httpConnectedCb
 功能  ：SOCKET connected 成功回调函数
 参数  ：
+		init：是否为本次下载新固件过程中的第一次连接
 返回值：
 ]]
-local function httpConnectedCb()
-	httpClient:request("GET",httpUrl,{},"",httpRcvCb,gPath)
+function httpConnectedCb(init)
+	local rangeStr = "Range: bytes="..(init and 0 or io.filesize(gFilePath)).."-"
+	gFilePath = httpClient:request("GET",httpUrl,{rangeStr},"",httpRcvCb,gPath)
+	if init then os.remove(gFilePath) end
 	sys.timer_start(getPercent,5000)
 end 
 
@@ -164,7 +190,7 @@ end
 		SEND：socket发送数据失败，不再尝试自动重连
 返回值：无
 ]]
-local function httpErrCb(r)
+function httpErrCb(r)
 	print("httpErrCb",r)
 	upgradeStepRpt(-2,r)
 	downloadCb(false)
@@ -180,18 +206,19 @@ end
 ]]
 function upgrade(payload)	
 	local res,jsonData = pcall(json.decode,payload)
-	print("upgrade",res,payload)
+	print("upgrade",res,payload)	
 	if res then
 		if jsonData.data and jsonData.data.url then
 			print("url",jsonData.data.url)
 			local host,url = string.match(jsonData.data.url,"https://(.-)/(.+)")
 			print("httpUrl",url)
 			if host and url then
+				httpHost = host
 				httpUrl = "/"..url
-				httpClient=https.create(host,443)
-				httpClient:connect(httpConnectedCb,httpErrCb)
+				httpConnect(true)
 			end
-			
+			gFileMD5 = jsonData.data.md5
+			gFileSize = jsonData.data.size
 		end
 	end
 end
@@ -204,7 +231,12 @@ end
 返回值：无
 ]]
 function setVer(version)
+	local oldVer = gVersion
 	gVersion = version
+	if verRpted and version~=oldVer then		
+		verRpted = false
+		verRpt()
+	end
 end
 
 --[[

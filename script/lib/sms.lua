@@ -220,7 +220,8 @@ local function rsp(cmd,success,response,intermediate)
 	print("lib_sms rsp",prefix,cmd,success,response,intermediate)
 
     --读短信成功
-	if prefix == "+CMGR" and success then
+	if prefix == "+CMGR" then
+		if not success then dispatch("SMS_READ_CNF") return end
 		local convnum,t,stat,alpha,len,pdu,data,longsms,total,isn,idx = "",""
 		if intermediate then
 			stat,alpha,len,pdu = smatch(intermediate,"+CMGR:%s*(%d),(.*),%s*(%d+)\r\n(%x+)")
@@ -545,28 +546,37 @@ end
 返回值：无
 ]]
 local function readcnf(result,num,data,pos,datetime,name,total,idx,isn)
-	--过滤号码中的86和+86
-	local d1,d2 = string.find(num,"^([%+]*86)")
-	if d1 and d2 then
-		num = string.sub(num,d2+1,-1)
+	if result then
+		--过滤号码中的86和+86
+		local d1,d2 = string.find(num,"^([%+]*86)")
+		if d1 and d2 then
+			num = string.sub(num,d2+1,-1)
+		end
+		--删除短信
+		delete(tnewsms[1])
+		--从短信接收位置表中删除此短信的位置
+		table.remove(tnewsms,1)
+		if total and total >1 then
+			sys.dispatch("LONG_SMS_MERGE",num,data,datetime,name,total,idx,isn)  
+			readsms()--读取下一条新短信
+			return
+		end
+		if data then
+			--短信内容转换为GB2312字符串格式
+			data = common.ucs2betogb2312(common.hexstobins(data))
+			--用户应用程序处理短信
+			if newsmscb then newsmscb(num,data,datetime) end
+		end
+		--继续读取下一条短信
+		readsms()
+	else
+		--删除短信
+		delete(tnewsms[1])
+		--从短信接收位置表中删除此短信的位置
+		table.remove(tnewsms,1)
+		--继续读取下一条短信
+		readsms()
 	end
-	--删除短信
-	delete(tnewsms[1])
-	--从短信接收位置表中删除此短信的位置
-	table.remove(tnewsms,1)
-	if total and total >1 then
-		sys.dispatch("LONG_SMS_MERGE",num,data,datetime,name,total,idx,isn)  
-		readsms()--读取下一条新短信
-		return
-	end
-	if data then
-		--短信内容转换为GB2312字符串格式
-		data = common.ucs2betogb2312(common.hexstobins(data))
-		--用户应用程序处理短信
-		if newsmscb then newsmscb(num,data,datetime) end
-	end
-	--继续读取下一条短信
-	readsms()
 end
 
 local function longsmsmergecnf(res,num,data,datetime)
