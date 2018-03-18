@@ -1,5 +1,5 @@
 RDA8955芯片的Air模块的Flash总空间都为4MB
-目前有6种底层软件：
+目前有7种底层软件：
 Luat_VXXXX_8955.lod：不支持SSL、TTS、SPI接口的LCD功能
 Luat_VXXXX_8955_SSL.lod：支持SSL功能
 Luat_VXXXX_8955_SSL_TTS.lod：支持SSL、TTS功能，不支持MP3、MIDI、录音功能
