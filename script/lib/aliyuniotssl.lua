@@ -135,5 +135,9 @@ function regevtcb(evtcbs)
 end
 
 function publish(topic,payload,qos,ackcb,usertag)
-	mqttclient:publish(topic,payload,qos,ackcb,usertag)
+	if mqttclient then
+		mqttclient:publish(topic,payload,qos,ackcb,usertag)
+	else
+		if ackcb then ackcb(usertag,false) end
+	end
 end

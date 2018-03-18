@@ -570,7 +570,7 @@ function urc(data,prefix)
 		local lid,len = string.match(data,",(%d),(%d+)",string.len("+SSL RECEIVE")+1)
 		rcvd.id = tonumber(lid)
 		rcvd.len = tonumber(len)
-		return rcvdfilter
+		return rcvdfilter,rcvd.len
 	--socket״̬֪ͨ
 	else
 		

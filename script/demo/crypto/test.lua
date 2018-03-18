@@ -54,8 +54,15 @@ end
 返回值：无
 ]]
 local function md5test()
+	--计算字符串的md5值
 	local originstr = "sdfdsfdsfdsffdsfdsfsdfs1234"
 	print("md5",crypto.md5(originstr,slen(originstr)))
+	
+	--计算文件的md5值(V0020版本后的lod才支持此功能)
+	if tonumber(string.match(sys.getcorever(),"Luat_V(%d+)_"))>=20 then
+		--crypto.md5，第一个参数为文件路径，第二个参数必须是"file"
+		print("sys.lua md5",crypto.md5("/lua/sys.lua","file"))
+	end	
 end
 
 --[[
@@ -95,21 +102,201 @@ end
 
 --[[
 函数名：aestest
-功能  ：aes算法测试
+功能  ：aes算法测试（参考http://tool.chacuo.net/cryptaes）
 参数  ：无
 返回值：无
 ]]
 local function aestest()
-	local originstr = "123456crypto.base64_encodemodule(...,package.seeall)sys.timer_start(test,5000)jdklasdjklaskdjklsa"
-	--加密模式:ECB，填充:zeropadding，数据块:128位
-	local encodestr = crypto.aes128_ecb_encrypt(originstr,slen(originstr),"1234567890123456",16)
-	print("aes128_ecb_encrypt",common.binstohexs(encodestr))
-	print("aes128_ecb_decrypt",crypto.aes128_ecb_decrypt(encodestr,slen(encodestr),"1234567890123456",16))
-	
-	--cbc还不支持
-	--encodestr = crypto.aes128_cbc_encrypt(originstr,slen(originstr),"1234567890123456",16,"1234567890123456",16)
-	--print("aes128_cbc_encrypt",common.binstohexs(encodestr))
-	--print("aes128_cbc_decrypt",crypto.aes128_cbc_decrypt(encodestr,slen(encodestr),"1234567890123456",16,"1234567890123456",16))
+	--aes.encrypt和aes.decrypt接口测试(V0020版本后的lod才支持此功能)
+	if tonumber(string.match(sys.getcorever(),"Luat_V(%d+)_"))>=20 then
+		local originStr = "AES128 ECB ZeroPadding test"
+		--加密模式：ECB；填充方式：ZeroPadding；密钥：1234567890123456；密钥长度：128 bit
+		local encodestr = crypto.aes_encrypt("ECB","ZERO",originStr,"1234567890123456")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("ECB","ZERO",encodestr,"1234567890123456"))	
+		
+		originStr = "AES128 ECB Pkcs5Padding test"
+		--加密模式：ECB；填充方式：Pkcs5Padding；密钥：1234567890123456；密钥长度：128 bit
+		encodestr = crypto.aes_encrypt("ECB","PKCS5",originStr,"1234567890123456")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("ECB","PKCS5",encodestr,"1234567890123456"))	
+		
+		originStr = "AES128 ECB Pkcs7Padding test"
+		--加密模式：ECB；填充方式：Pkcs7Padding；密钥：1234567890123456；密钥长度：128 bit
+		encodestr = crypto.aes_encrypt("ECB","PKCS7",originStr,"1234567890123456")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("ECB","PKCS7",encodestr,"1234567890123456"))
+		
+		originStr = "AES192 ECB ZeroPadding test"	
+		--加密模式：ECB；填充方式：ZeroPadding；密钥：123456789012345678901234；密钥长度：192 bit
+		local encodestr = crypto.aes_encrypt("ECB","ZERO",originStr,"123456789012345678901234")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("ECB","ZERO",encodestr,"123456789012345678901234"))	
+		
+		originStr = "AES192 ECB Pkcs5Padding test"
+		--加密模式：ECB；填充方式：Pkcs5Padding；密钥：123456789012345678901234；密钥长度：192 bit
+		encodestr = crypto.aes_encrypt("ECB","PKCS5",originStr,"123456789012345678901234")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("ECB","PKCS5",encodestr,"123456789012345678901234"))	
+		
+		originStr = "AES192 ECB Pkcs7Padding test"
+		--加密模式：ECB；填充方式：Pkcs7Padding；密钥：123456789012345678901234；密钥长度：192 bit
+		encodestr = crypto.aes_encrypt("ECB","PKCS7",originStr,"123456789012345678901234")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("ECB","PKCS7",encodestr,"123456789012345678901234"))
+		
+		originStr = "AES256 ECB ZeroPadding test"	
+		--加密模式：ECB；填充方式：ZeroPadding；密钥：12345678901234567890123456789012；密钥长度：256 bit
+		local encodestr = crypto.aes_encrypt("ECB","ZERO",originStr,"12345678901234567890123456789012")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("ECB","ZERO",encodestr,"12345678901234567890123456789012"))	
+		
+		originStr = "AES256 ECB Pkcs5Padding test"
+		--加密模式：ECB；填充方式：Pkcs5Padding；密钥：12345678901234567890123456789012；密钥长度：256 bit
+		encodestr = crypto.aes_encrypt("ECB","PKCS5",originStr,"12345678901234567890123456789012")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("ECB","PKCS5",encodestr,"12345678901234567890123456789012"))	
+		
+		originStr = "AES256 ECB Pkcs7Padding test"
+		--加密模式：ECB；填充方式：Pkcs7Padding；密钥：12345678901234567890123456789012；密钥长度：256 bit
+		encodestr = crypto.aes_encrypt("ECB","PKCS7",originStr,"12345678901234567890123456789012")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("ECB","PKCS7",encodestr,"12345678901234567890123456789012"))
+		
+		
+		
+		
+		
+		originStr = "AES128 CBC ZeroPadding test"
+		--加密模式：CBC；填充方式：ZeroPadding；密钥：1234567890123456；密钥长度：128 bit；偏移量：1234567890666666
+		local encodestr = crypto.aes_encrypt("CBC","ZERO",originStr,"1234567890123456","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CBC","ZERO",encodestr,"1234567890123456","1234567890666666"))	
+		
+		originStr = "AES128 CBC Pkcs5Padding test"
+		--加密模式：CBC；填充方式：Pkcs5Padding；密钥：1234567890123456；密钥长度：128 bit；偏移量：1234567890666666
+		encodestr = crypto.aes_encrypt("CBC","PKCS5",originStr,"1234567890123456","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CBC","PKCS5",encodestr,"1234567890123456","1234567890666666"))	
+		
+		originStr = "AES128 CBC Pkcs7Padding test"
+		--加密模式：CBC；填充方式：Pkcs7Padding；密钥：1234567890123456；密钥长度：128 bit；偏移量：1234567890666666
+		encodestr = crypto.aes_encrypt("CBC","PKCS7",originStr,"1234567890123456","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CBC","PKCS7",encodestr,"1234567890123456","1234567890666666"))
+		
+		originStr = "AES192 CBC ZeroPadding test"	
+		--加密模式：CBC；填充方式：ZeroPadding；密钥：123456789012345678901234；密钥长度：192 bit；偏移量：1234567890666666
+		local encodestr = crypto.aes_encrypt("CBC","ZERO",originStr,"123456789012345678901234","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CBC","ZERO",encodestr,"123456789012345678901234","1234567890666666"))	
+		
+		originStr = "AES192 CBC Pkcs5Padding test"
+		--加密模式：CBC；填充方式：Pkcs5Padding；密钥：123456789012345678901234；密钥长度：192 bit；偏移量：1234567890666666
+		encodestr = crypto.aes_encrypt("CBC","PKCS5",originStr,"123456789012345678901234","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CBC","PKCS5",encodestr,"123456789012345678901234","1234567890666666"))	
+		
+		originStr = "AES192 CBC Pkcs7Padding test"
+		--加密模式：CBC；填充方式：Pkcs7Padding；密钥：123456789012345678901234；密钥长度：192 bit；偏移量：1234567890666666
+		encodestr = crypto.aes_encrypt("CBC","PKCS7",originStr,"123456789012345678901234","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CBC","PKCS7",encodestr,"123456789012345678901234","1234567890666666"))
+		
+		originStr = "AES256 CBC ZeroPadding test"	
+		--加密模式：CBC；填充方式：ZeroPadding；密钥：12345678901234567890123456789012；密钥长度：256 bit；偏移量：1234567890666666
+		local encodestr = crypto.aes_encrypt("CBC","ZERO",originStr,"12345678901234567890123456789012","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CBC","ZERO",encodestr,"12345678901234567890123456789012","1234567890666666"))	
+		
+		originStr = "AES256 CBC Pkcs5Padding test"
+		--加密模式：CBC；填充方式：Pkcs5Padding；密钥：12345678901234567890123456789012；密钥长度：256 bit；偏移量：1234567890666666
+		encodestr = crypto.aes_encrypt("CBC","PKCS5",originStr,"12345678901234567890123456789012","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CBC","PKCS5",encodestr,"12345678901234567890123456789012","1234567890666666"))	
+		
+		originStr = "AES256 CBC Pkcs7Padding test"
+		--加密模式：CBC；填充方式：Pkcs7Padding；密钥：12345678901234567890123456789012；密钥长度：256 bit；偏移量：1234567890666666
+		encodestr = crypto.aes_encrypt("CBC","PKCS7",originStr,"12345678901234567890123456789012","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CBC","PKCS7",encodestr,"12345678901234567890123456789012","1234567890666666"))
+
+		
+		
+		
+		
+		originStr = "AES128 CTR ZeroPadding test"
+		--加密模式：CTR；填充方式：ZeroPadding；密钥：1234567890123456；密钥长度：128 bit；偏移量：1234567890666666
+		local encodestr = crypto.aes_encrypt("CTR","ZERO",originStr,"1234567890123456","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CTR","ZERO",encodestr,"1234567890123456","1234567890666666"))	
+		
+		originStr = "AES128 CTR Pkcs5Padding test"
+		--加密模式：CTR；填充方式：Pkcs5Padding；密钥：1234567890123456；密钥长度：128 bit；偏移量：1234567890666666
+		encodestr = crypto.aes_encrypt("CTR","PKCS5",originStr,"1234567890123456","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CTR","PKCS5",encodestr,"1234567890123456","1234567890666666"))	
+		
+		originStr = "AES128 CTR Pkcs7Padding test"
+		--加密模式：CTR；填充方式：Pkcs7Padding；密钥：1234567890123456；密钥长度：128 bit；偏移量：1234567890666666
+		encodestr = crypto.aes_encrypt("CTR","PKCS7",originStr,"1234567890123456","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CTR","PKCS7",encodestr,"1234567890123456","1234567890666666"))
+		
+		originStr = "AES128 CTR NonePadding test"
+		--加密模式：CTR；填充方式：NonePadding；密钥：1234567890123456；密钥长度：128 bit；偏移量：1234567890666666
+		encodestr = crypto.aes_encrypt("CTR","NONE",originStr,"1234567890123456","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CTR","NONE",encodestr,"1234567890123456","1234567890666666"))
+		
+		originStr = "AES192 CTR ZeroPadding test"	
+		--加密模式：CTR；填充方式：ZeroPadding；密钥：123456789012345678901234；密钥长度：192 bit；偏移量：1234567890666666
+		local encodestr = crypto.aes_encrypt("CTR","ZERO",originStr,"123456789012345678901234","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CTR","ZERO",encodestr,"123456789012345678901234","1234567890666666"))	
+		
+		originStr = "AES192 CTR Pkcs5Padding test"
+		--加密模式：CTR；填充方式：Pkcs5Padding；密钥：123456789012345678901234；密钥长度：192 bit；偏移量：1234567890666666
+		encodestr = crypto.aes_encrypt("CTR","PKCS5",originStr,"123456789012345678901234","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CTR","PKCS5",encodestr,"123456789012345678901234","1234567890666666"))	
+		
+		originStr = "AES192 CTR Pkcs7Padding test"
+		--加密模式：CTR；填充方式：Pkcs7Padding；密钥：123456789012345678901234；密钥长度：192 bit；偏移量：1234567890666666
+		encodestr = crypto.aes_encrypt("CTR","PKCS7",originStr,"123456789012345678901234","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CTR","PKCS7",encodestr,"123456789012345678901234","1234567890666666"))
+		
+		originStr = "AES192 CTR NonePadding test"
+		--加密模式：CTR；填充方式：NonePadding；密钥：123456789012345678901234；密钥长度：192 bit；偏移量：1234567890666666
+		encodestr = crypto.aes_encrypt("CTR","NONE",originStr,"123456789012345678901234","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CTR","NONE",encodestr,"123456789012345678901234","1234567890666666"))
+		
+		originStr = "AES256 CTR ZeroPadding test"	
+		--加密模式：CTR；填充方式：ZeroPadding；密钥：12345678901234567890123456789012；密钥长度：256 bit；偏移量：1234567890666666
+		local encodestr = crypto.aes_encrypt("CTR","ZERO",originStr,"12345678901234567890123456789012","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CTR","ZERO",encodestr,"12345678901234567890123456789012","1234567890666666"))	
+		
+		originStr = "AES256 CTR Pkcs5Padding test"
+		--加密模式：CTR；填充方式：Pkcs5Padding；密钥：12345678901234567890123456789012；密钥长度：256 bit；偏移量：1234567890666666
+		encodestr = crypto.aes_encrypt("CTR","PKCS5",originStr,"12345678901234567890123456789012","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CTR","PKCS5",encodestr,"12345678901234567890123456789012","1234567890666666"))	
+		
+		originStr = "AES256 CTR Pkcs7Padding test"
+		--加密模式：CTR；填充方式：Pkcs7Padding；密钥：12345678901234567890123456789012；密钥长度：256 bit；偏移量：1234567890666666
+		encodestr = crypto.aes_encrypt("CTR","PKCS7",originStr,"12345678901234567890123456789012","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CTR","PKCS7",encodestr,"12345678901234567890123456789012","1234567890666666"))
+		
+		originStr = "AES256 CTR NonePadding test"
+		--加密模式：CTR；填充方式：NonePadding；密钥：12345678901234567890123456789012；密钥长度：256 bit；偏移量：1234567890666666
+		encodestr = crypto.aes_encrypt("CTR","NONE",originStr,"12345678901234567890123456789012","1234567890666666")
+		print(originStr,"encrypt",common.binstohexs(encodestr))
+		print("decrypt",crypto.aes_decrypt("CTR","NONE",encodestr,"12345678901234567890123456789012","1234567890666666"))
+	end
 end
 
 --[[

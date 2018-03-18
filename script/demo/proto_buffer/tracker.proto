@@ -1,0 +1,129 @@
+package tracker;
+
+message GPS {
+  optional sint32 longitude = 1;
+  optional sint32 latitude = 2;
+  optional int32 degree = 3;
+  optional int32 speed = 4;
+  optional int32 viewed_sates = 5;
+}
+
+message LacAndCell {
+  message Cells {
+    message Cell {
+      required int32 mcc = 1;
+	  required int32 mnc = 2;
+      required int32 cell_id = 3;
+	  required int32 cell_rssi = 4;
+    }
+    required int32 lac_id = 1;
+    repeated Cell cells = 2;
+  }
+  repeated Cells cells = 1;
+  optional int32 ta = 2;
+}
+
+message Status {
+  optional bool shake = 1;
+  optional bool charger = 2;
+  optional bool acc = 3;
+  optional bool gps = 4;
+  optional int32 rssi = 5;
+  optional int32 vbat = 6;
+  enum ChargeStatus {
+    NOT_CHARGE = 0;
+    CHARGING = 1;
+    CHARGE_COMPLETE = 2;
+  }
+  optional ChargeStatus charge_status = 7;
+}
+
+
+
+message LogIn {
+  optional int32 project_id = 1;
+  optional string project_name = 2;
+  optional string script_version = 3;
+  optional string iccid = 4;
+  optional string imsi = 5;
+  optional int32 heart_interval = 6;
+}
+
+message Location {
+  enum LocationType {
+    DEV_TIMER_REPORT = 0;
+    SVR_QUERY_RSP = 1;
+    DEV_SOS_REPORT = 2;
+	DEV_KEY_REPORT = 3;
+  }
+  required LocationType type = 1;
+  optional bool gps_exist = 2;
+  optional GPS gps_info = 3;
+  optional bool cell_exist = 4;
+  optional LacAndCell cell_info = 5;
+  optional Status status = 6;
+}
+
+message Heart {
+  required Status status = 1;
+}
+
+enum ParaType {
+  GUARD = 0;
+  LOCATION_INTERVAL = 1;
+}
+
+message DevParaReport {
+  required ParaType type = 1;
+  optional bool guard = 2;
+  optional int32 location_interval = 3;
+}
+
+message DevSvrSetParaRsp {
+  required ParaType type = 1;
+  required bool result = 2;
+}
+
+message DevSvrEventRsp {
+  required SvrMessageType type = 1;
+  optional bool result = 2;
+}
+
+message Client {
+  enum ClientMessageID {
+    DEV_LOGIN = 0;
+    DEV_LOCATION = 1;
+    DEV_HEART = 2;
+	DEV_PARA_REPORT = 3;
+	DEV_SVRSETPARA_RSP = 4;
+	DEV_SVREVENT_RSP = 5;
+  }
+  required ClientMessageID message_id = 1;
+  optional LogIn log_in = 2;
+  optional Location location = 3;
+  optional Heart heart = 4;
+  optional DevParaReport para_report = 5;
+  optional DevSvrSetParaRsp set_para_rsp = 6;
+  optional DevSvrEventRsp event_rsp = 7;
+}
+
+
+message SvrSetPara {
+  required ParaType type = 1;
+  optional bool guard = 2;
+  optional int32 location_interval = 3;
+}
+
+enum SvrMessageType {
+  SVR_SET_PARA = 0;
+  SVR_QUERY_LOCATION = 1;
+  SVR_RESET = 2;
+  SVR_POWEROFF = 3;
+  SVR_RESTORE = 4;
+}
+
+message Server {
+  required SvrMessageType message_id = 1;
+  optional SvrSetPara svr_set_para = 2;
+}
+

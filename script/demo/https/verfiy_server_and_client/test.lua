@@ -66,25 +66,28 @@ end
 local function rcvcbfile(result,statuscode,head,filename)
 	print("rcvcbfile",result,statuscode,head,filename)	
 	
-	local filehandle = io.open(filename,"rb")
-	if not filehandle then print("rcvcbfile open file error") return end
-	local current = filehandle:seek()
-	local size = filehandle:seek("end")
-	filehandle:seek("set", current)
-	--输出文件长度
-	print("rcvcbfile size",size)
-	
-	--输出文件内容，如果文件太大，一次性读出文件内容可能会造成内存不足，分次读出可以避免此问题
-	print("rcvcbfile content:\r\n")
-	if size<=4096 then
-		print(filehandle:read("*all"))
-	else
+	if result==0 then
+		local filehandle = io.open(filename,"rb")
+		if not filehandle then print("rcvcbfile open file error") return end
+		local current = filehandle:seek()
+		local size = filehandle:seek("end")
+		filehandle:seek("set", current)
+		--输出文件长度
+		print("rcvcbfile size",size)
 		
+		--输出文件内容，如果文件太大，一次性读出文件内容可能会造成内存不足，分次读出可以避免此问题
+		print("rcvcbfile content:\r\n")
+		if size<=4096 then
+			print(filehandle:read("*all"))
+		else
+			
+		end
+		
+		filehandle:close()
 	end
-	
-	filehandle:close()
 	--文件使用完之后，如果以后不再需求，需要自行删除
-	os.remove(filename)
+	if filename then os.remove(filename) end
+	
 	httpclient:disconnect(discb)
 end
 

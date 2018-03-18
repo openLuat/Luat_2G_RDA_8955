@@ -207,7 +207,7 @@ function deregurc(prefix)
 end
 
 --“数据过滤器”，虚拟串口收到的数据时，首先需要调用此函数过滤处理一下
-local urcfilter
+local urcfilter,urcfilterlen
 
 --[[
 函数名：urc
@@ -223,7 +223,7 @@ local function urc(data)
 	else
 		local prefix = smatch(data,"(%+*[%u%d& ]+)")
 		--执行prefix的urc处理函数，返回数据过滤器
-		urcfilter = urctable[prefix](data,prefix)
+		urcfilter,urcfilterlen = urctable[prefix](data,prefix)
 	end
 end
 
@@ -250,7 +250,7 @@ local function procatc(data)
 	end
 	--如果存在“数据过滤器”
 	if urcfilter then
-		if slen(data)<200 then print("atc:",data) end
+		if urcfilterlen and urcfilterlen<200 then print(data) end
 		data,urcfilter = urcfilter(data)
 	else
 		print("atc:",data)
