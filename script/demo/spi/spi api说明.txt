@@ -39,3 +39,15 @@ length：要读取的数据的长度
 返回值：string类型，读取的数据内容
 ]]
 spi.recv(id,length)
+
+
+
+--[[
+功能：写、读数据
+
+参数：
+id：SPI的ID，spi.SPI_1表示SPI1，Air201、Air202、Air800只有SPI1，固定传spi.SPI_1即可
+data：string类型，要发送的数据
+
+返回值：string类型，读取的数据内容
+spi.send_recv(id,data)

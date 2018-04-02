@@ -12,7 +12,13 @@ require"sys"
 如果写在后面的其他位置，很有可能无法输出错误信息，从而增加调试难度
 ]]
 --sys.opntrace(true,1)
-require"wdt"
+
+--加载硬件看门狗功能模块
+--根据自己的硬件配置决定：1、是否加载此功能模块；2、配置Luat模块复位单片机引脚和互相喂狗引脚
+--合宙官方出售的Air201开发板上有硬件看门狗，所以使用官方Air201开发板时，必须加载此功能模块
+require "wdt"
+wdt.setup(pio.P0_30, pio.P0_31)
+
 require"linkair"
 require"factory1"
 if MODULE_TYPE~="Air800" and MODULE_TYPE~="Air801" then

@@ -229,7 +229,7 @@ local function parse()
 	if not headend then print("parse wait head end") return end
 	
 	local headstr = ssub(rcvbuf,1,headend+3)
-	if not smatch(headstr,"200 OK") then print("parse no 200 OK") return end
+	--if not smatch(headstr,"HTTP/%d*%.*%d* 200") then print("parse no 200 OK") return end
 	
 	local contentflg
 	if smatch(headstr,"Transfer%-Encoding: chunked") or smatch(headstr,"Transfer%-Encoding: Chunked") then
