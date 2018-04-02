@@ -40,9 +40,15 @@ require"dbg"
 sys.timer_start(dbg.setup,12000,"UDP","ota.airm2m.com",9072)
 
 require"test"
-if MODULE_TYPE=="Air201" then
-require"wdt"
-end
+
+--加载硬件看门狗功能模块
+--根据自己的硬件配置决定：1、是否加载此功能模块；2、配置Luat模块复位单片机引脚和互相喂狗引脚
+--合宙官方出售的Air201开发板上有硬件看门狗，所以使用官方Air201开发板时，必须加载此功能模块
+--[[
+require "wdt"
+wdt.setup(pio.P0_30, pio.P0_31)
+]]
+
 
 sys.init(0,0)
 sys.run()
