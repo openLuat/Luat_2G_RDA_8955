@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luat开源项目脚本lib</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>script_LuaTask lib</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/agps.html">agps</a></li>
+  <li><a href="../modules/audio.html">audio</a></li>
+  <li><a href="../modules/cc.html">cc</a></li>
+  <li><a href="../modules/clib.html">clib</a></li>
+  <li><a href="../modules/common.html">common</a></li>
+  <li><a href="../modules/console.html">console</a></li>
+  <li><a href="../modules/errDump.html">errDump</a></li>
+  <li><a href="../modules/gps.html">gps</a></li>
+  <li><a href="../modules/http.html">http</a></li>
+  <li><a href="../modules/lbsLoc.html">lbsLoc</a></li>
+  <li><a href="../modules/led.html">led</a></li>
+  <li><a href="../modules/link.html">link</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/misc.html">misc</a></li>
+  <li><a href="../modules/mqtt.html">mqtt</a></li>
+  <li><a href="../modules/net.html">net</a></li>
+  <li><a href="../modules/netLed.html">netLed</a></li>
+  <li><strong>ntp</strong></li>
+  <li><a href="../modules/nvm.html">nvm</a></li>
+  <li><a href="../modules/patch.html">patch</a></li>
+  <li><a href="../modules/pb.html">pb</a></li>
+  <li><a href="../modules/pins.html">pins</a></li>
+  <li><a href="../modules/pm.html">pm</a></li>
+  <li><a href="../modules/record.html">record</a></li>
+  <li><a href="../modules/ril.html">ril</a></li>
+  <li><a href="../modules/sim.html">sim</a></li>
+  <li><a href="../modules/sms.html">sms</a></li>
+  <li><a href="../modules/socket.html">socket</a></li>
+  <li><a href="../modules/sys.html">sys</a></li>
+  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/update.html">update</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wdt.html">wdt</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>ntp</code></h1>
+<p>模块功能：网络授时</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: openLuat</li>
+        <li><strong>Release</strong>: 2017.10.21</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: openLuat</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#getServers">getServers ()</a></td>
+	<td class="summary">获取NTP服务器地址列表</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setServers">setServers (st)</a></td>
+	<td class="summary">设置NTP服务器地址列表</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isEnd">isEnd ()</a></td>
+	<td class="summary">NTP同步标志</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ntpTime">ntpTime (ts, fnc)</a></td>
+	<td class="summary">同步时间，每个NTP服务器尝试3次，超时8秒,适用于被任务函数调用</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#timeSync">timeSync (ts, fnc)</a></td>
+	<td class="summary">自动同步时间任务适合独立执行</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "getServers"></a>
+    <strong  style="color: red;">getServers ()</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取NTP服务器地址列表</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">table,服务器地址列表</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="keyword">local</span> addtable = ntp.getServers()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "setServers"></a>
+    <strong  style="color: red;">setServers (st)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置NTP服务器地址列表</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">st</span>
+        <pre class="example">tab类型，服务器地址列表</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">ntp.getServers({<span class="string">"1edu.ntp.org.cn"</span>,<span class="string">"cn.ntp.org.cn"</span>})</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "isEnd"></a>
+    <strong  style="color: red;">isEnd ()</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">NTP同步标志</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">boole,NTP的同步状态true为成功,fasle为失败</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="keyword">local</span> sta = ntp.isEnd()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "ntpTime"></a>
+    <strong  style="color: red;">ntpTime (ts, fnc)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">同步时间，每个NTP服务器尝试3次，超时8秒,适用于被任务函数调用</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">ts</span>
+        <pre class="example">每隔ts小时同步1次</pre>
+        </li>
+        <li><span class="parameter">fnc</span>
+        <pre class="example">同步成功后回调函数</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">ntp.ntpTime() <span class="comment">-- 只同步1次</span></pre></il>
+        <li><pre class="example">ntp.ntpTime(<span class="number">1</span>) <span class="comment">-- 1小时同步1次</span></pre></il>
+        <li><pre class="example">ntp.ntpTime(<span class="keyword">nil</span>,fnc) <span class="comment">-- 只同步1次，同步成功后执行fnc()</span></pre></il>
+        <li><pre class="example">ntp.ntpTime(<span class="number">24</span>,fnc) <span class="comment">-- 24小时同步1次，同步成功后执行fnc()</span></pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "timeSync"></a>
+    <strong  style="color: red;">timeSync (ts, fnc)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">自动同步时间任务适合独立执行</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">ts</span>
+        <pre class="example">每隔ts小时同步1次</pre>
+        </li>
+        <li><span class="parameter">fnc</span>
+        <pre class="example">同步成功后回调函数</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">ntp.timeSync() <span class="comment">-- 只同步1次</span></pre></il>
+        <li><pre class="example">ntp.timeSync(<span class="number">1</span>) <span class="comment">-- 1小时同步1次</span></pre></il>
+        <li><pre class="example">ntp.timeSync(<span class="keyword">nil</span>,fnc) <span class="comment">-- 只同步1次，同步成功后执行fnc()</span></pre></il>
+        <li><pre class="example">ntp.timeSync(<span class="number">24</span>,fnc) <span class="comment">-- 24小时同步1次，同步成功后执行fnc()</span></pre></il>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

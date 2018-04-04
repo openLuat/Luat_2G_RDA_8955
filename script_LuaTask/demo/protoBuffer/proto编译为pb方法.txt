@@ -1,0 +1,5 @@
+1、根据电脑的操作系统去https://repo1.maven.org/maven2/com/google/protobuf/protoc/2.6.1/去下载对应的protobuf2 exe，如果是windows-x86_64，直接使用本目录下的protoc-2.6.1-windows-x86_64.exe即可
+2、把proto文件复制到本目录
+3、打开cmd，输入protoc-2.6.1-windows-x86_64 --descriptor_set_out=tracker.pb tracker.proto命令(注意修改protoc exe、proto和pb的文件名)就在同一级目录下生成了proto对应的pb文件
+
+

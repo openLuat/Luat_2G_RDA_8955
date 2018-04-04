@@ -1,0 +1,219 @@
+--- 模块功能：参数管理
+-- @module nvm
+-- @author openLuat
+-- @license MIT
+-- @copyright openLuat
+-- @release 2017.11.9
+
+require"log"
+
+module(...,package.seeall)
+
+package.path = "/?.lua;".."/?.luae;"..package.path
+
+--默认参数配置存储在configname文件中
+--实时参数配置存储在paraname文件中
+--para：实时参数表
+--config：默认参数表
+paraname = "/nvm_para.lua"
+local para,libdftconfig,configname,econfigname = {}
+
+--[[
+函数名：serialize
+功能  ：根据不同的数据类型，按照不同的格式，写格式化后的数据到文件中
+参数  ：
+        pout：文件句柄
+        o：数据
+返回值：无
+]]
+local function serialize(pout,o)
+    if type(o) == "number" then
+        --number类型，直接写原始数据
+        pout:write(o)    
+    elseif type(o) == "string" then
+        --string类型，原始数据左右各加上双引号写入
+        pout:write(string.format("%q", o))
+    elseif type(o) == "boolean" then
+        --boolean类型，转化为string写入
+        pout:write(tostring(o))
+    elseif type(o) == "table" then
+        --table类型，加换行，大括号，中括号，双引号写入
+        pout:write("{\n")
+        for k,v in pairs(o) do
+            if type(k) == "number" then
+                pout:write(" [" .. k .. "] = ")
+            elseif type(k) == "string" then
+                pout:write(" [\"" .. k .."\"] = ")
+            else
+                error("cannot serialize table key " .. type(o))
+            end
+            serialize(pout,v)
+            pout:write(",\n")
+        end
+        pout:write("}\n")
+    else
+        error("cannot serialize a " .. type(o))
+    end
+end
+
+--[[
+函数名：upd
+功能  ：更新实时参数表
+参数  ：
+        overide：是否用默认参数强制更新实时参数
+返回值：无
+]]
+function upd(overide)
+    for k,v in pairs(libdftconfig) do
+        if k ~= "_M" and k ~= "_NAME" and k ~= "_PACKAGE" then
+            if overide or para[k] == nil then
+                para[k] = v
+            end            
+        end
+    end
+end
+
+--[[
+函数名：load
+功能  ：初始化参数
+参数  ：无
+返回值：无
+]]
+local function load()
+    local f = io.open(paraname,"rb")
+    if not f or f:read("*a") == "" then
+        if f then f:close() end
+        restore()
+        return
+    end
+    f:close()
+    
+    f,para = pcall(require,string.match(paraname,"/(.+)%.lua"))
+    if not f then
+        para = {}
+        restore()
+        return
+    end
+    upd()
+end
+
+--[[
+函数名：save
+功能  ：保存参数文件
+参数  ：
+        s：是否真正保存，true保存，false或者nil不保存
+返回值：无
+]]
+local function save(s)
+    if not s then return end
+    local f = {}
+    f.write = function(self, s) table.insert(self, s) end
+
+    f:write("module(...)\n")
+
+    for k,v in pairs(para) do
+        if k ~= "_M" and k ~= "_NAME" and k ~= "_PACKAGE" then
+            f:write(k .. " = ")
+            serialize(f,v)
+            f:write("\n")
+        end
+    end
+
+    local fpara = io.open(paraname, 'wb')
+    fpara:write(table.concat(f))
+    fpara:close()
+end
+
+--- 初始化参数存储模块
+-- @string defaultCfgFile 默认配置文件名
+-- @return nil
+-- @usage nvm.init("config.lua")
+function init(defaultCfgFile)
+    local f
+    f,libdftconfig = pcall(require,string.match(defaultCfgFile,"(.+)%.lua"))
+    configname,econfigname = "/lua/"..defaultCfgFile,"/lua/"..defaultCfgFile.."e"
+    --初始化配置文件，从文件中把参数读取到内存中
+    load()
+end
+
+--- 设置某个参数的值
+-- @string k 参数名
+-- @param v，可以是任意类型，参数的新值
+-- @param r，设置原因，如果传入了非nil的有效参数，并且v值和旧值相比发生了改变，会产生一个PARA_CHANGED_IND消息，携带 k,v,r 3个参数
+-- @param s，是否立即写入到文件系统中，false不写入，其余的都写入
+-- @return bool或者nil，成功返回true，失败返回nil
+-- @usage nvm.set("name","Luat")，参数name赋值为Luat，立即写入文件系统
+-- @usage nvm.set("age",12,"SVR")，参数age赋值为12，立即写入文件系统，如果旧值不是12，会产生一个PARA_CHANGED_IND消息，携带 "age",12,"SVR" 3个参数
+-- @usage nvm.set("class","Class2",nil,false)，参数class赋值为Class2，不写入文件系统
+-- @usage nvm.set("score",{chinese=100,math=99,english=98})，参数score赋值为{chinese=100,math=99,english=98}，立即写入文件系统
+function set(k,v,r,s)
+    local bchg = true
+    if type(v) ~= "table" then
+        bchg = (para[k] ~= v)
+    end
+    log.info("nvm.set",bchg,k,v,r,s)
+    if bchg then        
+        para[k] = v
+        save(s or s==nil)
+        if r then sys.publish("PARA_CHANGED_IND",k,v,r) end
+    end
+    return true
+end
+
+--- 设置某个table类型参数的某一个索引的值
+-- @string k table类型的参数名
+-- @param kk table类型参数的某一个索引名
+-- @param v，table类型参数的某一个索引的新值
+-- @param r，设置原因，如果传入了非nil的有效参数，并且v值和旧值相比发生了改变，会产生一个TPARA_CHANGED_IND消息，携带 k,kk,v,r 4个参数
+-- @param s，是否立即写入到文件系统中，false不写入，其余的都写入
+-- @return bool或者nil，成功返回true，失败返回nil
+-- @usage nvm.sett("score","chinese",100)，参数score["chinese"]赋值为100，立即写入文件系统
+-- @usage nvm.set("score","chinese",100,"SVR")，参数score["chinese"]赋值为100，立即写入文件系统，如果旧值不是100，会产生一个TPARA_CHANGED_IND消息，携带 "score","chinese",100,"SVR" 4个参数
+-- @usage nvm.set("score","chinese",100,nil,false)，参数class赋值为Class2，不写入文件系统
+function sett(k,kk,v,r,s)
+    local bchg = true
+    if type(v) ~= "table" then
+        bchg = (para[k][kk] ~= v)
+    end
+    if bchg then
+        para[k][kk] = v
+        save(s or s==nil)
+        if r then sys.publish("TPARA_CHANGED_IND",k,kk,v,r) end
+    end
+    return true
+end
+
+--- 所有参数立即写入文件系统
+-- @return nil
+-- @usage nvm.flush()
+function flush()
+    save(true)
+end
+
+--- 读取某个参数的值
+-- @string k 参数名
+-- @return 参数值
+-- @usage nameValue = nvm.get("name")
+function get(k)
+    return para[k]
+end
+
+--- 读取某个table类型参数的某一个索引的值
+-- @string k table类型的参数名
+-- @param kk table类型参数的某一个索引名
+-- @usage nvm.gett("score","chinese")
+function gett(k,kk)
+    return para[k][kk]
+end
+
+--- 参数恢复出厂设置
+-- @return nil
+-- @usage nvm.restore()
+function restore()
+    local fpara,fconfig = io.open(paraname,"wb"),io.open(configname,"rb")
+    if not fconfig then fconfig = io.open(econfigname,"rb") end
+    fpara:write(fconfig:read("*a"))
+    fpara:close()
+    fconfig:close()
+    upd(true)
+end
