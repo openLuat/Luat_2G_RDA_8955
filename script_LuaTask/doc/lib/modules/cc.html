@@ -1,0 +1,391 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luat开源项目脚本lib</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>script_LuaTask lib</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/agps.html">agps</a></li>
+  <li><a href="../modules/audio.html">audio</a></li>
+  <li><strong>cc</strong></li>
+  <li><a href="../modules/clib.html">clib</a></li>
+  <li><a href="../modules/common.html">common</a></li>
+  <li><a href="../modules/console.html">console</a></li>
+  <li><a href="../modules/errDump.html">errDump</a></li>
+  <li><a href="../modules/gps.html">gps</a></li>
+  <li><a href="../modules/http.html">http</a></li>
+  <li><a href="../modules/lbsLoc.html">lbsLoc</a></li>
+  <li><a href="../modules/led.html">led</a></li>
+  <li><a href="../modules/link.html">link</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/misc.html">misc</a></li>
+  <li><a href="../modules/mqtt.html">mqtt</a></li>
+  <li><a href="../modules/net.html">net</a></li>
+  <li><a href="../modules/netLed.html">netLed</a></li>
+  <li><a href="../modules/ntp.html">ntp</a></li>
+  <li><a href="../modules/nvm.html">nvm</a></li>
+  <li><a href="../modules/patch.html">patch</a></li>
+  <li><a href="../modules/pb.html">pb</a></li>
+  <li><a href="../modules/pins.html">pins</a></li>
+  <li><a href="../modules/pm.html">pm</a></li>
+  <li><a href="../modules/record.html">record</a></li>
+  <li><a href="../modules/ril.html">ril</a></li>
+  <li><a href="../modules/sim.html">sim</a></li>
+  <li><a href="../modules/sms.html">sms</a></li>
+  <li><a href="../modules/socket.html">socket</a></li>
+  <li><a href="../modules/sys.html">sys</a></li>
+  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/update.html">update</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wdt.html">wdt</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>cc</code></h1>
+<p>模块功能：通话管理</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: openLuat</li>
+        <li><strong>Release</strong>: 2017.11.2</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: openLuat</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#anyCallExist">anyCallExist ()</a></td>
+	<td class="summary">是否存在通话</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getState">getState (num)</a></td>
+	<td class="summary">查询某个号码的通话状态</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#dial">dial (number, delay)</a></td>
+	<td class="summary">拨号</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#hangUp">hangUp (num)</a></td>
+	<td class="summary">挂断所有通话</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#accept">accept (num)</a></td>
+	<td class="summary">接听电话</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#transvoice">transvoice (data, loop, loop2)</a></td>
+	<td class="summary">通话中发送声音到对端,必须是12.2K AMR格式</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#dtmfDetect">dtmfDetect (enable, sens)</a></td>
+	<td class="summary">设置dtmf检测是否使能以及灵敏度</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sendDtmf">sendDtmf (str, playtime, intvl)</a></td>
+	<td class="summary">发送dtmf到对端</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "anyCallExist"></a>
+    <strong  style="color: red;">anyCallExist ()</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">是否存在通话</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">result 存在通话返回true，否则返回false</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">result = cc.anyCallExist()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getState"></a>
+    <strong  style="color: red;">getState (num)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">查询某个号码的通话状态</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">num</span>
+        <pre class="example"> 查询号码</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">state 通话状态，状态值参考本模块定义</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">state = cc.getState(<span class="string">'10086'</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "dial"></a>
+    <strong  style="color: red;">dial (number, delay)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">拨号</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">number</span>
+        <pre class="example"> 号码</pre>
+        </li>
+        <li><span class="parameter">delay</span>
+        <pre class="example"> 延时delay毫秒后，才发送at命令呼叫，默认不延时</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">result true表示允许发送at命令拨号并且发送at，false表示不允许at命令拨号</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">cc.dial(<span class="string">'10086'</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "hangUp"></a>
+    <strong  style="color: red;">hangUp (num)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">挂断所有通话</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">num</span>
+        <pre class="example"> 号码，若指定号码通话状态不对 则直接退出 不会执行挂断，若挂断时会挂断所有电话</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example"></pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">cc.hangUp(<span class="string">'10086'</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "accept"></a>
+    <strong  style="color: red;">accept (num)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">接听电话</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">num</span>
+        <pre class="example"> 号码，若指定号码通话状态不对 则直接退出 不会接通</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example"></pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">cc.accept(<span class="string">'10086'</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "transvoice"></a>
+    <strong  style="color: red;">transvoice (data, loop, loop2)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">通话中发送声音到对端,必须是12.2K AMR格式</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+        <pre class="example"></pre>
+        </li>
+        <li><span class="parameter">loop</span>
+        <pre class="example"></pre>
+        </li>
+        <li><span class="parameter">loop2</span>
+        <pre class="example"></pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">result true为成功，false为失败</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"></pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "dtmfDetect"></a>
+    <strong  style="color: red;">dtmfDetect (enable, sens)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置dtmf检测是否使能以及灵敏度</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">enable</span>
+        <pre class="example"> true使能，false或者nil为不使能</pre>
+        </li>
+        <li><span class="parameter">sens</span>
+        <pre class="example"> 灵敏度，默认3，最灵敏为1</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example"></pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">cc.dtmfDetect(<span class="keyword">true</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "sendDtmf"></a>
+    <strong  style="color: red;">sendDtmf (str, playtime, intvl)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">发送dtmf到对端</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">str</span>
+        <pre class="example"> dtmf字符串</pre>
+        </li>
+        <li><span class="parameter">playtime</span>
+        <pre class="example"> 每个dtmf播放时间，单位毫秒，默认100</pre>
+        </li>
+        <li><span class="parameter">intvl</span>
+        <pre class="example"> 两个dtmf间隔，单位毫秒，默认100</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">cc.sendDtmf(<span class="string">"123"</span>)</pre></il>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

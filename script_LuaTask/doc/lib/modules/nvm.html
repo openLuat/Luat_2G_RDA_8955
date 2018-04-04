@@ -1,0 +1,363 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luat开源项目脚本lib</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>script_LuaTask lib</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/agps.html">agps</a></li>
+  <li><a href="../modules/audio.html">audio</a></li>
+  <li><a href="../modules/cc.html">cc</a></li>
+  <li><a href="../modules/clib.html">clib</a></li>
+  <li><a href="../modules/common.html">common</a></li>
+  <li><a href="../modules/console.html">console</a></li>
+  <li><a href="../modules/errDump.html">errDump</a></li>
+  <li><a href="../modules/gps.html">gps</a></li>
+  <li><a href="../modules/http.html">http</a></li>
+  <li><a href="../modules/lbsLoc.html">lbsLoc</a></li>
+  <li><a href="../modules/led.html">led</a></li>
+  <li><a href="../modules/link.html">link</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/misc.html">misc</a></li>
+  <li><a href="../modules/mqtt.html">mqtt</a></li>
+  <li><a href="../modules/net.html">net</a></li>
+  <li><a href="../modules/netLed.html">netLed</a></li>
+  <li><a href="../modules/ntp.html">ntp</a></li>
+  <li><strong>nvm</strong></li>
+  <li><a href="../modules/patch.html">patch</a></li>
+  <li><a href="../modules/pb.html">pb</a></li>
+  <li><a href="../modules/pins.html">pins</a></li>
+  <li><a href="../modules/pm.html">pm</a></li>
+  <li><a href="../modules/record.html">record</a></li>
+  <li><a href="../modules/ril.html">ril</a></li>
+  <li><a href="../modules/sim.html">sim</a></li>
+  <li><a href="../modules/sms.html">sms</a></li>
+  <li><a href="../modules/socket.html">socket</a></li>
+  <li><a href="../modules/sys.html">sys</a></li>
+  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/update.html">update</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wdt.html">wdt</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>nvm</code></h1>
+<p>模块功能：参数管理</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: openLuat</li>
+        <li><strong>Release</strong>: 2017.11.9</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: openLuat</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#init">init (defaultCfgFile)</a></td>
+	<td class="summary">初始化参数存储模块</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#set">set (k, v, r, s)</a></td>
+	<td class="summary">设置某个参数的值</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sett">sett (k, kk, v, r, s)</a></td>
+	<td class="summary">设置某个table类型参数的某一个索引的值</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#flush">flush ()</a></td>
+	<td class="summary">所有参数立即写入文件系统</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#get">get (k)</a></td>
+	<td class="summary">读取某个参数的值</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#gett">gett (k, kk)</a></td>
+	<td class="summary">读取某个table类型参数的某一个索引的值</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#restore">restore ()</a></td>
+	<td class="summary">参数恢复出厂设置</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "init"></a>
+    <strong  style="color: red;">init (defaultCfgFile)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">初始化参数存储模块</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">defaultCfgFile</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> 默认配置文件名</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">nvm.init(<span class="string">"config.lua"</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "set"></a>
+    <strong  style="color: red;">set (k, v, r, s)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置某个参数的值</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">k</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> 参数名</pre>
+        </li>
+        <li><span class="parameter">v</span>
+        <pre class="example">可以是任意类型，参数的新值</pre>
+        </li>
+        <li><span class="parameter">r</span>
+        <pre class="example">设置原因，如果传入了非nil的有效参数，并且v值和旧值相比发生了改变，会产生一个PARA_CHANGED_IND消息，携带 k,v,r 3个参数</pre>
+        </li>
+        <li><span class="parameter">s</span>
+        <pre class="example">是否立即写入到文件系统中，false不写入，其余的都写入</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">bool或者nil，成功返回true，失败返回nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">nvm.set(<span class="string">"name"</span>,<span class="string">"Luat"</span>)，参数name赋值为Luat，立即写入文件系统</pre></il>
+        <li><pre class="example">nvm.set(<span class="string">"age"</span>,<span class="number">12</span>,<span class="string">"SVR"</span>)，参数age赋值为<span class="number">12</span>，立即写入文件系统，如果旧值不是<span class="number">12</span>，会产生一个PARA_CHANGED_IND消息，携带 <span class="string">"age"</span>,<span class="number">12</span>,<span class="string">"SVR"</span> <span class="number">3</span>个参数</pre></il>
+        <li><pre class="example">nvm.set(<span class="string">"class"</span>,<span class="string">"Class2"</span>,<span class="keyword">nil</span>,<span class="keyword">false</span>)，参数class赋值为Class2，不写入文件系统</pre></il>
+        <li><pre class="example">nvm.set(<span class="string">"score"</span>,{chinese=<span class="number">100</span>,<span class="global">math</span>=<span class="number">99</span>,english=<span class="number">98</span>})，参数score赋值为{chinese=<span class="number">100</span>,<span class="global">math</span>=<span class="number">99</span>,english=<span class="number">98</span>}，立即写入文件系统</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "sett"></a>
+    <strong  style="color: red;">sett (k, kk, v, r, s)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置某个table类型参数的某一个索引的值</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">k</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> table类型的参数名</pre>
+        </li>
+        <li><span class="parameter">kk</span>
+        <pre class="example"> table类型参数的某一个索引名</pre>
+        </li>
+        <li><span class="parameter">v</span>
+        <pre class="example">table类型参数的某一个索引的新值</pre>
+        </li>
+        <li><span class="parameter">r</span>
+        <pre class="example">设置原因，如果传入了非nil的有效参数，并且v值和旧值相比发生了改变，会产生一个TPARA_CHANGED_IND消息，携带 k,kk,v,r 4个参数</pre>
+        </li>
+        <li><span class="parameter">s</span>
+        <pre class="example">是否立即写入到文件系统中，false不写入，其余的都写入</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">bool或者nil，成功返回true，失败返回nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">nvm.sett(<span class="string">"score"</span>,<span class="string">"chinese"</span>,<span class="number">100</span>)，参数score[<span class="string">"chinese"</span>]赋值为<span class="number">100</span>，立即写入文件系统</pre></il>
+        <li><pre class="example">nvm.set(<span class="string">"score"</span>,<span class="string">"chinese"</span>,<span class="number">100</span>,<span class="string">"SVR"</span>)，参数score[<span class="string">"chinese"</span>]赋值为<span class="number">100</span>，立即写入文件系统，如果旧值不是<span class="number">100</span>，会产生一个TPARA_CHANGED_IND消息，携带 <span class="string">"score"</span>,<span class="string">"chinese"</span>,<span class="number">100</span>,<span class="string">"SVR"</span> <span class="number">4</span>个参数</pre></il>
+        <li><pre class="example">nvm.set(<span class="string">"score"</span>,<span class="string">"chinese"</span>,<span class="number">100</span>,<span class="keyword">nil</span>,<span class="keyword">false</span>)，参数class赋值为Class2，不写入文件系统</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "flush"></a>
+    <strong  style="color: red;">flush ()</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">所有参数立即写入文件系统</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">nvm.flush()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "get"></a>
+    <strong  style="color: red;">get (k)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">读取某个参数的值</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">k</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> 参数名</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">参数值</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">nameValue = nvm.get(<span class="string">"name"</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "gett"></a>
+    <strong  style="color: red;">gett (k, kk)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">读取某个table类型参数的某一个索引的值</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">k</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> table类型的参数名</pre>
+        </li>
+        <li><span class="parameter">kk</span>
+        <pre class="example"> table类型参数的某一个索引名</pre>
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">nvm.gett(<span class="string">"score"</span>,<span class="string">"chinese"</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "restore"></a>
+    <strong  style="color: red;">restore ()</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">参数恢复出厂设置</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">nvm.restore()</pre></il>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

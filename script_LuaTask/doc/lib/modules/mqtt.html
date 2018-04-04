@@ -1,0 +1,365 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luat开源项目脚本lib</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>script_LuaTask lib</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/agps.html">agps</a></li>
+  <li><a href="../modules/audio.html">audio</a></li>
+  <li><a href="../modules/cc.html">cc</a></li>
+  <li><a href="../modules/clib.html">clib</a></li>
+  <li><a href="../modules/common.html">common</a></li>
+  <li><a href="../modules/console.html">console</a></li>
+  <li><a href="../modules/errDump.html">errDump</a></li>
+  <li><a href="../modules/gps.html">gps</a></li>
+  <li><a href="../modules/http.html">http</a></li>
+  <li><a href="../modules/lbsLoc.html">lbsLoc</a></li>
+  <li><a href="../modules/led.html">led</a></li>
+  <li><a href="../modules/link.html">link</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/misc.html">misc</a></li>
+  <li><strong>mqtt</strong></li>
+  <li><a href="../modules/net.html">net</a></li>
+  <li><a href="../modules/netLed.html">netLed</a></li>
+  <li><a href="../modules/ntp.html">ntp</a></li>
+  <li><a href="../modules/nvm.html">nvm</a></li>
+  <li><a href="../modules/patch.html">patch</a></li>
+  <li><a href="../modules/pb.html">pb</a></li>
+  <li><a href="../modules/pins.html">pins</a></li>
+  <li><a href="../modules/pm.html">pm</a></li>
+  <li><a href="../modules/record.html">record</a></li>
+  <li><a href="../modules/ril.html">ril</a></li>
+  <li><a href="../modules/sim.html">sim</a></li>
+  <li><a href="../modules/sms.html">sms</a></li>
+  <li><a href="../modules/socket.html">socket</a></li>
+  <li><a href="../modules/sys.html">sys</a></li>
+  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/update.html">update</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wdt.html">wdt</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>mqtt</code></h1>
+<p>模块功能：MQTT客户端</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: openLuat</li>
+        <li><strong>Release</strong>: 2017.10.24</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: openLuat</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#client">client (clientId, keepAlive, username, password, cleanSession, will)</a></td>
+	<td class="summary">mqtt.client() 创建mqtt client实例</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mqttc:connect">mqttc:connect (host, port, transport, cert)</a></td>
+	<td class="summary">连接mqtt服务器</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mqttc:subscribe">mqttc:subscribe (topic, qos)</a></td>
+	<td class="summary">mqtt.client:subscribe(topic, qos)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mqttc:publish">mqttc:publish (topic, payload, qos, retain)</a></td>
+	<td class="summary">mqtt.client:publish(topic, payload, qos, retain)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mqttc:receive">mqttc:receive (timeout)</a></td>
+	<td class="summary">mqtt.client:receive([timeout])</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mqttc:disconnect">mqttc:disconnect ()</a></td>
+	<td class="summary">mqtt disconnect</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "client"></a>
+    <strong  style="color: red;">client (clientId, keepAlive, username, password, cleanSession, will)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">mqtt.client() 创建mqtt client实例</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">clientId</span>
+        <pre class="example"></pre>
+        </li>
+        <li><span class="parameter">keepAlive</span>
+        <pre class="example"> 心跳间隔，默认300秒</pre>
+        </li>
+        <li><span class="parameter">username</span>
+        <pre class="example"> 用户名为空请输入nil</pre>
+        </li>
+        <li><span class="parameter">password</span>
+        <pre class="example"> 密码为空请输入nil</pre>
+        </li>
+        <li><span class="parameter">cleanSession</span>
+        <pre class="example"> 1/0</pre>
+        </li>
+        <li><span class="parameter">will</span>
+        <pre class="example"> 遗嘱参数(Last Will/Testament), 若不打开LWT请不要传递该参数，传递参数默认为打开LWT，will.qos, will.retain, will.topic, will.payload</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">result true - 成功，false - 失败</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">mqttc = mqtt.client(<span class="string">"clientid-123"</span>, <span class="keyword">nil</span>, <span class="keyword">nil</span>, <span class="keyword">false</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "mqttc:connect"></a>
+    <strong  style="color: red;">mqttc:connect (host, port, transport, cert)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">连接mqtt服务器</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">host</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> 地址</pre>
+        </li>
+        <li><span class="parameter">port</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> 端口</pre>
+        </li>
+        <li><span class="parameter">transport</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> "tcp"</pre>
+        </li>
+        <li><span class="parameter">cert</span>
+        <pre class="example">table或者nil类型，此参数为为nil时，表示不使用ssl连接；为table类型时，表示要使用ssl连接，此时传入证书文件配置，格式如下：
+ {
+     caCert = "ca.crt", --CA证书文件(Base64编码 X.509格式)，如果存在此参数，则表示客户端会对服务器的证书进行校验；不存在则不校验
+     clientCert = "client.crt", --客户端证书文件(Base64编码 X.509格式)，服务器对客户端的证书进行校验时会用到此参数
+     clientKey = "client.key", --客户端私钥文件(Base64编码 X.509格式)
+     clientPassword = "123456", --客户端证书文件密码[可选]
+ }</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">result true - 成功，false - 失败</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">mqttc = mqtt.client(<span class="string">"clientid-123"</span>, <span class="keyword">nil</span>, <span class="keyword">nil</span>, <span class="keyword">false</span>); mqttc:connect(<span class="string">"mqttserver.com"</span>, <span class="number">1883</span>, <span class="string">"tcp"</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "mqttc:subscribe"></a>
+    <strong  style="color: red;">mqttc:subscribe (topic, qos)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">mqtt.client:subscribe(topic, qos)</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">topic</span>
+        <pre class="example">string或者table类型，一个主题时为string类型，多个主题时为table类型，主题内容为UTF8编码</pre>
+        </li>
+        <li><span class="parameter">qos</span>
+        <pre class="example">number或者nil，topic为一个主题时，qos为number类型(0/1/2，默认0)；topic为一个主题时，qos为nil</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">bool true - 成功，false - 失败</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">mqttc:subscribe(<span class="string">"/abc"</span>, <span class="number">0</span>) <span class="comment">-- subscribe topic "/abc" with qos = 0
+</span>mqttc:subscribe({[<span class="string">"/topic1"</span>] = <span class="number">0</span>, [<span class="string">"/topic2"</span>] = <span class="number">1</span>, [<span class="string">"/topic3"</span>] = <span class="number">2</span>}) <span class="comment">-- subscribe multi topic</span></pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "mqttc:publish"></a>
+    <strong  style="color: red;">mqttc:publish (topic, payload, qos, retain)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">mqtt.client:publish(topic, payload, qos, retain)</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">topic</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> UTF8编码的字符串</pre>
+        </li>
+        <li><span class="parameter">payload</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> 用户自己控制payload的编码，mqtt.lua不会对payload做任何编码转换</pre>
+        </li>
+        <li><span class="parameter">qos</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example"> 0/1/2, default 0</pre>
+        </li>
+        <li><span class="parameter">retain</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example"> 0或者1</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">bool 发布成功返回true，失败返回false</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">mqttc = mqtt.client(<span class="string">"clientid-123"</span>, <span class="keyword">nil</span>, <span class="keyword">nil</span>, <span class="keyword">false</span>)
+mqttc:connect(<span class="string">"mqttserver.com"</span>, <span class="number">1883</span>, <span class="string">"tcp"</span>)
+mqttc:publish(<span class="string">"/topic"</span>, <span class="string">"publish from luat mqtt client"</span>, <span class="number">0</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "mqttc:receive"></a>
+    <strong  style="color: red;">mqttc:receive (timeout)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">mqtt.client:receive([timeout])</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">timeout</span>
+        <pre class="example"></pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        <pre class="example">result true - 成功，false - 失败</pre></li>
+        <li>
+        <pre class="example">data 如果成功返回的时候接收到的服务器发过来的包，如果失败返回的是错误信息</pre></li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="keyword">true</span>, packet = mqttc:receive()
+<span class="keyword">false</span>, error_message = mqttc:receive()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "mqttc:disconnect"></a>
+    <strong  style="color: red;">mqttc:disconnect ()</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">mqtt disconnect</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">result true - 成功，false - 失败</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">mqttc = mqtt.client(<span class="string">"clientid-123"</span>, <span class="keyword">nil</span>, <span class="keyword">nil</span>, <span class="keyword">false</span>)
+mqttc:connect(<span class="string">"mqttserver.com"</span>, <span class="number">1883</span>, <span class="string">"tcp"</span>)
+process data
+mqttc:disconnect()</pre></il>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

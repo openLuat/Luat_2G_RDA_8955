@@ -1,0 +1,456 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luat开源项目脚本lib</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>script_LuaTask lib</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/agps.html">agps</a></li>
+  <li><a href="../modules/audio.html">audio</a></li>
+  <li><a href="../modules/cc.html">cc</a></li>
+  <li><a href="../modules/clib.html">clib</a></li>
+  <li><a href="../modules/common.html">common</a></li>
+  <li><a href="../modules/console.html">console</a></li>
+  <li><a href="../modules/errDump.html">errDump</a></li>
+  <li><a href="../modules/gps.html">gps</a></li>
+  <li><a href="../modules/http.html">http</a></li>
+  <li><a href="../modules/lbsLoc.html">lbsLoc</a></li>
+  <li><a href="../modules/led.html">led</a></li>
+  <li><a href="../modules/link.html">link</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><strong>misc</strong></li>
+  <li><a href="../modules/mqtt.html">mqtt</a></li>
+  <li><a href="../modules/net.html">net</a></li>
+  <li><a href="../modules/netLed.html">netLed</a></li>
+  <li><a href="../modules/ntp.html">ntp</a></li>
+  <li><a href="../modules/nvm.html">nvm</a></li>
+  <li><a href="../modules/patch.html">patch</a></li>
+  <li><a href="../modules/pb.html">pb</a></li>
+  <li><a href="../modules/pins.html">pins</a></li>
+  <li><a href="../modules/pm.html">pm</a></li>
+  <li><a href="../modules/record.html">record</a></li>
+  <li><a href="../modules/ril.html">ril</a></li>
+  <li><a href="../modules/sim.html">sim</a></li>
+  <li><a href="../modules/sms.html">sms</a></li>
+  <li><a href="../modules/socket.html">socket</a></li>
+  <li><a href="../modules/sys.html">sys</a></li>
+  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/update.html">update</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wdt.html">wdt</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>misc</code></h1>
+<p>模块功能：配置管理-序列号、IMEI、底层软件版本号、时钟、是否校准、飞行模式、查询电池电量等功能</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: openLuat</li>
+        <li><strong>Release</strong>: 2017.10.20</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: openLuat</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#setClock">setClock (t)</a></td>
+	<td class="summary">设置系统时间</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getClock">getClock ()</a></td>
+	<td class="summary">获取系统时间</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getWeek">getWeek (1)</a></td>
+	<td class="summary">获取星期</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getCalib">getCalib ()</a></td>
+	<td class="summary">获取校准标志</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setSn">setSn (s, r)</a></td>
+	<td class="summary">设置SN</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getSn">getSn ()</a></td>
+	<td class="summary">获取模块序列号</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setImei">setImei (s, r)</a></td>
+	<td class="summary">设置IMEI</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getImei">getImei ()</a></td>
+	<td class="summary">获取模块IMEI</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getVbatt">getVbatt ()</a></td>
+	<td class="summary">获取VBAT的电池电压</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#openPwm">openPwm (id, period, level)</a></td>
+	<td class="summary">打开并且配置PWM(支持2路PWM，仅支持输出)说明：当id为0时：period 取值在 80-1625 Hz范围内时，level 占空比取值范围为：1-100；period 取值在 1626-65535 Hz范围时，设x=162500/period, y=x * level / 100, x 和 y越是接近正的整数，则输出波形越准确</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#closePwm">closePwm (id)</a></td>
+	<td class="summary">关闭PWM</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "setClock"></a>
+    <strong  style="color: red;">setClock (t)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置系统时间</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+        <pre class="example">系统时间，格式参考：{year=2017,month=2,day=14,hour=14,min=2,sec=58}</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">misc.setClock({year=<span class="number">2017</span>,month=<span class="number">2</span>,day=<span class="number">14</span>,hour=<span class="number">14</span>,min=<span class="number">2</span>,sec=<span class="number">58</span>})</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getClock"></a>
+    <strong  style="color: red;">getClock ()</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取系统时间</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">table,{year=2017,month=2,day=14,hour=14,min=19,sec=23}</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">date = getClock()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getWeek"></a>
+    <strong  style="color: red;">getWeek (1)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取星期</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">1</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">-7分别对应周一到周日</pre>
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">week = misc.getWeek()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getCalib"></a>
+    <strong  style="color: red;">getCalib ()</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取校准标志</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">boole,</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">calib = misc.getCalib()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "setSn"></a>
+    <strong  style="color: red;">setSn (s, r)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置SN</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">s</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">新sn的字符串</pre>
+        </li>
+        <li><span class="parameter">r</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">设置后是否重启，参数为nil时，自动重启</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">misc.setSn(<span class="string">"1234567890"</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getSn"></a>
+    <strong  style="color: red;">getSn ()</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取模块序列号</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">string,未获取到，返回""</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">sn = misc.getSn()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "setImei"></a>
+    <strong  style="color: red;">setImei (s, r)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置IMEI</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">s</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">新IMEI字符串</pre>
+        </li>
+        <li><span class="parameter">r</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">设置后是否重启，参数为nil时，自动重启</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">misc.setImei(”<span class="number">359759002514931</span>”)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getImei"></a>
+    <strong  style="color: red;">getImei ()</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取模块IMEI</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">string,IMEI号，如果未获取到返回""--注意：开机lua脚本运行之后，会发送at命令去查询imei，所以需要一定时间才能获取到imei。开机后立即调用此接口，基本上返回""</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">imei = misc.getImei()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getVbatt"></a>
+    <strong  style="color: red;">getVbatt ()</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取VBAT的电池电压</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number,电池电压,单位mv</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">vb = getVbatt()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "openPwm"></a>
+    <strong  style="color: red;">openPwm (id, period, level)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">打开并且配置PWM(支持2路PWM，仅支持输出)说明：当id为0时：period 取值在 80-1625 Hz范围内时，level 占空比取值范围为：1-100；period 取值在 1626-65535 Hz范围时，设x=162500/period, y=x * level / 100, x 和 y越是接近正的整数，则输出波形越准确</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">id</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">number类型，PWM输出通道，仅支持0和1，0用的是uart2 tx，1用的是uart2 rx</pre>
+        </li>
+        <li><span class="parameter">period</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">number类型:当id为0时，period表示频率，单位为Hz，取值范围为80-1625，仅支持整数,当id为1时，取值范围为0-7，仅支持整数，表示时钟周期，单位为毫秒，0-7分别对应125、250、500、1000、1500、2000、2500、3000毫秒</pre>
+        </li>
+        <li><span class="parameter">level</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">number类型:当id为0时，level表示占空比，单位为level%，取值范围为1-100，仅支持整数,当id为1时，取值范围为1-15，仅支持整数，表示一个时钟周期内的高电平时间，单位为毫秒 1-15分别对应15.6、31.2、46.9、62.5、78.1、93.7、110、125、141、156、172、187、203、219、234毫秒</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "closePwm"></a>
+    <strong  style="color: red;">closePwm (id)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">关闭PWM</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">id</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">number类型，PWM输出通道，仅支持0和1，0用的是uart2 tx，1用的是uart2 rx</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

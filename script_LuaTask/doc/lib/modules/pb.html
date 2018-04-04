@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luat开源项目脚本lib</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>script_LuaTask lib</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/agps.html">agps</a></li>
+  <li><a href="../modules/audio.html">audio</a></li>
+  <li><a href="../modules/cc.html">cc</a></li>
+  <li><a href="../modules/clib.html">clib</a></li>
+  <li><a href="../modules/common.html">common</a></li>
+  <li><a href="../modules/console.html">console</a></li>
+  <li><a href="../modules/errDump.html">errDump</a></li>
+  <li><a href="../modules/gps.html">gps</a></li>
+  <li><a href="../modules/http.html">http</a></li>
+  <li><a href="../modules/lbsLoc.html">lbsLoc</a></li>
+  <li><a href="../modules/led.html">led</a></li>
+  <li><a href="../modules/link.html">link</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/misc.html">misc</a></li>
+  <li><a href="../modules/mqtt.html">mqtt</a></li>
+  <li><a href="../modules/net.html">net</a></li>
+  <li><a href="../modules/netLed.html">netLed</a></li>
+  <li><a href="../modules/ntp.html">ntp</a></li>
+  <li><a href="../modules/nvm.html">nvm</a></li>
+  <li><a href="../modules/patch.html">patch</a></li>
+  <li><strong>pb</strong></li>
+  <li><a href="../modules/pins.html">pins</a></li>
+  <li><a href="../modules/pm.html">pm</a></li>
+  <li><a href="../modules/record.html">record</a></li>
+  <li><a href="../modules/ril.html">ril</a></li>
+  <li><a href="../modules/sim.html">sim</a></li>
+  <li><a href="../modules/sms.html">sms</a></li>
+  <li><a href="../modules/socket.html">socket</a></li>
+  <li><a href="../modules/sys.html">sys</a></li>
+  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/update.html">update</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wdt.html">wdt</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>pb</code></h1>
+<p>模块功能：电话簿管理</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: openLuat</li>
+        <li><strong>Release</strong>: 2018.03.10</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: openLuat</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#setStorage">setStorage (storage, cb)</a></td>
+	<td class="summary">设置电话本存储区域</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#read">read (index, cb)</a></td>
+	<td class="summary">读取一条电话本记录</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#write">write (index, name, num, cb)</a></td>
+	<td class="summary">写入一条电话本记录</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#delete">delete (index, cb)</a></td>
+	<td class="summary">删除一条电话本记录</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "setStorage"></a>
+    <strong  style="color: red;">setStorage (storage, cb)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置电话本存储区域</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">storage</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> 存储区域字符串，仅支持"ME"和"SM"</pre>
+        </li>
+        <li><span class="parameter">cb</span>
+        <pre class="example"> 设置后的回调函数
+<p> 回调方式为cb(result)，result为true表示成功，false或者nil表示失败</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">pb.setStorage(storage,cb)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "read"></a>
+    <strong  style="color: red;">read (index, cb)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">读取一条电话本记录</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">电话本在存储区的位置</pre>
+        </li>
+        <li><span class="parameter">cb</span>
+            <span class="types"><span class="type">func</span></span>
+        <pre class="example">function类型，读取后的回调函数
+<p> 回调方式为cb(result,name,number)：result为true表示成功，false或者nil表示失败；name为姓名；number为号码</pre>
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">pb.read(<span class="number">1</span>,cb)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "write"></a>
+    <strong  style="color: red;">write (index, name, num, cb)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">写入一条电话本记录</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">电话本在存储区的位置</pre>
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">姓名</pre>
+        </li>
+        <li><span class="parameter">num</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">号码</pre>
+        </li>
+        <li><span class="parameter">cb</span>
+            <span class="types"><span class="type">func</span></span>
+        <pre class="example"> functionl类型，写入后的回调函数
+<p> 回调方式为cb(result)：result为true表示成功，false或者nil表示失败</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">pb.write(<span class="number">1</span>,<span class="string">"zhangsan"</span>,<span class="string">"13233334444"</span>,cb)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "delete"></a>
+    <strong  style="color: red;">delete (index, cb)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">删除一条电话本记录</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example"> 电话本在存储区的位置</pre>
+        </li>
+        <li><span class="parameter">cb</span>
+            <span class="types"><span class="type">func</span></span>
+        <pre class="example"> function类型，删除后的回调函数
+<p> 回调方式为cb(result)：result为true表示成功，false或者nil表示失败</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">pb.delete(<span class="number">1</span>,cb)</pre></il>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+
