@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luat开源项目脚本lib</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>script_LuaTask lib</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/agps.html">agps</a></li>
+  <li><a href="../modules/audio.html">audio</a></li>
+  <li><a href="../modules/cc.html">cc</a></li>
+  <li><a href="../modules/clib.html">clib</a></li>
+  <li><a href="../modules/common.html">common</a></li>
+  <li><a href="../modules/console.html">console</a></li>
+  <li><a href="../modules/errDump.html">errDump</a></li>
+  <li><a href="../modules/gps.html">gps</a></li>
+  <li><strong>http</strong></li>
+  <li><a href="../modules/lbsLoc.html">lbsLoc</a></li>
+  <li><a href="../modules/led.html">led</a></li>
+  <li><a href="../modules/link.html">link</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/misc.html">misc</a></li>
+  <li><a href="../modules/mqtt.html">mqtt</a></li>
+  <li><a href="../modules/net.html">net</a></li>
+  <li><a href="../modules/netLed.html">netLed</a></li>
+  <li><a href="../modules/ntp.html">ntp</a></li>
+  <li><a href="../modules/nvm.html">nvm</a></li>
+  <li><a href="../modules/patch.html">patch</a></li>
+  <li><a href="../modules/pb.html">pb</a></li>
+  <li><a href="../modules/pins.html">pins</a></li>
+  <li><a href="../modules/pm.html">pm</a></li>
+  <li><a href="../modules/record.html">record</a></li>
+  <li><a href="../modules/ril.html">ril</a></li>
+  <li><a href="../modules/sim.html">sim</a></li>
+  <li><a href="../modules/sms.html">sms</a></li>
+  <li><a href="../modules/socket.html">socket</a></li>
+  <li><a href="../modules/sys.html">sys</a></li>
+  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/update.html">update</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wdt.html">wdt</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>http</code></h1>
+<p>模块功能：HTTP客户端</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: openLuat</li>
+        <li><strong>Release</strong>: 2017.10.23</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: openLuat</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#request">request (method, url, cert, head, body, timeout, cbFnc, rcvFileName)</a></td>
+	<td class="summary">发送HTTP请求</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "request"></a>
+    <strong  style="color: red;">request (method, url, cert, head, body, timeout, cbFnc, rcvFileName)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">发送HTTP请求</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">method</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> HTTP请求方法
+<p> 支持"GET"，"HEAD"，"POST"，"OPTIONS"，"PUT"，"DELETE"，"TRACE"，"CONNECT"</pre>
+        </li>
+        <li><span class="parameter">url</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> HTTP请求url
+ url格式(除hostname外，其余字段可选；目前的实现不支持hash)
+ |------------------------------------------------------------------------------|
+ | protocol |||   auth    |      host       |           path            | hash  |
+ |          |||           |-----------------|---------------------------|       |
+ |          |||           | hostname | port | pathname |     search     |       |
+ |          |||           |          |      |          |----------------|       |
+ |          |||           |          |      |          | |    query     |       |
+ " http[s]  :// user:pass @ host.com : 8080   /p/a/t/h  ?  query=string   #hash "
+ |          |||           |          |      |          | |              |       |
+ |------------------------------------------------------------------------------|</pre>
+        </li>
+        <li><span class="parameter">cert</span>
+        <pre class="example">table或者nil类型，ssl证书，当url为https类型时，此参数才有意义。cert格式如下：
+ {
+     caCert = "ca.crt", --CA证书文件(Base64编码 X.509格式)，如果存在此参数，则表示客户端会对服务器的证书进行校验；不存在则不校验
+     clientCert = "client.crt", --客户端证书文件(Base64编码 X.509格式)，服务器对客户端的证书进行校验时会用到此参数
+     clientKey = "client.key", --客户端私钥文件(Base64编码 X.509格式)
+     clientPassword = "123456", --客户端证书文件密码[可选]
+ }</pre>
+        </li>
+        <li><span class="parameter">head</span>
+            <span class="types"><span class="type">tab</span></span>
+        <pre class="example">nil或者table类型，自定义请求头
+<p>              http.lua会自动添加Host: XXX、Connection: short、Content-Length: XXX三个请求头
+<p>              如果这三个请求头满足不了需求，head参数传入自定义请求头，如果自定义请求头中存在Host、Connection、Content-Length三个请求头，将覆盖http.lua中自动添加的同名请求头
+<p>              head格式如下：
+<p>              如果没有自定义请求头，传入nil或者{}；否则传入{head1="value1", head2="value2", head3="value3"}，value中不能有\r\n</pre>
+        </li>
+        <li><span class="parameter">body</span>
+        <pre class="example">nil、string或者table类型，请求实体
+<p>              如果body仅仅是一串数据，可以直接传入一个string类型的body即可
+<p>              如果body的数据比较复杂，包括字符串数据和文件，则传入table类型的数据，格式如下：
+<p>              {
+<p>                  [1] = "string1",
+<p>                  [2] = {file="/ldata/test.jpg"},
+<p>                  [3] = "string2"
+<p>              }
+<p>              例如上面的这个body，索引必须为连续的数字(从1开始)，实际传输时，先发送字符串"string1"，再发送文件/ldata/test.jpg的内容，最后发送字符串"string2"</pre>
+        </li>
+        <li><span class="parameter">timeout</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">请求发送成功后，接收服务器返回应答数据的超时时间，单位毫秒，默认为30秒</pre>
+        </li>
+        <li><span class="parameter">cbFnc</span>
+            <span class="types"><span class="type">func</span></span>
+        <pre class="example">执行HTTP请求的回调函数(请求发送结果以及应答数据接收结果都通过此函数通知用户)，回调函数的调用形式为：
+<p>              cbFnc(result,prompt,head,body)
+<p>              result：true或者false，true表示成功收到了服务器的应答，false表示请求发送失败或者接收服务器应答失败
+<p>              prompt：string类型，result为true时，表示服务器的应答码；result为false时，表示错误信息
+<p>              head：table或者nil类型，表示服务器的应答头；result为true时，此参数为{head1="value1", head2="value2", head3="value3"}，value中不包含\r\n；result为false时，此参数为nil
+<p>              body：string类型，如果调用request接口时传入了rcvFileName，此参数表示下载文件的完整路径；否则表示接收到的应答实体数据</pre>
+        </li>
+        <li><span class="parameter">rcvFileName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">保存“服务器应答实体数据”的文件名，可以传入完整的文件路径，也可以传入单独的文件名，如果是文件名，http.lua会自动生成一个完整路径，通过cbFnc的参数body传出</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">如果传入了rcvFileName，则返回对应的完整路径；其余情况都返回nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">http.request(<span class="string">"GET"</span>,<span class="string">"www.lua.org"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc)</pre></il>
+        <li><pre class="example">http.request(<span class="string">"GET"</span>,<span class="string">"http://www.lua.org"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc)</pre></il>
+        <li><pre class="example">http.request(<span class="string">"GET"</span>,<span class="string">"http://www.lua.org:80"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc,<span class="string">"download.bin"</span>)</pre></il>
+        <li><pre class="example">http.request(<span class="string">"GET"</span>,<span class="string">"www.lua.org/about.html"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc)</pre></il>
+        <li><pre class="example">http.request(<span class="string">"GET"</span>,<span class="string">"www.lua.org:80/about.html"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc)</pre></il>
+        <li><pre class="example">http.request(<span class="string">"GET"</span>,<span class="string">"http://wiki.openluat.com/search.html?q=123"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc)</pre></il>
+        <li><pre class="example">http.request(<span class="string">"POST"</span>,<span class="string">"www.test.com/report.html"</span>,<span class="keyword">nil</span>,{Head1=<span class="string">"ValueData1"</span>},<span class="string">"BodyData"</span>,<span class="number">30000</span>,cbFnc)</pre></il>
+        <li><pre class="example">http.request(<span class="string">"POST"</span>,<span class="string">"www.test.com/report.html"</span>,<span class="keyword">nil</span>,{Head1=<span class="string">"ValueData1"</span>,Head2=<span class="string">"ValueData2"</span>},{[<span class="number">1</span>]=<span class="string">"string1"</span>,[<span class="number">2</span>] ={file=<span class="string">"/ldata/test.jpg"</span>},[<span class="number">3</span>]=<span class="string">"string2"</span>},<span class="number">30000</span>,cbFnc)</pre></il>
+        <li><pre class="example">http.request(<span class="string">"GET"</span>,<span class="string">"https://www.baidu.com"</span>,{caCert=<span class="string">"ca.crt"</span>})</pre></il>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

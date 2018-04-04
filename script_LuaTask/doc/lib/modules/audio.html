@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luat开源项目脚本lib</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>script_LuaTask lib</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/agps.html">agps</a></li>
+  <li><strong>audio</strong></li>
+  <li><a href="../modules/cc.html">cc</a></li>
+  <li><a href="../modules/clib.html">clib</a></li>
+  <li><a href="../modules/common.html">common</a></li>
+  <li><a href="../modules/console.html">console</a></li>
+  <li><a href="../modules/errDump.html">errDump</a></li>
+  <li><a href="../modules/gps.html">gps</a></li>
+  <li><a href="../modules/http.html">http</a></li>
+  <li><a href="../modules/lbsLoc.html">lbsLoc</a></li>
+  <li><a href="../modules/led.html">led</a></li>
+  <li><a href="../modules/link.html">link</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/misc.html">misc</a></li>
+  <li><a href="../modules/mqtt.html">mqtt</a></li>
+  <li><a href="../modules/net.html">net</a></li>
+  <li><a href="../modules/netLed.html">netLed</a></li>
+  <li><a href="../modules/ntp.html">ntp</a></li>
+  <li><a href="../modules/nvm.html">nvm</a></li>
+  <li><a href="../modules/patch.html">patch</a></li>
+  <li><a href="../modules/pb.html">pb</a></li>
+  <li><a href="../modules/pins.html">pins</a></li>
+  <li><a href="../modules/pm.html">pm</a></li>
+  <li><a href="../modules/record.html">record</a></li>
+  <li><a href="../modules/ril.html">ril</a></li>
+  <li><a href="../modules/sim.html">sim</a></li>
+  <li><a href="../modules/sms.html">sms</a></li>
+  <li><a href="../modules/socket.html">socket</a></li>
+  <li><a href="../modules/sys.html">sys</a></li>
+  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/update.html">update</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wdt.html">wdt</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>audio</code></h1>
+<p>模块功能：音频播放</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: openLuat</li>
+        <li><strong>Release</strong>: 2018.3.19</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: openLuat</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#play">play (priority, type, path, vol, cb, dup, dupInterval)</a></td>
+	<td class="summary">播放音频</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setVolume">setVolume (vol)</a></td>
+	<td class="summary">设置喇叭音量等级</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setMicVolume">setMicVolume (vol)</a></td>
+	<td class="summary">设置麦克音量等级</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setStrategy">setStrategy (strategy)</a></td>
+	<td class="summary">设置优先级相同时的播放策略</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "play"></a>
+    <strong  style="color: red;">play (priority, type, path, vol, cb, dup, dupInterval)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">播放音频</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">音频优先级，数值越大，优先级越高</pre>
+        </li>
+        <li><span class="parameter">type</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">音频类型，目前仅支持"FILE"、"TTS"、"TTSCC"</pre>
+        </li>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">音频文件路径，跟typ有关.
+<p>               typ为"FILE"时：表示音频文件路径
+<p>               typ为"TTS"时：表示要播放的UTF8格式的数据
+<p>               typ为"TTSCC"时：表示要播放给通话对端数据的UCS2十六进制字符串</pre>
+        </li>
+        <li><span class="parameter">vol</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">播放音量，取值范围0到7</pre>
+        </li>
+        <li><span class="parameter">cb</span>
+        <pre class="example">音频播放结束或者出错时的回调函数，回调时包含一个参数：0表示播放成功结束；1表示播放出错；2表示播放优先级不够，没有播放；3表示传入的参数出错；4表示被新的播放请求终止</pre>
+        </li>
+        <li><span class="parameter">dup</span>
+            <span class="types"><span class="type">bool</span></span>
+        <pre class="example">是否循环播放，true循环，false或者nil不循环</pre>
+        </li>
+        <li><span class="parameter">dupInterval</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">播放间隔(单位毫秒)，dup为true时，此值才有意义</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">调用成功返回true，否则返回nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">audio.play(<span class="number">0</span>,<span class="string">"FILE"</span>,<span class="string">"/ldata/call.mp3"</span>)</pre></il>
+        <li><pre class="example">audio.play(<span class="number">0</span>,<span class="string">"FILE"</span>,<span class="string">"/ldata/call.mp3"</span>,<span class="number">7</span>)</pre></il>
+        <li><pre class="example">audio.play(<span class="number">0</span>,<span class="string">"FILE"</span>,<span class="string">"/ldata/call.mp3"</span>,<span class="number">7</span>,cbFnc)</pre></il>
+        <li><pre class="example">更多用法参考demo/audio/testAudio.lua</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "setVolume"></a>
+    <strong  style="color: red;">setVolume (vol)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置喇叭音量等级</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">vol</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">音量值为0-7，0为静音</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">bool，设置成功返回true，失败返回false</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">audio.setVolume(<span class="number">7</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "setMicVolume"></a>
+    <strong  style="color: red;">setMicVolume (vol)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置麦克音量等级</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">vol</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">音量值为0-15，0为静音</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">bool，设置成功返回true,失败返回false</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">audio.setMicVolume(<span class="number">14</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "setStrategy"></a>
+    <strong  style="color: red;">setStrategy (strategy)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置优先级相同时的播放策略</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">strategy</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">优先级相同时的播放策略；0：表示继续播放正在播放的音频，忽略请求播放的新音频；1：表示停止正在播放的音频，播放请求播放的新音频</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">audio.setStrategy(<span class="number">0</span>)</pre></il>
+        <li><pre class="example">audio.setStrategy(<span class="number">1</span>)</pre></il>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

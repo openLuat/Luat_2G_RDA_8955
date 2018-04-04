@@ -1,4 +1,4 @@
-# Luat
+## Luat
 
 Luat = Lua +  AT  
 
@@ -14,20 +14,26 @@ GitHub：https://github.com/openLuat/Luat_Air202-Air800-Air201
 
 
 
-## 合宙开源平台Luat架构简介
+## Luat架构简介
 
 
 底层软件（也叫基础软件，位于/core）用C语言开发完成，支撑Lua的运行。
 
-上层软件用Lua脚本语言来开发实现，位于/script。 
+上层软件用Lua脚本语言来开发实现，目前有两套架构，分别位于script和script_LuaTask。 
 
 
-## 开源用户须知
+## script和script_LuaTask
 
-Luat开源/script代码中，/demo里是各个功能的示例程序。/lib下是demo以及所有用户代码都需要调用的库文件。
+script和script_LuaTask是两版上层脚本开发架构：
+> 1、script是第一版，整个应用开发仅支持单线程
 
-一般用户只需修改上层lua脚本，即可快速完成二次开发，而不用修改core基础软件。这部分用户，请参考：
+> 2、script_LuaTask是第二版，基于Lua的协程实现了多线程的支持，相比于第一版script来说，用户编程变得简洁，在此郑重感谢Luat开源技术支持群（QQ群号：201848376）里的“稀饭放姜”大神对此版本架构提出的建议以及对此版本开发做出的贡献，同时感谢LuaTask群（QQ群号：670342655）里面的所有成员对此版本的辛勤付出。
+> 如果你想了解script_LuaTask中实现了哪些功能，请点击：
 
-http://wiki.openluat.com/doc/guide/#luat
+> <<[script_LuaTask lib参考手册](https://htmlpreview.github.io/?https://github.com/zhutianhua/Luat/blob/master/script_LuaTask/doc/lib/index.html)>>
 
-注意：还有一部分用户，只需要MCU通过物理串口发送AT命令控制模块，对这部分用户，请购买我司Air202T/Air800T/Air201T/Air208T模块或开发板。
+> <<[script_LuaTask demo参考手册](https://htmlpreview.github.io/?https://github.com/zhutianhua/Luat/blob/master/script_LuaTask/doc/demo/index.html)>>
+
+Luat团队会一直同步维护这两个版本，建议新项目使用script_LuaTask版本开发。
+
+

@@ -1,0 +1,506 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luat开源项目脚本lib</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>script_LuaTask lib</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/agps.html">agps</a></li>
+  <li><a href="../modules/audio.html">audio</a></li>
+  <li><a href="../modules/cc.html">cc</a></li>
+  <li><a href="../modules/clib.html">clib</a></li>
+  <li><a href="../modules/common.html">common</a></li>
+  <li><a href="../modules/console.html">console</a></li>
+  <li><a href="../modules/errDump.html">errDump</a></li>
+  <li><a href="../modules/gps.html">gps</a></li>
+  <li><a href="../modules/http.html">http</a></li>
+  <li><a href="../modules/lbsLoc.html">lbsLoc</a></li>
+  <li><a href="../modules/led.html">led</a></li>
+  <li><a href="../modules/link.html">link</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/misc.html">misc</a></li>
+  <li><a href="../modules/mqtt.html">mqtt</a></li>
+  <li><a href="../modules/net.html">net</a></li>
+  <li><a href="../modules/netLed.html">netLed</a></li>
+  <li><a href="../modules/ntp.html">ntp</a></li>
+  <li><a href="../modules/nvm.html">nvm</a></li>
+  <li><a href="../modules/patch.html">patch</a></li>
+  <li><a href="../modules/pb.html">pb</a></li>
+  <li><a href="../modules/pins.html">pins</a></li>
+  <li><a href="../modules/pm.html">pm</a></li>
+  <li><a href="../modules/record.html">record</a></li>
+  <li><a href="../modules/ril.html">ril</a></li>
+  <li><a href="../modules/sim.html">sim</a></li>
+  <li><a href="../modules/sms.html">sms</a></li>
+  <li><a href="../modules/socket.html">socket</a></li>
+  <li><a href="../modules/sys.html">sys</a></li>
+  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/update.html">update</a></li>
+  <li><strong>utils</strong></li>
+  <li><a href="../modules/wdt.html">wdt</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>utils</code></h1>
+<p>模块功能：常用工具类接口</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: openLuat</li>
+        <li><strong>Release</strong>: 2017.10.19</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: openLuat</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#string.toHex">string.toHex (str)</a></td>
+	<td class="summary">字符转16进制,如"123abc"转为"313233616263"</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#string.fromHex">string.fromHex (hex)</a></td>
+	<td class="summary">16进制转字符，如"313233616263"转为"123abc", 函数里加入了过滤分隔符，可以过滤掉大部分分隔符（可参见正则表达式中\s和\p的范围）。</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#string.utf8Len">string.utf8Len (str)</a></td>
+	<td class="summary">返回utf8编码字符串的长度</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#string.urlEncode">string.urlEncode (str)</a></td>
+	<td class="summary">返回字符串的urlEncode编码</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#string.formatNumberThousands">string.formatNumberThousands (num)</a></td>
+	<td class="summary">返回数字的千位符号格式</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#string.split">string.split (str, delimiter)</a></td>
+	<td class="summary">按照指定分隔符分割字符串</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#io.exists">io.exists (path)</a></td>
+	<td class="summary">判断文件是否存在</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#io.readFile">io.readFile (path)</a></td>
+	<td class="summary">读取文件并返回文件的内容</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#io.writeFile">io.writeFile (path, content, mode)</a></td>
+	<td class="summary">写入文件指定的内容,默认为覆盖二进制模式</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#io.pathInfo">io.pathInfo (path)</a></td>
+	<td class="summary">将文件路径分解为table信息</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#io.fileSize">io.fileSize (path)</a></td>
+	<td class="summary">返回文件大小</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "string.toHex"></a>
+    <strong  style="color: red;">string.toHex (str)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">字符转16进制,如"123abc"转为"313233616263"</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">str</span>
+        <pre class="example"> 输入字符串</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        <pre class="example">hexstring 16进制组成的串</pre></li>
+        <li>
+        <pre class="example">len 输入的字符串长度</pre></li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="global">string</span>.toHex(<span class="string">"\1\2\3"</span>) -&gt; <span class="string">"010203"</span> <span class="number">3</span>
+<span class="global">string</span>.toHex(<span class="string">"123abc"</span>) -&gt; <span class="string">"313233616263"</span> <span class="number">6</span></pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "string.fromHex"></a>
+    <strong  style="color: red;">string.fromHex (hex)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">16进制转字符，如"313233616263"转为"123abc", 函数里加入了过滤分隔符，可以过滤掉大部分分隔符（可参见正则表达式中\s和\p的范围）。</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">hex</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">16进制组成的串</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        <pre class="example">charstring,字符组成的串</pre></li>
+        <li>
+        <pre class="example">len,输出字符串的长度</pre></li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="global">string</span>.fromHex(<span class="string">"010203"</span>)       -&gt;  <span class="string">"\1\2\3"</span>
+<span class="global">string</span>.fromHex(<span class="string">"313233616263:) -&gt;  "</span><span class="number">123</span>abc"</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "string.utf8Len"></a>
+    <strong  style="color: red;">string.utf8Len (str)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">返回utf8编码字符串的长度</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">str</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">utf8编码的字符串,支持中文</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number,返回字符串长度</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="keyword">local</span> cnt = <span class="global">string</span>.utf8Len(<span class="string">"中国"</span>),str = <span class="number">2</span></pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "string.urlEncode"></a>
+    <strong  style="color: red;">string.urlEncode (str)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">返回字符串的urlEncode编码</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">str</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">要转换编码的字符串</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">str,urlEncode编码的字符串</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="global">string</span>.urlEncode(<span class="string">"####133"</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "string.formatNumberThousands"></a>
+    <strong  style="color: red;">string.formatNumberThousands (num)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">返回数字的千位符号格式</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">num</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">数字</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">string，千位符号的数字字符串</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">loca s = <span class="global">string</span>.formatNumberThousands(<span class="number">1000</span>) ,s = <span class="string">"1,000"</span></pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "string.split"></a>
+    <strong  style="color: red;">string.split (str, delimiter)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">按照指定分隔符分割字符串</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">str</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> 输入字符串</pre>
+        </li>
+        <li><span class="parameter">delimiter</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> 分隔符</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">分割后的字符串列表</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="string">"123,456,789"</span>:split(<span class="string">','</span>) -&gt; {<span class="string">'123'</span>,<span class="string">'456'</span>,<span class="string">'789'</span>}</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "io.exists"></a>
+    <strong  style="color: red;">io.exists (path)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">判断文件是否存在</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">文件全名例如："/ldata/call.mp3"</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">boole,存在为true,不存在为false</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="keyword">local</span> ex = <span class="global">io</span>.exists(<span class="string">"/ldata/call.mp3"</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "io.readFile"></a>
+    <strong  style="color: red;">io.readFile (path)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">读取文件并返回文件的内容</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">文件全名例如："/ldata/call.txt"</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">string,文件的内容,文件不存在返回nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="keyword">local</span> c = <span class="global">io</span>.readFile(<span class="string">"/ldata/call.txt"</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "io.writeFile"></a>
+    <strong  style="color: red;">io.writeFile (path, content, mode)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">写入文件指定的内容,默认为覆盖二进制模式</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">文件全名例如："/ldata/call.txt"</pre>
+        </li>
+        <li><span class="parameter">content</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">文件内容</pre>
+        </li>
+        <li><span class="parameter">mode</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">文件写入模式默认"w+b"</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">string,文件的内容</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="keyword">local</span> c = <span class="global">io</span>.writeFile(<span class="string">"/ldata/call.txt"</span>,<span class="string">"test"</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "io.pathInfo"></a>
+    <strong  style="color: red;">io.pathInfo (path)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">将文件路径分解为table信息</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">文件路径全名例如:"/ldata/call.txt"</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">table,{dirname="/ldata/",filename="call.txt",basename="call",extname=".txt"}</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">loca p = <span class="global">io</span>.pathInfo(<span class="string">"/ldata/call.txt"</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "io.fileSize"></a>
+    <strong  style="color: red;">io.fileSize (path)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">返回文件大小</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">文件路径全名例如:"/ldata/call.txt","test"</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number ,文件大小</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">locan cnt = <span class="global">io</span>.fileSize(<span class="string">"/ldata/call.txt"</span>)</pre></il>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

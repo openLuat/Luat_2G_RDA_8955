@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luat开源项目脚本lib</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>script_LuaTask lib</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/agps.html">agps</a></li>
+  <li><a href="../modules/audio.html">audio</a></li>
+  <li><a href="../modules/cc.html">cc</a></li>
+  <li><a href="../modules/clib.html">clib</a></li>
+  <li><a href="../modules/common.html">common</a></li>
+  <li><a href="../modules/console.html">console</a></li>
+  <li><a href="../modules/errDump.html">errDump</a></li>
+  <li><a href="../modules/gps.html">gps</a></li>
+  <li><a href="../modules/http.html">http</a></li>
+  <li><a href="../modules/lbsLoc.html">lbsLoc</a></li>
+  <li><a href="../modules/led.html">led</a></li>
+  <li><a href="../modules/link.html">link</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/misc.html">misc</a></li>
+  <li><a href="../modules/mqtt.html">mqtt</a></li>
+  <li><a href="../modules/net.html">net</a></li>
+  <li><strong>netLed</strong></li>
+  <li><a href="../modules/ntp.html">ntp</a></li>
+  <li><a href="../modules/nvm.html">nvm</a></li>
+  <li><a href="../modules/patch.html">patch</a></li>
+  <li><a href="../modules/pb.html">pb</a></li>
+  <li><a href="../modules/pins.html">pins</a></li>
+  <li><a href="../modules/pm.html">pm</a></li>
+  <li><a href="../modules/record.html">record</a></li>
+  <li><a href="../modules/ril.html">ril</a></li>
+  <li><a href="../modules/sim.html">sim</a></li>
+  <li><a href="../modules/sms.html">sms</a></li>
+  <li><a href="../modules/socket.html">socket</a></li>
+  <li><a href="../modules/sys.html">sys</a></li>
+  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/update.html">update</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wdt.html">wdt</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>netLed</code></h1>
+<p>模块功能：网络指示灯模块</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: openLuat</li>
+        <li><strong>Release</strong>: 2018.03.14</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: openLuat</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#setup">setup (switch, pin)</a></td>
+	<td class="summary">配置网络指示灯并且立即执行配置后的动作</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#updateBlinkTime">updateBlinkTime (state, on, off)</a></td>
+	<td class="summary">配置某种工作状态下指示灯点亮和熄灭的时长（如果用户不配置，使用netLed.lua中ledBlinkTime配置的默认值）</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "setup"></a>
+    <strong  style="color: red;">setup (switch, pin)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">配置网络指示灯并且立即执行配置后的动作</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">switch</span>
+            <span class="types"><span class="type">bool</span></span>
+        <pre class="example">是否打开网络指示灯功能，true为打开，false为关闭</pre>
+        </li>
+        <li><span class="parameter">pin</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">控制网络指示灯闪烁的GPIO引脚，例如pio.P1_1表示GPIO33</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">setup(<span class="keyword">true</span>,pio.P1_1)表示打开网络指示灯功能，GPIO33控制指示灯</pre></il>
+        <li><pre class="example">setup(<span class="keyword">false</span>)表示关闭网络指示灯功能</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "updateBlinkTime"></a>
+    <strong  style="color: red;">updateBlinkTime (state, on, off)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">配置某种工作状态下指示灯点亮和熄灭的时长（如果用户不配置，使用netLed.lua中ledBlinkTime配置的默认值）</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">state</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">某种工作状态，仅支持"FLYMODE"、"SIMERR"、"IDLE"、"GSM"、"GPRS"、"SCK"</pre>
+        </li>
+        <li><span class="parameter">on</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">指示灯点亮时长，单位毫秒，0xFFFF表示常亮，0表示常灭</pre>
+        </li>
+        <li><span class="parameter">off</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">指示灯熄灭时长，单位毫秒，0xFFFF表示常灭，0表示常亮</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">updateBlinkTime(<span class="string">"FLYMODE"</span>,<span class="number">1000</span>,<span class="number">500</span>)表示飞行模式工作状态下，指示灯闪烁规律为：亮<span class="number">1</span>秒，灭<span class="number">0.5</span>秒</pre></il>
+        <li><pre class="example">updateBlinkTime(<span class="string">"SCK"</span>,<span class="number">0xFFFF</span>,<span class="number">0</span>)表示有socket连接上后台的工作状态下，指示灯闪烁规律为：常亮</pre></il>
+        <li><pre class="example">updateBlinkTime(<span class="string">"SIMERR"</span>,<span class="number">0</span>,<span class="number">0xFFFF</span>)表示SIM卡异常状态下，指示灯闪烁规律为：常灭</pre></il>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

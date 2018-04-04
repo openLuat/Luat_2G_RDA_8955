@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luat开源项目脚本lib</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>script_LuaTask lib</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/agps.html">agps</a></li>
+  <li><a href="../modules/audio.html">audio</a></li>
+  <li><a href="../modules/cc.html">cc</a></li>
+  <li><a href="../modules/clib.html">clib</a></li>
+  <li><a href="../modules/common.html">common</a></li>
+  <li><a href="../modules/console.html">console</a></li>
+  <li><a href="../modules/errDump.html">errDump</a></li>
+  <li><a href="../modules/gps.html">gps</a></li>
+  <li><a href="../modules/http.html">http</a></li>
+  <li><a href="../modules/lbsLoc.html">lbsLoc</a></li>
+  <li><a href="../modules/led.html">led</a></li>
+  <li><a href="../modules/link.html">link</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/misc.html">misc</a></li>
+  <li><a href="../modules/mqtt.html">mqtt</a></li>
+  <li><a href="../modules/net.html">net</a></li>
+  <li><a href="../modules/netLed.html">netLed</a></li>
+  <li><a href="../modules/ntp.html">ntp</a></li>
+  <li><a href="../modules/nvm.html">nvm</a></li>
+  <li><a href="../modules/patch.html">patch</a></li>
+  <li><a href="../modules/pb.html">pb</a></li>
+  <li><a href="../modules/pins.html">pins</a></li>
+  <li><a href="../modules/pm.html">pm</a></li>
+  <li><a href="../modules/record.html">record</a></li>
+  <li><a href="../modules/ril.html">ril</a></li>
+  <li><a href="../modules/sim.html">sim</a></li>
+  <li><a href="../modules/sms.html">sms</a></li>
+  <li><a href="../modules/socket.html">socket</a></li>
+  <li><a href="../modules/sys.html">sys</a></li>
+  <li><strong>uiWin</strong></li>
+  <li><a href="../modules/update.html">update</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wdt.html">wdt</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>uiWin</code></h1>
+<p>模块功能：UI窗口管理</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: openLuat</li>
+        <li><strong>Release</strong>: 2018.03.25</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: openLuat</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#add">add (wnd)</a></td>
+	<td class="summary">新增一个窗口</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#remove">remove (winId)</a></td>
+	<td class="summary">移除一个窗口</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isActive">isActive (winId)</a></td>
+	<td class="summary">判断一个窗口是否处于最前显示</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "add"></a>
+    <strong  style="color: red;">add (wnd)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">新增一个窗口</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">wnd</span>
+            <span class="types"><span class="type">tab</span></span>
+        <pre class="example">窗口的元素以及消息处理函数表</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number，窗口ID</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">uiWin.add({onUpdate = refresh})</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "remove"></a>
+    <strong  style="color: red;">remove (winId)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">移除一个窗口</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">winId</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">窗口ID</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">uiWin.remove(winId)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "isActive"></a>
+    <strong  style="color: red;">isActive (winId)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">判断一个窗口是否处于最前显示</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">winId</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">窗口ID</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">bool，true表示最前显示，其余表示非最前显示</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">uiWin.isActive(winId)</pre></il>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

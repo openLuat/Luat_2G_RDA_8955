@@ -1,0 +1,628 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luat开源项目脚本lib</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>script_LuaTask lib</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/agps.html">agps</a></li>
+  <li><a href="../modules/audio.html">audio</a></li>
+  <li><a href="../modules/cc.html">cc</a></li>
+  <li><a href="../modules/clib.html">clib</a></li>
+  <li><a href="../modules/common.html">common</a></li>
+  <li><a href="../modules/console.html">console</a></li>
+  <li><a href="../modules/errDump.html">errDump</a></li>
+  <li><a href="../modules/gps.html">gps</a></li>
+  <li><a href="../modules/http.html">http</a></li>
+  <li><a href="../modules/lbsLoc.html">lbsLoc</a></li>
+  <li><a href="../modules/led.html">led</a></li>
+  <li><a href="../modules/link.html">link</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/misc.html">misc</a></li>
+  <li><a href="../modules/mqtt.html">mqtt</a></li>
+  <li><a href="../modules/net.html">net</a></li>
+  <li><a href="../modules/netLed.html">netLed</a></li>
+  <li><a href="../modules/ntp.html">ntp</a></li>
+  <li><a href="../modules/nvm.html">nvm</a></li>
+  <li><a href="../modules/patch.html">patch</a></li>
+  <li><a href="../modules/pb.html">pb</a></li>
+  <li><a href="../modules/pins.html">pins</a></li>
+  <li><a href="../modules/pm.html">pm</a></li>
+  <li><a href="../modules/record.html">record</a></li>
+  <li><a href="../modules/ril.html">ril</a></li>
+  <li><a href="../modules/sim.html">sim</a></li>
+  <li><a href="../modules/sms.html">sms</a></li>
+  <li><a href="../modules/socket.html">socket</a></li>
+  <li><strong>sys</strong></li>
+  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/update.html">update</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wdt.html">wdt</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>sys</code></h1>
+<p>模块功能：Luat协程调度框架</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: openLuat</li>
+        <li><strong>Release</strong>: 2017.9.13</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: openLuat</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#powerOn">powerOn ()</a></td>
+	<td class="summary">启动GSM协议栈。例如在充电开机未启动GSM协议栈状态下，如果用户长按键正常开机，此时调用此接口启动GSM协议栈即可</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#restart">restart (r)</a></td>
+	<td class="summary">软件重启</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#wait">wait (ms)</a></td>
+	<td class="summary">Task任务延时函数，只能用于任务函数中</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#waitUntil">waitUntil (id, ms)</a></td>
+	<td class="summary">Task任务的条件等待函数（包括事件消息和定时器消息等条件），只能用于任务函数中。</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#taskInit">taskInit (fun, ...)</a></td>
+	<td class="summary">创建一个任务线程,在模块最末行调用该函数并注册模块中的任务函数，main.lua导入该模块即可</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#init">init (mode, lprfnc)</a></td>
+	<td class="summary">Luat平台初始化</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#timerStop">timerStop (val, ...)</a></td>
+	<td class="summary">关闭定时器</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#timerStopAll">timerStopAll (fnc)</a></td>
+	<td class="summary">关闭同一回调函数的所有定时器</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#timerStart">timerStart (fnc, ms, ...)</a></td>
+	<td class="summary">开启一个定时器</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#timerLoopStart">timerLoopStart (fnc, ms, ...)</a></td>
+	<td class="summary">开启一个循环定时器</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#timerIsActive">timerIsActive (val, ...)</a></td>
+	<td class="summary">判断某个定时器是否处于开启状态</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#subscribe">subscribe (id, callback)</a></td>
+	<td class="summary">订阅消息</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unsubscribe">unsubscribe (id, callback)</a></td>
+	<td class="summary">取消订阅消息</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#publish">publish (...)</a></td>
+	<td class="summary">发布内部消息，存储在内部消息队列中</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#rtos.on">rtos.on (id, handler)</a></td>
+	<td class="summary">注册rtos消息回调处理函数</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "powerOn"></a>
+    <strong  style="color: red;">powerOn ()</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">启动GSM协议栈。例如在充电开机未启动GSM协议栈状态下，如果用户长按键正常开机，此时调用此接口启动GSM协议栈即可</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">sys.powerOn()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "restart"></a>
+    <strong  style="color: red;">restart (r)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">软件重启</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">r</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> 重启原因，用户自定义，一般是string类型，重启后的trace中会打印出此重启原因</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">sys.restart(<span class="string">'程序超时软件重启'</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "wait"></a>
+    <strong  style="color: red;">wait (ms)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">Task任务延时函数，只能用于任务函数中</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">ms</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">  整数，最大等待126322567毫秒</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number 正常返回1，失败返回nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">sys.wait(<span class="number">30</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "waitUntil"></a>
+    <strong  style="color: red;">waitUntil (id, ms)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">Task任务的条件等待函数（包括事件消息和定时器消息等条件），只能用于任务函数中。</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">id</span>
+        <pre class="example"> 消息ID</pre>
+        </li>
+        <li><span class="parameter">ms</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example"> 等待超时时间，单位ms，最大等待126322567毫秒</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        <pre class="example">result 接收到消息返回true，超时返回false</pre></li>
+        <li>
+        <pre class="example">data 接收到消息返回消息参数</pre></li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">result, data = sys.waitUntil(<span class="string">"SIM_IND"</span>, <span class="number">120000</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "taskInit"></a>
+    <strong  style="color: red;">taskInit (fun, ...)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">创建一个任务线程,在模块最末行调用该函数并注册模块中的任务函数，main.lua导入该模块即可</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fun</span>
+        <pre class="example"> 任务函数名，用于resume唤醒时调用</pre>
+        </li>
+        <li><span class="parameter">...</span>
+        <pre class="example"> 任务函数fun的可变参数</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">co  返回该任务的线程号</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">sys.taskInit(task1,<span class="string">'a'</span>,<span class="string">'b'</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "init"></a>
+    <strong  style="color: red;">init (mode, lprfnc)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">Luat平台初始化</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">mode</span>
+        <pre class="example"> 充电开机是否启动GSM协议栈，1不启动，否则启动</pre>
+        </li>
+        <li><span class="parameter">lprfnc</span>
+        <pre class="example"> 用户应用脚本中定义的“低电关机处理函数”，如果有函数名，则低电时，本文件中的run接口不会执行任何动作，否则，会延时1分钟自动关机</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">sys.init(<span class="number">1</span>,<span class="number">0</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "timerStop"></a>
+    <strong  style="color: red;">timerStop (val, ...)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">关闭定时器</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">val</span>
+        <pre class="example"> 值为number时，识别为定时器ID，值为回调函数时，需要传参数</pre>
+        </li>
+        <li><span class="parameter">...</span>
+        <pre class="example"> val值为函数时，函数的可变参数</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">timerStop(<span class="number">1</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "timerStopAll"></a>
+    <strong  style="color: red;">timerStopAll (fnc)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">关闭同一回调函数的所有定时器</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fnc</span>
+        <pre class="example"> 定时器回调函数</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">timerStopAll(cbFnc)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "timerStart"></a>
+    <strong  style="color: red;">timerStart (fnc, ms, ...)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">开启一个定时器</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fnc</span>
+        <pre class="example"> 定时器回调函数</pre>
+        </li>
+        <li><span class="parameter">ms</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example"> 整数，最大定时126322567毫秒</pre>
+        </li>
+        <li><span class="parameter">...</span>
+        <pre class="example"> 可变参数 fnc的参数</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number 定时器ID，如果失败，返回nil</pre></il>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "timerLoopStart"></a>
+    <strong  style="color: red;">timerLoopStart (fnc, ms, ...)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">开启一个循环定时器</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fnc</span>
+        <pre class="example"> 定时器回调函数</pre>
+        </li>
+        <li><span class="parameter">ms</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example"> 整数，最大定时126322567毫秒</pre>
+        </li>
+        <li><span class="parameter">...</span>
+        <pre class="example"> 可变参数 fnc的参数</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number 定时器ID，如果失败，返回nil</pre></il>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "timerIsActive"></a>
+    <strong  style="color: red;">timerIsActive (val, ...)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">判断某个定时器是否处于开启状态</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">val</span>
+        <pre class="example"> 有两种形式
+一种是开启定时器时返回的定时器id，此形式时不需要再传入可变参数...就能唯一标记一个定时器
+另一种是开启定时器时的回调函数，此形式时必须再传入可变参数...才能唯一标记一个定时器</pre>
+        </li>
+        <li><span class="parameter">...</span>
+        <pre class="example"> 可变参数</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number 开启状态返回true，否则nil</pre></il>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "subscribe"></a>
+    <strong  style="color: red;">subscribe (id, callback)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">订阅消息</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">id</span>
+        <pre class="example"> 消息id</pre>
+        </li>
+        <li><span class="parameter">callback</span>
+        <pre class="example"> 消息回调处理</pre>
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">subscribe(<span class="string">"NET_STATUS_IND"</span>, callback)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "unsubscribe"></a>
+    <strong  style="color: red;">unsubscribe (id, callback)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">取消订阅消息</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">id</span>
+        <pre class="example"> 消息id</pre>
+        </li>
+        <li><span class="parameter">callback</span>
+        <pre class="example"> 消息回调处理</pre>
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">unsubscribe(<span class="string">"NET_STATUS_IND"</span>, callback)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "publish"></a>
+    <strong  style="color: red;">publish (...)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">发布内部消息，存储在内部消息队列中</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+        <pre class="example"> 可变参数，用户自定义</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">publish(<span class="string">"NET_STATUS_IND"</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "rtos.on"></a>
+    <strong  style="color: red;">rtos.on (id, handler)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">注册rtos消息回调处理函数</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">id</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example"> 消息类型id</pre>
+        </li>
+        <li><span class="parameter">handler</span>
+        <pre class="example"> 消息处理函数</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">rtos.on(rtos.MSG_KEYPAD, <span class="keyword">function</span>(param) handle keypad message <span class="keyword">end</span>)</pre></il>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

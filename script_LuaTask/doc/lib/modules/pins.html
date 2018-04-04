@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luat开源项目脚本lib</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>script_LuaTask lib</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/agps.html">agps</a></li>
+  <li><a href="../modules/audio.html">audio</a></li>
+  <li><a href="../modules/cc.html">cc</a></li>
+  <li><a href="../modules/clib.html">clib</a></li>
+  <li><a href="../modules/common.html">common</a></li>
+  <li><a href="../modules/console.html">console</a></li>
+  <li><a href="../modules/errDump.html">errDump</a></li>
+  <li><a href="../modules/gps.html">gps</a></li>
+  <li><a href="../modules/http.html">http</a></li>
+  <li><a href="../modules/lbsLoc.html">lbsLoc</a></li>
+  <li><a href="../modules/led.html">led</a></li>
+  <li><a href="../modules/link.html">link</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/misc.html">misc</a></li>
+  <li><a href="../modules/mqtt.html">mqtt</a></li>
+  <li><a href="../modules/net.html">net</a></li>
+  <li><a href="../modules/netLed.html">netLed</a></li>
+  <li><a href="../modules/ntp.html">ntp</a></li>
+  <li><a href="../modules/nvm.html">nvm</a></li>
+  <li><a href="../modules/patch.html">patch</a></li>
+  <li><a href="../modules/pb.html">pb</a></li>
+  <li><strong>pins</strong></li>
+  <li><a href="../modules/pm.html">pm</a></li>
+  <li><a href="../modules/record.html">record</a></li>
+  <li><a href="../modules/ril.html">ril</a></li>
+  <li><a href="../modules/sim.html">sim</a></li>
+  <li><a href="../modules/sms.html">sms</a></li>
+  <li><a href="../modules/socket.html">socket</a></li>
+  <li><a href="../modules/sys.html">sys</a></li>
+  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/update.html">update</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wdt.html">wdt</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>pins</code></h1>
+<p>模块功能：GPIO 功能配置，包括输入输出IO和上升下降沿中断IO</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: openLuat</li>
+        <li><strong>Release</strong>: 2017.09.23 11:34</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: openLuat</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#setup">setup (pin, val)</a></td>
+	<td class="summary">配置GPIO模式</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#close">close (pin)</a></td>
+	<td class="summary">关闭GPIO模式</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "setup"></a>
+    <strong  style="color: red;">setup (pin, val)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">配置GPIO模式</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pin</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">GPIO ID
+<p> GPIO 0到GPIO 31表示为pio.P0_0到pio.P0_31
+<p> GPIO 32到GPIO XX表示为pio.P1_0到pio.P1_(XX-32)，例如GPIO33 表示为pio.P1_1</pre>
+        </li>
+        <li><span class="parameter">val</span>
+        <pre class="example">number、nil或者function类型
+<p> 配置为输出模式时，为number类型，表示默认电平，0是低电平，1是高电平
+<p> 配置为输入模式时，为nil
+<p> 配置为中断模式时，为function类型，表示中断处理函数</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example"> function
+<p> 配置为输出模式时，返回的函数，可以设置IO的电平
+<p> 配置为输入或者中断模式时，返回的函数，可以实时获取IO的电平</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">setOutputFnc = pins.setup(pio.P1_1,<span class="number">0</span>)，配置GPIO <span class="number">33</span>，输出模式，默认输出低电平；
+执行setOutputFnc(<span class="number">0</span>)可输出低电平，执行setOutputFnc(<span class="number">1</span>)可输出高电平</pre></il>
+        <li><pre class="example">getInputFnc = pins.setup(pio.P1_1,intFnc)，配置GPIO33，中断模式
+产生中断时自动调用intFnc(msg)函数：上升沿中断时：msg为cpu.INT_GPIO_POSEDGE；下降沿中断时：msg为cpu.INT_GPIO_NEGEDGE
+执行getInputFnc()即可获得当前电平；如果是低电平，getInputFnc()返回<span class="number">0</span>；如果是高电平，getInputFnc()返回<span class="number">1</span></pre></il>
+        <li><pre class="example">getInputFnc = pins.setup(pio.P1_1),配置GPIO33，输入模式
+执行getInputFnc()即可获得当前电平；如果是低电平，getInputFnc()返回<span class="number">0</span>；如果是高电平，getInputFnc()返回<span class="number">1</span></pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "close"></a>
+    <strong  style="color: red;">close (pin)</strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">关闭GPIO模式</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pin</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">GPIO ID
+<p> GPIO 0到GPIO 31表示为pio.P0_0到pio.P0_31
+<p> GPIO 32到GPIO XX表示为pio.P1_0到pio.P1_(XX-32)，例如GPIO33 表示为pio.P1_1</pre>
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">pins.close(pio.P1_1)，关闭GPIO33</pre></il>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+
