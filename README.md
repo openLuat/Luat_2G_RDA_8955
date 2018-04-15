@@ -30,9 +30,9 @@ script和script_LuaTask是两版上层脚本开发架构：
 > 2、script_LuaTask是第二版，基于Lua的协程实现了多线程的支持，相比于第一版script来说，用户编程变得简洁，在此郑重感谢Luat开源技术支持群（QQ群号：201848376）里的“稀饭放姜”大神对此版本架构提出的建议以及对此版本开发做出的贡献，同时感谢LuaTask群（QQ群号：670342655）里面的所有成员对此版本的辛勤付出。
 > 如果你想了解script_LuaTask中实现了哪些功能，请点击：
 
-> <<[script_LuaTask lib参考手册](https://htmlpreview.github.io/?https://github.com/openLuat/Luat_2G_RDA_8955/blob/master/script_LuaTask/doc/lib/index.html)>>
+> <<[script_LuaTask lib参考手册](https://htmlpreview.github.io/?https://github.com/openLuat/Luat_2G_RDA_8955/blob/master/script_LuaTask (Second Edition, recommended)/doc/lib/index.html)>>
 
-> <<[script_LuaTask demo参考手册](https://htmlpreview.github.io/?https://github.com/openLuat/Luat_2G_RDA_8955/blob/master/script_LuaTask/doc/demo/index.html)>>
+> <<[script_LuaTask demo参考手册](https://htmlpreview.github.io/?https://github.com/openLuat/Luat_2G_RDA_8955/blob/master/script_LuaTask (Second Edition, recommended)/doc/demo/index.html)>>
 
 Luat团队会一直同步维护这两个版本，建议新项目使用script_LuaTask版本开发。
 
