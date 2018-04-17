@@ -1,3 +1,23 @@
-发布时间：2018/4/4 14:35
+发布时间：2018/04/07 18:34
 修改记录：
-    第一次发布(版本号2.0.0)
+    一、lib脚本修改
+	lib脚本版本号：2.0.1
+	(1)完善代码注释和API文档
+	(2)mqtt.lua：connect接口中的第三个参数transport增加对"tcp_ssl"的支持，表示mqtt客户端使用ssl连接服务器
+	(3)gps.lua：
+		【1】修正“使用gps.TIMERORSUC模块开启gps后，gps定位成功，没有关闭gps”的问题
+		【2】新增一些接口，详情参考doc文档
+	(4)misc.lua：
+		【1】修改setImei和setSn接口第二个参数的意义
+		【2】新增“读取到imei和sn后，发布IMEI_READY_IND和SN_READY_IND消息”的功能
+	(5)socket.lua：修改“服务器关闭后，socket检测不到断开”的问题
+	(6)aLiYun.lua，aLiYunOta.lua：新增阿里云功能
+    二、demo脚本修改
+	(1)新增aLiYun的demo
+
+
+
+
+发布时间：2018/4/1 09:42
+修改记录：
+    第一次发布

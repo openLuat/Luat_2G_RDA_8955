@@ -1,4 +1,4 @@
---- 模块功能：Luat控制台
+--- 模块功能：Luat控制台.
 -- @module console
 -- @author openLuat
 -- @license MIT
@@ -111,10 +111,11 @@ local function main_loop()
     end
 end
 
---- console.setup
--- @param id 串口id
--- @param baudrate 串口波特率
--- @return 无
+--- 配置控制台使用的串口参数，创建控制台协程
+-- @number id 控制台使用的串口ID：1表示串口1，2表示串口2
+-- @number[opt=115200] baudrate 控制台使用的串口波特率
+-- 支持1200,2400,4800,9600,10400，14400,19200,28800,38400,57600,76800,115200,230400,460800,576000,921600,1152000,4000000
+-- @return nil
 -- @usage console.setup(1, 115200)
 function setup(id, baudrate)
     -- 默认串口1

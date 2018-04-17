@@ -98,7 +98,7 @@ local function taskClient(cbFnc,reqAddr,timeout,productKey,host,port,reqTime)
 end
 
 --- 发送根据基站查询经纬度请求（仅支持中国区域的位置查询）
--- @func cbFnc，用户回调函数，回调函数的调用形式为：
+-- @function cbFnc，用户回调函数，回调函数的调用形式为：
 --
 --              cbFnc(result,lat,lng,addr)
 --

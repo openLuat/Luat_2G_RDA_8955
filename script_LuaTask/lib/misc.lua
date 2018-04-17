@@ -4,12 +4,14 @@
 -- @license MIT
 -- @copyright openLuat
 -- @release 2017.10.20
+require "ril"
 local req = ril.request
 module(..., package.seeall)
 --sn：序列号
 --imei：IMEI
 -- calib 校准标志
 local sn, imei, calib, ver
+local setSnCbFnc,setImeiCbFnc
 
 --[[
 函数名：rsp
@@ -26,9 +28,13 @@ local function rsp(cmd, success, response, intermediate)
     --查询序列号
     if cmd == "AT+WISN?" then
         sn = intermediate
+        if setSnCbFnc then setSnCbFnc(true) end
+        sys.publish('SN_READY_IND')
     --查询IMEI
     elseif cmd == "AT+CGSN" then
         imei = intermediate
+        if setImeiCbFnc then setImeiCbFnc(true) end
+        sys.publish('IMEI_READY_IND')
     elseif cmd == 'AT+VER' then
         ver = intermediate
     --查询是否校准
@@ -41,6 +47,18 @@ local function rsp(cmd, success, response, intermediate)
         end
     elseif prefix == '+CCLK' and success then
         sys.publish('TIME_UPDATE_IND')
+    elseif cmd:match("AT%+WISN=") then
+        if success then
+            req("AT+WISN?")
+        else
+            if setSnCbFnc then setSnCbFnc(false) end
+        end
+    elseif cmd:match("AT%+WIMEI=") then
+        if success then
+            req("AT+CGSN")
+        else
+            if setImeiCbFnc then setImeiCbFnc(false) end
+        end
     end
 end
 
@@ -78,13 +96,18 @@ function getCalib()
 end
 --- 设置SN
 -- @string s,新sn的字符串
--- @string r,设置后是否重启，参数为nil时，自动重启
+-- @function[opt=nil] cbFnc,设置结果回调函数，回调函数的调用形式为：
+-- cnFnc(result)，result为true表示成功，false或者nil为失败
 -- @return 无
--- @usage misc.setSn("1234567890")
-function setSn(s, r)
+-- @usage
+-- misc.setSn("1234567890")
+-- misc.setSn("1234567890",cbFnc)
+function setSn(s, cbFnc)
     if s ~= sn then
-        req("AT+AMFAC=" .. (r and "0" or "1"))
-        req("AT+WISN=\"" .. s .. "\"")
+        setSnCbFnc = cbFnc
+        req("AT+WISN=\"" .. s .. "\"") 
+    else
+        if cbFnc then cbFnc(true) end
     end
 end
 --- 获取模块序列号
@@ -95,13 +118,16 @@ function getSn()
 end
 --- 设置IMEI
 -- @string s,新IMEI字符串
--- @string r,设置后是否重启，参数为nil时，自动重启
+-- @function[opt=nil] cbFnc,设置结果回调函数，回调函数的调用形式为：
+-- cnFnc(result)，result为true表示成功，false或者nil为失败
 -- @return 无
 -- @usage misc.setImei(”359759002514931”)
-function setImei(s, r)
+function setImei(s, cbFnc)
     if s ~= imei then
-        req("AT+AMFAC=" .. (r and "0" or "1"))
+        setImeiCbFnc = cbFnc
         req("AT+WIMEI=\"" .. s .. "\"")
+    else
+        if cbFnc then cbFnc(true) end
     end
 end
 --- 获取模块IMEI

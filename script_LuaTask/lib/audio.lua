@@ -1,4 +1,6 @@
---- 模块功能：音频播放
+--- 模块功能：音频播放.
+-- 支持MP3、amr文件播放；
+-- 支持本地TTS播放、通话中TTS播放到对端（需要使用支持TTS功能的core软件）
 -- @module audio
 -- @author openLuat
 -- @license MIT
@@ -85,7 +87,7 @@ local function taskAudio()
         log.info("audio.taskAudio resume msg",msg)        
         if msg=="SUCCESS" then
             if sDup then
-                if sDupInterval then
+                if sDupInterval and sDupInterval>0 then
                     sys.wait(sDupInterval)
                 end
             else
@@ -161,24 +163,28 @@ rtos.on(rtos.MSG_AUDIO,audioMsg)
 --- 播放音频
 -- @number priority，音频优先级，数值越大，优先级越高
 -- @string type，音频类型，目前仅支持"FILE"、"TTS"、"TTSCC"
--- @string path，音频文件路径，跟typ有关.
---
+-- @string path，音频文件路径，跟typ有关
 --               typ为"FILE"时：表示音频文件路径
---
---               typ为"TTS"时：表示要播放的UTF8格式的数据
---
---               typ为"TTSCC"时：表示要播放给通话对端数据的UCS2十六进制字符串
--- @number vol，播放音量，取值范围0到7
--- @param cb，音频播放结束或者出错时的回调函数，回调时包含一个参数：0表示播放成功结束；1表示播放出错；2表示播放优先级不够，没有播放；3表示传入的参数出错；4表示被新的播放请求终止
--- @bool dup，是否循环播放，true循环，false或者nil不循环
--- @number dupInterval，播放间隔(单位毫秒)，dup为true时，此值才有意义
--- @return 调用成功返回true，否则返回nil
+--               typ为"TTS"时：表示要播放的UTF8编码格式的数据
+--               typ为"TTSCC"时：表示要播放给通话对端的UTF8编码格式的数据
+-- @number[opt=4] vol，播放音量，取值范围0到7，0为静音
+-- @function[opt=nil] cbFnc，音频播放结束时的回调函数，回调函数的调用形式如下：
+-- cbFnc(result)
+-- result表示播放结果：
+--                   0-播放成功结束；
+--                   1-播放出错
+--                   2-播放优先级不够，没有播放
+--                   3-传入的参数出错，没有播放
+--                   4-被新的播放请求中止
+-- @bool[opt=nil] dup，是否循环播放，true循环，false或者nil不循环
+-- @number[opt=0] dupInterval，循环播放间隔(单位毫秒)，dup为true时，此值才有意义
+-- @return result，bool或者nil类型，同步调用成功返回true，否则返回nil
 -- @usage audio.play(0,"FILE","/ldata/call.mp3")
 -- @usage audio.play(0,"FILE","/ldata/call.mp3",7)
 -- @usage audio.play(0,"FILE","/ldata/call.mp3",7,cbFnc)
 -- @usage 更多用法参考demo/audio/testAudio.lua
-function play(priority,type,path,vol,cb,dup,dupInterval)
-    if not update(priority,type,path,vol,cb,dup,dupInterval) then return false end
+function play(priority,type,path,vol,cbFnc,dup,dupInterval)
+    if not update(priority,type,path,vol or 4,cbFnc,dup,dupInterval or 0) then return false end
     if not sType or not taskID or coroutine.status(taskID)=="dead" then
         taskID = sys.taskInit(taskAudio)
     end

@@ -38,6 +38,8 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
+  <li><a href="../modules/aLiYun.html">aLiYun</a></li>
+  <li><a href="../modules/aLiYunOta.html">aLiYunOta</a></li>
   <li><a href="../modules/agps.html">agps</a></li>
   <li><a href="../modules/audio.html">audio</a></li>
   <li><a href="../modules/cc.html">cc</a></li>
@@ -78,8 +80,19 @@
 <div id="content">
 
 <h1>Module <code>errDump</code></h1>
-<p>模块功能：系统错误日志dump</p>
-<p></p>
+<p>模块功能：系统错误日志管理(强烈建议用户开启此模块的“错误日志上报调试服务器”功能).</p>
+<pre>
+<p>
+ 错误日志包括三种：
+ 1、系统主任务运行时的错误日志
+    此类错误会导致软件重启，错误日志保存在/luaerrinfo.txt文件中
+ 2、调用sys.taskInit创建的协程运行过程中的错误日志
+    此类错误会终止当前协程的运行，但是不会导致软件重启，错误日志保存在/lib_err.txt中
+ 3、调用errDump.appendErr或者sys.restart接口保存的错误日志
+    此类错误日志保存在/lib_err.txt中
+<p> 其中2和3保存的错误日志，最多支持5K字节
+ 每次上报错误日志给调试服务器之后，会清空已保存的日志</p>
+</pre>
     <h3>Info:</h3>
     <ul>
         <li><strong>Copyright</strong>: openLuat</li>
@@ -92,20 +105,16 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#getExtLibErr">getExtLibErr ()</a></td>
-	<td class="summary">获取LIB_ERR_FILE文件中的错误信息，给外部模块使用</td>
+	<td class="name" nowrap><a href="#appendErr">
+    appendErr (s)
+    </a></td>
+	<td class="summary">追加错误信息到LIB_ERR_FILE文件中（文件最多允许存储5K字节的数据）</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#readTxt">readTxt (f)</a></td>
-	<td class="summary">读取文本文件中的全部内容</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#initErr">initErr ()</a></td>
-	<td class="summary">打印LIB_ERR_FILE文件中的错误信息</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#appendErr">appendErr (s)</a></td>
-	<td class="summary">追加错误信息到LIB_ERR_FILE文件中</td>
+	<td class="name" nowrap><a href="#request">
+    request (addr<strong  style="color: gray;">[, period=nil]</strong>)
+    </a></td>
+	<td class="summary">配置调试服务器地址，启动错误信息上报给调试服务器的功能，上报成功后，会清除错误信息</td>
 	</tr>
 </table>
 
@@ -117,107 +126,102 @@
 
     <dl class="function">
     <dt>
-    <a name = "getExtLibErr"></a>
-    <strong  style="color: red;">getExtLibErr ()</strong>
-    </dt>
-    <dd>
-    <pre class="example"  style="color: red;">获取LIB_ERR_FILE文件中的错误信息，给外部模块使用</pre>
-
-
-
-    <h3>Returns:</h3>
-    <ul>
-        <li>
-        <pre class="example">string ,LIB_ERR_FILE文件中的错误信息</pre></il>
-    </ul>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <li><pre class="example">errDump.getExtLibErr()</pre></il>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "readTxt"></a>
-    <strong  style="color: red;">readTxt (f)</strong>
-    </dt>
-    <dd>
-    <pre class="example"  style="color: red;">读取文本文件中的全部内容</pre>
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">f</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        <pre class="example">文件路径</pre>
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ul>
-        <li>
-        <pre class="example">string ,文本文件中的全部内容，读取失败为空字符串或者nil</pre></il>
-    </ul>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <li><pre class="example">errDump.readTxt(LIB_ERR_FILE,libErr)</pre></il>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "initErr"></a>
-    <strong  style="color: red;">initErr ()</strong>
-    </dt>
-    <dd>
-    <pre class="example"  style="color: red;">打印LIB_ERR_FILE文件中的错误信息</pre>
-
-
-
-    <h3>Returns:</h3>
-    <ul>
-        <li>
-        <pre class="example">无</pre></il>
-    </ul>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <li><pre class="example">readTxt.initErr()</pre></il>
-    </ul>
-
-</dd>
-    <dt>
     <a name = "appendErr"></a>
-    <strong  style="color: red;">appendErr (s)</strong>
+    <strong  style="color: red;">
+    appendErr (s)
+    </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">追加错误信息到LIB_ERR_FILE文件中</pre>
+    <pre class="example"  style="color: red;">追加错误信息到LIB_ERR_FILE文件中（文件最多允许存储5K字节的数据）</pre>
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">s</span>
-        <pre class="example">错误信息，用户自定义，一般是string类型，重启后的trace中会打印出此错误信息</pre>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">用户自定义的错误信息，errDump功能模块会对此错误信息做如下处理：
+ 1、重启后会通过Luat下载调试工具输出，在trace中搜索errDump.libErr，可以搜索到错误信息
+ 2、如果用户调用errDump.request接口设置了错误信息要上报的调试服务器地址和端口，则每次重启会自动上报错误信息到调试服务器
+ 3、如果用户调用errDump.request接口设置了定时上报，则定时上报时会上报错误信息到调试服务器
+ 其中第2和第3种情况，上报成功后，会自动清除错误信息</pre>
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">bool true表示成功，false或者nil表示失败</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example">readTxt.appendErr(<span class="string">"net working timeout!"</span>)</pre></il>
+        <li><pre class="example">errDump.appendErr(<span class="string">"net working timeout!"</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "request"></a>
+    <strong  style="color: red;">
+    request (addr<strong  style="color: green;">[, period=nil]</strong>)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">配置调试服务器地址，启动错误信息上报给调试服务器的功能，上报成功后，会清除错误信息</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">addr</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">调试服务器地址信息，支持http，udp，tcp
+ 1、如果调试服务器使用http协议，终端将采用POST命令，把错误信息上报到addr指定的URL中，addr的格式如下
+   (除protocol和hostname外，其余字段可选；目前的实现不支持hash)
+   |------------------------------------------------------------------------------|
+   | protocol |||   auth    |      host       |           path            | hash  |
+   |----------|||-----------|-----------------|---------------------------|-------|
+   |          |||           | hostname | port | pathname |     search     |       |
+   |          |||           |----------|------|----------|----------------|       |
+   "   http   :// user:pass @ host.com : 8080   /p/a/t/h ?  query=string  # hash  "
+   |          |||           |          |      |          |                |       |
+   |------------------------------------------------------------------------------|
+ 2、如果调试服务器使用udp协议，终端将错误信息，直接上报给调试服务器，调试服务器收到信息后，要回复大写的OK；addr格式如下：
+   |----------|||----------|------|
+   | protocol ||| hostname | port |
+   |          |||----------|------|
+   "   udp    :// host.com : 8081 |
+   |          |||          |      |
+   |------------------------------|
+ 3、如果调试服务器使用tcp协议，终端将错误信息，直接上报给调试服务器；addr格式如下：
+   |----------|||----------|------|
+   | protocol ||| hostname | port |
+   |          |||----------|------|
+   "   tcp    :// host.com : 8082 |
+   |          |||          |      |
+   |------------------------------|</pre>
+        </li>
+        <li><span class="parameter">period</span>
+            <span class="types"><span class="type">number</span></span>
+         [<em>此参数可选，默认值为：</em> nil]
+        <pre class="example">单位毫秒，定时上报错误信息的间隔，如果没有设置此参数，仅执行一次错误上报功能</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">bool，成功返回true，失败返回nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">errDump.request(<span class="string">"http://www.user_server.com/errdump"</span>)
+errDump.request(<span class="string">"udp://www.user_server.com:8081"</span>)
+errDump.request(<span class="string">"tcp://www.user_server.com:8082"</span>)
+errDump.request(<span class="string">"tcp://www.user_server.com:8082"</span>,<span class="number">6</span>*<span class="number">3600</span>*<span class="number">1000</span>)</pre></il>
     </ul>
 
 </dd>
@@ -228,7 +232,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+<i style="float:right;">Last updated 2018-04-17 13:24:42 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
