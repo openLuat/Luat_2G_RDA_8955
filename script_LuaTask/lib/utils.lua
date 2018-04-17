@@ -7,15 +7,17 @@
 module(..., package.seeall)
 
 --- 字符转16进制,如"123abc"转为"313233616263"
--- @param str 输入字符串
+-- @string str 输入字符串
+-- @string[opt=""] separator 输出的16进制字符串分隔符
 -- @return hexstring 16进制组成的串
 -- @return len 输入的字符串长度
 -- @usage
 -- string.toHex("\1\2\3") -> "010203" 3
 -- string.toHex("123abc") -> "313233616263" 6
-function string.toHex(str)
+-- string.toHex("123abc"," ") -> "31 32 33 61 62 63 " 6
+function string.toHex(str,separator)
     return str:gsub('.', function(c)
-        return string.format("%02X", string.byte(c))
+        return string.format("%02X"..(separator or ""), string.byte(c))
     end)
 end
 --- 16进制转字符，如"313233616263"转为"123abc", 函数里加入了过滤分隔符，可以过滤掉大部分分隔符（可参见正则表达式中\s和\p的范围）。
@@ -116,7 +118,6 @@ function io.readFile(path)
         io.close(file)
         return content
     end
-    return nil
 end
 --- 写入文件指定的内容,默认为覆盖二进制模式
 -- @string path,文件全名例如："/ldata/call.txt"

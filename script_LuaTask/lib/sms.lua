@@ -521,7 +521,7 @@ end
 --- 发送短信
 -- @string num，短信接收方号码，ASCII码字符串格式
 -- @string data，短信内容，GB2312编码的字符串
--- @func cbFnc，信发送结果异步返回时使用的回调函数，可选
+-- @function cbFnc，信发送结果异步返回时使用的回调函数，可选
 -- @number idx，插入短信发送缓冲表的位置，可选，默认是插入末尾
 -- @return nil
 -- @usage sms.send("10086","test",cbFnc)
@@ -578,7 +578,7 @@ end
 local newsmscb
 
 --- 设置新短信的用户处理函数
--- @func cbFnc，新短信的用户处理函数
+-- @function cbFnc，新短信的用户处理函数
 -- @return nil
 -- @usage sms.setNewSmsCb(cbFnc)
 function setNewSmsCb(cbFnc)

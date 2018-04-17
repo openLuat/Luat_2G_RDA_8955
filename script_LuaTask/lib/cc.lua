@@ -9,14 +9,19 @@ module(..., package.seeall)
 require"ril"
 require"pm"
 
--- 通话状态
+--- 通话中
 CONNECTED = 0
+--- 通话保持中
 HOLD = 1
+--- 正在呼出
 DIALING = 2
 ALERTING = 3
+--- 正在呼入
 INCOMING = 4
 WAITING = 5
+--- 正在挂断通话
 DISCONNECTING = 98
+--- 通话已挂断
 DISCONNECTED = 99
 
 local req = ril.request
@@ -35,29 +40,29 @@ function anyCallExist()
 end
 
 --- 查询某个号码的通话状态
--- @param num 查询号码
--- @return state 通话状态，状态值参考本模块定义
+-- @string num 查询号码
+-- @return state 通话状态，状态值参考本模块Fields定义
 -- @usage state = cc.getState('10086')
 function getState(num)
     return call_list[num] or DISCONNECTED
 end
 
---- 拨号
--- @param number 号码
--- @param delay 延时delay毫秒后，才发送at命令呼叫，默认不延时
+--- 呼出电话
+-- @string num 呼出号码
+-- @number[opt=0] delay 延时delay毫秒后，才发起呼叫
 -- @return result true表示允许发送at命令拨号并且发送at，false表示不允许at命令拨号
 -- @usage cc.dial('10086')
-function dial(number, delay)
-    if number == "" or number == nil then return false end
+function dial(num, delay)
+    if num == "" or num == nil then return false end
     pm.wake("cc")
-    req(string.format("%s%s;", "ATD", number), nil, nil, delay)
-    call_list[number] = DIALING
+    req(string.format("%s%s;", "ATD", num), nil, nil, delay)
+    call_list[num] = DIALING
     return true
 end
 
---- 挂断所有通话
--- @param num 号码，若指定号码通话状态不对 则直接退出 不会执行挂断，若挂断时会挂断所有电话
--- @return
+--- 挂断通话
+-- @string num 号码，若指定号码通话状态不对 则直接退出 不会执行挂断，若挂断时会挂断所有电话
+-- @return nil
 -- @usage cc.hangUp('10086')
 function hangUp(num)
     if call_list[num] == DISCONNECTING or call_list[num] == DISCONNECTED then return end
@@ -67,8 +72,8 @@ function hangUp(num)
 end
 
 --- 接听电话
--- @param num 号码，若指定号码通话状态不对 则直接退出 不会接通
--- @return
+-- @string num 号码，若指定号码通话状态不对 则直接退出 不会接通
+-- @return nil
 -- @usage cc.accept('10086')
 function accept(num)
     if call_list[num] ~= INCOMING then return end
@@ -78,16 +83,19 @@ function accept(num)
 end
 
 --- 通话中发送声音到对端,必须是12.2K AMR格式
--- @param data
--- @param loop
--- @param loop2
+-- @string data 12.2K AMR格式的数据
+-- @bool[opt=nil] loop 是否循环发送，true为循环，其余为不循环
+-- @bool[opt=nil] downLinkPlay 声音是否在本端播放，true为播放，其余为不播放
 -- @return result true为成功，false为失败
 -- @usage
-function transvoice(data, loop, loop2)
+-- cc.transVoice("#!AMR\010\060*********")
+-- cc.transVoice("#!AMR\010\060*********",true)
+-- cc.transVoice("#!AMR\010\060*********",true,true)
+function transVoice(data, loop, downLinkPlay)
     local f = io.open("/RecDir/rec000", "wb")
 
     if f == nil then
-        log_print("transvoice:open file error")
+        log.error("transVoice:open file error")
         return false
     end
 
@@ -97,22 +105,22 @@ function transvoice(data, loop, loop2)
     elseif string.byte(data, 1) == 0x3C then
         f:write("#!AMR\010")
     else
-        log.error('cc.transvoice', 'must be 12.2K AMR')
+        log.error('cc.transVoice', 'must be 12.2K AMR')
         return false
     end
 
     f:write(data)
     f:close()
 
-    req(string.format("AT+AUDREC=%d,%d,2,0,50000", loop2 == true and 1 or 0, loop == true and 1 or 0))
+    req(string.format("AT+AUDREC=%d,%d,2,0,50000", downLinkPlay == true and 1 or 0, loop == true and 1 or 0))
 
     return true
 end
 
 --- 设置dtmf检测是否使能以及灵敏度
--- @param enable true使能，false或者nil为不使能
--- @param sens 灵敏度，默认3，最灵敏为1
--- @return
+-- @bool[opt=nil] enable true使能，false或者nil为不使能
+-- @number[opt=3] sens 灵敏度，最灵敏为1
+-- @return nil
 -- @usage cc.dtmfDetect(true)
 function dtmfDetect(enable, sens)
     if enable == true then
@@ -127,14 +135,14 @@ function dtmfDetect(enable, sens)
 end
 
 --- 发送dtmf到对端
--- @param str dtmf字符串
--- @param playtime 每个dtmf播放时间，单位毫秒，默认100
--- @param intvl 两个dtmf间隔，单位毫秒，默认100
--- @return 无
+-- @string str dtmf字符串，仅支持数字、ABCD*#
+-- @number[opt=100] playtime 每个dtmf播放时间，单位毫秒
+-- @number[opt=100] intvl 两个dtmf间隔，单位毫秒
+-- @return nil
 -- @usage cc.sendDtmf("123")
 function sendDtmf(str, playtime, intvl)
     if string.match(str, "([%dABCD%*#]+)") ~= str then
-        log_print("sendDtmf: illegal string " .. str)
+        log.error("sendDtmf: illegal string " .. str)
         return false
     end
 

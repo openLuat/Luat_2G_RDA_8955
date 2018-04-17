@@ -40,7 +40,7 @@ end
 
 --- 读取一条电话本记录
 -- @number index，电话本在存储区的位置
--- @func cb，function类型，读取后的回调函数
+-- @function cb，function类型，读取后的回调函数
 --
 -- 回调方式为cb(result,name,number)：result为true表示成功，false或者nil表示失败；name为姓名；number为号码
 -- @usage pb.read(1,cb)
@@ -56,7 +56,7 @@ end
 -- @number index，电话本在存储区的位置
 -- @string name，姓名
 -- @string num，号码
--- @func cb, functionl类型，写入后的回调函数
+-- @function cb, functionl类型，写入后的回调函数
 --
 -- 回调方式为cb(result)：result为true表示成功，false或者nil表示失败
 -- @return 无
@@ -73,7 +73,7 @@ end
 
 --- 删除一条电话本记录
 -- @number index, 电话本在存储区的位置
--- @func cb, function类型，删除后的回调函数
+-- @function cb, function类型，删除后的回调函数
 --
 -- 回调方式为cb(result)：result为true表示成功，false或者nil表示失败
 -- @return 无

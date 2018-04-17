@@ -39,11 +39,11 @@
 <h2>Modules</h2>
 <ul class="nowrap">
   <li><a href="../modules/aLiYun.html">aLiYun</a></li>
-  <li><a href="../modules/aLiYunOta.html">aLiYunOta</a></li>
+  <li><strong>aLiYunOta</strong></li>
   <li><a href="../modules/agps.html">agps</a></li>
   <li><a href="../modules/audio.html">audio</a></li>
   <li><a href="../modules/cc.html">cc</a></li>
-  <li><strong>clib</strong></li>
+  <li><a href="../modules/clib.html">clib</a></li>
   <li><a href="../modules/common.html">common</a></li>
   <li><a href="../modules/console.html">console</a></li>
   <li><a href="../modules/errDump.html">errDump</a></li>
@@ -79,13 +79,16 @@
 
 <div id="content">
 
-<h1>Module <code>clib</code></h1>
-<p>模块功能：完善luat的c库接口</p>
-<p></p>
+<h1>Module <code>aLiYunOta</code></h1>
+<p>模块功能：阿里云物联网套件客户端OTA功能.</p>
+<pre>
+<p>
+ 目前固件签名算法仅支持MD5</p>
+</pre>
     <h3>Info:</h3>
     <ul>
         <li><strong>Copyright</strong>: openLuat</li>
-        <li><strong>Release</strong>: 2017.9.20</li>
+        <li><strong>Release</strong>: 2018.04.16</li>
         <li><strong>License</strong>: MIT</li>
         <li><strong>Author</strong>: openLuat</li>
     </ul>
@@ -94,10 +97,22 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#uart.on">
-    uart.on (id, event<strong  style="color: gray;">[, callback=nil]</strong>)
+	<td class="name" nowrap><a href="#setVer">
+    setVer (version)
     </a></td>
-	<td class="summary">注册串口事件的处理函数</td>
+	<td class="summary">设置当前的固件版本号</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setName">
+    setName (name)
+    </a></td>
+	<td class="summary">设置新固件保存的文件名</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setCb">
+    setCb (cbFnc)
+    </a></td>
+	<td class="summary">设置新固件下载后的回调函数</td>
 	</tr>
 </table>
 
@@ -109,31 +124,20 @@
 
     <dl class="function">
     <dt>
-    <a name = "uart.on"></a>
+    <a name = "setVer"></a>
     <strong  style="color: red;">
-    uart.on (id, event<strong  style="color: green;">[, callback=nil]</strong>)
+    setVer (version)
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">注册串口事件的处理函数</pre>
+    <pre class="example"  style="color: red;">设置当前的固件版本号</pre>
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">id</span>
-            <span class="types"><span class="type">number</span></span>
-        <pre class="example"> 串口ID: 1表示串口1，2表示串口2，uart.ATC表示虚拟AT口</pre>
-        </li>
-        <li><span class="parameter">event</span>
+        <li><span class="parameter">version</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        <pre class="example"> 串口事件:
- "recieve"表示串口收到数据，注意：使用uart.setup配置串口时，第6个参数设置为nil或者0，收到数据时，才会产生"receive"事件
- "sent"表示串口数据发送完成，注意：使用uart.setup配置串口时，第7个参数设置为1，调用uart.write接口发送数据之后，才会产生"sent"事件</pre>
-        </li>
-        <li><span class="parameter">callback</span>
-            <span class="types"><span class="type">function</span></span>
-         [<em>此参数可选，默认值为：</em> nil]
-        <pre class="example"> 串口事件的处理函数</pre>
+        <pre class="example">当前固件版本号</pre>
         </li>
     </ul>
 
@@ -147,8 +151,72 @@
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example">uart.on(<span class="number">1</span>,<span class="string">"receive"</span>,rcvFnc)
-uart.on(<span class="number">1</span>,<span class="string">"sent"</span>,sentFnc)</pre></il>
+        <li><pre class="example">aLiYunOta.setVer(<span class="string">"MCU_VERSION_1.0.0"</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "setName"></a>
+    <strong  style="color: red;">
+    setName (name)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置新固件保存的文件名</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">新固件下载后保存的文件名；注意此文件名并不是保存的完整路径，完整路径通过setCb设置的回调函数去获取</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">aLiYunOta.setName(<span class="string">"MCU_FIRMWARE.bin"</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "setCb"></a>
+    <strong  style="color: red;">
+    setCb (cbFnc)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置新固件下载后的回调函数</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cbFnc</span>
+            <span class="types"><span class="type">function</span></span>
+        <pre class="example">新固件下载后的回调函数
+ 回调函数的调用形式为：cbFnc(result,filePath)，result为下载结果，true表示成功，false或者nil表示失败；filePath为新固件文件保存的完整路径</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">aLiYunOta.setCb(cbFnc)</pre></il>
     </ul>
 
 </dd>

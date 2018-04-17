@@ -39,6 +39,8 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
+  <li><a href="../modules/aLiYun.html">aLiYun</a></li>
+  <li><a href="../modules/aLiYunOta.html">aLiYunOta</a></li>
   <li><a href="../modules/agps.html">agps</a></li>
   <li><a href="../modules/audio.html">audio</a></li>
   <li><a href="../modules/cc.html">cc</a></li>
@@ -93,86 +95,162 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#open">open (mode, para)</a></td>
+	<td class="name" nowrap><a href="#open">
+    open (mode, para)
+    </a></td>
 	<td class="summary">打开一个“GPS应用”.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#close">close (mode, para)</a></td>
+	<td class="name" nowrap><a href="#close">
+    close (mode, para)
+    </a></td>
 	<td class="summary">关闭一个“GPS应用”.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#closeAll">closeAll ()</a></td>
+	<td class="name" nowrap><a href="#closeAll">
+    closeAll ()
+    </a></td>
 	<td class="summary">关闭所有“GPS应用”</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#isActive">isActive (mode, para)</a></td>
+	<td class="name" nowrap><a href="#isActive">
+    isActive (mode, para)
+    </a></td>
 	<td class="summary">判断一个“GPS应用”是否处于激活状态</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#setPowerCbFnc">setPowerCbFnc (cbFnc)</a></td>
+	<td class="name" nowrap><a href="#setPowerCbFnc">
+    setPowerCbFnc (cbFnc)
+    </a></td>
 	<td class="summary">设置GPS模块供电控制的回调函数.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#setUart">setUart (id, baudrate, databits, parity, stopbits)</a></td>
+	<td class="name" nowrap><a href="#setUart">
+    setUart (id, baudrate, databits, parity, stopbits)
+    </a></td>
 	<td class="summary">设置GPS模块和GSM模块之间数据通信的串口参数.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#setAerialMode">setAerialMode (gps, beidou, glonass, galieo)</a></td>
+	<td class="name" nowrap><a href="#setAerialMode">
+    setAerialMode (gps, beidou, glonass, galieo)
+    </a></td>
 	<td class="summary">设置GPS模块搜星模式.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#setNmeaMode">setNmeaMode (mode, cbFnc)</a></td>
+	<td class="name" nowrap><a href="#setNmeaMode">
+    setNmeaMode (mode, cbFnc)
+    </a></td>
 	<td class="summary">设置NMEA数据处理模式.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#setRunMode">setRunMode (mode, runTm, sleepTm)</a></td>
+	<td class="name" nowrap><a href="#setRunMode">
+    setRunMode (mode, runTm, sleepTm)
+    </a></td>
 	<td class="summary">设置GPS模块的运行模式.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#isOpen">isOpen ()</a></td>
+	<td class="name" nowrap><a href="#isOpen">
+    isOpen ()
+    </a></td>
 	<td class="summary">获取GPS模块是否处于开启状态</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#isFix">isFix ()</a></td>
+	<td class="name" nowrap><a href="#isFix">
+    isFix ()
+    </a></td>
 	<td class="summary">获取GPS模块是否定位成功</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getLocation">getLocation ()</a></td>
+	<td class="name" nowrap><a href="#getLocation">
+    getLocation ()
+    </a></td>
 	<td class="summary">获取经纬度信息</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getAltitude">getAltitude ()</a></td>
+	<td class="name" nowrap><a href="#getAltitude">
+    getAltitude ()
+    </a></td>
 	<td class="summary">获取海拔</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getSpeed">getSpeed ()</a></td>
+	<td class="name" nowrap><a href="#getSpeed">
+    getSpeed ()
+    </a></td>
 	<td class="summary">获取速度</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getCourse">getCourse ()</a></td>
+	<td class="name" nowrap><a href="#getCourse">
+    getCourse ()
+    </a></td>
 	<td class="summary">获取方向角</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getViewedSateCnt">getViewedSateCnt ()</a></td>
+	<td class="name" nowrap><a href="#getViewedSateCnt">
+    getViewedSateCnt ()
+    </a></td>
 	<td class="summary">获取可见卫星的个数</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getUsedSateCnt">getUsedSateCnt ()</a></td>
+	<td class="name" nowrap><a href="#getUsedSateCnt">
+    getUsedSateCnt ()
+    </a></td>
 	<td class="summary">获取定位使用的卫星个数</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getGgaloc">
+    getGgaloc ()
+    </a></td>
+	<td class="summary">获取定位使用的度分经度，度分纬度</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getUtcTime">
+    getUtcTime ()
+    </a></td>
+	<td class="summary">获取定位使用的UTC时间</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getSep">
+    getSep ()
+    </a></td>
+	<td class="summary">获取定位使用的大地高</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getSateSn">
+    getSateSn ()
+    </a></td>
+	<td class="summary">获取定位使用的可用卫星号</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getGsv">
+    getGsv ()
+    </a></td>
+	<td class="summary">获取定位使用的信噪比</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setParseItem">
+    setParseItem (utctime, gsv, sn)
+    </a></td>
+	<td class="summary">设置是否需要解析项</td>
 	</tr>
 </table>
 <h2><a href="#Fields">Fields</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#DEFAULT">DEFAULT</a></td>
+	<td class="name" nowrap><a href="#DEFAULT">
+    DEFAULT
+    </a></td>
 	<td class="summary">GPS应用模式1.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#TIMERORSUC">TIMERORSUC</a></td>
+	<td class="name" nowrap><a href="#TIMERORSUC">
+    TIMERORSUC
+    </a></td>
 	<td class="summary">GPS应用模式2.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#TIMER">TIMER</a></td>
+	<td class="name" nowrap><a href="#TIMER">
+    TIMER
+    </a></td>
 	<td class="summary">GPS应用模式3.</td>
 	</tr>
 </table>
@@ -186,7 +264,9 @@
     <dl class="function">
     <dt>
     <a name = "open"></a>
-    <strong  style="color: red;">open (mode, para)</strong>
+    <strong  style="color: red;">
+    open (mode, para)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">打开一个“GPS应用”.
@@ -243,7 +323,9 @@
 </dd>
     <dt>
     <a name = "close"></a>
-    <strong  style="color: red;">close (mode, para)</strong>
+    <strong  style="color: red;">
+    close (mode, para)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">关闭一个“GPS应用”.
@@ -290,7 +372,9 @@
 </dd>
     <dt>
     <a name = "closeAll"></a>
-    <strong  style="color: red;">closeAll ()</strong>
+    <strong  style="color: red;">
+    closeAll ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">关闭所有“GPS应用”</pre>
@@ -320,7 +404,9 @@
 </dd>
     <dt>
     <a name = "isActive"></a>
-    <strong  style="color: red;">isActive (mode, para)</strong>
+    <strong  style="color: red;">
+    isActive (mode, para)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">判断一个“GPS应用”是否处于激活状态</pre>
@@ -366,7 +452,9 @@
 </dd>
     <dt>
     <a name = "setPowerCbFnc"></a>
-    <strong  style="color: red;">setPowerCbFnc (cbFnc)</strong>
+    <strong  style="color: red;">
+    setPowerCbFnc (cbFnc)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">设置GPS模块供电控制的回调函数.
@@ -397,7 +485,9 @@
 </dd>
     <dt>
     <a name = "setUart"></a>
-    <strong  style="color: red;">setUart (id, baudrate, databits, parity, stopbits)</strong>
+    <strong  style="color: red;">
+    setUart (id, baudrate, databits, parity, stopbits)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">设置GPS模块和GSM模块之间数据通信的串口参数.
@@ -446,7 +536,9 @@
 </dd>
     <dt>
     <a name = "setAerialMode"></a>
-    <strong  style="color: red;">setAerialMode (gps, beidou, glonass, galieo)</strong>
+    <strong  style="color: red;">
+    setAerialMode (gps, beidou, glonass, galieo)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">设置GPS模块搜星模式.
@@ -489,7 +581,9 @@
 </dd>
     <dt>
     <a name = "setNmeaMode"></a>
-    <strong  style="color: red;">setNmeaMode (mode, cbFnc)</strong>
+    <strong  style="color: red;">
+    setNmeaMode (mode, cbFnc)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">设置NMEA数据处理模式.
@@ -525,7 +619,9 @@
 </dd>
     <dt>
     <a name = "setRunMode"></a>
-    <strong  style="color: red;">setRunMode (mode, runTm, sleepTm)</strong>
+    <strong  style="color: red;">
+    setRunMode (mode, runTm, sleepTm)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">设置GPS模块的运行模式.
@@ -571,7 +667,9 @@
 </dd>
     <dt>
     <a name = "isOpen"></a>
-    <strong  style="color: red;">isOpen ()</strong>
+    <strong  style="color: red;">
+    isOpen ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取GPS模块是否处于开启状态</pre>
@@ -594,7 +692,9 @@
 </dd>
     <dt>
     <a name = "isFix"></a>
-    <strong  style="color: red;">isFix ()</strong>
+    <strong  style="color: red;">
+    isFix ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取GPS模块是否定位成功</pre>
@@ -617,7 +717,9 @@
 </dd>
     <dt>
     <a name = "getLocation"></a>
-    <strong  style="color: red;">getLocation ()</strong>
+    <strong  style="color: red;">
+    getLocation ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取经纬度信息</pre>
@@ -645,7 +747,9 @@
 </dd>
     <dt>
     <a name = "getAltitude"></a>
-    <strong  style="color: red;">getAltitude ()</strong>
+    <strong  style="color: red;">
+    getAltitude ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取海拔</pre>
@@ -668,7 +772,9 @@
 </dd>
     <dt>
     <a name = "getSpeed"></a>
-    <strong  style="color: red;">getSpeed ()</strong>
+    <strong  style="color: red;">
+    getSpeed ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取速度</pre>
@@ -693,7 +799,9 @@
 </dd>
     <dt>
     <a name = "getCourse"></a>
-    <strong  style="color: red;">getCourse ()</strong>
+    <strong  style="color: red;">
+    getCourse ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取方向角</pre>
@@ -716,7 +824,9 @@
 </dd>
     <dt>
     <a name = "getViewedSateCnt"></a>
-    <strong  style="color: red;">getViewedSateCnt ()</strong>
+    <strong  style="color: red;">
+    getViewedSateCnt ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取可见卫星的个数</pre>
@@ -739,7 +849,9 @@
 </dd>
     <dt>
     <a name = "getUsedSateCnt"></a>
-    <strong  style="color: red;">getUsedSateCnt ()</strong>
+    <strong  style="color: red;">
+    getUsedSateCnt ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取定位使用的卫星个数</pre>
@@ -760,13 +872,172 @@
     </ul>
 
 </dd>
+    <dt>
+    <a name = "getGgaloc"></a>
+    <strong  style="color: red;">
+    getGgaloc ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取定位使用的度分经度，度分纬度</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">Ggalng,Ggalat，度分经度，度分纬度</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gps.getGgaloc()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getUtcTime"></a>
+    <strong  style="color: red;">
+    getUtcTime ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取定位使用的UTC时间</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">UtcTime，UTC时间</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gps.getUtcTime()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getSep"></a>
+    <strong  style="color: red;">
+    getSep ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取定位使用的大地高</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">Sep，大地高</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gps.getSep()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getSateSn"></a>
+    <strong  style="color: red;">
+    getSateSn ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取定位使用的可用卫星号</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">SateSn，可用卫星号</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gps.getSateSn()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getGsv"></a>
+    <strong  style="color: red;">
+    getGsv ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取定位使用的信噪比</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">Gsv，信噪比</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gps.getGsv()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "setParseItem"></a>
+    <strong  style="color: red;">
+    setParseItem (utctime, gsv, sn)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置是否需要解析项</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">utctime</span>
+        <pre class="example"></pre>
+        </li>
+        <li><span class="parameter">gsv</span>
+        <pre class="example"></pre>
+        </li>
+        <li><span class="parameter">sn</span>
+        <pre class="example"></pre>
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gps.setParseItem(<span class="keyword">true</span>,<span class="keyword">true</span>,<span class="keyword">true</span>),<span class="keyword">true</span>表示需要，不写或<span class="keyword">nil</span>表示不需要</pre></il>
+    </ul>
+
+</dd>
 </dl>
     <h2 class="section-header "><a name="Fields"></a>Fields</h2>
 
     <dl class="function">
     <dt>
     <a name = "DEFAULT"></a>
-    <strong  style="color: red;">DEFAULT</strong>
+    <strong  style="color: red;">
+    DEFAULT
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">GPS应用模式1.
@@ -782,7 +1053,9 @@
 </dd>
     <dt>
     <a name = "TIMERORSUC"></a>
-    <strong  style="color: red;">TIMERORSUC</strong>
+    <strong  style="color: red;">
+    TIMERORSUC
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">GPS应用模式2.
@@ -799,7 +1072,9 @@
 </dd>
     <dt>
     <a name = "TIMER"></a>
-    <strong  style="color: red;">TIMER</strong>
+    <strong  style="color: red;">
+    TIMER
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">GPS应用模式3.
@@ -820,7 +1095,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+<i style="float:right;">Last updated 2018-04-17 13:24:42 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

@@ -24,7 +24,7 @@ local function losefocus()
 end
 
 --- 新增一个窗口
--- @tab wnd，窗口的元素以及消息处理函数表
+-- @table wnd，窗口的元素以及消息处理函数表
 -- @return number，窗口ID
 -- @usage uiWin.add({onUpdate = refresh})
 function add(wnd)

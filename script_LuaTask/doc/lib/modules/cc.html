@@ -33,11 +33,14 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
+<li><a href="#Fields">Fields</a></li>
 </ul>
 
 
 <h2>Modules</h2>
 <ul class="nowrap">
+  <li><a href="../modules/aLiYun.html">aLiYun</a></li>
+  <li><a href="../modules/aLiYunOta.html">aLiYunOta</a></li>
   <li><a href="../modules/agps.html">agps</a></li>
   <li><a href="../modules/audio.html">audio</a></li>
   <li><strong>cc</strong></li>
@@ -92,36 +95,91 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#anyCallExist">anyCallExist ()</a></td>
+	<td class="name" nowrap><a href="#anyCallExist">
+    anyCallExist ()
+    </a></td>
 	<td class="summary">是否存在通话</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getState">getState (num)</a></td>
+	<td class="name" nowrap><a href="#getState">
+    getState (num)
+    </a></td>
 	<td class="summary">查询某个号码的通话状态</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#dial">dial (number, delay)</a></td>
-	<td class="summary">拨号</td>
+	<td class="name" nowrap><a href="#dial">
+    dial (num<strong  style="color: gray;">[, delay=0]</strong>)
+    </a></td>
+	<td class="summary">呼出电话</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#hangUp">hangUp (num)</a></td>
-	<td class="summary">挂断所有通话</td>
+	<td class="name" nowrap><a href="#hangUp">
+    hangUp (num)
+    </a></td>
+	<td class="summary">挂断通话</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#accept">accept (num)</a></td>
+	<td class="name" nowrap><a href="#accept">
+    accept (num)
+    </a></td>
 	<td class="summary">接听电话</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#transvoice">transvoice (data, loop, loop2)</a></td>
+	<td class="name" nowrap><a href="#transVoice">
+    transVoice (data<strong  style="color: gray;">[, loop=nil]</strong><strong  style="color: gray;">[, downLinkPlay=nil]</strong>)
+    </a></td>
 	<td class="summary">通话中发送声音到对端,必须是12.2K AMR格式</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#dtmfDetect">dtmfDetect (enable, sens)</a></td>
+	<td class="name" nowrap><a href="#dtmfDetect">
+    dtmfDetect (<strong  style="color: gray;">[enable=nil]</strong><strong  style="color: gray;">[, sens=3]</strong>)
+    </a></td>
 	<td class="summary">设置dtmf检测是否使能以及灵敏度</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#sendDtmf">sendDtmf (str, playtime, intvl)</a></td>
+	<td class="name" nowrap><a href="#sendDtmf">
+    sendDtmf (str<strong  style="color: gray;">[, playtime=100]</strong><strong  style="color: gray;">[, intvl=100]</strong>)
+    </a></td>
 	<td class="summary">发送dtmf到对端</td>
+	</tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#CONNECTED">
+    CONNECTED
+    </a></td>
+	<td class="summary">通话中</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#HOLD">
+    HOLD
+    </a></td>
+	<td class="summary">通话保持中</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DIALING">
+    DIALING
+    </a></td>
+	<td class="summary">正在呼出</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#INCOMING">
+    INCOMING
+    </a></td>
+	<td class="summary">正在呼入</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DISCONNECTING">
+    DISCONNECTING
+    </a></td>
+	<td class="summary">正在挂断通话</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DISCONNECTED">
+    DISCONNECTED
+    </a></td>
+	<td class="summary">通话已挂断</td>
 	</tr>
 </table>
 
@@ -134,7 +192,9 @@
     <dl class="function">
     <dt>
     <a name = "anyCallExist"></a>
-    <strong  style="color: red;">anyCallExist ()</strong>
+    <strong  style="color: red;">
+    anyCallExist ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">是否存在通话</pre>
@@ -157,7 +217,9 @@
 </dd>
     <dt>
     <a name = "getState"></a>
-    <strong  style="color: red;">getState (num)</strong>
+    <strong  style="color: red;">
+    getState (num)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">查询某个号码的通话状态</pre>
@@ -166,6 +228,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">num</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
         <pre class="example"> 查询号码</pre>
         </li>
     </ul>
@@ -173,7 +236,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">state 通话状态，状态值参考本模块定义</pre></il>
+        <pre class="example">state 通话状态，状态值参考本模块Fields定义</pre></il>
     </ul>
 
 
@@ -186,19 +249,24 @@
 </dd>
     <dt>
     <a name = "dial"></a>
-    <strong  style="color: red;">dial (number, delay)</strong>
+    <strong  style="color: red;">
+    dial (num<strong  style="color: green;">[, delay=0]</strong>)
+    </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">拨号</pre>
+    <pre class="example"  style="color: red;">呼出电话</pre>
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">number</span>
-        <pre class="example"> 号码</pre>
+        <li><span class="parameter">num</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> 呼出号码</pre>
         </li>
         <li><span class="parameter">delay</span>
-        <pre class="example"> 延时delay毫秒后，才发送at命令呼叫，默认不延时</pre>
+            <span class="types"><span class="type">number</span></span>
+         [<em>此参数可选，默认值为：</em> 0]
+        <pre class="example"> 延时delay毫秒后，才发起呼叫</pre>
         </li>
     </ul>
 
@@ -218,15 +286,18 @@
 </dd>
     <dt>
     <a name = "hangUp"></a>
-    <strong  style="color: red;">hangUp (num)</strong>
+    <strong  style="color: red;">
+    hangUp (num)
+    </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">挂断所有通话</pre>
+    <pre class="example"  style="color: red;">挂断通话</pre>
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">num</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
         <pre class="example"> 号码，若指定号码通话状态不对 则直接退出 不会执行挂断，若挂断时会挂断所有电话</pre>
         </li>
     </ul>
@@ -234,7 +305,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example"></pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -247,7 +318,9 @@
 </dd>
     <dt>
     <a name = "accept"></a>
-    <strong  style="color: red;">accept (num)</strong>
+    <strong  style="color: red;">
+    accept (num)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">接听电话</pre>
@@ -256,6 +329,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">num</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
         <pre class="example"> 号码，若指定号码通话状态不对 则直接退出 不会接通</pre>
         </li>
     </ul>
@@ -263,7 +337,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example"></pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -275,8 +349,10 @@
 
 </dd>
     <dt>
-    <a name = "transvoice"></a>
-    <strong  style="color: red;">transvoice (data, loop, loop2)</strong>
+    <a name = "transVoice"></a>
+    <strong  style="color: red;">
+    transVoice (data<strong  style="color: green;">[, loop=nil]</strong><strong  style="color: green;">[, downLinkPlay=nil]</strong>)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">通话中发送声音到对端,必须是12.2K AMR格式</pre>
@@ -285,13 +361,18 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">data</span>
-        <pre class="example"></pre>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> 12.2K AMR格式的数据</pre>
         </li>
         <li><span class="parameter">loop</span>
-        <pre class="example"></pre>
+            <span class="types"><span class="type">bool</span></span>
+         [<em>此参数可选，默认值为：</em> nil]
+        <pre class="example"> 是否循环发送，true为循环，其余为不循环</pre>
         </li>
-        <li><span class="parameter">loop2</span>
-        <pre class="example"></pre>
+        <li><span class="parameter">downLinkPlay</span>
+            <span class="types"><span class="type">bool</span></span>
+         [<em>此参数可选，默认值为：</em> nil]
+        <pre class="example"> 声音是否在本端播放，true为播放，其余为不播放</pre>
         </li>
     </ul>
 
@@ -305,13 +386,17 @@
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example"></pre></il>
+        <li><pre class="example">cc.transVoice(<span class="string">"#!AMR\010\060*********"</span>)
+cc.transVoice(<span class="string">"#!AMR\010\060*********"</span>,<span class="keyword">true</span>)
+cc.transVoice(<span class="string">"#!AMR\010\060*********"</span>,<span class="keyword">true</span>,<span class="keyword">true</span>)</pre></il>
     </ul>
 
 </dd>
     <dt>
     <a name = "dtmfDetect"></a>
-    <strong  style="color: red;">dtmfDetect (enable, sens)</strong>
+    <strong  style="color: red;">
+    dtmfDetect (<strong  style="color: green;">[enable=nil]</strong><strong  style="color: green;">[, sens=3]</strong>)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">设置dtmf检测是否使能以及灵敏度</pre>
@@ -320,17 +405,21 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">enable</span>
+            <span class="types"><span class="type">bool</span></span>
+         [<em>此参数可选，默认值为：</em> nil]
         <pre class="example"> true使能，false或者nil为不使能</pre>
         </li>
         <li><span class="parameter">sens</span>
-        <pre class="example"> 灵敏度，默认3，最灵敏为1</pre>
+            <span class="types"><span class="type">number</span></span>
+         [<em>此参数可选，默认值为：</em> 3]
+        <pre class="example"> 灵敏度，最灵敏为1</pre>
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example"></pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -343,7 +432,9 @@
 </dd>
     <dt>
     <a name = "sendDtmf"></a>
-    <strong  style="color: red;">sendDtmf (str, playtime, intvl)</strong>
+    <strong  style="color: red;">
+    sendDtmf (str<strong  style="color: green;">[, playtime=100]</strong><strong  style="color: green;">[, intvl=100]</strong>)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">发送dtmf到对端</pre>
@@ -352,20 +443,25 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">str</span>
-        <pre class="example"> dtmf字符串</pre>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> dtmf字符串，仅支持数字、ABCD*#</pre>
         </li>
         <li><span class="parameter">playtime</span>
-        <pre class="example"> 每个dtmf播放时间，单位毫秒，默认100</pre>
+            <span class="types"><span class="type">number</span></span>
+         [<em>此参数可选，默认值为：</em> 100]
+        <pre class="example"> 每个dtmf播放时间，单位毫秒</pre>
         </li>
         <li><span class="parameter">intvl</span>
-        <pre class="example"> 两个dtmf间隔，单位毫秒，默认100</pre>
+            <span class="types"><span class="type">number</span></span>
+         [<em>此参数可选，默认值为：</em> 100]
+        <pre class="example"> 两个dtmf间隔，单位毫秒</pre>
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -377,13 +473,113 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "CONNECTED"></a>
+    <strong  style="color: red;">
+    CONNECTED
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">通话中</pre>
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "HOLD"></a>
+    <strong  style="color: red;">
+    HOLD
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">通话保持中</pre>
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "DIALING"></a>
+    <strong  style="color: red;">
+    DIALING
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">正在呼出</pre>
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "INCOMING"></a>
+    <strong  style="color: red;">
+    INCOMING
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">正在呼入</pre>
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "DISCONNECTING"></a>
+    <strong  style="color: red;">
+    DISCONNECTING
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">正在挂断通话</pre>
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "DISCONNECTED"></a>
+    <strong  style="color: red;">
+    DISCONNECTED
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">通话已挂断</pre>
+
+
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+<i style="float:right;">Last updated 2018-04-17 13:24:42 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

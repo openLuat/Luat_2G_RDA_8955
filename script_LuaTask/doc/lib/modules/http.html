@@ -38,6 +38,8 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
+  <li><a href="../modules/aLiYun.html">aLiYun</a></li>
+  <li><a href="../modules/aLiYunOta.html">aLiYunOta</a></li>
   <li><a href="../modules/agps.html">agps</a></li>
   <li><a href="../modules/audio.html">audio</a></li>
   <li><a href="../modules/cc.html">cc</a></li>
@@ -92,7 +94,9 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#request">request (method, url, cert, head, body, timeout, cbFnc, rcvFileName)</a></td>
+	<td class="name" nowrap><a href="#request">
+    request (method, url, cert, head, body, timeout, cbFnc, rcvFileName)
+    </a></td>
 	<td class="summary">发送HTTP请求</td>
 	</tr>
 </table>
@@ -106,7 +110,9 @@
     <dl class="function">
     <dt>
     <a name = "request"></a>
-    <strong  style="color: red;">request (method, url, cert, head, body, timeout, cbFnc, rcvFileName)</strong>
+    <strong  style="color: red;">
+    request (method, url, cert, head, body, timeout, cbFnc, rcvFileName)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">发送HTTP请求</pre>
@@ -125,12 +131,11 @@
  url格式(除hostname外，其余字段可选；目前的实现不支持hash)
  |------------------------------------------------------------------------------|
  | protocol |||   auth    |      host       |           path            | hash  |
- |          |||           |-----------------|---------------------------|       |
+ |----------|||-----------|-----------------|---------------------------|-------|
  |          |||           | hostname | port | pathname |     search     |       |
- |          |||           |          |      |          |----------------|       |
- |          |||           |          |      |          | |    query     |       |
- " http[s]  :// user:pass @ host.com : 8080   /p/a/t/h  ?  query=string   #hash "
- |          |||           |          |      |          | |              |       |
+ |          |||           |----------|------|----------|----------------|       |
+ " http[s]  :// user:pass @ host.com : 8080   /p/a/t/h ?  query=string  # hash  "
+ |          |||           |          |      |          |                |       |
  |------------------------------------------------------------------------------|</pre>
         </li>
         <li><span class="parameter">cert</span>
@@ -143,7 +148,7 @@
  }</pre>
         </li>
         <li><span class="parameter">head</span>
-            <span class="types"><span class="type">tab</span></span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
         <pre class="example">nil或者table类型，自定义请求头
 <p>              http.lua会自动添加Host: XXX、Connection: short、Content-Length: XXX三个请求头
 <p>              如果这三个请求头满足不了需求，head参数传入自定义请求头，如果自定义请求头中存在Host、Connection、Content-Length三个请求头，将覆盖http.lua中自动添加的同名请求头
@@ -166,7 +171,7 @@
         <pre class="example">请求发送成功后，接收服务器返回应答数据的超时时间，单位毫秒，默认为30秒</pre>
         </li>
         <li><span class="parameter">cbFnc</span>
-            <span class="types"><span class="type">func</span></span>
+            <span class="types"><span class="type">function</span></span>
         <pre class="example">执行HTTP请求的回调函数(请求发送结果以及应答数据接收结果都通过此函数通知用户)，回调函数的调用形式为：
 <p>              cbFnc(result,prompt,head,body)
 <p>              result：true或者false，true表示成功收到了服务器的应答，false表示请求发送失败或者接收服务器应答失败
@@ -190,15 +195,17 @@
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example">http.request(<span class="string">"GET"</span>,<span class="string">"www.lua.org"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc)</pre></il>
-        <li><pre class="example">http.request(<span class="string">"GET"</span>,<span class="string">"http://www.lua.org"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc)</pre></il>
-        <li><pre class="example">http.request(<span class="string">"GET"</span>,<span class="string">"http://www.lua.org:80"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc,<span class="string">"download.bin"</span>)</pre></il>
-        <li><pre class="example">http.request(<span class="string">"GET"</span>,<span class="string">"www.lua.org/about.html"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc)</pre></il>
-        <li><pre class="example">http.request(<span class="string">"GET"</span>,<span class="string">"www.lua.org:80/about.html"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc)</pre></il>
-        <li><pre class="example">http.request(<span class="string">"GET"</span>,<span class="string">"http://wiki.openluat.com/search.html?q=123"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc)</pre></il>
-        <li><pre class="example">http.request(<span class="string">"POST"</span>,<span class="string">"www.test.com/report.html"</span>,<span class="keyword">nil</span>,{Head1=<span class="string">"ValueData1"</span>},<span class="string">"BodyData"</span>,<span class="number">30000</span>,cbFnc)</pre></il>
-        <li><pre class="example">http.request(<span class="string">"POST"</span>,<span class="string">"www.test.com/report.html"</span>,<span class="keyword">nil</span>,{Head1=<span class="string">"ValueData1"</span>,Head2=<span class="string">"ValueData2"</span>},{[<span class="number">1</span>]=<span class="string">"string1"</span>,[<span class="number">2</span>] ={file=<span class="string">"/ldata/test.jpg"</span>},[<span class="number">3</span>]=<span class="string">"string2"</span>},<span class="number">30000</span>,cbFnc)</pre></il>
-        <li><pre class="example">http.request(<span class="string">"GET"</span>,<span class="string">"https://www.baidu.com"</span>,{caCert=<span class="string">"ca.crt"</span>})</pre></il>
+        <li><pre class="example">http.request(<span class="string">"GET"</span>,<span class="string">"www.lua.org"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc)
+http.request(<span class="string">"GET"</span>,<span class="string">"http://www.lua.org"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc)
+http.request(<span class="string">"GET"</span>,<span class="string">"http://www.lua.org:80"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc,<span class="string">"download.bin"</span>)
+http.request(<span class="string">"GET"</span>,<span class="string">"www.lua.org/about.html"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc)
+http.request(<span class="string">"GET"</span>,<span class="string">"www.lua.org:80/about.html"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc)
+http.request(<span class="string">"GET"</span>,<span class="string">"http://wiki.openluat.com/search.html?q=123"</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="keyword">nil</span>,<span class="number">30000</span>,cbFnc)
+http.request(<span class="string">"POST"</span>,<span class="string">"www.test.com/report.html"</span>,<span class="keyword">nil</span>,{Head1=<span class="string">"ValueData1"</span>},<span class="string">"BodyData"</span>,<span class="number">30000</span>,cbFnc)
+http.request(<span class="string">"POST"</span>,<span class="string">"www.test.com/report.html"</span>,<span class="keyword">nil</span>,{Head1=<span class="string">"ValueData1"</span>,Head2=<span class="string">"ValueData2"</span>},{[<span class="number">1</span>]=<span class="string">"string1"</span>,[<span class="number">2</span>] ={file=<span class="string">"/ldata/test.jpg"</span>},[<span class="number">3</span>]=<span class="string">"string2"</span>},<span class="number">30000</span>,cbFnc)
+http.request(<span class="string">"GET"</span>,<span class="string">"https://www.baidu.com"</span>,{caCert=<span class="string">"ca.crt"</span>})
+http.request(<span class="string">"GET"</span>,<span class="string">"https://www.baidu.com"</span>,{caCert=<span class="string">"ca.crt"</span>,clientCert = <span class="string">"client.crt"</span>,clientKey = <span class="string">"client.key"</span>})
+http.request(<span class="string">"GET"</span>,<span class="string">"https://www.baidu.com"</span>,{caCert=<span class="string">"ca.crt"</span>,clientCert = <span class="string">"client.crt"</span>,clientKey = <span class="string">"client.key"</span>,clientPassword = <span class="string">"123456"</span>})</pre></il>
     </ul>
 
 </dd>
@@ -209,7 +216,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+<i style="float:right;">Last updated 2018-04-17 13:24:42 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

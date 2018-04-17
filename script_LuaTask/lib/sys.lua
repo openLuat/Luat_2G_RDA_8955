@@ -4,15 +4,15 @@
 -- @license MIT
 -- @copyright openLuat
 -- @release 2017.9.13
-require "patch"
 require "errDump"
+require "patch"
 require "log"
 module(..., package.seeall)
 
 -- lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "2.0.0"
+SCRIPT_LIB_VER = "2.0.1"
 -- 脚本发布时的最新core软件版本号
-CORE_MIN_VER = "Luat_V0010_8955"
+CORE_MIN_VER = "Luat_V0020_8955"
 
 -- TaskID最大值
 local TASK_TIMER_ID_MAX = 0x1FFFFFFF
@@ -142,13 +142,7 @@ function init(mode, lprfnc)
             rtos.poweron(0)
         end
     end
-    -- 如果存在脚本运行错误文件，打开文件，打印错误信息
-    local f = io.open("/luaerrinfo.txt", "r")
-    if f then
-        log.error(f:read("*a") or "")
-        f:close()
-    end
-    -- 打印LIB_ERR_FILE文件中的错误信息
+    -- 打印错误日志
     errDump.initErr()
     checkCoreVer()
 end

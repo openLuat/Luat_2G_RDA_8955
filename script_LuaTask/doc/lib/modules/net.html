@@ -38,6 +38,8 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
+  <li><a href="../modules/aLiYun.html">aLiYun</a></li>
+  <li><a href="../modules/aLiYunOta.html">aLiYunOta</a></li>
   <li><a href="../modules/agps.html">agps</a></li>
   <li><a href="../modules/audio.html">audio</a></li>
   <li><a href="../modules/cc.html">cc</a></li>
@@ -92,71 +94,105 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#crsmResponse">crsmResponse (cmd, success, response, intermediate)</a></td>
+	<td class="name" nowrap><a href="#crsmResponse">
+    crsmResponse (cmd, success, response, intermediate)
+    </a></td>
 	<td class="summary">更新FPLMN的应答处理</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#switchFly">switchFly (mode)</a></td>
+	<td class="name" nowrap><a href="#switchFly">
+    switchFly (mode)
+    </a></td>
 	<td class="summary">飞行模式开关</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getState">getState ()</a></td>
+	<td class="name" nowrap><a href="#getState">
+    getState ()
+    </a></td>
 	<td class="summary">获取GSM网络注册状态</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getMcc">getMcc ()</a></td>
+	<td class="name" nowrap><a href="#getMcc">
+    getMcc ()
+    </a></td>
 	<td class="summary">获取当前小区的mcc</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getMnc">getMnc ()</a></td>
+	<td class="name" nowrap><a href="#getMnc">
+    getMnc ()
+    </a></td>
 	<td class="summary">获取当前小区的mnc</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getLac">getLac ()</a></td>
+	<td class="name" nowrap><a href="#getLac">
+    getLac ()
+    </a></td>
 	<td class="summary">获取当前位置区ID</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getCi">getCi ()</a></td>
+	<td class="name" nowrap><a href="#getCi">
+    getCi ()
+    </a></td>
 	<td class="summary">获取当前小区ID</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getRssi">getRssi ()</a></td>
+	<td class="name" nowrap><a href="#getRssi">
+    getRssi ()
+    </a></td>
 	<td class="summary">获取信号强度</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getCell">getCell ()</a></td>
+	<td class="name" nowrap><a href="#getCell">
+    getCell ()
+    </a></td>
 	<td class="summary">获取当前和临近小区以及信号强度的拼接字符串</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getCellInfo">getCellInfo ()</a></td>
+	<td class="name" nowrap><a href="#getCellInfo">
+    getCellInfo ()
+    </a></td>
 	<td class="summary">获取当前和临近位置区、小区以及信号强度的拼接字符串</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getCellInfoExt">getCellInfoExt ()</a></td>
+	<td class="name" nowrap><a href="#getCellInfoExt">
+    getCellInfoExt ()
+    </a></td>
 	<td class="summary">获取当前和临近位置区、小区、mcc、mnc、以及信号强度的拼接字符串</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getTa">getTa ()</a></td>
+	<td class="name" nowrap><a href="#getTa">
+    getTa ()
+    </a></td>
 	<td class="summary">获取TA值</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getMultiCell">getMultiCell (cb)</a></td>
+	<td class="name" nowrap><a href="#getMultiCell">
+    getMultiCell (cb)
+    </a></td>
 	<td class="summary">读取“当前和临近小区信息”</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#cengQueryPoll">cengQueryPoll (period)</a></td>
+	<td class="name" nowrap><a href="#cengQueryPoll">
+    cengQueryPoll (period)
+    </a></td>
 	<td class="summary">查询基站信息(当前和临近小区信息)</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#csqQueryPoll">csqQueryPoll (period)</a></td>
+	<td class="name" nowrap><a href="#csqQueryPoll">
+    csqQueryPoll (period)
+    </a></td>
 	<td class="summary">查询信号强度</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#startQueryAll">startQueryAll (...)</a></td>
+	<td class="name" nowrap><a href="#startQueryAll">
+    startQueryAll (...)
+    </a></td>
 	<td class="summary">查询信号强度和基站信息(飞行模式，简单模式会返回查询失败)</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#stopQueryAll">stopQueryAll ()</a></td>
+	<td class="name" nowrap><a href="#stopQueryAll">
+    stopQueryAll ()
+    </a></td>
 	<td class="summary">停止查询信号强度和基站信息</td>
 	</tr>
 </table>
@@ -170,7 +206,9 @@
     <dl class="function">
     <dt>
     <a name = "crsmResponse"></a>
-    <strong  style="color: red;">crsmResponse (cmd, success, response, intermediate)</strong>
+    <strong  style="color: red;">
+    crsmResponse (cmd, success, response, intermediate)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">更新FPLMN的应答处理</pre>
@@ -208,7 +246,9 @@
 </dd>
     <dt>
     <a name = "switchFly"></a>
-    <strong  style="color: red;">switchFly (mode)</strong>
+    <strong  style="color: red;">
+    switchFly (mode)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">飞行模式开关</pre>
@@ -238,7 +278,9 @@
 </dd>
     <dt>
     <a name = "getState"></a>
-    <strong  style="color: red;">getState ()</strong>
+    <strong  style="color: red;">
+    getState ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取GSM网络注册状态</pre>
@@ -261,7 +303,9 @@
 </dd>
     <dt>
     <a name = "getMcc"></a>
-    <strong  style="color: red;">getMcc ()</strong>
+    <strong  style="color: red;">
+    getMcc ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取当前小区的mcc</pre>
@@ -284,7 +328,9 @@
 </dd>
     <dt>
     <a name = "getMnc"></a>
-    <strong  style="color: red;">getMnc ()</strong>
+    <strong  style="color: red;">
+    getMnc ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取当前小区的mnc</pre>
@@ -307,7 +353,9 @@
 </dd>
     <dt>
     <a name = "getLac"></a>
-    <strong  style="color: red;">getLac ()</strong>
+    <strong  style="color: red;">
+    getLac ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取当前位置区ID</pre>
@@ -330,7 +378,9 @@
 </dd>
     <dt>
     <a name = "getCi"></a>
-    <strong  style="color: red;">getCi ()</strong>
+    <strong  style="color: red;">
+    getCi ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取当前小区ID</pre>
@@ -353,7 +403,9 @@
 </dd>
     <dt>
     <a name = "getRssi"></a>
-    <strong  style="color: red;">getRssi ()</strong>
+    <strong  style="color: red;">
+    getRssi ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取信号强度</pre>
@@ -376,7 +428,9 @@
 </dd>
     <dt>
     <a name = "getCell"></a>
-    <strong  style="color: red;">getCell ()</strong>
+    <strong  style="color: red;">
+    getCell ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取当前和临近小区以及信号强度的拼接字符串</pre>
@@ -399,7 +453,9 @@
 </dd>
     <dt>
     <a name = "getCellInfo"></a>
-    <strong  style="color: red;">getCellInfo ()</strong>
+    <strong  style="color: red;">
+    getCellInfo ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取当前和临近位置区、小区以及信号强度的拼接字符串</pre>
@@ -422,7 +478,9 @@
 </dd>
     <dt>
     <a name = "getCellInfoExt"></a>
-    <strong  style="color: red;">getCellInfoExt ()</strong>
+    <strong  style="color: red;">
+    getCellInfoExt ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取当前和临近位置区、小区、mcc、mnc、以及信号强度的拼接字符串</pre>
@@ -445,7 +503,9 @@
 </dd>
     <dt>
     <a name = "getTa"></a>
-    <strong  style="color: red;">getTa ()</strong>
+    <strong  style="color: red;">
+    getTa ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取TA值</pre>
@@ -468,7 +528,9 @@
 </dd>
     <dt>
     <a name = "getMultiCell"></a>
-    <strong  style="color: red;">getMultiCell (cb)</strong>
+    <strong  style="color: red;">
+    getMultiCell (cb)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">读取“当前和临近小区信息”</pre>
@@ -493,7 +555,9 @@
 </dd>
     <dt>
     <a name = "cengQueryPoll"></a>
-    <strong  style="color: red;">cengQueryPoll (period)</strong>
+    <strong  style="color: red;">
+    cengQueryPoll (period)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">查询基站信息(当前和临近小区信息)</pre>
@@ -524,7 +588,9 @@
 </dd>
     <dt>
     <a name = "csqQueryPoll"></a>
-    <strong  style="color: red;">csqQueryPoll (period)</strong>
+    <strong  style="color: red;">
+    csqQueryPoll (period)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">查询信号强度</pre>
@@ -555,7 +621,9 @@
 </dd>
     <dt>
     <a name = "startQueryAll"></a>
-    <strong  style="color: red;">startQueryAll (...)</strong>
+    <strong  style="color: red;">
+    startQueryAll (...)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">查询信号强度和基站信息(飞行模式，简单模式会返回查询失败)</pre>
@@ -587,7 +655,9 @@
 </dd>
     <dt>
     <a name = "stopQueryAll"></a>
-    <strong  style="color: red;">stopQueryAll ()</strong>
+    <strong  style="color: red;">
+    stopQueryAll ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">停止查询信号强度和基站信息</pre>
@@ -615,7 +685,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+<i style="float:right;">Last updated 2018-04-17 13:24:42 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
