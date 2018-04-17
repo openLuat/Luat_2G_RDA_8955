@@ -274,8 +274,8 @@ end
 --- 连接mqtt服务器
 -- @string host 地址
 -- @string port 端口
--- @string transport "tcp"
--- @param cert，table或者nil类型，此参数为为nil时，表示不使用ssl连接；为table类型时，表示要使用ssl连接，此时传入证书文件配置，格式如下：
+-- @string[opt="tcp"] transport "tcp"或者"tcp_ssl"
+-- @table[opt=nil] cert，table或者nil类型，ssl证书，当transport为"tcp_ssl"时，此参数才有意义。cert格式如下：
 -- {
 --     caCert = "ca.crt", --CA证书文件(Base64编码 X.509格式)，如果存在此参数，则表示客户端会对服务器的证书进行校验；不存在则不校验
 --     clientCert = "client.crt", --客户端证书文件(Base64编码 X.509格式)，服务器对客户端的证书进行校验时会用到此参数
@@ -295,12 +295,12 @@ function mqttc:connect(host, port, transport, cert)
         self.io = nil
     end
 
-    if transport and transport ~= "tcp" then
+    if transport and transport ~= "tcp" and transport ~= "tcp_ssl" then
         log.info("mqtt.client:connect", "invalid transport", transport)
         return false
     end
 
-    self.io = socket.tcp(type(cert)=="table",cert)
+    self.io = socket.tcp(transport=="tcp_ssl" or type(cert)=="table",cert)
 
     if not self.io:connect(host, port) then
         log.info("mqtt.client:connect", "connect host fail")
@@ -325,7 +325,7 @@ end
 
 --- mqtt.client:subscribe(topic, qos)
 -- @param topic，string或者table类型，一个主题时为string类型，多个主题时为table类型，主题内容为UTF8编码
--- @param qos，number或者nil，topic为一个主题时，qos为number类型(0/1/2，默认0)；topic为一个主题时，qos为nil
+-- @param qos，number或者nil，topic为一个主题时，qos为number类型(0/1/2，默认0)；topic为多个主题时，qos为nil
 -- @return bool true - 成功，false - 失败
 -- @usage
 -- mqttc:subscribe("/abc", 0) -- subscribe topic "/abc" with qos = 0

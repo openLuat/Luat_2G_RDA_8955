@@ -38,6 +38,8 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
+  <li><a href="../modules/aLiYun.html">aLiYun</a></li>
+  <li><a href="../modules/aLiYunOta.html">aLiYunOta</a></li>
   <li><a href="../modules/agps.html">agps</a></li>
   <li><a href="../modules/audio.html">audio</a></li>
   <li><a href="../modules/cc.html">cc</a></li>
@@ -92,27 +94,39 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#client">client (clientId, keepAlive, username, password, cleanSession, will)</a></td>
+	<td class="name" nowrap><a href="#client">
+    client (clientId, keepAlive, username, password, cleanSession, will)
+    </a></td>
 	<td class="summary">mqtt.client() 创建mqtt client实例</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#mqttc:connect">mqttc:connect (host, port, transport, cert)</a></td>
+	<td class="name" nowrap><a href="#mqttc:connect">
+    mqttc:connect (host, port<strong  style="color: gray;">[, transport="tcp"]</strong><strong  style="color: gray;">[, cert=nil]</strong>)
+    </a></td>
 	<td class="summary">连接mqtt服务器</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#mqttc:subscribe">mqttc:subscribe (topic, qos)</a></td>
+	<td class="name" nowrap><a href="#mqttc:subscribe">
+    mqttc:subscribe (topic, qos)
+    </a></td>
 	<td class="summary">mqtt.client:subscribe(topic, qos)</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#mqttc:publish">mqttc:publish (topic, payload, qos, retain)</a></td>
+	<td class="name" nowrap><a href="#mqttc:publish">
+    mqttc:publish (topic, payload, qos, retain)
+    </a></td>
 	<td class="summary">mqtt.client:publish(topic, payload, qos, retain)</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#mqttc:receive">mqttc:receive (timeout)</a></td>
+	<td class="name" nowrap><a href="#mqttc:receive">
+    mqttc:receive (timeout)
+    </a></td>
 	<td class="summary">mqtt.client:receive([timeout])</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#mqttc:disconnect">mqttc:disconnect ()</a></td>
+	<td class="name" nowrap><a href="#mqttc:disconnect">
+    mqttc:disconnect ()
+    </a></td>
 	<td class="summary">mqtt disconnect</td>
 	</tr>
 </table>
@@ -126,7 +140,9 @@
     <dl class="function">
     <dt>
     <a name = "client"></a>
-    <strong  style="color: red;">client (clientId, keepAlive, username, password, cleanSession, will)</strong>
+    <strong  style="color: red;">
+    client (clientId, keepAlive, username, password, cleanSession, will)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">mqtt.client() 创建mqtt client实例</pre>
@@ -170,7 +186,9 @@
 </dd>
     <dt>
     <a name = "mqttc:connect"></a>
-    <strong  style="color: red;">mqttc:connect (host, port, transport, cert)</strong>
+    <strong  style="color: red;">
+    mqttc:connect (host, port<strong  style="color: green;">[, transport="tcp"]</strong><strong  style="color: green;">[, cert=nil]</strong>)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">连接mqtt服务器</pre>
@@ -188,10 +206,13 @@
         </li>
         <li><span class="parameter">transport</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        <pre class="example"> "tcp"</pre>
+         [<em>此参数可选，默认值为：</em> "tcp"]
+        <pre class="example"> "tcp"或者"tcp_ssl"</pre>
         </li>
         <li><span class="parameter">cert</span>
-        <pre class="example">table或者nil类型，此参数为为nil时，表示不使用ssl连接；为table类型时，表示要使用ssl连接，此时传入证书文件配置，格式如下：
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         [<em>此参数可选，默认值为：</em> nil]
+        <pre class="example">table或者nil类型，ssl证书，当transport为"tcp_ssl"时，此参数才有意义。cert格式如下：
  {
      caCert = "ca.crt", --CA证书文件(Base64编码 X.509格式)，如果存在此参数，则表示客户端会对服务器的证书进行校验；不存在则不校验
      clientCert = "client.crt", --客户端证书文件(Base64编码 X.509格式)，服务器对客户端的证书进行校验时会用到此参数
@@ -217,7 +238,9 @@
 </dd>
     <dt>
     <a name = "mqttc:subscribe"></a>
-    <strong  style="color: red;">mqttc:subscribe (topic, qos)</strong>
+    <strong  style="color: red;">
+    mqttc:subscribe (topic, qos)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">mqtt.client:subscribe(topic, qos)</pre>
@@ -229,7 +252,7 @@
         <pre class="example">string或者table类型，一个主题时为string类型，多个主题时为table类型，主题内容为UTF8编码</pre>
         </li>
         <li><span class="parameter">qos</span>
-        <pre class="example">number或者nil，topic为一个主题时，qos为number类型(0/1/2，默认0)；topic为一个主题时，qos为nil</pre>
+        <pre class="example">number或者nil，topic为一个主题时，qos为number类型(0/1/2，默认0)；topic为多个主题时，qos为nil</pre>
         </li>
     </ul>
 
@@ -250,7 +273,9 @@
 </dd>
     <dt>
     <a name = "mqttc:publish"></a>
-    <strong  style="color: red;">mqttc:publish (topic, payload, qos, retain)</strong>
+    <strong  style="color: red;">
+    mqttc:publish (topic, payload, qos, retain)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">mqtt.client:publish(topic, payload, qos, retain)</pre>
@@ -294,7 +319,9 @@ mqttc:publish(<span class="string">"/topic"</span>, <span class="string">"publis
 </dd>
     <dt>
     <a name = "mqttc:receive"></a>
-    <strong  style="color: red;">mqttc:receive (timeout)</strong>
+    <strong  style="color: red;">
+    mqttc:receive (timeout)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">mqtt.client:receive([timeout])</pre>
@@ -326,7 +353,9 @@ mqttc:publish(<span class="string">"/topic"</span>, <span class="string">"publis
 </dd>
     <dt>
     <a name = "mqttc:disconnect"></a>
-    <strong  style="color: red;">mqttc:disconnect ()</strong>
+    <strong  style="color: red;">
+    mqttc:disconnect ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">mqtt disconnect</pre>
@@ -357,7 +386,7 @@ mqttc:disconnect()</pre></il>
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+<i style="float:right;">Last updated 2018-04-17 13:24:42 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

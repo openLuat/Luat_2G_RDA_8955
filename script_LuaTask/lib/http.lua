@@ -196,12 +196,11 @@ end
 -- url格式(除hostname外，其余字段可选；目前的实现不支持hash)
 -- |------------------------------------------------------------------------------|
 -- | protocol |||   auth    |      host       |           path            | hash  |
--- |          |||           |-----------------|---------------------------|       |
+-- |----------|||-----------|-----------------|---------------------------|-------|
 -- |          |||           | hostname | port | pathname |     search     |       |
--- |          |||           |          |      |          |----------------|       |
--- |          |||           |          |      |          | |    query     |       |
--- " http[s]  :// user:pass @ host.com : 8080   /p/a/t/h  ?  query=string   #hash " 
--- |          |||           |          |      |          | |              |       |
+-- |          |||           |----------|------|----------|----------------|       |
+-- " http[s]  :// user:pass @ host.com : 8080   /p/a/t/h ?  query=string  # hash  " 
+-- |          |||           |          |      |          |                |       |
 -- |------------------------------------------------------------------------------|
 -- @param cert，table或者nil类型，ssl证书，当url为https类型时，此参数才有意义。cert格式如下：
 -- {
@@ -210,7 +209,7 @@ end
 --     clientKey = "client.key", --客户端私钥文件(Base64编码 X.509格式)
 --     clientPassword = "123456", --客户端证书文件密码[可选]
 -- }
--- @tab head，nil或者table类型，自定义请求头
+-- @table head，nil或者table类型，自定义请求头
 --
 --              http.lua会自动添加Host: XXX、Connection: short、Content-Length: XXX三个请求头
 --
@@ -237,7 +236,7 @@ end
 --
 --              例如上面的这个body，索引必须为连续的数字(从1开始)，实际传输时，先发送字符串"string1"，再发送文件/ldata/test.jpg的内容，最后发送字符串"string2"
 -- @number timeout，请求发送成功后，接收服务器返回应答数据的超时时间，单位毫秒，默认为30秒
--- @func cbFnc，执行HTTP请求的回调函数(请求发送结果以及应答数据接收结果都通过此函数通知用户)，回调函数的调用形式为：
+-- @function cbFnc，执行HTTP请求的回调函数(请求发送结果以及应答数据接收结果都通过此函数通知用户)，回调函数的调用形式为：
 --
 --              cbFnc(result,prompt,head,body)
 --
@@ -250,15 +249,18 @@ end
 --              body：string类型，如果调用request接口时传入了rcvFileName，此参数表示下载文件的完整路径；否则表示接收到的应答实体数据
 -- @string rcvFileName，保存“服务器应答实体数据”的文件名，可以传入完整的文件路径，也可以传入单独的文件名，如果是文件名，http.lua会自动生成一个完整路径，通过cbFnc的参数body传出
 -- @return 如果传入了rcvFileName，则返回对应的完整路径；其余情况都返回nil
--- @usage http.request("GET","www.lua.org",nil,nil,nil,30000,cbFnc)
--- @usage http.request("GET","http://www.lua.org",nil,nil,nil,30000,cbFnc)
--- @usage http.request("GET","http://www.lua.org:80",nil,nil,nil,30000,cbFnc,"download.bin")
--- @usage http.request("GET","www.lua.org/about.html",nil,nil,nil,30000,cbFnc)
--- @usage http.request("GET","www.lua.org:80/about.html",nil,nil,nil,30000,cbFnc)
--- @usage http.request("GET","http://wiki.openluat.com/search.html?q=123",nil,nil,nil,30000,cbFnc)
--- @usage http.request("POST","www.test.com/report.html",nil,{Head1="ValueData1"},"BodyData",30000,cbFnc)
--- @usage http.request("POST","www.test.com/report.html",nil,{Head1="ValueData1",Head2="ValueData2"},{[1]="string1",[2] ={file="/ldata/test.jpg"},[3]="string2"},30000,cbFnc)
--- @usage http.request("GET","https://www.baidu.com",{caCert="ca.crt"})
+-- @usage 
+-- http.request("GET","www.lua.org",nil,nil,nil,30000,cbFnc)
+-- http.request("GET","http://www.lua.org",nil,nil,nil,30000,cbFnc)
+-- http.request("GET","http://www.lua.org:80",nil,nil,nil,30000,cbFnc,"download.bin")
+-- http.request("GET","www.lua.org/about.html",nil,nil,nil,30000,cbFnc)
+-- http.request("GET","www.lua.org:80/about.html",nil,nil,nil,30000,cbFnc)
+-- http.request("GET","http://wiki.openluat.com/search.html?q=123",nil,nil,nil,30000,cbFnc)
+-- http.request("POST","www.test.com/report.html",nil,{Head1="ValueData1"},"BodyData",30000,cbFnc)
+-- http.request("POST","www.test.com/report.html",nil,{Head1="ValueData1",Head2="ValueData2"},{[1]="string1",[2] ={file="/ldata/test.jpg"},[3]="string2"},30000,cbFnc)
+-- http.request("GET","https://www.baidu.com",{caCert="ca.crt"})
+-- http.request("GET","https://www.baidu.com",{caCert="ca.crt",clientCert = "client.crt",clientKey = "client.key"})
+-- http.request("GET","https://www.baidu.com",{caCert="ca.crt",clientCert = "client.crt",clientKey = "client.key",clientPassword = "123456"})
 function request(method,url,cert,head,body,timeout,cbFnc,rcvFileName)
     local protocal,auth,hostName,port,path,d1,d2,offset,rcvFilePath
 

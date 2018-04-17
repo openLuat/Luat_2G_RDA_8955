@@ -38,6 +38,8 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
+  <li><a href="../modules/aLiYun.html">aLiYun</a></li>
+  <li><a href="../modules/aLiYunOta.html">aLiYunOta</a></li>
   <li><a href="../modules/agps.html">agps</a></li>
   <li><a href="../modules/audio.html">audio</a></li>
   <li><a href="../modules/cc.html">cc</a></li>
@@ -92,47 +94,69 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#setClock">setClock (t)</a></td>
+	<td class="name" nowrap><a href="#setClock">
+    setClock (t)
+    </a></td>
 	<td class="summary">设置系统时间</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getClock">getClock ()</a></td>
+	<td class="name" nowrap><a href="#getClock">
+    getClock ()
+    </a></td>
 	<td class="summary">获取系统时间</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getWeek">getWeek (1)</a></td>
+	<td class="name" nowrap><a href="#getWeek">
+    getWeek (1)
+    </a></td>
 	<td class="summary">获取星期</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getCalib">getCalib ()</a></td>
+	<td class="name" nowrap><a href="#getCalib">
+    getCalib ()
+    </a></td>
 	<td class="summary">获取校准标志</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#setSn">setSn (s, r)</a></td>
+	<td class="name" nowrap><a href="#setSn">
+    setSn (s<strong  style="color: gray;">[, cbFnc=nil]</strong>)
+    </a></td>
 	<td class="summary">设置SN</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getSn">getSn ()</a></td>
+	<td class="name" nowrap><a href="#getSn">
+    getSn ()
+    </a></td>
 	<td class="summary">获取模块序列号</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#setImei">setImei (s, r)</a></td>
+	<td class="name" nowrap><a href="#setImei">
+    setImei (s<strong  style="color: gray;">[, cbFnc=nil]</strong>)
+    </a></td>
 	<td class="summary">设置IMEI</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getImei">getImei ()</a></td>
+	<td class="name" nowrap><a href="#getImei">
+    getImei ()
+    </a></td>
 	<td class="summary">获取模块IMEI</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getVbatt">getVbatt ()</a></td>
+	<td class="name" nowrap><a href="#getVbatt">
+    getVbatt ()
+    </a></td>
 	<td class="summary">获取VBAT的电池电压</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#openPwm">openPwm (id, period, level)</a></td>
+	<td class="name" nowrap><a href="#openPwm">
+    openPwm (id, period, level)
+    </a></td>
 	<td class="summary">打开并且配置PWM(支持2路PWM，仅支持输出)说明：当id为0时：period 取值在 80-1625 Hz范围内时，level 占空比取值范围为：1-100；period 取值在 1626-65535 Hz范围时，设x=162500/period, y=x * level / 100, x 和 y越是接近正的整数，则输出波形越准确</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#closePwm">closePwm (id)</a></td>
+	<td class="name" nowrap><a href="#closePwm">
+    closePwm (id)
+    </a></td>
 	<td class="summary">关闭PWM</td>
 	</tr>
 </table>
@@ -146,7 +170,9 @@
     <dl class="function">
     <dt>
     <a name = "setClock"></a>
-    <strong  style="color: red;">setClock (t)</strong>
+    <strong  style="color: red;">
+    setClock (t)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">设置系统时间</pre>
@@ -175,7 +201,9 @@
 </dd>
     <dt>
     <a name = "getClock"></a>
-    <strong  style="color: red;">getClock ()</strong>
+    <strong  style="color: red;">
+    getClock ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取系统时间</pre>
@@ -198,7 +226,9 @@
 </dd>
     <dt>
     <a name = "getWeek"></a>
-    <strong  style="color: red;">getWeek (1)</strong>
+    <strong  style="color: red;">
+    getWeek (1)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取星期</pre>
@@ -223,7 +253,9 @@
 </dd>
     <dt>
     <a name = "getCalib"></a>
-    <strong  style="color: red;">getCalib ()</strong>
+    <strong  style="color: red;">
+    getCalib ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取校准标志</pre>
@@ -246,7 +278,9 @@
 </dd>
     <dt>
     <a name = "setSn"></a>
-    <strong  style="color: red;">setSn (s, r)</strong>
+    <strong  style="color: red;">
+    setSn (s<strong  style="color: green;">[, cbFnc=nil]</strong>)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">设置SN</pre>
@@ -258,9 +292,11 @@
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
         <pre class="example">新sn的字符串</pre>
         </li>
-        <li><span class="parameter">r</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        <pre class="example">设置后是否重启，参数为nil时，自动重启</pre>
+        <li><span class="parameter">cbFnc</span>
+            <span class="types"><span class="type">function</span></span>
+         [<em>此参数可选，默认值为：</em> nil]
+        <pre class="example">设置结果回调函数，回调函数的调用形式为：
+ cnFnc(result)，result为true表示成功，false或者nil为失败</pre>
         </li>
     </ul>
 
@@ -274,13 +310,16 @@
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example">misc.setSn(<span class="string">"1234567890"</span>)</pre></il>
+        <li><pre class="example">misc.setSn(<span class="string">"1234567890"</span>)
+misc.setSn(<span class="string">"1234567890"</span>,cbFnc)</pre></il>
     </ul>
 
 </dd>
     <dt>
     <a name = "getSn"></a>
-    <strong  style="color: red;">getSn ()</strong>
+    <strong  style="color: red;">
+    getSn ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取模块序列号</pre>
@@ -303,7 +342,9 @@
 </dd>
     <dt>
     <a name = "setImei"></a>
-    <strong  style="color: red;">setImei (s, r)</strong>
+    <strong  style="color: red;">
+    setImei (s<strong  style="color: green;">[, cbFnc=nil]</strong>)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">设置IMEI</pre>
@@ -315,9 +356,11 @@
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
         <pre class="example">新IMEI字符串</pre>
         </li>
-        <li><span class="parameter">r</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        <pre class="example">设置后是否重启，参数为nil时，自动重启</pre>
+        <li><span class="parameter">cbFnc</span>
+            <span class="types"><span class="type">function</span></span>
+         [<em>此参数可选，默认值为：</em> nil]
+        <pre class="example">设置结果回调函数，回调函数的调用形式为：
+ cnFnc(result)，result为true表示成功，false或者nil为失败</pre>
         </li>
     </ul>
 
@@ -337,7 +380,9 @@
 </dd>
     <dt>
     <a name = "getImei"></a>
-    <strong  style="color: red;">getImei ()</strong>
+    <strong  style="color: red;">
+    getImei ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取模块IMEI</pre>
@@ -360,7 +405,9 @@
 </dd>
     <dt>
     <a name = "getVbatt"></a>
-    <strong  style="color: red;">getVbatt ()</strong>
+    <strong  style="color: red;">
+    getVbatt ()
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取VBAT的电池电压</pre>
@@ -383,7 +430,9 @@
 </dd>
     <dt>
     <a name = "openPwm"></a>
-    <strong  style="color: red;">openPwm (id, period, level)</strong>
+    <strong  style="color: red;">
+    openPwm (id, period, level)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">打开并且配置PWM(支持2路PWM，仅支持输出)说明：当id为0时：period 取值在 80-1625 Hz范围内时，level 占空比取值范围为：1-100；period 取值在 1626-65535 Hz范围时，设x=162500/period, y=x * level / 100, x 和 y越是接近正的整数，则输出波形越准确</pre>
@@ -417,7 +466,9 @@
 </dd>
     <dt>
     <a name = "closePwm"></a>
-    <strong  style="color: red;">closePwm (id)</strong>
+    <strong  style="color: red;">
+    closePwm (id)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">关闭PWM</pre>
@@ -448,7 +499,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+<i style="float:right;">Last updated 2018-04-17 13:24:42 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

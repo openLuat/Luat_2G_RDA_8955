@@ -60,7 +60,7 @@ local function onSocketURC(data, prefix)
         return
     end
     
-    if result == "CONNECT OK" or result:match("CONNECT ERROR") then
+    if result == "CONNECT OK" or result:match("CONNECT ERROR") or result:match("CONNECT FAIL") then
         if tSocket[id].wait == "+CIPSTART" or tSocket[id].wait == "+SSLCONNECT" then
             coroutine.resume(tSocket[id].co, result == "CONNECT OK")
         else
@@ -110,7 +110,7 @@ local function socket(protocol, cert)
 end
 --- 创建基于TCP的socket对象
 -- @bool ssl，是否为ssl连接，true表示是，其余表示否
--- @tab cert，ssl连接需要的证书配置，只有ssl参数为true时，才参数才有意义，cert格式如下：
+-- @table cert，ssl连接需要的证书配置，只有ssl参数为true时，才参数才有意义，cert格式如下：
 -- {
 --     caCert = "ca.crt", --CA证书文件(Base64编码 X.509格式)，如果存在此参数，则表示客户端会对服务器的证书进行校验；不存在则不校验
 --     clientCert = "client.crt", --客户端证书文件(Base64编码 X.509格式)，服务器对客户端的证书进行校验时会用到此参数

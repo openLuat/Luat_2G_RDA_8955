@@ -38,6 +38,8 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
+  <li><a href="../modules/aLiYun.html">aLiYun</a></li>
+  <li><a href="../modules/aLiYunOta.html">aLiYunOta</a></li>
   <li><a href="../modules/agps.html">agps</a></li>
   <li><strong>audio</strong></li>
   <li><a href="../modules/cc.html">cc</a></li>
@@ -78,8 +80,12 @@
 <div id="content">
 
 <h1>Module <code>audio</code></h1>
-<p>模块功能：音频播放</p>
-<p></p>
+<p>模块功能：音频播放.</p>
+<pre>
+<p>
+ 支持MP3、amr文件播放；
+ 支持本地TTS播放、通话中TTS播放到对端（需要使用支持TTS功能的core软件）</p>
+</pre>
     <h3>Info:</h3>
     <ul>
         <li><strong>Copyright</strong>: openLuat</li>
@@ -92,19 +98,27 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#play">play (priority, type, path, vol, cb, dup, dupInterval)</a></td>
+	<td class="name" nowrap><a href="#play">
+    play (priority, type, path<strong  style="color: gray;">[, vol=4]</strong><strong  style="color: gray;">[, cbFnc=nil]</strong><strong  style="color: gray;">[, dup=nil]</strong><strong  style="color: gray;">[, dupInterval=0]</strong>)
+    </a></td>
 	<td class="summary">播放音频</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#setVolume">setVolume (vol)</a></td>
+	<td class="name" nowrap><a href="#setVolume">
+    setVolume (vol)
+    </a></td>
 	<td class="summary">设置喇叭音量等级</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#setMicVolume">setMicVolume (vol)</a></td>
+	<td class="name" nowrap><a href="#setMicVolume">
+    setMicVolume (vol)
+    </a></td>
 	<td class="summary">设置麦克音量等级</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#setStrategy">setStrategy (strategy)</a></td>
+	<td class="name" nowrap><a href="#setStrategy">
+    setStrategy (strategy)
+    </a></td>
 	<td class="summary">设置优先级相同时的播放策略</td>
 	</tr>
 </table>
@@ -118,7 +132,9 @@
     <dl class="function">
     <dt>
     <a name = "play"></a>
-    <strong  style="color: red;">play (priority, type, path, vol, cb, dup, dupInterval)</strong>
+    <strong  style="color: red;">
+    play (priority, type, path<strong  style="color: green;">[, vol=4]</strong><strong  style="color: green;">[, cbFnc=nil]</strong><strong  style="color: green;">[, dup=nil]</strong><strong  style="color: green;">[, dupInterval=0]</strong>)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">播放音频</pre>
@@ -136,32 +152,44 @@
         </li>
         <li><span class="parameter">path</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        <pre class="example">音频文件路径，跟typ有关.
-<p>               typ为"FILE"时：表示音频文件路径
-<p>               typ为"TTS"时：表示要播放的UTF8格式的数据
-<p>               typ为"TTSCC"时：表示要播放给通话对端数据的UCS2十六进制字符串</pre>
+        <pre class="example">音频文件路径，跟typ有关
+               typ为"FILE"时：表示音频文件路径
+               typ为"TTS"时：表示要播放的UTF8编码格式的数据
+               typ为"TTSCC"时：表示要播放给通话对端的UTF8编码格式的数据</pre>
         </li>
         <li><span class="parameter">vol</span>
             <span class="types"><span class="type">number</span></span>
-        <pre class="example">播放音量，取值范围0到7</pre>
+         [<em>此参数可选，默认值为：</em> 4]
+        <pre class="example">播放音量，取值范围0到7，0为静音</pre>
         </li>
-        <li><span class="parameter">cb</span>
-        <pre class="example">音频播放结束或者出错时的回调函数，回调时包含一个参数：0表示播放成功结束；1表示播放出错；2表示播放优先级不够，没有播放；3表示传入的参数出错；4表示被新的播放请求终止</pre>
+        <li><span class="parameter">cbFnc</span>
+            <span class="types"><span class="type">function</span></span>
+         [<em>此参数可选，默认值为：</em> nil]
+        <pre class="example">音频播放结束时的回调函数，回调函数的调用形式如下：
+ cbFnc(result)
+ result表示播放结果：
+                   0-播放成功结束；
+                   1-播放出错
+                   2-播放优先级不够，没有播放
+                   3-传入的参数出错，没有播放
+                   4-被新的播放请求中止</pre>
         </li>
         <li><span class="parameter">dup</span>
             <span class="types"><span class="type">bool</span></span>
+         [<em>此参数可选，默认值为：</em> nil]
         <pre class="example">是否循环播放，true循环，false或者nil不循环</pre>
         </li>
         <li><span class="parameter">dupInterval</span>
             <span class="types"><span class="type">number</span></span>
-        <pre class="example">播放间隔(单位毫秒)，dup为true时，此值才有意义</pre>
+         [<em>此参数可选，默认值为：</em> 0]
+        <pre class="example">循环播放间隔(单位毫秒)，dup为true时，此值才有意义</pre>
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">调用成功返回true，否则返回nil</pre></il>
+        <pre class="example">result，bool或者nil类型，同步调用成功返回true，否则返回nil</pre></il>
     </ul>
 
 
@@ -177,7 +205,9 @@
 </dd>
     <dt>
     <a name = "setVolume"></a>
-    <strong  style="color: red;">setVolume (vol)</strong>
+    <strong  style="color: red;">
+    setVolume (vol)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">设置喇叭音量等级</pre>
@@ -207,7 +237,9 @@
 </dd>
     <dt>
     <a name = "setMicVolume"></a>
-    <strong  style="color: red;">setMicVolume (vol)</strong>
+    <strong  style="color: red;">
+    setMicVolume (vol)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">设置麦克音量等级</pre>
@@ -237,7 +269,9 @@
 </dd>
     <dt>
     <a name = "setStrategy"></a>
-    <strong  style="color: red;">setStrategy (strategy)</strong>
+    <strong  style="color: red;">
+    setStrategy (strategy)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">设置优先级相同时的播放策略</pre>
@@ -273,7 +307,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+<i style="float:right;">Last updated 2018-04-17 13:24:42 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

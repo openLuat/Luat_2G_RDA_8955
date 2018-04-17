@@ -25,6 +25,12 @@ local altitude,speed,course = "0","0","0"
 local usedSateCnt,maxSignalStrength = "0","0"
 --可见卫星个数
 local viewedGpsSateCnt,viewedBdSateCnt = "0","0"
+--可用卫星号，UTC时间，信噪比
+local SateSn,UtcTime,Gsv
+--大地高，度分经度，度分纬度
+local Sep,Ggalng,Ggalat
+--是否需要解析项
+local psUtcTime,psGsv,psSn
 
 --GPS供电设置函数
 local powerCbFnc
@@ -52,6 +58,62 @@ local runMode = 0
 --runMode为1或者2时，GPS运行状态和休眠状态的时长
 local runTime,sleepTime
 
+--[[
+函数名：getstrength
+功能  ：解析GSV数据
+参数  ：
+		sg：NEMA中的一行GSV数据
+返回值：无
+]]
+local function getstrength(sg)
+    local d1,d2,curnum,lineno,total,sgv_str = sfind(sg,"GSV,(%d),(%d),(%d+),(.*)%*.*")
+
+    if not curnum or not lineno or not total or not sgv_str then
+		return
+	end
+
+	local tmpstr,i = sgv_str
+	for i=1,4 do
+		local d1,d2,id,elevation,azimuth,strength = sfind(tmpstr,"(%d+),(%d*),(%d*),(%d*)")
+		if id == nil then
+			return
+		end
+		if strength == "" or not strength then
+			strength = "00"
+		end
+		strength = tonumber(strength)
+		--[[if strength and strength < 60 then
+			gps.sates = gps.sates .. id .. string.format("%02d",strength) .. " "
+			if strength > gps.sn then
+				gps.sn = strength
+			end
+		end]]
+		local idx,cur,fnd,tmpid = 0,id..","..elevation..","..azimuth..","..strength..",",false
+		for tmpid in string.gmatch(Gsv,"(%d+),%d*,%d*,%d*,") do
+			idx = idx + 1
+			if tmpid == id then fnd = true break end
+		end
+		if fnd then
+			local pattern,i = ""
+			for i=1,idx do
+				pattern = pattern.."%d+,%d*,%d*,%d*,"
+			end
+			local m1,m2 = sfind(Gsv,"^"..pattern)
+			if m1 and m2 then
+				local front = ssub(Gsv,1,m2)
+				local n1,n2 = sfind(front,"%d+,%d*,%d*,%d*,$")
+				if n1 and n2 then
+					Gsv = ssub(Gsv,1,n1-1)..cur..ssub(Gsv,n2+1,-1)
+				end
+			end
+		else
+			Gsv = Gsv..cur
+		end
+		
+		tmpstr = ssub(tmpstr,d2+1,-1)
+	end
+end
+
 local function parseNmea(s)
     if not s or s=="" then return end
     local lat,lng,spd,cog,gpsFind,gpsTime,gpsDate,locSateCnt,hdp,latTyp,lngTyp,altd
@@ -68,12 +130,14 @@ local function parseNmea(s)
     local fixed
 
     if smatch(s,"GGA") then
-        lat,latTyp,lng,lngTyp,gpsFind,locSateCnt,hdp,altd = smatch(s,"GGA,%d+%.%d+,(%d+%.%d+),([NS]),(%d+%.%d+),([EW]),(%d),(%d+),([%d%.]*),(.*),M,.*,M")
+        lat,latTyp,lng,lngTyp,gpsFind,locSateCnt,hdp,altd,sep = smatch(s,"GGA,%d+%.%d+,(%d+%.%d+),([NS]),(%d+%.%d+),([EW]),(%d),(%d+),([%d%.]*),(.*),M,(.*),M")
         if (gpsFind=="1" or gpsFind=="2" or gpsFind=="4") and altd then
             fixed = true
             altitude = altd
             latitudeType,longitudeType,latitude,longitude = latTyp,lngTyp,lat,lng
             usedSateCnt = locSateCnt
+            Ggalng,Ggalat = (lngTyp=="W" and "-" or "")..lng,(latTyp=="S" and "-" or "")..lat
+            Sep = sep
         else
             fixed = false
         end
@@ -87,10 +151,22 @@ local function parseNmea(s)
         else
             fixed = false
         end
+        if psUtcTime and gpsFind == "A" and gpsTime and gpsDate and gpsTime ~= "" and gpsDate ~= "" then
+            local yy,mm,dd,h,m,s = tonumber(ssub(gpsDate,5,6)),tonumber(ssub(gpsDate,3,4)),tonumber(ssub(gpsDate,1,2)),tonumber(ssub(gpsTime,1,2)),tonumber(ssub(gpsTime,3,4)),tonumber(ssub(gpsTime,5,6))
+            UtcTime = {year=2000+yy,month=mm,day=dd,hour=h,min=m,sec=s}
+        end
     elseif smatch(s,"GPGSV") then
         viewedGpsSateCnt = tonumber(smatch(s,"%d+,%d+,(%d+)") or "0")
+        if psGsv then getstrength(s) end
     elseif smatch(s,"BDGSV") then
         viewedBdSateCnt = tonumber(smatch(s,"%d+,%d+,(%d+)") or "0")
+    elseif smatch(s,"GSA") then
+        if psSn then 
+            local satesn = smatch(s,"GSA,%w*,%d*,(%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,)") or ""
+            if slen(satesn) > 0 and smatch(satesn,"%d+,") then
+                SateSn = satesn
+            end
+        end
     end
 
     --定位成功
@@ -173,6 +249,7 @@ local function _open()
     openFlag = true
     sys.publish("GPS_STATE","OPEN")
     fixFlag = false
+    Ggalng,Ggalat,Gsv,Sep = "","",""	
     if aerialModeStr~="" then writeCmd(aerialModeStr) aerialModeStr="" end
     if runModeStr~="" then writeCmd(runModeStr) runModeStr="" end
     if nmeaReportStr~="" then writeCmd(nmeaReportStr) nmeaReportStr="" end
@@ -192,6 +269,7 @@ local function _close()
     openFlag = false
     sys.publish("GPS_STATE","CLOSE",fixFlag)
     fixFlag = false
+    Ggalng,Ggalat,Gsv,Sep = "","",""
     log.info("gps._close")
 end
 
@@ -671,3 +749,46 @@ end
 function getUsedSateCnt()
     return tonumber(usedSateCnt)
 end
+
+--- 获取定位使用的度分经度，度分纬度
+-- @return Ggalng,Ggalat，度分经度，度分纬度
+-- @usage gps.getGgaloc()
+function getGgaloc()
+	return Ggalng or "",Ggalat or ""
+end
+
+--- 获取定位使用的UTC时间
+-- @return UtcTime，UTC时间
+-- @usage gps.getUtcTime()
+function getUtcTime()
+	return UtcTime
+end
+
+--- 获取定位使用的大地高
+-- @return Sep，大地高
+-- @usage gps.getSep()
+function getSep()
+	return Sep or 0
+end
+
+--- 获取定位使用的可用卫星号
+-- @return SateSn，可用卫星号
+-- @usage gps.getSateSn()
+function getSateSn()
+	return SateSn or ""
+end
+
+--- 获取定位使用的信噪比
+-- @return Gsv，信噪比
+-- @usage gps.getGsv()
+function getGsv()
+	return Gsv or ""
+end
+
+--- 设置是否需要解析项
+-- @usage gps.setParseItem(true,true,true),true表示需要，不写或nil表示不需要
+function setParseItem(utctime,gsv,sn)
+    psUtcTime,psGsv,psSn = utctime,gsv,sn    
+end
+
+sys.subscribe("GPS_STATE",statInd)

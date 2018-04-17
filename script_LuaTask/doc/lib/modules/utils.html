@@ -38,6 +38,8 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
+  <li><a href="../modules/aLiYun.html">aLiYun</a></li>
+  <li><a href="../modules/aLiYunOta.html">aLiYunOta</a></li>
   <li><a href="../modules/agps.html">agps</a></li>
   <li><a href="../modules/audio.html">audio</a></li>
   <li><a href="../modules/cc.html">cc</a></li>
@@ -92,47 +94,69 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#string.toHex">string.toHex (str)</a></td>
+	<td class="name" nowrap><a href="#string.toHex">
+    string.toHex (str<strong  style="color: gray;">[, separator=""]</strong>)
+    </a></td>
 	<td class="summary">字符转16进制,如"123abc"转为"313233616263"</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#string.fromHex">string.fromHex (hex)</a></td>
+	<td class="name" nowrap><a href="#string.fromHex">
+    string.fromHex (hex)
+    </a></td>
 	<td class="summary">16进制转字符，如"313233616263"转为"123abc", 函数里加入了过滤分隔符，可以过滤掉大部分分隔符（可参见正则表达式中\s和\p的范围）。</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#string.utf8Len">string.utf8Len (str)</a></td>
+	<td class="name" nowrap><a href="#string.utf8Len">
+    string.utf8Len (str)
+    </a></td>
 	<td class="summary">返回utf8编码字符串的长度</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#string.urlEncode">string.urlEncode (str)</a></td>
+	<td class="name" nowrap><a href="#string.urlEncode">
+    string.urlEncode (str)
+    </a></td>
 	<td class="summary">返回字符串的urlEncode编码</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#string.formatNumberThousands">string.formatNumberThousands (num)</a></td>
+	<td class="name" nowrap><a href="#string.formatNumberThousands">
+    string.formatNumberThousands (num)
+    </a></td>
 	<td class="summary">返回数字的千位符号格式</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#string.split">string.split (str, delimiter)</a></td>
+	<td class="name" nowrap><a href="#string.split">
+    string.split (str, delimiter)
+    </a></td>
 	<td class="summary">按照指定分隔符分割字符串</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#io.exists">io.exists (path)</a></td>
+	<td class="name" nowrap><a href="#io.exists">
+    io.exists (path)
+    </a></td>
 	<td class="summary">判断文件是否存在</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#io.readFile">io.readFile (path)</a></td>
+	<td class="name" nowrap><a href="#io.readFile">
+    io.readFile (path)
+    </a></td>
 	<td class="summary">读取文件并返回文件的内容</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#io.writeFile">io.writeFile (path, content, mode)</a></td>
+	<td class="name" nowrap><a href="#io.writeFile">
+    io.writeFile (path, content, mode)
+    </a></td>
 	<td class="summary">写入文件指定的内容,默认为覆盖二进制模式</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#io.pathInfo">io.pathInfo (path)</a></td>
+	<td class="name" nowrap><a href="#io.pathInfo">
+    io.pathInfo (path)
+    </a></td>
 	<td class="summary">将文件路径分解为table信息</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#io.fileSize">io.fileSize (path)</a></td>
+	<td class="name" nowrap><a href="#io.fileSize">
+    io.fileSize (path)
+    </a></td>
 	<td class="summary">返回文件大小</td>
 	</tr>
 </table>
@@ -146,7 +170,9 @@
     <dl class="function">
     <dt>
     <a name = "string.toHex"></a>
-    <strong  style="color: red;">string.toHex (str)</strong>
+    <strong  style="color: red;">
+    string.toHex (str<strong  style="color: green;">[, separator=""]</strong>)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">字符转16进制,如"123abc"转为"313233616263"</pre>
@@ -155,7 +181,13 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">str</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
         <pre class="example"> 输入字符串</pre>
+        </li>
+        <li><span class="parameter">separator</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         [<em>此参数可选，默认值为：</em> ""]
+        <pre class="example"> 输出的16进制字符串分隔符</pre>
         </li>
     </ul>
 
@@ -172,13 +204,16 @@
     <h3>Usage:</h3>
     <ul>
         <li><pre class="example"><span class="global">string</span>.toHex(<span class="string">"\1\2\3"</span>) -&gt; <span class="string">"010203"</span> <span class="number">3</span>
-<span class="global">string</span>.toHex(<span class="string">"123abc"</span>) -&gt; <span class="string">"313233616263"</span> <span class="number">6</span></pre></il>
+<span class="global">string</span>.toHex(<span class="string">"123abc"</span>) -&gt; <span class="string">"313233616263"</span> <span class="number">6</span>
+<span class="global">string</span>.toHex(<span class="string">"123abc"</span>,<span class="string">" "</span>) -&gt; <span class="string">"31 32 33 61 62 63 "</span> <span class="number">6</span></pre></il>
     </ul>
 
 </dd>
     <dt>
     <a name = "string.fromHex"></a>
-    <strong  style="color: red;">string.fromHex (hex)</strong>
+    <strong  style="color: red;">
+    string.fromHex (hex)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">16进制转字符，如"313233616263"转为"123abc", 函数里加入了过滤分隔符，可以过滤掉大部分分隔符（可参见正则表达式中\s和\p的范围）。</pre>
@@ -211,7 +246,9 @@
 </dd>
     <dt>
     <a name = "string.utf8Len"></a>
-    <strong  style="color: red;">string.utf8Len (str)</strong>
+    <strong  style="color: red;">
+    string.utf8Len (str)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">返回utf8编码字符串的长度</pre>
@@ -241,7 +278,9 @@
 </dd>
     <dt>
     <a name = "string.urlEncode"></a>
-    <strong  style="color: red;">string.urlEncode (str)</strong>
+    <strong  style="color: red;">
+    string.urlEncode (str)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">返回字符串的urlEncode编码</pre>
@@ -271,7 +310,9 @@
 </dd>
     <dt>
     <a name = "string.formatNumberThousands"></a>
-    <strong  style="color: red;">string.formatNumberThousands (num)</strong>
+    <strong  style="color: red;">
+    string.formatNumberThousands (num)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">返回数字的千位符号格式</pre>
@@ -301,7 +342,9 @@
 </dd>
     <dt>
     <a name = "string.split"></a>
-    <strong  style="color: red;">string.split (str, delimiter)</strong>
+    <strong  style="color: red;">
+    string.split (str, delimiter)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">按照指定分隔符分割字符串</pre>
@@ -335,7 +378,9 @@
 </dd>
     <dt>
     <a name = "io.exists"></a>
-    <strong  style="color: red;">io.exists (path)</strong>
+    <strong  style="color: red;">
+    io.exists (path)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">判断文件是否存在</pre>
@@ -365,7 +410,9 @@
 </dd>
     <dt>
     <a name = "io.readFile"></a>
-    <strong  style="color: red;">io.readFile (path)</strong>
+    <strong  style="color: red;">
+    io.readFile (path)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">读取文件并返回文件的内容</pre>
@@ -395,7 +442,9 @@
 </dd>
     <dt>
     <a name = "io.writeFile"></a>
-    <strong  style="color: red;">io.writeFile (path, content, mode)</strong>
+    <strong  style="color: red;">
+    io.writeFile (path, content, mode)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">写入文件指定的内容,默认为覆盖二进制模式</pre>
@@ -433,7 +482,9 @@
 </dd>
     <dt>
     <a name = "io.pathInfo"></a>
-    <strong  style="color: red;">io.pathInfo (path)</strong>
+    <strong  style="color: red;">
+    io.pathInfo (path)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">将文件路径分解为table信息</pre>
@@ -463,7 +514,9 @@
 </dd>
     <dt>
     <a name = "io.fileSize"></a>
-    <strong  style="color: red;">io.fileSize (path)</strong>
+    <strong  style="color: red;">
+    io.fileSize (path)
+    </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">返回文件大小</pre>
@@ -498,7 +551,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-04 13:47:20 </i>
+<i style="float:right;">Last updated 2018-04-17 13:24:42 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
