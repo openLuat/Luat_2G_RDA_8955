@@ -180,7 +180,7 @@ end
 -- crsm更新计数
 local crsmUpdCnt = 0
 
---- 更新FPLMN的应答处理
+-- 更新FPLMN的应答处理
 -- @string cmd  ,此应答对应的AT命令
 -- @bool success ,AT命令执行结果，true或者false
 -- @string response ,AT命令的应答中的执行结果字符串
@@ -225,9 +225,9 @@ local function neturc(data, prefix)
     end
 end
 
---- 飞行模式开关
+--- 设置飞行模式
 -- @bool mode，true:飞行模式开，false:飞行模式关
--- @return 无
+-- @return nil
 -- @usage net.switchFly(mode)
 function switchFly(mode)
     if flyMode == mode then return end
@@ -247,62 +247,52 @@ function switchFly(mode)
 end
 
 --- 获取GSM网络注册状态
--- @return string ,GSM网络注册状态(INIT、REGISTERED、UNREGISTER)
+-- @return string state,GSM网络注册状态，
+-- "INIT"表示正在初始化
+-- "REGISTERED"表示已注册
+-- "UNREGISTER"表示未注册
 -- @usage net.getState()
 function getState()
     return state
 end
 
 --- 获取当前小区的mcc
--- @return string ,当前小区的mcc，如果还没有注册GSM网络，则返回sim卡的mcc
+-- @return string mcc,当前小区的mcc，如果还没有注册GSM网络，则返回sim卡的mcc
 -- @usage net.getMcc()
 function getMcc()
     return cellinfo[1].mcc or sim.getMcc()
 end
 
 --- 获取当前小区的mnc
--- @return string ,当前小区的mnc，如果还没有注册GSM网络，则返回sim卡的mnc
+-- @return string mcn,当前小区的mnc，如果还没有注册GSM网络，则返回sim卡的mnc
 -- @usage net.getMnc()
 function getMnc()
     return cellinfo[1].mnc or sim.getMnc()
 end
 
 --- 获取当前位置区ID
--- @return string ,当前位置区ID(16进制字符串，例如"18be")，如果还没有注册GSM网络，则返回""
+-- @return string lac,当前位置区ID(16进制字符串，例如"18be")，如果还没有注册GSM网络，则返回""
 -- @usage net.getLac()
 function getLac()
     return lac
 end
 
 --- 获取当前小区ID
--- @return string ,当前小区ID(16进制字符串，例如"93e1")，如果还没有注册GSM网络，则返回""
+-- @return string ci,当前小区ID(16进制字符串，例如"93e1")，如果还没有注册GSM网络，则返回""
 -- @usage net.getCi()
 function getCi()
     return ci
 end
 
 --- 获取信号强度
--- @return number ,当前信号强度(取值范围0-31)
+-- @return number rssi,当前信号强度(取值范围0-31)
 -- @usage net.getRssi()
 function getRssi()
     return rssi
 end
 
---- 获取当前和临近小区以及信号强度的拼接字符串
--- @return string ,当前和临近小区以及信号强度的拼接字符串，例如：49234.30.49233.23.49232.18.
--- @usage net.getCell()
-function getCell()
-    local i, ret = 1, ""
-    for i = 1, cellinfo.cnt do
-        if cellinfo[i] and cellinfo[i].lac and cellinfo[i].lac ~= 0 and cellinfo[i].ci and cellinfo[i].ci ~= 0 then
-            ret = ret .. cellinfo[i].ci .. "." .. cellinfo[i].rssi .. "."
-        end
-    end
-    return ret
-end
-
 --- 获取当前和临近位置区、小区以及信号强度的拼接字符串
--- @return string ,当前和临近位置区、小区以及信号强度的拼接字符串，例如：6311.49234.30;6311.49233.23;6322.49232.18;
+-- @return string cellInfo,当前和临近位置区、小区以及信号强度的拼接字符串，例如："6311.49234.30;6311.49233.23;6322.49232.18;"
 -- @usage net.getCellInfo()
 function getCellInfo()
     local i, ret = 1, ""
@@ -315,7 +305,7 @@ function getCellInfo()
 end
 
 --- 获取当前和临近位置区、小区、mcc、mnc、以及信号强度的拼接字符串
--- @return string ,当前和临近位置区、小区、mcc、mnc、以及信号强度的拼接字符串，例如：460.01.6311.49234.30;460.01.6311.49233.23;460.02.6322.49232.18;
+-- @return string cellInfo,当前和临近位置区、小区、mcc、mnc、以及信号强度的拼接字符串，例如："460.01.6311.49234.30;460.01.6311.49233.23;460.02.6322.49232.18;"
 -- @usage net.getCellInfoExt()
 function getCellInfoExt()
     local i, ret = 1, ""
@@ -328,7 +318,7 @@ function getCellInfoExt()
 end
 
 --- 获取TA值
--- @return string ,TA值
+-- @return number ta,TA值
 -- @usage net.getTa()
 function getTa()
     return cellinfo[1].ta
@@ -362,18 +352,19 @@ local function rsp(cmd, success, response, intermediate)
     end
 end
 
---- 读取“当前和临近小区信息”
--- @param cb：回调函数，当读取到小区信息后，会调用此回调函数，调用形式为cb(cells)，其中cells为string类型，格式为：当前和临近位置区、小区、mcc、mnc、以及信号强度的拼接字符串，例如：460.01.6311.49234.30;460.01.6311.49233.23;460.02.6322.49232.18;
--- @return 无
-function getMultiCell(cb)
-    multicellcb = cb
+--- 实时读取“当前和临近小区信息”
+-- @function cbFnc，回调函数，当读取到小区信息后，会调用此回调函数，回调函数的调用形式为：
+-- cbFnc(cells)，其中cells为string类型，格式为：当前和临近位置区、小区、mcc、mnc、以及信号强度的拼接字符串，例如："460.01.6311.49234.30;460.01.6311.49233.23;460.02.6322.49232.18;"
+-- @return nil
+function getMultiCell(cbFnc)
+    multicellcb = cbFnc
     --发送AT+CENG?查询
     ril.request("AT+CENG?")
 end
 
---- 查询基站信息(当前和临近小区信息)
+--- 发起查询基站信息(当前和临近小区信息)的请求
 -- @number period 查询间隔，单位毫秒
--- @return bool , true:查询成功，false:查询停止
+-- @return bool result, true:查询成功，false:查询失败
 -- @usage net.cengQueryPoll() --查询1次
 -- @usage net.cengQueryPoll(60000) --每分钟查询1次
 function cengQueryPoll(period)
@@ -385,14 +376,13 @@ function cengQueryPoll(period)
         end
         --发送AT+CENG?查询
         ril.request("AT+CENG?")
-        return true
     else
-        log.info("net.cengQueryPoll", "flymode:", flyMode)
-        return false
+        log.warn("net.cengQueryPoll", "flymode:", flyMode)
     end
+    return not flyMode
 end
 
---- 查询信号强度
+--- 发起查询信号强度的请求
 -- @number period 查询间隔，单位毫秒
 -- @return bool , true:查询成功，false:查询停止
 -- @usage net.csqQueryPoll() --查询1次
@@ -406,17 +396,16 @@ function csqQueryPoll(period)
         end
         --发送AT+CSQ查询
         ril.request("AT+CSQ")
-        return true
     else
         log.info("net.csqQueryPoll", "flymode:", flyMode)
-        return false
     end
+    return not flyMode
 end
 
 
 --- 查询信号强度和基站信息(飞行模式，简单模式会返回查询失败)
 -- @number ... 查询周期,参数可变，参数为nil只查询1次，参数1是信号强度查询周期，参数2是基站查询周期
--- @return bool ，true：查询成功，false：查询停止
+-- @return bool ，true：查询成功，false：查询失败
 -- @usage net.startQueryAll()
 -- @usage net.startQueryAll(60000) -- 6分钟查询1次信号强度和基站信息
 -- @usage net.startQueryAll(60000,600000) -- 1分钟查询1次信号强度，10分钟查询1次基站信息

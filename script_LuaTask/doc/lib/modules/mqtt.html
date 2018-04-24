@@ -69,7 +69,7 @@
   <li><a href="../modules/sms.html">sms</a></li>
   <li><a href="../modules/socket.html">socket</a></li>
   <li><a href="../modules/sys.html">sys</a></li>
-  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/uiwin.html">uiwin</a></li>
   <li><a href="../modules/update.html">update</a></li>
   <li><a href="../modules/utils.html">utils</a></li>
   <li><a href="../modules/wdt.html">wdt</a></li>
@@ -95,9 +95,9 @@
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#client">
-    client (clientId, keepAlive, username, password, cleanSession, will)
+    client (clientId<strong  style="color: gray;">[, keepAlive=300]</strong><strong  style="color: gray;">[, username=""]</strong><strong  style="color: gray;">[, password=""]</strong><strong  style="color: gray;">[, cleanSession=1]</strong><strong  style="color: gray;">[, will={flag=0]</strong>)
     </a></td>
-	<td class="summary">mqtt.client() 创建mqtt client实例</td>
+	<td class="summary">创建一个mqtt client实例</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#mqttc:connect">
@@ -107,27 +107,27 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#mqttc:subscribe">
-    mqttc:subscribe (topic, qos)
+    mqttc:subscribe (topic<strong  style="color: gray;">[, qos=0]</strong>)
     </a></td>
-	<td class="summary">mqtt.client:subscribe(topic, qos)</td>
+	<td class="summary">订阅主题</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#mqttc:publish">
-    mqttc:publish (topic, payload, qos, retain)
+    mqttc:publish (topic, payload<strong  style="color: gray;">[, qos=0]</strong><strong  style="color: gray;">[, retain=0]</strong>)
     </a></td>
-	<td class="summary">mqtt.client:publish(topic, payload, qos, retain)</td>
+	<td class="summary">发布一条消息</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#mqttc:receive">
     mqttc:receive (timeout)
     </a></td>
-	<td class="summary">mqtt.client:receive([timeout])</td>
+	<td class="summary">接收消息</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#mqttc:disconnect">
     mqttc:disconnect ()
     </a></td>
-	<td class="summary">mqtt disconnect</td>
+	<td class="summary">断开与服务器的连接</td>
 	</tr>
 </table>
 
@@ -141,46 +141,59 @@
     <dt>
     <a name = "client"></a>
     <strong  style="color: red;">
-    client (clientId, keepAlive, username, password, cleanSession, will)
+    client (clientId<strong  style="color: green;">[, keepAlive=300]</strong><strong  style="color: green;">[, username=""]</strong><strong  style="color: green;">[, password=""]</strong><strong  style="color: green;">[, cleanSession=1]</strong><strong  style="color: green;">[, will={flag=0]</strong>)
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">mqtt.client() 创建mqtt client实例</pre>
+    <pre class="example"  style="color: red;">创建一个mqtt client实例</pre>
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">clientId</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
         <pre class="example"></pre>
         </li>
         <li><span class="parameter">keepAlive</span>
-        <pre class="example"> 心跳间隔，默认300秒</pre>
+            <span class="types"><span class="type">number</span></span>
+         [<em>此参数可选，默认值为：</em> 300]
+        <pre class="example"> 心跳间隔(单位为秒)，默认300秒</pre>
         </li>
         <li><span class="parameter">username</span>
-        <pre class="example"> 用户名为空请输入nil</pre>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         [<em>此参数可选，默认值为：</em> ""]
+        <pre class="example"> 用户名，用户名为空配置为""或者nil</pre>
         </li>
         <li><span class="parameter">password</span>
-        <pre class="example"> 密码为空请输入nil</pre>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         [<em>此参数可选，默认值为：</em> ""]
+        <pre class="example"> 密码，密码为空配置为""或者nil</pre>
         </li>
         <li><span class="parameter">cleanSession</span>
+            <span class="types"><span class="type">number</span></span>
+         [<em>此参数可选，默认值为：</em> 1]
         <pre class="example"> 1/0</pre>
         </li>
         <li><span class="parameter">will</span>
-        <pre class="example"> 遗嘱参数(Last Will/Testament), 若不打开LWT请不要传递该参数，传递参数默认为打开LWT，will.qos, will.retain, will.topic, will.payload</pre>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         [<em>此参数可选，默认值为：</em> {flag=0]
+        <pre class="example"> 遗嘱参数，格式为{qos=, retain=, topic=, payload=}</pre>
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">result true - 成功，false - 失败</pre></il>
+        <pre class="example">table mqttc client实例</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example">mqttc = mqtt.client(<span class="string">"clientid-123"</span>, <span class="keyword">nil</span>, <span class="keyword">nil</span>, <span class="keyword">false</span>)</pre></il>
+        <li><pre class="example">mqttc = mqtt.client(<span class="string">"clientid-123"</span>)
+mqttc = mqtt.client(<span class="string">"clientid-123"</span>,<span class="number">200</span>)
+mqttc = mqtt.client(<span class="string">"clientid-123"</span>,<span class="keyword">nil</span>,<span class="string">"user"</span>,<span class="string">"password"</span>)</pre></il>
     </ul>
 
 </dd>
@@ -198,11 +211,10 @@
     <ul>
         <li><span class="parameter">host</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        <pre class="example"> 地址</pre>
+        <pre class="example"> 服务器地址</pre>
         </li>
         <li><span class="parameter">port</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        <pre class="example"> 端口</pre>
+        <pre class="example"> string或者number类型，服务器端口</pre>
         </li>
         <li><span class="parameter">transport</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
@@ -225,7 +237,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">result true - 成功，false - 失败</pre></il>
+        <pre class="example">result true表示成功，false或者nil表示失败</pre></il>
     </ul>
 
 
@@ -239,11 +251,11 @@
     <dt>
     <a name = "mqttc:subscribe"></a>
     <strong  style="color: red;">
-    mqttc:subscribe (topic, qos)
+    mqttc:subscribe (topic<strong  style="color: green;">[, qos=0]</strong>)
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">mqtt.client:subscribe(topic, qos)</pre>
+    <pre class="example"  style="color: red;">订阅主题</pre>
 
 
     <h3>Parameters:</h3>
@@ -252,6 +264,7 @@
         <pre class="example">string或者table类型，一个主题时为string类型，多个主题时为table类型，主题内容为UTF8编码</pre>
         </li>
         <li><span class="parameter">qos</span>
+         [<em>此参数可选，默认值为：</em> 0]
         <pre class="example">number或者nil，topic为一个主题时，qos为number类型(0/1/2，默认0)；topic为多个主题时，qos为nil</pre>
         </li>
     </ul>
@@ -259,7 +272,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">bool true - 成功，false - 失败</pre></il>
+        <pre class="example">bool true表示成功，false或者nil表示失败</pre></il>
     </ul>
 
 
@@ -274,11 +287,11 @@
     <dt>
     <a name = "mqttc:publish"></a>
     <strong  style="color: red;">
-    mqttc:publish (topic, payload, qos, retain)
+    mqttc:publish (topic, payload<strong  style="color: green;">[, qos=0]</strong><strong  style="color: green;">[, retain=0]</strong>)
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">mqtt.client:publish(topic, payload, qos, retain)</pre>
+    <pre class="example"  style="color: red;">发布一条消息</pre>
 
 
     <h3>Parameters:</h3>
@@ -293,10 +306,12 @@
         </li>
         <li><span class="parameter">qos</span>
             <span class="types"><span class="type">number</span></span>
+         [<em>此参数可选，默认值为：</em> 0]
         <pre class="example"> 0/1/2, default 0</pre>
         </li>
         <li><span class="parameter">retain</span>
             <span class="types"><span class="type">number</span></span>
+         [<em>此参数可选，默认值为：</em> 0]
         <pre class="example"> 0或者1</pre>
         </li>
     </ul>
@@ -324,22 +339,25 @@ mqttc:publish(<span class="string">"/topic"</span>, <span class="string">"publis
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">mqtt.client:receive([timeout])</pre>
+    <pre class="example"  style="color: red;">接收消息</pre>
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">timeout</span>
-        <pre class="example"></pre>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">超时间隔，单位毫秒</pre>
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
         <li>
-        <pre class="example">result true - 成功，false - 失败</pre></li>
+        <pre class="example">result 接收结果，true表示成功，false表示失败</pre></li>
         <li>
-        <pre class="example">data 如果成功返回的时候接收到的服务器发过来的包，如果失败返回的是错误信息</pre></li>
+        <pre class="example"> data
+ 如果成功返回的时候接收到的服务器发过来的包
+ 如果失败返回的是错误信息，如果是超时失败，返回"timeout"</pre></li>
     </ol>
 
 
@@ -358,14 +376,14 @@ mqttc:publish(<span class="string">"/topic"</span>, <span class="string">"publis
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">mqtt disconnect</pre>
+    <pre class="example"  style="color: red;">断开与服务器的连接</pre>
 
 
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">result true - 成功，false - 失败</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -386,7 +404,7 @@ mqttc:disconnect()</pre></il>
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-17 13:24:42 </i>
+<i style="float:right;">Last updated 2018-04-24 17:25:11 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

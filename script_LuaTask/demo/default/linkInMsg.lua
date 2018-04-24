@@ -12,11 +12,11 @@ module(...,package.seeall)
 -- @return 处理成功返回true，处理出错返回false
 -- @usage linkInMsg.proc(mqttClient)
 function proc(mqttClient)
-    local r,data
+    local result,data
     while true do
-        r,data = mqttClient:receive(2000)
+        result,data = mqttClient:receive(2000)
         --接收到数据
-        if r and data~="timeout" then
+        if result then
             log.info("linkInMsg.proc",data.topic,string.toHex(data.payload))
                 
             --TODO：根据需求自行处理data.payload
@@ -28,5 +28,5 @@ function proc(mqttClient)
         end
     end
 	
-    return data=="timeout" or r
+    return result or data=="timeout"
 end

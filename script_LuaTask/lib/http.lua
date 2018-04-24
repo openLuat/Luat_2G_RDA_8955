@@ -190,7 +190,6 @@ end
 
 --- 发送HTTP请求
 -- @string method HTTP请求方法
---
 -- 支持"GET"，"HEAD"，"POST"，"OPTIONS"，"PUT"，"DELETE"，"TRACE"，"CONNECT"
 -- @string url HTTP请求url
 -- url格式(除hostname外，其余字段可选；目前的实现不支持hash)
@@ -202,14 +201,14 @@ end
 -- " http[s]  :// user:pass @ host.com : 8080   /p/a/t/h ?  query=string  # hash  " 
 -- |          |||           |          |      |          |                |       |
 -- |------------------------------------------------------------------------------|
--- @param cert，table或者nil类型，ssl证书，当url为https类型时，此参数才有意义。cert格式如下：
+-- @table[opt=nil] cert，table或者nil类型，ssl证书，当url为https类型时，此参数才有意义。cert格式如下：
 -- {
 --     caCert = "ca.crt", --CA证书文件(Base64编码 X.509格式)，如果存在此参数，则表示客户端会对服务器的证书进行校验；不存在则不校验
 --     clientCert = "client.crt", --客户端证书文件(Base64编码 X.509格式)，服务器对客户端的证书进行校验时会用到此参数
 --     clientKey = "client.key", --客户端私钥文件(Base64编码 X.509格式)
 --     clientPassword = "123456", --客户端证书文件密码[可选]
 -- }
--- @table head，nil或者table类型，自定义请求头
+-- @table[opt=nil] head，nil或者table类型，自定义请求头
 --
 --              http.lua会自动添加Host: XXX、Connection: short、Content-Length: XXX三个请求头
 --
@@ -218,7 +217,7 @@ end
 --              head格式如下：
 --
 --              如果没有自定义请求头，传入nil或者{}；否则传入{head1="value1", head2="value2", head3="value3"}，value中不能有\r\n
--- @param body，nil、string或者table类型，请求实体
+-- @param[opt=nil] body，nil、string或者table类型，请求实体
 --
 --              如果body仅仅是一串数据，可以直接传入一个string类型的body即可
 --
@@ -235,8 +234,8 @@ end
 --              }
 --
 --              例如上面的这个body，索引必须为连续的数字(从1开始)，实际传输时，先发送字符串"string1"，再发送文件/ldata/test.jpg的内容，最后发送字符串"string2"
--- @number timeout，请求发送成功后，接收服务器返回应答数据的超时时间，单位毫秒，默认为30秒
--- @function cbFnc，执行HTTP请求的回调函数(请求发送结果以及应答数据接收结果都通过此函数通知用户)，回调函数的调用形式为：
+-- @number[opt=30000] timeout，请求发送成功后，接收服务器返回应答数据的超时时间，单位毫秒，默认为30秒
+-- @function[opt=nil] cbFnc，执行HTTP请求的回调函数(请求发送结果以及应答数据接收结果都通过此函数通知用户)，回调函数的调用形式为：
 --
 --              cbFnc(result,prompt,head,body)
 --
@@ -247,8 +246,8 @@ end
 --              head：table或者nil类型，表示服务器的应答头；result为true时，此参数为{head1="value1", head2="value2", head3="value3"}，value中不包含\r\n；result为false时，此参数为nil
 --
 --              body：string类型，如果调用request接口时传入了rcvFileName，此参数表示下载文件的完整路径；否则表示接收到的应答实体数据
--- @string rcvFileName，保存“服务器应答实体数据”的文件名，可以传入完整的文件路径，也可以传入单独的文件名，如果是文件名，http.lua会自动生成一个完整路径，通过cbFnc的参数body传出
--- @return 如果传入了rcvFileName，则返回对应的完整路径；其余情况都返回nil
+-- @string[opt=nil] rcvFileName，保存“服务器应答实体数据”的文件名，可以传入完整的文件路径，也可以传入单独的文件名，如果是文件名，http.lua会自动生成一个完整路径，通过cbFnc的参数body传出
+-- @return string rcvFilePath，如果传入了rcvFileName，则返回对应的完整路径；其余情况都返回nil
 -- @usage 
 -- http.request("GET","www.lua.org",nil,nil,nil,30000,cbFnc)
 -- http.request("GET","http://www.lua.org",nil,nil,nil,30000,cbFnc)

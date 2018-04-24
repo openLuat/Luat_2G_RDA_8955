@@ -31,45 +31,54 @@ ntp.timeSync()
 --启动socket客户端任务
 sys.taskInit(
     function()
+        --单向认证测试时，此变量设置为false；双向认证测试时，此变量设置为true
+        local mutualAuth = false
+        local socketClient,connectResult
+        
         while true do
-            --等待网络环境准备就绪
-            while not socket.isReady() do sys.waitUntil("IP_READY_IND") end
+            if not socket.isReady() then
+                --等待网络环境准备就绪，超时时间是5分钟
+                sys.waitUntil("IP_READY_IND",300000)
+            end            
             
-            --单向认证测试时，此变量设置为false；双向认证测试时，此变量设置为true
-            local mutualAuth = false
-            local socketClient
-
-            --双向认证测试
-            if mutualAuth then                   
-                --创建一个socket ssl tcp客户端
-                socketClient = socket.tcp(true,{caCert="ca1.crt",clientCert="client.crt",clientKey="client.key"})
-                --阻塞执行socket connect动作，直至成功
-                while not socketClient:connect("36.7.87.100","4434") do
-                    sys.wait(2000)
-                end                
-            --单向认证测试
-            else
-                --创建一个socket ssl tcp客户端
-                socketClient = socket.tcp(true,{caCert="ca.crt"})
-                --阻塞执行socket connect动作，直至成功
-                while not socketClient:connect("36.7.87.100","4433") do
-                    sys.wait(2000)
+            if socket.isReady() then
+                --双向认证测试
+                if mutualAuth then                   
+                    --创建一个socket ssl tcp客户端
+                    socketClient = socket.tcp(true,{caCert="ca1.crt",clientCert="client.crt",clientKey="client.key"})
+                    --阻塞执行socket connect动作，直至成功
+                    connectResult = socketClient:connect("36.7.87.100","4434")
+                --单向认证测试
+                else
+                    --创建一个socket ssl tcp客户端
+                    socketClient = socket.tcp(true,{caCert="ca.crt"})
+                    --阻塞执行socket connect动作，直至成功
+                    connectResult = socketClient:connect("36.7.87.100","4433")
                 end
-            end
-            
-            ready = true
-            
-            socketOutMsg.init()
-            --循环处理接收和发送的数据
-            while true do
-                if not socketInMsg.proc(socketClient) then log.error("socketTask.socketInMsg.proc error") break end
-                if not socketOutMsg.proc(socketClient) then log.error("socketTask.socketOutMsg proc error") break end
-            end
-            socketOutMsg.unInit()
+                
+                if connectResult then
+                    ready = true
+                    
+                    socketOutMsg.init()
+                    --循环处理接收和发送的数据
+                    while true do
+                        if not socketInMsg.proc(socketClient) then log.error("socketTask.socketInMsg.proc error") break end
+                        if not socketOutMsg.proc(socketClient) then log.error("socketTask.socketOutMsg proc error") break end
+                    end
+                    socketOutMsg.unInit()
 
-            ready = false
-            --断开socket连接
-            socketClient:close()
+                    ready = false
+                end
+                
+                --断开socket连接
+                socketClient:close()
+                sys.wait(5000)
+            else
+                --进入飞行模式，20秒之后，退出飞行模式
+                net.switchFly(true)
+                sys.wait(20000)
+                net.switchFly(false)
+            end
         end
     end
 )

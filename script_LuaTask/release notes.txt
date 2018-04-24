@@ -1,4 +1,4 @@
-发布时间：2018/04/07 18:34
+发布时间：2018/04/24 18:34
 修改记录：
     一、lib脚本修改
 	lib脚本版本号：2.0.1
@@ -12,8 +12,12 @@
 		【2】新增“读取到imei和sn后，发布IMEI_READY_IND和SN_READY_IND消息”的功能
 	(5)socket.lua：修改“服务器关闭后，socket检测不到断开”的问题
 	(6)aLiYun.lua，aLiYunOta.lua：新增阿里云功能
+	(7)audio.lua：修正“音频播放回调接口中立即播放下一个音频失败”的问题
+	(8)nvm.lua：修正“硬件掉电时，如果正在写参数文件，可能造成文件内容出错，恢复成默认值”的问题
     二、demo脚本修改
 	(1)新增aLiYun的demo
+	(2)default,mqtt,socket,socketSsl：优化网络异常状态下的处理程序
+	(3)所有demo：新增对errDump和update功能的使用说明
 
 
 

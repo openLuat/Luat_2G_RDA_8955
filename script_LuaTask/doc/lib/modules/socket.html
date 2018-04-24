@@ -70,7 +70,7 @@
   <li><a href="../modules/sms.html">sms</a></li>
   <li><strong>socket</strong></li>
   <li><a href="../modules/sys.html">sys</a></li>
-  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/uiwin.html">uiwin</a></li>
   <li><a href="../modules/update.html">update</a></li>
   <li><a href="../modules/utils.html">utils</a></li>
   <li><a href="../modules/wdt.html">wdt</a></li>
@@ -96,7 +96,7 @@
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#tcp">
-    tcp (ssl, cert)
+    tcp (<strong  style="color: gray;">[ssl=nil]</strong><strong  style="color: gray;">[, cert=nil]</strong>)
     </a></td>
 	<td class="summary">创建基于TCP的socket对象</td>
 	</tr>
@@ -110,25 +110,25 @@
 	<td class="name" nowrap><a href="#mt.__index:connect">
     mt.__index:connect (address, port)
     </a></td>
-	<td class="summary">socket:connect 连接服务器</td>
+	<td class="summary">连接服务器</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#mt.__index:send">
     mt.__index:send (data)
     </a></td>
-	<td class="summary">socket:send</td>
+	<td class="summary">发送数据</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#mt.__index:recv">
-    mt.__index:recv (timeout)
+    mt.__index:recv (<strong  style="color: gray;">[timeout=0]</strong>)
     </a></td>
-	<td class="summary">socket:recv([timeout])</td>
+	<td class="summary">接收数据</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#mt.__index:close">
     mt.__index:close ()
     </a></td>
-	<td class="summary">socket:close</td>
+	<td class="summary">销毁一个socket</td>
 	</tr>
 </table>
 <h2><a href="#Fields">Fields</a></h2>
@@ -151,7 +151,7 @@
     <dt>
     <a name = "tcp"></a>
     <strong  style="color: red;">
-    tcp (ssl, cert)
+    tcp (<strong  style="color: green;">[ssl=nil]</strong><strong  style="color: green;">[, cert=nil]</strong>)
     </strong>
     </dt>
     <dd>
@@ -162,10 +162,12 @@
     <ul>
         <li><span class="parameter">ssl</span>
             <span class="types"><span class="type">bool</span></span>
+         [<em>此参数可选，默认值为：</em> nil]
         <pre class="example">是否为ssl连接，true表示是，其余表示否</pre>
         </li>
         <li><span class="parameter">cert</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         [<em>此参数可选，默认值为：</em> nil]
         <pre class="example">ssl连接需要的证书配置，只有ssl参数为true时，才参数才有意义，cert格式如下：
  {
      caCert = "ca.crt", --CA证书文件(Base64编码 X.509格式)，如果存在此参数，则表示客户端会对服务器的证书进行校验；不存在则不校验
@@ -179,7 +181,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -208,7 +210,7 @@ c = socket.tcp(<span class="keyword">true</span>, {caCert=<span class="string">"
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -226,23 +228,24 @@ c = socket.tcp(<span class="keyword">true</span>, {caCert=<span class="string">"
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">socket:connect 连接服务器</pre>
+    <pre class="example"  style="color: red;">连接服务器</pre>
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">address</span>
-        <pre class="example"> ip地址或者域名</pre>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> 服务器地址，支持ip和域名</pre>
         </li>
         <li><span class="parameter">port</span>
-        <pre class="example"> 端口</pre>
+        <pre class="example"> string或者number类型，服务器端口</pre>
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">result true - 成功，false - 失败</pre></il>
+        <pre class="example">bool result true - 成功，false - 失败</pre></il>
     </ul>
 
 
@@ -260,12 +263,13 @@ c = socket.tcp(<span class="keyword">true</span>, {caCert=<span class="string">"
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">socket:send</pre>
+    <pre class="example"  style="color: red;">发送数据</pre>
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">data</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
         <pre class="example"> 数据</pre>
         </li>
     </ul>
@@ -287,16 +291,18 @@ c = socket.tcp(<span class="keyword">true</span>, {caCert=<span class="string">"
     <dt>
     <a name = "mt.__index:recv"></a>
     <strong  style="color: red;">
-    mt.__index:recv (timeout)
+    mt.__index:recv (<strong  style="color: green;">[timeout=0]</strong>)
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">socket:recv([timeout])</pre>
+    <pre class="example"  style="color: red;">接收数据</pre>
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">timeout</span>
+            <span class="types"><span class="type">number</span></span>
+         [<em>此参数可选，默认值为：</em> 0]
         <pre class="example"> 可选参数，接收超时时间</pre>
         </li>
     </ul>
@@ -324,14 +330,14 @@ c = socket.tcp(<span class="keyword">true</span>, {caCert=<span class="string">"
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">socket:close</pre>
+    <pre class="example"  style="color: red;">销毁一个socket</pre>
 
 
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -369,7 +375,7 @@ c = socket.tcp(<span class="keyword">true</span>, {caCert=<span class="string">"
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-17 13:24:42 </i>
+<i style="float:right;">Last updated 2018-04-24 17:25:11 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

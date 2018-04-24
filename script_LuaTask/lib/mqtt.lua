@@ -129,16 +129,18 @@ end
 local mqttc = {}
 mqttc.__index = mqttc
 
---- mqtt.client() 创建mqtt client实例
--- @param clientId
--- @param keepAlive 心跳间隔，默认300秒
--- @param username 用户名为空请输入nil
--- @param password 密码为空请输入nil
--- @param cleanSession 1/0
--- @param will 遗嘱参数(Last Will/Testament), 若不打开LWT请不要传递该参数，传递参数默认为打开LWT，will.qos, will.retain, will.topic, will.payload
--- @return result true - 成功，false - 失败
+--- 创建一个mqtt client实例
+-- @string clientId
+-- @number[opt=300] keepAlive 心跳间隔(单位为秒)，默认300秒
+-- @string[opt=""] username 用户名，用户名为空配置为""或者nil
+-- @string[opt=""] password 密码，密码为空配置为""或者nil
+-- @number[opt=1] cleanSession 1/0
+-- @table[opt={flag=0, qos=0, retain=0, topic="", payload=""}] will 遗嘱参数，格式为{qos=, retain=, topic=, payload=}
+-- @return table mqttc client实例
 -- @usage
--- mqttc = mqtt.client("clientid-123", nil, nil, false)
+-- mqttc = mqtt.client("clientid-123")
+-- mqttc = mqtt.client("clientid-123",200)
+-- mqttc = mqtt.client("clientid-123",nil,"user","password")
 function client(clientId, keepAlive, username, password, cleanSession, will)
     local o = {}
     local packetId = 1
@@ -272,8 +274,8 @@ function mqttc:waitfor(id, timeout)
 end
 
 --- 连接mqtt服务器
--- @string host 地址
--- @string port 端口
+-- @string host 服务器地址
+-- @param port string或者number类型，服务器端口
 -- @string[opt="tcp"] transport "tcp"或者"tcp_ssl"
 -- @table[opt=nil] cert，table或者nil类型，ssl证书，当transport为"tcp_ssl"时，此参数才有意义。cert格式如下：
 -- {
@@ -282,7 +284,7 @@ end
 --     clientKey = "client.key", --客户端私钥文件(Base64编码 X.509格式)
 --     clientPassword = "123456", --客户端证书文件密码[可选]
 -- }
--- @return result true - 成功，false - 失败
+-- @return result true表示成功，false或者nil表示失败
 -- @usage mqttc = mqtt.client("clientid-123", nil, nil, false); mqttc:connect("mqttserver.com", 1883, "tcp")
 function mqttc:connect(host, port, transport, cert)
     if self.connected then
@@ -323,10 +325,10 @@ function mqttc:connect(host, port, transport, cert)
     return true
 end
 
---- mqtt.client:subscribe(topic, qos)
+--- 订阅主题
 -- @param topic，string或者table类型，一个主题时为string类型，多个主题时为table类型，主题内容为UTF8编码
--- @param qos，number或者nil，topic为一个主题时，qos为number类型(0/1/2，默认0)；topic为多个主题时，qos为nil
--- @return bool true - 成功，false - 失败
+-- @param[opt=0] qos，number或者nil，topic为一个主题时，qos为number类型(0/1/2，默认0)；topic为多个主题时，qos为nil
+-- @return bool true表示成功，false或者nil表示失败
 -- @usage
 -- mqttc:subscribe("/abc", 0) -- subscribe topic "/abc" with qos = 0
 -- mqttc:subscribe({["/topic1"] = 0, ["/topic2"] = 1, ["/topic3"] = 2}) -- subscribe multi topic
@@ -356,11 +358,11 @@ function mqttc:subscribe(topic, qos)
     return true
 end
 
---- mqtt.client:publish(topic, payload, qos, retain)
+--- 发布一条消息
 -- @string topic UTF8编码的字符串
 -- @string payload 用户自己控制payload的编码，mqtt.lua不会对payload做任何编码转换
--- @number qos 0/1/2, default 0
--- @number retain 0或者1
+-- @number[opt=0] qos 0/1/2, default 0
+-- @number[opt=0] retain 0或者1
 -- @return bool 发布成功返回true，失败返回false
 -- @usage
 -- mqttc = mqtt.client("clientid-123", nil, nil, false)
@@ -390,9 +392,12 @@ function mqttc:publish(topic, payload, qos, retain)
     return true
 end
 
---- mqtt.client:receive([timeout])
--- @return result true - 成功，false - 失败
--- @return data 如果成功返回的时候接收到的服务器发过来的包，如果失败返回的是错误信息
+--- 接收消息
+-- @number timeout，超时间隔，单位毫秒
+-- @return result 接收结果，true表示成功，false表示失败
+-- @return data 
+-- 如果成功返回的时候接收到的服务器发过来的包
+-- 如果失败返回的是错误信息，如果是超时失败，返回"timeout"
 -- @usage
 -- true, packet = mqttc:receive()
 -- false, error_message = mqttc:receive()
@@ -405,8 +410,8 @@ function mqttc:receive(timeout)
     return self:waitfor(PUBLISH, timeout)
 end
 
---- mqtt disconnect
--- @return result true - 成功，false - 失败
+--- 断开与服务器的连接
+-- @return nil
 -- @usage
 -- mqttc = mqtt.client("clientid-123", nil, nil, false)
 -- mqttc:connect("mqttserver.com", 1883, "tcp")

@@ -69,7 +69,7 @@
   <li><a href="../modules/sms.html">sms</a></li>
   <li><a href="../modules/socket.html">socket</a></li>
   <li><a href="../modules/sys.html">sys</a></li>
-  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/uiwin.html">uiwin</a></li>
   <li><a href="../modules/update.html">update</a></li>
   <li><a href="../modules/utils.html">utils</a></li>
   <li><a href="../modules/wdt.html">wdt</a></li>
@@ -214,15 +214,15 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string，转换后的字符串</pre></il>
+        <pre class="example">string data，转换后的字符串</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example"><span class="keyword">local</span> str = common.ucs2ToAscii(<span class="string">"0031003200330034"</span>)
-str is <span class="string">"1234"</span></pre></il>
+        <li><pre class="example"><span class="keyword">local</span> data = common.ucs2ToAscii(<span class="string">"0031003200330034"</span>)
+data is <span class="string">"1234"</span></pre></il>
     </ul>
 
 </dd>
@@ -247,15 +247,15 @@ str is <span class="string">"1234"</span></pre></il>
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string,转换后的字符串</pre></il>
+        <pre class="example">string data,转换后的字符串</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example"><span class="keyword">local</span> str = common.nstrToUcs2Hex(<span class="string">"+1234"</span>)
-str is <span class="string">"002B0031003200330034"</span></pre></il>
+        <li><pre class="example"><span class="keyword">local</span> data = common.nstrToUcs2Hex(<span class="string">"+1234"</span>)
+data is <span class="string">"002B0031003200330034"</span></pre></il>
     </ul>
 
 </dd>
@@ -284,15 +284,15 @@ str is <span class="string">"002B0031003200330034"</span></pre></il>
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string,转换后的字符串</pre></il>
+        <pre class="example">string data,转换后的字符串</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example"><span class="keyword">local</span> str = common.numToBcdNum(<span class="string">"8618126324567"</span>)
-str is <span class="string">"688121364265f7"</span> （表示第<span class="number">1</span>个字节是<span class="number">0x68</span>，第<span class="number">2</span>个字节为<span class="number">0x81</span>，......）</pre></il>
+        <li><pre class="example"><span class="keyword">local</span> data = common.numToBcdNum(<span class="string">"8618126324567"</span>)
+data is <span class="string">"688121364265f7"</span> （表示第<span class="number">1</span>个字节是<span class="number">0x68</span>，第<span class="number">2</span>个字节为<span class="number">0x81</span>，......）</pre></il>
     </ul>
 
 </dd>
@@ -317,15 +317,15 @@ str is <span class="string">"688121364265f7"</span> （表示第<span class="num
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string,转换后的字符串</pre></il>
+        <pre class="example">string data,转换后的字符串</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example"><span class="keyword">local</span> str = common.bcdNumToNum(common.fromHex(<span class="string">"688121364265f7"</span>)) <span class="comment">--表示第1个字节是0x68，第2个字节为0x81，......
-</span>str is <span class="string">"8618126324567"</span></pre></il>
+        <li><pre class="example"><span class="keyword">local</span> data = common.bcdNumToNum(common.fromHex(<span class="string">"688121364265f7"</span>)) <span class="comment">--表示第1个字节是0x68，第2个字节为0x81，......
+</span>data is <span class="string">"8618126324567"</span></pre></il>
     </ul>
 
 </dd>
@@ -350,14 +350,14 @@ str is <span class="string">"688121364265f7"</span> （表示第<span class="num
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string,gb2312编码数据</pre></il>
+        <pre class="example">string data,gb2312编码数据</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example"><span class="keyword">local</span> gb = common.ucs2ToGb2312(ucs2s)</pre></il>
+        <li><pre class="example"><span class="keyword">local</span> data = common.ucs2ToGb2312(ucs2s)</pre></il>
     </ul>
 
 </dd>
@@ -382,14 +382,14 @@ str is <span class="string">"688121364265f7"</span> （表示第<span class="num
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string,unicode小端编码数据</pre></il>
+        <pre class="example">string data,unicode小端编码数据</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example"><span class="keyword">local</span> ucs = common.gb2312ToUcs2(gb2312s)</pre></il>
+        <li><pre class="example"><span class="keyword">local</span> data = common.gb2312ToUcs2(gb2312s)</pre></il>
     </ul>
 
 </dd>
@@ -414,14 +414,14 @@ str is <span class="string">"688121364265f7"</span> （表示第<span class="num
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string ,gb2312编码数据</pre></il>
+        <pre class="example">string data,gb2312编码数据</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example">gb = common.ucs2beToGb2312(ucs2s)</pre></il>
+        <li><pre class="example">data = common.ucs2beToGb2312(ucs2s)</pre></il>
     </ul>
 
 </dd>
@@ -446,14 +446,14 @@ str is <span class="string">"688121364265f7"</span> （表示第<span class="num
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string,unicode大端编码数据</pre></il>
+        <pre class="example">string data,unicode大端编码数据</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example"><span class="keyword">local</span> ucs = common.gb2312ToUcs2be(gb2312s)</pre></il>
+        <li><pre class="example"><span class="keyword">local</span> data = common.gb2312ToUcs2be(gb2312s)</pre></il>
     </ul>
 
 </dd>
@@ -478,14 +478,14 @@ str is <span class="string">"688121364265f7"</span> （表示第<span class="num
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string ,utf8编码数据</pre></il>
+        <pre class="example">string data,utf8编码数据</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example">u8 = common.ucs2ToUtf8(ucs2s)</pre></il>
+        <li><pre class="example">data = common.ucs2ToUtf8(ucs2s)</pre></il>
     </ul>
 
 </dd>
@@ -510,14 +510,14 @@ str is <span class="string">"688121364265f7"</span> （表示第<span class="num
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string,unicode小端编码数据</pre></il>
+        <pre class="example">string data,unicode小端编码数据</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example"><span class="keyword">local</span> ucs = common.utf8ToUcs2(utf8s)</pre></il>
+        <li><pre class="example"><span class="keyword">local</span> data = common.utf8ToUcs2(utf8s)</pre></il>
     </ul>
 
 </dd>
@@ -542,14 +542,14 @@ str is <span class="string">"688121364265f7"</span> （表示第<span class="num
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string ,utf8编码数据</pre></il>
+        <pre class="example">string data,utf8编码数据</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example">u8 = common.ucs2beToUtf8(ucs2s)</pre></il>
+        <li><pre class="example">data = common.ucs2beToUtf8(ucs2s)</pre></il>
     </ul>
 
 </dd>
@@ -574,14 +574,14 @@ str is <span class="string">"688121364265f7"</span> （表示第<span class="num
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string,unicode大端编码数据</pre></il>
+        <pre class="example">string data,unicode大端编码数据</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example"><span class="keyword">local</span> ucs = common.utf8ToUcs2be(utf8s)</pre></il>
+        <li><pre class="example"><span class="keyword">local</span> data = common.utf8ToUcs2be(utf8s)</pre></il>
     </ul>
 
 </dd>
@@ -606,14 +606,14 @@ str is <span class="string">"688121364265f7"</span> （表示第<span class="num
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string,gb2312编码数据</pre></il>
+        <pre class="example">string data,gb2312编码数据</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example"><span class="keyword">local</span> gb = common.utf8ToGb2312(utf8s)</pre></il>
+        <li><pre class="example"><span class="keyword">local</span> data = common.utf8ToGb2312(utf8s)</pre></il>
     </ul>
 
 </dd>
@@ -638,14 +638,14 @@ str is <span class="string">"688121364265f7"</span> （表示第<span class="num
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string ,utf8编码数据</pre></il>
+        <pre class="example">string data,utf8编码数据</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example"><span class="keyword">local</span> u8 = common.gb2312ToUtf8(gb2312s)</pre></il>
+        <li><pre class="example"><span class="keyword">local</span> data = common.gb2312ToUtf8(gb2312s)</pre></il>
     </ul>
 
 </dd>
@@ -698,7 +698,7 @@ str is <span class="string">"688121364265f7"</span> （表示第<span class="num
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">table ,返回目的时区对应的时间，{year,month,day,hour,min,sec}</pre></il>
+        <pre class="example">table dstZoneTime,返回目的时区对应的时间，{year,month,day,hour,min,sec}</pre></il>
     </ul>
 
 
@@ -717,7 +717,7 @@ dstZoneTime为{year=<span class="number">2018</span>,month=<span class="number">
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-17 13:24:42 </i>
+<i style="float:right;">Last updated 2018-04-24 17:25:11 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

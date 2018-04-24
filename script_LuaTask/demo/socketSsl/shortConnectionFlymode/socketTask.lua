@@ -17,8 +17,8 @@ sys.taskInit(
     function()
         while true do
             if not socket.isReady() then
-                --等待网络环境准备就绪，超时时间是2分钟
-                sys.waitUntil("IP_READY_IND",120000)
+                --等待网络环境准备就绪，超时时间是5分钟
+                sys.waitUntil("IP_READY_IND",300000)
             end
 
             if socket.isReady() then
@@ -51,7 +51,7 @@ sys.taskInit(
                 if connectCnt~=3 then
                     if socketClient:send("GET / HTTP/1.1\r\nHost: 36.7.87.100\r\nConnection: keep-alive\r\n\r\n") then
                         result,data = socketClient:recv(5000)
-                        if result and data~="timeour" then
+                        if result then
                             --TODO：处理收到的数据data
                             log.info("socketTask.recv",data)
                         end

@@ -4,7 +4,7 @@
 -- @license MIT
 -- @copyright openLuat
 -- @release 2017.9.13
-require "errDump"
+require "utils"
 require "patch"
 require "log"
 module(..., package.seeall)
@@ -45,7 +45,7 @@ end
 -- @usage sys.restart('程序超时软件重启')
 function restart(r)
     assert(r and r ~= "", "sys.restart cause null")
-    errDump.appendErr("restart[" .. r .. "];")
+    if errDump and errDump.appendErr and type(errDump.appendErr)=="function" then errDump.appendErr("restart[" .. r .. "];") end
     rtos.restart()
 end
 
@@ -105,14 +105,14 @@ local function checkCoreVer()
     local realver = rtos.get_version()
     --如果没有获取到底层软件版本号
     if not realver or realver == "" then
-        errDump.appendErr("checkCoreVer[no core ver error];")
+        log.error("checkCoreVer[no core ver error];")
         return
     end
     
     local buildver = string.match(realver, "Luat_V(%d+)_")
     --如果底层软件版本号格式错误
     if not buildver then
-        errDump.appendErr("checkCoreVer[core ver format error]" .. realver .. ";")
+        log.error("checkCoreVer[core ver format error]" .. realver .. ";")
         return
     end
     
@@ -142,8 +142,6 @@ function init(mode, lprfnc)
             rtos.poweron(0)
         end
     end
-    -- 打印错误日志
-    errDump.initErr()
     checkCoreVer()
 end
 

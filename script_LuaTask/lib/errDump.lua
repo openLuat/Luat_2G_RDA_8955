@@ -14,6 +14,7 @@
 -- @license MIT
 -- @copyright openLuat
 -- @release 2017.09.26
+require"socket"
 module(..., package.seeall)
 
 --错误信息文件以及错误信息内容
@@ -24,7 +25,7 @@ local sReporting,sProtocol,sWritingFile
 -- 初始化LIB_ERR_FILE文件中的错误信息(读取到内存中，并且打印出来)
 -- @return nil
 -- @usage readTxt.initErr()
-function initErr()
+local function initErr()
     libErr = io.readFile(LIB_ERR_FILE) or ""
     if libErr~="" then
         log.error("errDump.libErr", libErr)
@@ -43,10 +44,11 @@ end
 -- 2、如果用户调用errDump.request接口设置了错误信息要上报的调试服务器地址和端口，则每次重启会自动上报错误信息到调试服务器
 -- 3、如果用户调用errDump.request接口设置了定时上报，则定时上报时会上报错误信息到调试服务器
 -- 其中第2和第3种情况，上报成功后，会自动清除错误信息
--- @return bool true表示成功，false或者nil表示失败
+-- @return bool result，true表示成功，false或者nil表示失败
 -- @usage errDump.appendErr("net working timeout!")
 function appendErr(s)
     if s and (s:len()+libErr:len())<=LIB_ERR_MAX_LEN then
+        s=s.."\r\n"
         log.info("errDump.appendErr", s)
         libErr = libErr .. s
         sWritingFile = true
@@ -57,7 +59,7 @@ function appendErr(s)
 end
 
 local function reportData()
-    return _G.PROJECT.."_"..rtos.get_version()..",".._G.VERSION..misc.getImei()..","..luaErr.."\r\n"..libErr
+    return _G.PROJECT.."_"..rtos.get_version()..",".._G.VERSION..","..misc.getImei()..","..misc.getSn()..","..luaErr..(luaErr:len()>0 and "\r\n" or "")..libErr
 end
 
 local function httpPostCbFnc(result,statusCode)
@@ -67,52 +69,54 @@ end
 
 function clientTask(protocol,addr,period)
     sReporting = true
-    --不要省略此处代码，否则下文中的misc.getImei有可能获取不到
-    while not socket.isReady() do sys.waitUntil("IP_READY_IND") end
     while true do
-    
-        local retryCnt,result,data = 0
-        while true do
-            if protocol=="http" then
-                http.request("POST",addr,nil,nil,reportData(),20000,httpPostCbFnc)                     
-                _,result = sys.waitUntil("ERRDUMP_HTTP_POST")
-            else
-                local host,port = addr:match("://(.+):(%d+)$")
-                if not host then log.error("errDump.request invalid host port") return end
-                
-                local sck = protocol=="udp" and socket.udp() or socket.tcp()
-                
-                if sck:connect(host,port) then
-                    result = sck:send(reportData())
-                    if result and protocol=="udp" then
-                        result,data = sck:recv(20000)
-                        if result then
-                            result = data=="OK"
+        if not socket.isReady() then sys.waitUntil("IP_READY_IND") end
+        --log.info("errDump.clientTask","err",luaErr~="" or libErr~="")
+        if luaErr~="" or libErr~="" then
+            local retryCnt,result,data = 0
+            while true do
+                if protocol=="http" then
+                    http.request("POST",addr,nil,nil,reportData(),20000,httpPostCbFnc)                     
+                    _,result = sys.waitUntil("ERRDUMP_HTTP_POST")
+                else
+                    local host,port = addr:match("://(.+):(%d+)$")
+                    if not host then log.error("errDump.request invalid host port") return end
+                    
+                    local sck = protocol=="udp" and socket.udp() or socket.tcp()
+                    
+                    if sck:connect(host,port) then
+                        result = sck:send(reportData())
+                        if result and protocol=="udp" then
+                            result,data = sck:recv(20000)
+                            if result then
+                                result = data=="OK"
+                            end
                         end
                     end
+                    
+                    sck:close()
                 end
                 
-                sck:close()
-            end
-            
-            if result then
-                if not sWritingFile then
-                    libErr = ""
-                    os.remove(LIB_ERR_FILE)
-                end
-                luaErr = ""
-                os.remove(LUA_ERR_FILE)
-                break
-            else
-                retryCnt = retryCnt+1
-                if retryCnt==3 then
+                if result then
+                    if not sWritingFile then
+                        libErr = ""
+                        os.remove(LIB_ERR_FILE)
+                    end
+                    luaErr = ""
+                    os.remove(LUA_ERR_FILE)
                     break
+                else
+                    retryCnt = retryCnt+1
+                    if retryCnt==3 then
+                        break
+                    end
+                    sys.wait(5000)
                 end
-                sys.wait(5000)
             end
         end
         
         if period then
+            --log.info("errDump.clientTask","wait",period)
             sys.wait(period)
         else
             break
@@ -147,25 +151,24 @@ end
 --   "   tcp    :// host.com : 8082 | 
 --   |          |||          |      |
 --   |------------------------------|
--- @number[opt=nil] period，单位毫秒，定时上报错误信息的间隔，如果没有设置此参数，仅执行一次错误上报功能
--- @return bool，成功返回true，失败返回nil
+-- @number[opt=600000] period，单位毫秒，定时检查错误信息并上报的间隔
+-- @return bool result，成功返回true，失败返回nil
 -- @usage
 -- errDump.request("http://www.user_server.com/errdump")
 -- errDump.request("udp://www.user_server.com:8081")
 -- errDump.request("tcp://www.user_server.com:8082")
 -- errDump.request("tcp://www.user_server.com:8082",6*3600*1000)
 function request(addr,period)
-    if addr and type(addr)=="string" then
-    
-        local protocol = addr:match("(%a+)://")
-        if protocol~="http" and protocol~="udp" and protocol~="tcp" then
-            log.error("errDump.request invalid protocol",protocol)
-            return
-        end
-        
-        if not sReporting and (libErr:len()>0 or luaErr:len()>0) then        
-            sys.taskInit(clientTask,protocol,addr,period)
-        end
-        return true
+    local protocol = addr:match("(%a+)://")
+    if protocol~="http" and protocol~="udp" and protocol~="tcp" then
+        log.error("errDump.request invalid protocol",protocol)
+        return
     end
+    
+    if not sReporting then        
+        sys.taskInit(clientTask,protocol,addr,period or 600000)
+    end
+    return true
 end
+
+initErr()

@@ -70,7 +70,7 @@
   <li><a href="../modules/sms.html">sms</a></li>
   <li><a href="../modules/socket.html">socket</a></li>
   <li><a href="../modules/sys.html">sys</a></li>
-  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/uiwin.html">uiwin</a></li>
   <li><a href="../modules/update.html">update</a></li>
   <li><a href="../modules/utils.html">utils</a></li>
   <li><a href="../modules/wdt.html">wdt</a></li>
@@ -98,13 +98,27 @@
 	<td class="name" nowrap><a href="#open">
     open (mode, para)
     </a></td>
-	<td class="summary">打开一个“GPS应用”.</td>
+	<td class="summary">打开一个“GPS应用”
+ “GPS应用”：指的是使用GPS功能的一个应用
+ 例如，假设有如下3种需求，要打开GPS，则一共有3个“GPS应用”：
+ “GPS应用1”：每隔1分钟打开一次GPS
+ “GPS应用2”：设备发生震动时打开GPS
+ “GPS应用3”：收到一条特殊短信时打开GPS
+ 只有所有“GPS应用”都关闭了，才会去真正关闭GPS
+ 每个“GPS应用”打开或者关闭GPS时，最多有4个参数，其中 GPS应用模式和GPS应用标记 共同决定了一个唯一的“GPS应用”：
+ 1、GPS应用模式(必选)
+ 2、GPS应用标记(必选)
+ 3、GPS开启最大时长[可选]
+ 4、回调函数[可选]
+ 例如gps.open(gps.TIMERORSUC,{tag="TEST",val=120,cb=testGpsCb})
+ gps.TIMERORSUC为GPS应用模式，"TEST"为GPS应用标记，120秒为GPS开启最大时长，testGpsCb为回调函数</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#close">
     close (mode, para)
     </a></td>
-	<td class="summary">关闭一个“GPS应用”.</td>
+	<td class="summary">关闭一个“GPS应用”
+ 只是从逻辑上关闭一个GPS应用，并不一定真正关闭GPS，是有所有的GPS应用都处于关闭状态，才回去真正关闭GPS</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#closeAll">
@@ -122,13 +136,17 @@
 	<td class="name" nowrap><a href="#setPowerCbFnc">
     setPowerCbFnc (cbFnc)
     </a></td>
-	<td class="summary">设置GPS模块供电控制的回调函数.</td>
+	<td class="summary">设置GPS模块供电控制的回调函数
+ 如果使用的是Air800，或者供电控制使用的是LDO_VCAM，则打开GPS应用前不需要调用此接口进行设置
+ 否则在调用gps.open前，使用此接口，传入自定义的供电控制函数cbFnc，GPS开启时，gps.lua自动执行cbFnc(true)，GPS关闭时，gps.lua自动执行cbFnc(false)</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#setUart">
     setUart (id, baudrate, databits, parity, stopbits)
     </a></td>
-	<td class="summary">设置GPS模块和GSM模块之间数据通信的串口参数.</td>
+	<td class="summary">设置GPS模块和GSM模块之间数据通信的串口参数
+ 如果使用的是Air800，或者使用的UART2(波特率115200，数据位8，无检验位，停止位1)，则打开GPS应用前不需要调用此接口进行设置
+ 否则在调用gps.open前，使用此接口，传入UART参数</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#setAerialMode">
@@ -164,7 +182,7 @@
 	<td class="name" nowrap><a href="#getLocation">
     getLocation ()
     </a></td>
-	<td class="summary">获取经纬度信息</td>
+	<td class="summary">获取度格式的经纬度信息</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#getAltitude">
@@ -200,13 +218,16 @@
 	<td class="name" nowrap><a href="#getGgaloc">
     getGgaloc ()
     </a></td>
-	<td class="summary">获取定位使用的度分经度，度分纬度</td>
+	<td class="summary">获取GGA语句中度分格式的经纬度信息</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#getUtcTime">
     getUtcTime ()
     </a></td>
-	<td class="summary">获取定位使用的UTC时间</td>
+	<td class="summary">获取RMC语句中的UTC时间
+ 只有同时满足如下两个条件，返回值才有效
+ 1、开启了GPS，并且定位成功
+ 2、调用setParseItem接口，第一个参数设置为true</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#getSep">
@@ -218,19 +239,25 @@
 	<td class="name" nowrap><a href="#getSateSn">
     getSateSn ()
     </a></td>
-	<td class="summary">获取定位使用的可用卫星号</td>
+	<td class="summary">获取GSA语句中的可见卫星号
+ 只有同时满足如下两个条件，返回值才有效
+ 1、开启了GPS，并且定位成功
+ 2、调用setParseItem接口，第三个参数设置为true</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#getGsv">
     getGsv ()
     </a></td>
-	<td class="summary">获取定位使用的信噪比</td>
+	<td class="summary">获取GSV语句中的可见卫星的信噪比
+ 只有同时满足如下两个条件，返回值才有效
+ 1、开启了GPS，并且定位成功
+ 2、调用setParseItem接口，第二个参数设置为true</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#setParseItem">
-    setParseItem (utctime, gsv, sn)
+    setParseItem (<strong  style="color: gray;">[utcTime=nil]</strong><strong  style="color: gray;">[, gsv=nil]</strong><strong  style="color: gray;">[, gsaId=nil]</strong>)
     </a></td>
-	<td class="summary">设置是否需要解析项</td>
+	<td class="summary">设置是否需要解析的字段</td>
 	</tr>
 </table>
 <h2><a href="#Fields">Fields</a></h2>
@@ -269,20 +296,20 @@
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">打开一个“GPS应用”.
-<p> “GPS应用”：指的是使用GPS功能的一个应用
-<p> 例如，假设有如下3种需求，要打开GPS，则一共有3个“GPS应用”：
-<p> “GPS应用1”：每隔1分钟打开一次GPS
-<p> “GPS应用2”：设备发生震动时打开GPS
-<p> “GPS应用3”：收到一条特殊短信时打开GPS
-<p> 只有所有“GPS应用”都关闭了，才会去真正关闭GPS
-<p> 每个“GPS应用”打开或者关闭GPS时，最多有4个参数，其中 GPS应用模式和GPS应用标记 共同决定了一个唯一的“GPS应用”：
-<p> 1、GPS应用模式(必选)
-<p> 2、GPS应用标记(必选)
-<p> 3、GPS开启最大时长[可选]
-<p> 4、回调函数[可选]
-<p> 例如gps.open(gps.TIMERORSUC,{tag="TEST",val=120,cb=testGpsCb})
-<p> gps.TIMERORSUC为GPS应用模式，"TEST"为GPS应用标记，120秒为GPS开启最大时长，testGpsCb为回调函数</pre>
+    <pre class="example"  style="color: red;">打开一个“GPS应用”
+ “GPS应用”：指的是使用GPS功能的一个应用
+ 例如，假设有如下3种需求，要打开GPS，则一共有3个“GPS应用”：
+ “GPS应用1”：每隔1分钟打开一次GPS
+ “GPS应用2”：设备发生震动时打开GPS
+ “GPS应用3”：收到一条特殊短信时打开GPS
+ 只有所有“GPS应用”都关闭了，才会去真正关闭GPS
+ 每个“GPS应用”打开或者关闭GPS时，最多有4个参数，其中 GPS应用模式和GPS应用标记 共同决定了一个唯一的“GPS应用”：
+ 1、GPS应用模式(必选)
+ 2、GPS应用标记(必选)
+ 3、GPS开启最大时长[可选]
+ 4、回调函数[可选]
+ 例如gps.open(gps.TIMERORSUC,{tag="TEST",val=120,cb=testGpsCb})
+ gps.TIMERORSUC为GPS应用模式，"TEST"为GPS应用标记，120秒为GPS开启最大时长，testGpsCb为回调函数</pre>
 
 
     <h3>Parameters:</h3>
@@ -293,16 +320,16 @@
         </li>
         <li><span class="parameter">para</span>
         <pre class="example">table类型，GPS应用参数
-<p>               para.tag：string类型，GPS应用标记
-<p>               para.val：number类型，GPS应用开启最大时长，mode参数为gps.TIMERORSUC或者gps.TIMER时，此值才有意义
-<p>               para.cb：GPS应用结束时的回调函数，回调函数的调用形式为para.cb(para.tag)</pre>
+               para.tag：string类型，GPS应用标记
+               para.val：number类型，GPS应用开启最大时长，mode参数为gps.TIMERORSUC或者gps.TIMER时，此值才有意义
+               para.cb：GPS应用结束时的回调函数，回调函数的调用形式为para.cb(para.tag)</pre>
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -328,8 +355,8 @@
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">关闭一个“GPS应用”.
-<p> 只是从逻辑上关闭一个GPS应用，并不一定真正关闭GPS，是有所有的GPS应用都处于关闭状态，才回去真正关闭GPS</pre>
+    <pre class="example"  style="color: red;">关闭一个“GPS应用”
+ 只是从逻辑上关闭一个GPS应用，并不一定真正关闭GPS，是有所有的GPS应用都处于关闭状态，才回去真正关闭GPS</pre>
 
 
     <h3>Parameters:</h3>
@@ -340,16 +367,16 @@
         </li>
         <li><span class="parameter">para</span>
         <pre class="example">table类型，GPS应用参数
-<p>               para.tag：string类型，GPS应用标记
-<p>               para.val：number类型，GPS应用开启最大时长，mode参数为gps.TIMERORSUC或者gps.TIMER时，此值才有意义；使用close接口时，不需要传入此参数
-<p>               para.cb：GPS应用结束时的回调函数，回调函数的调用形式为para.cb(para.tag)；使用close接口时，不需要传入此参数</pre>
+               para.tag：string类型，GPS应用标记
+               para.val：number类型，GPS应用开启最大时长，mode参数为gps.TIMERORSUC或者gps.TIMER时，此值才有意义；使用close接口时，不需要传入此参数
+               para.cb：GPS应用结束时的回调函数，回调函数的调用形式为para.cb(para.tag)；使用close接口时，不需要传入此参数</pre>
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -384,7 +411,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -420,16 +447,16 @@
         </li>
         <li><span class="parameter">para</span>
         <pre class="example">table类型，GPS应用参数
-<p>               para.tag：string类型，GPS应用标记
-<p>               para.val：number类型，GPS应用开启最大时长，mode参数为gps.TIMERORSUC或者gps.TIMER时，此值才有意义；使用isActive接口时，不需要传入此参数
-<p>               para.cb：GPS应用结束时的回调函数，回调函数的调用形式为para.cb(para.tag)；使用isActive接口时，不需要传入此参数</pre>
+               para.tag：string类型，GPS应用标记
+               para.val：number类型，GPS应用开启最大时长，mode参数为gps.TIMERORSUC或者gps.TIMER时，此值才有意义；使用isActive接口时，不需要传入此参数
+               para.cb：GPS应用结束时的回调函数，回调函数的调用形式为para.cb(para.tag)；使用isActive接口时，不需要传入此参数</pre>
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">处于激活状态返回true，否则返回nil</pre></il>
+        <pre class="example">bool result，处于激活状态返回true，否则返回nil</pre></il>
     </ul>
 
 
@@ -457,9 +484,9 @@
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">设置GPS模块供电控制的回调函数.
-<p> 如果使用的是Air800，或者供电控制使用的是LDO_VCAM，则打开GPS应用前不需要调用此接口进行设置
-<p> 否则在调用gps.open前，使用此接口，传入自定义的供电控制函数cbFnc，GPS开启时，gps.lua自动执行cbFnc(true)，GPS关闭时，gps.lua自动执行cbFnc(false)</pre>
+    <pre class="example"  style="color: red;">设置GPS模块供电控制的回调函数
+ 如果使用的是Air800，或者供电控制使用的是LDO_VCAM，则打开GPS应用前不需要调用此接口进行设置
+ 否则在调用gps.open前，使用此接口，传入自定义的供电控制函数cbFnc，GPS开启时，gps.lua自动执行cbFnc(true)，GPS关闭时，gps.lua自动执行cbFnc(false)</pre>
 
 
     <h3>Parameters:</h3>
@@ -472,7 +499,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -490,9 +517,9 @@
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">设置GPS模块和GSM模块之间数据通信的串口参数.
-<p> 如果使用的是Air800，或者使用的UART2(波特率115200，数据位8，无检验位，停止位1)，则打开GPS应用前不需要调用此接口进行设置
-<p> 否则在调用gps.open前，使用此接口，传入UART参数</pre>
+    <pre class="example"  style="color: red;">设置GPS模块和GSM模块之间数据通信的串口参数
+ 如果使用的是Air800，或者使用的UART2(波特率115200，数据位8，无检验位，停止位1)，则打开GPS应用前不需要调用此接口进行设置
+ 否则在调用gps.open前，使用此接口，传入UART参数</pre>
 
 
     <h3>Parameters:</h3>
@@ -503,8 +530,7 @@
         </li>
         <li><span class="parameter">baudrate</span>
             <span class="types"><span class="type">number</span></span>
-        <pre class="example">波特率，支持1200,2400,4800,9600,10400,14400,19200,28800,
- 38400,57600,76800,115200,230400,460800,576000,921600,1152000,4000000</pre>
+        <pre class="example">波特率，支持1200,2400,4800,9600,10400,14400,19200,28800,38400,57600,76800,115200,230400,460800,576000,921600,1152000,4000000</pre>
         </li>
         <li><span class="parameter">databits</span>
             <span class="types"><span class="type">number</span></span>
@@ -523,7 +549,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -542,7 +568,7 @@
     </dt>
     <dd>
     <pre class="example"  style="color: red;">设置GPS模块搜星模式.
-<p> 如果使用的是Air800或者Air530，不调用此接口配置，则默认同时开启GPS和北斗定位</pre>
+ 如果使用的是Air800或者Air530，不调用此接口配置，则默认同时开启GPS和北斗定位</pre>
 
 
     <h3>Parameters:</h3>
@@ -568,7 +594,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -587,7 +613,7 @@
     </dt>
     <dd>
     <pre class="example"  style="color: red;">设置NMEA数据处理模式.
-<p> 如果不调用此接口配置，则默认仅gps.lua内部处理NMEA数据</pre>
+ 如果不调用此接口配置，则默认仅gps.lua内部处理NMEA数据</pre>
 
 
     <h3>Parameters:</h3>
@@ -604,7 +630,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -625,7 +651,7 @@
     </dt>
     <dd>
     <pre class="example"  style="color: red;">设置GPS模块的运行模式.
-<p> 如果不调用此接口配置，则默认为正常运行模式</pre>
+ 如果不调用此接口配置，则默认为正常运行模式</pre>
 
 
     <h3>Parameters:</h3>
@@ -633,12 +659,12 @@
         <li><span class="parameter">mode</span>
             <span class="types"><span class="type">number</span></span>
         <pre class="example">运行模式
-<p> 0：正常运行模式
-<p> 1：周期超低功耗跟踪模式
-<p> 2：周期低功耗模式
-<p> 4：直接进入超低功耗跟踪模式
-<p> 8：自动低功耗模式，可以通过串口唤醒
-<p> 9：自动超低功耗跟踪模式，需要force on来唤醒</pre>
+ 0：正常运行模式
+ 1：周期超低功耗跟踪模式
+ 2：周期低功耗模式
+ 4：直接进入超低功耗跟踪模式
+ 8：自动低功耗模式，可以通过串口唤醒
+ 9：自动超低功耗跟踪模式，需要force on来唤醒</pre>
         </li>
         <li><span class="parameter">runTm</span>
             <span class="types"><span class="type">number</span></span>
@@ -653,7 +679,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -679,7 +705,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">bool，true表示开启状态，false或者nil表示关闭状态</pre></il>
+        <pre class="example">bool result，true表示开启状态，false或者nil表示关闭状态</pre></il>
     </ul>
 
 
@@ -704,7 +730,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">bool，true表示定位成功，false或者nil表示定位失败</pre></il>
+        <pre class="example">bool result，true表示定位成功，false或者nil表示定位失败</pre></il>
     </ul>
 
 
@@ -722,19 +748,19 @@
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">获取经纬度信息</pre>
+    <pre class="example"  style="color: red;">获取度格式的经纬度信息</pre>
 
 
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example"> table
-<p> {lngType="E",lng="121.123456",latType="N",lat="31.123456"}
-<p> lngType：string类型，表示经度类型，取值"E"，"W"
-<p> lng：string类型，表示经度值，无效时为""
-<p> latType：string类型，表示纬度类型，取值"N"，"S"
-<p> lat：string类型，表示纬度值，无效时为""</pre></il>
+        <pre class="example"> table location
+ {lngType="E",lng="121.123456",latType="N",lat="31.123456"}
+ lngType：string类型，表示经度类型，取值"E"，"W"
+ lng：string类型，表示度格式的经度值，无效时为""
+ latType：string类型，表示纬度类型，取值"N"，"S"
+ lat：string类型，表示度格式的纬度值，无效时为""</pre></il>
     </ul>
 
 
@@ -759,7 +785,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">number，海拔，单位米</pre></il>
+        <pre class="example">number altitude，海拔，单位米</pre></il>
     </ul>
 
 
@@ -784,9 +810,9 @@
     <h3>Returns:</h3>
     <ol>
         <li>
-        <pre class="example">number，第一个返回值为公里每小时的速度</pre></li>
+        <pre class="example">number kmSpeed，第一个返回值为公里每小时的速度</pre></li>
         <li>
-        <pre class="example">number，第二个返回值为海里每小时的速度</pre></li>
+        <pre class="example">number nmSpeed，第二个返回值为海里每小时的速度</pre></li>
     </ol>
 
 
@@ -811,7 +837,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">number，方向角</pre></il>
+        <pre class="example">number course，方向角</pre></il>
     </ul>
 
 
@@ -836,7 +862,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">number，可见卫星的个数</pre></il>
+        <pre class="example">number count，可见卫星的个数</pre></il>
     </ul>
 
 
@@ -861,7 +887,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">number，定位使用的卫星个数</pre></il>
+        <pre class="example">number count，定位使用的卫星个数</pre></il>
     </ul>
 
 
@@ -879,15 +905,17 @@
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">获取定位使用的度分经度，度分纬度</pre>
+    <pre class="example"  style="color: red;">获取GGA语句中度分格式的经纬度信息</pre>
 
 
 
     <h3>Returns:</h3>
-    <ul>
+    <ol>
         <li>
-        <pre class="example">Ggalng,Ggalat，度分经度，度分纬度</pre></il>
-    </ul>
+        <pre class="example">string lng，度分格式的经度值(dddmm.mmmm)，西经会添加一个-前缀，无效时为""；例如"12112.3456"表示东经121度12.3456分，"-12112.3456"表示西经121度12.3456分</pre></li>
+        <li>
+        <pre class="example">string lat，度分格式的纬度值(ddmm.mmmm)，南纬会添加一个-前缀，无效时为""；例如"3112.3456"表示北纬31度12.3456分，"-3112.3456"表示南纬31度12.3456分</pre></li>
+    </ol>
 
 
 
@@ -904,14 +932,17 @@
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">获取定位使用的UTC时间</pre>
+    <pre class="example"  style="color: red;">获取RMC语句中的UTC时间
+ 只有同时满足如下两个条件，返回值才有效
+ 1、开启了GPS，并且定位成功
+ 2、调用setParseItem接口，第一个参数设置为true</pre>
 
 
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">UtcTime，UTC时间</pre></il>
+        <pre class="example">table utcTime，UTC时间，nil表示无效，例如{year=2018,month=4,day=24,hour=11,min=52,sec=10}</pre></il>
     </ul>
 
 
@@ -936,7 +967,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">Sep，大地高</pre></il>
+        <pre class="example">number sep，大地高</pre></il>
     </ul>
 
 
@@ -954,14 +985,17 @@
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">获取定位使用的可用卫星号</pre>
+    <pre class="example"  style="color: red;">获取GSA语句中的可见卫星号
+ 只有同时满足如下两个条件，返回值才有效
+ 1、开启了GPS，并且定位成功
+ 2、调用setParseItem接口，第三个参数设置为true</pre>
 
 
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">SateSn，可用卫星号</pre></il>
+        <pre class="example">string viewedSateId，可用卫星号，""表示无效</pre></il>
     </ul>
 
 
@@ -979,14 +1013,17 @@
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">获取定位使用的信噪比</pre>
+    <pre class="example"  style="color: red;">获取GSV语句中的可见卫星的信噪比
+ 只有同时满足如下两个条件，返回值才有效
+ 1、开启了GPS，并且定位成功
+ 2、调用setParseItem接口，第二个参数设置为true</pre>
 
 
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">Gsv，信噪比</pre></il>
+        <pre class="example">string gsv，信噪比</pre></il>
     </ul>
 
 
@@ -1000,23 +1037,29 @@
     <dt>
     <a name = "setParseItem"></a>
     <strong  style="color: red;">
-    setParseItem (utctime, gsv, sn)
+    setParseItem (<strong  style="color: green;">[utcTime=nil]</strong><strong  style="color: green;">[, gsv=nil]</strong><strong  style="color: green;">[, gsaId=nil]</strong>)
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">设置是否需要解析项</pre>
+    <pre class="example"  style="color: red;">设置是否需要解析的字段</pre>
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">utctime</span>
-        <pre class="example"></pre>
+        <li><span class="parameter">utcTime</span>
+            <span class="types"><span class="type">bool</span></span>
+         [<em>此参数可选，默认值为：</em> nil]
+        <pre class="example">是否解析RMC语句中的UTC时间，true表示解析，false或者nil不解析</pre>
         </li>
         <li><span class="parameter">gsv</span>
-        <pre class="example"></pre>
+            <span class="types"><span class="type">bool</span></span>
+         [<em>此参数可选，默认值为：</em> nil]
+        <pre class="example">是否解析GSV语句，true表示解析，false或者nil不解析</pre>
         </li>
-        <li><span class="parameter">sn</span>
-        <pre class="example"></pre>
+        <li><span class="parameter">gsaId</span>
+            <span class="types"><span class="type">bool</span></span>
+         [<em>此参数可选，默认值为：</em> nil]
+        <pre class="example">是否解析GSA语句中的卫星ID，true表示解析，false或者nil不解析</pre>
         </li>
     </ul>
 
@@ -1025,7 +1068,7 @@
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example">gps.setParseItem(<span class="keyword">true</span>,<span class="keyword">true</span>,<span class="keyword">true</span>),<span class="keyword">true</span>表示需要，不写或<span class="keyword">nil</span>表示不需要</pre></il>
+        <li><pre class="example">gps.setParseItem(<span class="keyword">true</span>,<span class="keyword">true</span>,<span class="keyword">true</span>)</pre></il>
     </ul>
 
 </dd>
@@ -1095,7 +1138,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-17 13:24:42 </i>
+<i style="float:right;">Last updated 2018-04-24 17:25:11 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

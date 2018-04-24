@@ -1,5 +1,5 @@
 --- 模块功能：UI窗口管理
--- @module uiWin
+-- @module uiwin
 -- @author openLuat
 -- @license MIT
 -- @copyright openLuat

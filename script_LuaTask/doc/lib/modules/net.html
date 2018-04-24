@@ -69,7 +69,7 @@
   <li><a href="../modules/sms.html">sms</a></li>
   <li><a href="../modules/socket.html">socket</a></li>
   <li><a href="../modules/sys.html">sys</a></li>
-  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/uiwin.html">uiwin</a></li>
   <li><a href="../modules/update.html">update</a></li>
   <li><a href="../modules/utils.html">utils</a></li>
   <li><a href="../modules/wdt.html">wdt</a></li>
@@ -94,16 +94,10 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#crsmResponse">
-    crsmResponse (cmd, success, response, intermediate)
-    </a></td>
-	<td class="summary">更新FPLMN的应答处理</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#switchFly">
     switchFly (mode)
     </a></td>
-	<td class="summary">飞行模式开关</td>
+	<td class="summary">设置飞行模式</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#getState">
@@ -142,12 +136,6 @@
 	<td class="summary">获取信号强度</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#getCell">
-    getCell ()
-    </a></td>
-	<td class="summary">获取当前和临近小区以及信号强度的拼接字符串</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#getCellInfo">
     getCellInfo ()
     </a></td>
@@ -167,21 +155,21 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#getMultiCell">
-    getMultiCell (cb)
+    getMultiCell (cbFnc)
     </a></td>
-	<td class="summary">读取“当前和临近小区信息”</td>
+	<td class="summary">实时读取“当前和临近小区信息”</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#cengQueryPoll">
     cengQueryPoll (period)
     </a></td>
-	<td class="summary">查询基站信息(当前和临近小区信息)</td>
+	<td class="summary">发起查询基站信息(当前和临近小区信息)的请求</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#csqQueryPoll">
     csqQueryPoll (period)
     </a></td>
-	<td class="summary">查询信号强度</td>
+	<td class="summary">发起查询信号强度的请求</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#startQueryAll">
@@ -205,53 +193,13 @@
 
     <dl class="function">
     <dt>
-    <a name = "crsmResponse"></a>
-    <strong  style="color: red;">
-    crsmResponse (cmd, success, response, intermediate)
-    </strong>
-    </dt>
-    <dd>
-    <pre class="example"  style="color: red;">更新FPLMN的应答处理</pre>
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">cmd</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        <pre class="example">  ,此应答对应的AT命令</pre>
-        </li>
-        <li><span class="parameter">success</span>
-            <span class="types"><span class="type">bool</span></span>
-        <pre class="example"> ,AT命令执行结果，true或者false</pre>
-        </li>
-        <li><span class="parameter">response</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        <pre class="example"> ,AT命令的应答中的执行结果字符串</pre>
-        </li>
-        <li><span class="parameter">intermediate</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        <pre class="example"> ,AT命令的应答中的中间信息</pre>
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ul>
-        <li>
-        <pre class="example">无</pre></il>
-    </ul>
-
-
-
-
-</dd>
-    <dt>
     <a name = "switchFly"></a>
     <strong  style="color: red;">
     switchFly (mode)
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">飞行模式开关</pre>
+    <pre class="example"  style="color: red;">设置飞行模式</pre>
 
 
     <h3>Parameters:</h3>
@@ -265,7 +213,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -290,7 +238,10 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string ,GSM网络注册状态(INIT、REGISTERED、UNREGISTER)</pre></il>
+        <pre class="example"> string state,GSM网络注册状态，
+ "INIT"表示正在初始化
+ "REGISTERED"表示已注册
+ "UNREGISTER"表示未注册</pre></il>
     </ul>
 
 
@@ -315,7 +266,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string ,当前小区的mcc，如果还没有注册GSM网络，则返回sim卡的mcc</pre></il>
+        <pre class="example">string mcc,当前小区的mcc，如果还没有注册GSM网络，则返回sim卡的mcc</pre></il>
     </ul>
 
 
@@ -340,7 +291,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string ,当前小区的mnc，如果还没有注册GSM网络，则返回sim卡的mnc</pre></il>
+        <pre class="example">string mcn,当前小区的mnc，如果还没有注册GSM网络，则返回sim卡的mnc</pre></il>
     </ul>
 
 
@@ -365,7 +316,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string ,当前位置区ID(16进制字符串，例如"18be")，如果还没有注册GSM网络，则返回""</pre></il>
+        <pre class="example">string lac,当前位置区ID(16进制字符串，例如"18be")，如果还没有注册GSM网络，则返回""</pre></il>
     </ul>
 
 
@@ -390,7 +341,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string ,当前小区ID(16进制字符串，例如"93e1")，如果还没有注册GSM网络，则返回""</pre></il>
+        <pre class="example">string ci,当前小区ID(16进制字符串，例如"93e1")，如果还没有注册GSM网络，则返回""</pre></il>
     </ul>
 
 
@@ -415,7 +366,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">number ,当前信号强度(取值范围0-31)</pre></il>
+        <pre class="example">number rssi,当前信号强度(取值范围0-31)</pre></il>
     </ul>
 
 
@@ -423,31 +374,6 @@
     <h3>Usage:</h3>
     <ul>
         <li><pre class="example">net.getRssi()</pre></il>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "getCell"></a>
-    <strong  style="color: red;">
-    getCell ()
-    </strong>
-    </dt>
-    <dd>
-    <pre class="example"  style="color: red;">获取当前和临近小区以及信号强度的拼接字符串</pre>
-
-
-
-    <h3>Returns:</h3>
-    <ul>
-        <li>
-        <pre class="example">string ,当前和临近小区以及信号强度的拼接字符串，例如：49234.30.49233.23.49232.18.</pre></il>
-    </ul>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <li><pre class="example">net.getCell()</pre></il>
     </ul>
 
 </dd>
@@ -465,7 +391,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string ,当前和临近位置区、小区以及信号强度的拼接字符串，例如：6311.49234.30;6311.49233.23;6322.49232.18;</pre></il>
+        <pre class="example">string cellInfo,当前和临近位置区、小区以及信号强度的拼接字符串，例如："6311.49234.30;6311.49233.23;6322.49232.18;"</pre></il>
     </ul>
 
 
@@ -490,7 +416,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string ,当前和临近位置区、小区、mcc、mnc、以及信号强度的拼接字符串，例如：460.01.6311.49234.30;460.01.6311.49233.23;460.02.6322.49232.18;</pre></il>
+        <pre class="example">string cellInfo,当前和临近位置区、小区、mcc、mnc、以及信号强度的拼接字符串，例如："460.01.6311.49234.30;460.01.6311.49233.23;460.02.6322.49232.18;"</pre></il>
     </ul>
 
 
@@ -515,7 +441,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string ,TA值</pre></il>
+        <pre class="example">number ta,TA值</pre></il>
     </ul>
 
 
@@ -529,24 +455,26 @@
     <dt>
     <a name = "getMultiCell"></a>
     <strong  style="color: red;">
-    getMultiCell (cb)
+    getMultiCell (cbFnc)
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">读取“当前和临近小区信息”</pre>
+    <pre class="example"  style="color: red;">实时读取“当前和临近小区信息”</pre>
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">cb</span>
-        <pre class="example">回调函数，当读取到小区信息后，会调用此回调函数，调用形式为cb(cells)，其中cells为string类型，格式为：当前和临近位置区、小区、mcc、mnc、以及信号强度的拼接字符串，例如：460.01.6311.49234.30;460.01.6311.49233.23;460.02.6322.49232.18;</pre>
+        <li><span class="parameter">cbFnc</span>
+            <span class="types"><span class="type">function</span></span>
+        <pre class="example">回调函数，当读取到小区信息后，会调用此回调函数，回调函数的调用形式为：
+ cbFnc(cells)，其中cells为string类型，格式为：当前和临近位置区、小区、mcc、mnc、以及信号强度的拼接字符串，例如："460.01.6311.49234.30;460.01.6311.49233.23;460.02.6322.49232.18;"</pre>
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -560,7 +488,7 @@
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">查询基站信息(当前和临近小区信息)</pre>
+    <pre class="example"  style="color: red;">发起查询基站信息(当前和临近小区信息)的请求</pre>
 
 
     <h3>Parameters:</h3>
@@ -574,7 +502,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">bool , true:查询成功，false:查询停止</pre></il>
+        <pre class="example">bool result, true:查询成功，false:查询失败</pre></il>
     </ul>
 
 
@@ -593,7 +521,7 @@
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">查询信号强度</pre>
+    <pre class="example"  style="color: red;">发起查询信号强度的请求</pre>
 
 
     <h3>Parameters:</h3>
@@ -640,7 +568,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">bool ，true：查询成功，false：查询停止</pre></il>
+        <pre class="example">bool ，true：查询成功，false：查询失败</pre></il>
     </ul>
 
 
@@ -685,7 +613,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-17 13:24:42 </i>
+<i style="float:right;">Last updated 2018-04-24 17:25:11 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
