@@ -219,7 +219,7 @@ end
 -- GPS串口写命令操作
 -- @string cmd，GPS指令(cmd格式："$PGKC149,1,115200*"或者"$PGKC149,1,115200*XX\r\n")
 -- @bool isFull，cmd是否为完整的指令格式，包括校验和以及\r\n；true表示完整，false或者nil为不完整
--- @return 无
+-- @return nil
 -- @usage gps.writeCmd(cmd)
 function writeCmd(cmd,isFull)
     local tmp = cmd
@@ -418,42 +418,26 @@ local function statInd(evt)
     end
 end
 
---- 打开一个“GPS应用”.
---
+--- 打开一个“GPS应用”
 -- “GPS应用”：指的是使用GPS功能的一个应用
---
 -- 例如，假设有如下3种需求，要打开GPS，则一共有3个“GPS应用”：
---
 -- “GPS应用1”：每隔1分钟打开一次GPS
---
 -- “GPS应用2”：设备发生震动时打开GPS
---
 -- “GPS应用3”：收到一条特殊短信时打开GPS
---
 -- 只有所有“GPS应用”都关闭了，才会去真正关闭GPS
---
 -- 每个“GPS应用”打开或者关闭GPS时，最多有4个参数，其中 GPS应用模式和GPS应用标记 共同决定了一个唯一的“GPS应用”：
---
 -- 1、GPS应用模式(必选)
---
 -- 2、GPS应用标记(必选)
---
 -- 3、GPS开启最大时长[可选]
---
 -- 4、回调函数[可选]
---
 -- 例如gps.open(gps.TIMERORSUC,{tag="TEST",val=120,cb=testGpsCb})
---
 -- gps.TIMERORSUC为GPS应用模式，"TEST"为GPS应用标记，120秒为GPS开启最大时长，testGpsCb为回调函数
 -- @number mode，GPS应用模式，支持gps.DEFAULT，gps.TIMERORSUC，gps.TIMER三种
 -- @param para，table类型，GPS应用参数
---
 --               para.tag：string类型，GPS应用标记
---
 --               para.val：number类型，GPS应用开启最大时长，mode参数为gps.TIMERORSUC或者gps.TIMER时，此值才有意义
---
 --               para.cb：GPS应用结束时的回调函数，回调函数的调用形式为para.cb(para.tag)
--- @return 无
+-- @return nil
 -- @usage gps.open(gps.DEFAULT,{tag="TEST1",cb=test1Cb})
 -- @usage gps.open(gps.TIMERORSUC,{tag="TEST2",val=60,cb=test2Cb})
 -- @usage gps.open(gps.TIMER,{tag="TEST3",val=120,cb=test3Cb})
@@ -478,18 +462,14 @@ function open(mode,para)
     end
 end
 
---- 关闭一个“GPS应用”.
---
+--- 关闭一个“GPS应用”
 -- 只是从逻辑上关闭一个GPS应用，并不一定真正关闭GPS，是有所有的GPS应用都处于关闭状态，才回去真正关闭GPS
 -- @number mode，GPS应用模式，支持gps.DEFAULT，gps.TIMERORSUC，gps.TIMER三种
 -- @param para，table类型，GPS应用参数
---
 --               para.tag：string类型，GPS应用标记
---
 --               para.val：number类型，GPS应用开启最大时长，mode参数为gps.TIMERORSUC或者gps.TIMER时，此值才有意义；使用close接口时，不需要传入此参数
---
 --               para.cb：GPS应用结束时的回调函数，回调函数的调用形式为para.cb(para.tag)；使用close接口时，不需要传入此参数
--- @return 无
+-- @return nil
 -- @usage GPS应用模式和GPS应用标记唯一确定一个“GPS应用”，调用本接口关闭时，mode和para.tag要和gps.open打开一个“GPS应用”时传入的mode和para.tag保持一致
 -- @usage gps.close(gps.DEFAULT,{tag="TEST1"})
 -- @usage gps.close(gps.TIMERORSUC,{tag="TEST2"})
@@ -511,7 +491,7 @@ function close(mode,para)
 end
 
 --- 关闭所有“GPS应用”
--- @return 无
+-- @return nil
 -- @usage gps.closeAll()
 -- @see open,DEFAULT,TIMERORSUC,TIMER
 function closeAll()
@@ -524,13 +504,10 @@ end
 --- 判断一个“GPS应用”是否处于激活状态
 -- @number mode，GPS应用模式，支持gps.DEFAULT，gps.TIMERORSUC，gps.TIMER三种
 -- @param para，table类型，GPS应用参数
---
 --               para.tag：string类型，GPS应用标记
---
 --               para.val：number类型，GPS应用开启最大时长，mode参数为gps.TIMERORSUC或者gps.TIMER时，此值才有意义；使用isActive接口时，不需要传入此参数
---
 --               para.cb：GPS应用结束时的回调函数，回调函数的调用形式为para.cb(para.tag)；使用isActive接口时，不需要传入此参数
--- @return 处于激活状态返回true，否则返回nil
+-- @return bool result，处于激活状态返回true，否则返回nil
 -- @usage GPS应用模式和GPS应用标记唯一确定一个“GPS应用”，调用本接口查询状态时，mode和para.tag要和gps.open打开一个“GPS应用”时传入的mode和para.tag保持一致
 -- @usage gps.isActive(gps.DEFAULT,{tag="TEST1"})
 -- @usage gps.isActive(gps.TIMERORSUC,{tag="TEST2"})
@@ -543,43 +520,37 @@ function isActive(mode,para)
     end
 end
 
---- 设置GPS模块供电控制的回调函数.
---
+--- 设置GPS模块供电控制的回调函数
 -- 如果使用的是Air800，或者供电控制使用的是LDO_VCAM，则打开GPS应用前不需要调用此接口进行设置
---
 -- 否则在调用gps.open前，使用此接口，传入自定义的供电控制函数cbFnc，GPS开启时，gps.lua自动执行cbFnc(true)，GPS关闭时，gps.lua自动执行cbFnc(false)
 -- @param cbFnc，function类型，用户自定义的GPS供电控制函数
--- @return 无
+-- @return nil
 -- @usage gps.setPowerCbFnc(cbFnc)
 function setPowerCbFnc(cbFnc)
     powerCbFnc = cbFnc
 end
 
---- 设置GPS模块和GSM模块之间数据通信的串口参数.
---
+--- 设置GPS模块和GSM模块之间数据通信的串口参数
 -- 如果使用的是Air800，或者使用的UART2(波特率115200，数据位8，无检验位，停止位1)，则打开GPS应用前不需要调用此接口进行设置
---
 -- 否则在调用gps.open前，使用此接口，传入UART参数
 -- @number id，UART ID，支持1和2，1表示UART1，2表示UART2
--- @number baudrate，波特率，支持1200,2400,4800,9600,10400,14400,19200,28800,
--- 38400,57600,76800,115200,230400,460800,576000,921600,1152000,4000000
+-- @number baudrate，波特率，支持1200,2400,4800,9600,10400,14400,19200,28800,38400,57600,76800,115200,230400,460800,576000,921600,1152000,4000000
 -- @number databits，数据位，支持7,8
 -- @number parity，校验位，支持uart.PAR_NONE,uart.PAR_EVEN,uart.PAR_ODD
 -- @number stopbits，停止位，支持uart.STOP_1,uart.STOP_2
--- @return 无
+-- @return nil
 -- @usage gps.setUart(2,115200,8,uart.PAR_NONE,uart.STOP_1)
 function setUart(id,baudrate,databits,parity,stopbits)
     uartID,uartBaudrate,uartDatabits,uartParity,uartStopbits = id,baudrate,databits,parity,stopbits
 end
 
 --- 设置GPS模块搜星模式.
---
 -- 如果使用的是Air800或者Air530，不调用此接口配置，则默认同时开启GPS和北斗定位
 -- @number gps，GPS定位系统，1是打开，0是关闭
 -- @number beidou，中国北斗定位系统，1是打开，0是关闭
 -- @number glonass，俄罗斯Glonass定位系统，1是打开，0是关闭
 -- @number galieo，欧盟伽利略定位系统，1是打开，0是关闭
--- @return 无
+-- @return nil
 -- @usage gps.setAeriaMode(1,1,0,0)
 function setAerialMode(gps,beidou,glonass,galieo)
     local gps = gps or 0
@@ -593,11 +564,10 @@ end
 
 
 --- 设置NMEA数据处理模式.
---
 -- 如果不调用此接口配置，则默认仅gps.lua内部处理NMEA数据
 -- @number mode，NMEA数据处理模式，0表示仅gps.lua内部处理，1表示仅用户自己处理，2表示gps.lua和用户同时处理
 -- @param cbFnc，function类型，用户处理一条NMEA数据的回调函数，mode为1和2时，此值才有意义
--- @return 无
+-- @return nil
 -- @usage gps.setNmeaMode(0)
 -- @usage gps.setNmeaMode(1,cbFnc)
 -- @usage gps.setNmeaMode(2,cbFnc)
@@ -606,24 +576,17 @@ function setNmeaMode(mode,cbFnc)
 end
 
 --- 设置GPS模块的运行模式.
---
 -- 如果不调用此接口配置，则默认为正常运行模式
 -- @number mode，运行模式
---
 -- 0：正常运行模式
---
 -- 1：周期超低功耗跟踪模式
---
 -- 2：周期低功耗模式
---
 -- 4：直接进入超低功耗跟踪模式
---
 -- 8：自动低功耗模式，可以通过串口唤醒
---
 -- 9：自动超低功耗跟踪模式，需要force on来唤醒
 -- @number runTm，单位毫秒，mode为0时表示NEMA数据的上报间隔，mode为1或者2时表示运行时长，其余mode时此值无意义
 -- @number sleepTm，单位毫秒，mode为1或者2时表示运行时长，其余mode时此值无意义
--- @return 无
+-- @return nil
 -- @usage gps.setRunMode(0,1000)
 -- @usage gps.setRunMode(1,5000,2000)
 function setRunMode(mode,runTm,sleepTm)
@@ -646,14 +609,14 @@ function setFastFix(lat,lng,tm)
 end
 
 --- 获取GPS模块是否处于开启状态
--- @return bool，true表示开启状态，false或者nil表示关闭状态
+-- @return bool result，true表示开启状态，false或者nil表示关闭状态
 -- @usage gps.isOpen()
 function isOpen()
     return openFlag
 end
 
 --- 获取GPS模块是否定位成功
--- @return bool，true表示定位成功，false或者nil表示定位失败
+-- @return bool result，true表示定位成功，false或者nil表示定位失败
 -- @usage gps.isFix()
 function isFix()
     return fixFlag
@@ -684,18 +647,13 @@ local function degreeMinuteToDegree(inStr)
     return ""
 end
 
---- 获取经纬度信息
--- @return table
---
+--- 获取度格式的经纬度信息
+-- @return table location
 -- {lngType="E",lng="121.123456",latType="N",lat="31.123456"}
---
 -- lngType：string类型，表示经度类型，取值"E"，"W"
---
--- lng：string类型，表示经度值，无效时为""
---
+-- lng：string类型，表示度格式的经度值，无效时为""
 -- latType：string类型，表示纬度类型，取值"N"，"S"
---
--- lat：string类型，表示纬度值，无效时为""
+-- lat：string类型，表示度格式的纬度值，无效时为""
 -- @usage gps.getLocation()
 function getLocation()
     return {
@@ -707,15 +665,15 @@ function getLocation()
 end
 
 --- 获取海拔
--- @return number，海拔，单位米
+-- @return number altitude，海拔，单位米
 -- @usage gps.getAltitude()
 function getAltitude()
     return tonumber(smatch(altitude,"(%d+)") or "0")
 end
 
 --- 获取速度
--- @return number，第一个返回值为公里每小时的速度
--- @return number，第二个返回值为海里每小时的速度
+-- @return number kmSpeed，第一个返回值为公里每小时的速度
+-- @return number nmSpeed，第二个返回值为海里每小时的速度
 -- @usage gps.getSpeed()
 function getSpeed()
     local integer = tonumber(smatch(speed,"(%d+)") or "0")
@@ -723,72 +681,85 @@ function getSpeed()
 end
 
 --- 获取方向角
--- @return number，方向角
+-- @return number course，方向角
 -- @usage gps.getCourse()
 function getCourse()
     return tonumber(smatch(course,"(%d+)") or "0")
 end
 
 -- 获取所有可见卫星的最大信号强度
--- @return number，最大信号强度
+-- @return number strength，最大信号强度
 -- @usage gps.getMaxSignalStrength()
 function getMaxSignalStrength()
     return tonumber(maxSignalStrength)
 end
 
 --- 获取可见卫星的个数
--- @return number，可见卫星的个数
+-- @return number count，可见卫星的个数
 -- @usage gps.getViewedSateCnt()
 function getViewedSateCnt()
     return tonumber(viewedGpsSateCnt)+tonumber(viewedBdSateCnt)
 end
 
 --- 获取定位使用的卫星个数
--- @return number，定位使用的卫星个数
+-- @return number count，定位使用的卫星个数
 -- @usage gps.getUsedSateCnt()
 function getUsedSateCnt()
     return tonumber(usedSateCnt)
 end
 
---- 获取定位使用的度分经度，度分纬度
--- @return Ggalng,Ggalat，度分经度，度分纬度
+--- 获取GGA语句中度分格式的经纬度信息
+-- @return string lng，度分格式的经度值(dddmm.mmmm)，西经会添加一个-前缀，无效时为""；例如"12112.3456"表示东经121度12.3456分，"-12112.3456"表示西经121度12.3456分
+-- @return string lat，度分格式的纬度值(ddmm.mmmm)，南纬会添加一个-前缀，无效时为""；例如"3112.3456"表示北纬31度12.3456分，"-3112.3456"表示南纬31度12.3456分
 -- @usage gps.getGgaloc()
 function getGgaloc()
 	return Ggalng or "",Ggalat or ""
 end
 
---- 获取定位使用的UTC时间
--- @return UtcTime，UTC时间
+--- 获取RMC语句中的UTC时间
+-- 只有同时满足如下两个条件，返回值才有效
+-- 1、开启了GPS，并且定位成功
+-- 2、调用setParseItem接口，第一个参数设置为true
+-- @return table utcTime，UTC时间，nil表示无效，例如{year=2018,month=4,day=24,hour=11,min=52,sec=10}
 -- @usage gps.getUtcTime()
 function getUtcTime()
 	return UtcTime
 end
 
 --- 获取定位使用的大地高
--- @return Sep，大地高
+-- @return number sep，大地高
 -- @usage gps.getSep()
 function getSep()
-	return Sep or 0
+	return tonumber(Sep or "0")
 end
 
---- 获取定位使用的可用卫星号
--- @return SateSn，可用卫星号
+--- 获取GSA语句中的可见卫星号
+-- 只有同时满足如下两个条件，返回值才有效
+-- 1、开启了GPS，并且定位成功
+-- 2、调用setParseItem接口，第三个参数设置为true
+-- @return string viewedSateId，可用卫星号，""表示无效
 -- @usage gps.getSateSn()
 function getSateSn()
 	return SateSn or ""
 end
 
---- 获取定位使用的信噪比
--- @return Gsv，信噪比
+--- 获取GSV语句中的可见卫星的信噪比
+-- 只有同时满足如下两个条件，返回值才有效
+-- 1、开启了GPS，并且定位成功
+-- 2、调用setParseItem接口，第二个参数设置为true
+-- @return string gsv，信噪比
 -- @usage gps.getGsv()
 function getGsv()
 	return Gsv or ""
 end
 
---- 设置是否需要解析项
--- @usage gps.setParseItem(true,true,true),true表示需要，不写或nil表示不需要
-function setParseItem(utctime,gsv,sn)
-    psUtcTime,psGsv,psSn = utctime,gsv,sn    
+--- 设置是否需要解析的字段
+-- @bool[opt=nil] utcTime，是否解析RMC语句中的UTC时间，true表示解析，false或者nil不解析
+-- @bool[opt=nil] gsv，是否解析GSV语句，true表示解析，false或者nil不解析
+-- @bool[opt=nil] gsaId，是否解析GSA语句中的卫星ID，true表示解析，false或者nil不解析
+-- @usage gps.setParseItem(true,true,true)
+function setParseItem(utcTime,gsv,gsaId)
+    psUtcTime,psGsv,psSn = utcTime,gsv,gsaId
 end
 
 sys.subscribe("GPS_STATE",statInd)

@@ -33,7 +33,7 @@ local ccready = false
 local call_list = {n= 0}
 
 --- 是否存在通话
--- @return result 存在通话返回true，否则返回false
+-- @return bool result 存在通话返回true，否则返回false
 -- @usage result = cc.anyCallExist()
 function anyCallExist()
     return call_list.n ~= 0
@@ -41,7 +41,7 @@ end
 
 --- 查询某个号码的通话状态
 -- @string num 查询号码
--- @return state 通话状态，状态值参考本模块Fields定义
+-- @return number state 通话状态，状态值参考本模块Fields定义
 -- @usage state = cc.getState('10086')
 function getState(num)
     return call_list[num] or DISCONNECTED
@@ -50,7 +50,7 @@ end
 --- 呼出电话
 -- @string num 呼出号码
 -- @number[opt=0] delay 延时delay毫秒后，才发起呼叫
--- @return result true表示允许发送at命令拨号并且发送at，false表示不允许at命令拨号
+-- @return bool result，true表示允许发送at命令拨号并且发送at，false表示不允许at命令拨号
 -- @usage cc.dial('10086')
 function dial(num, delay)
     if num == "" or num == nil then return false end
@@ -86,7 +86,7 @@ end
 -- @string data 12.2K AMR格式的数据
 -- @bool[opt=nil] loop 是否循环发送，true为循环，其余为不循环
 -- @bool[opt=nil] downLinkPlay 声音是否在本端播放，true为播放，其余为不播放
--- @return result true为成功，false为失败
+-- @return bool result true为成功，false为失败
 -- @usage
 -- cc.transVoice("#!AMR\010\060*********")
 -- cc.transVoice("#!AMR\010\060*********",true)

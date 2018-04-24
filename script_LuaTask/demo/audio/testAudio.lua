@@ -86,7 +86,7 @@ local function tesTtsNew()
 end
 
 
---每次打开下面的一种分支进行测试
+--每次打开下面的一种分支进行测试,测试录音与播放请看record的例程
 if true then
     if string.match(rtos.get_version(),"TTS") then
         sys.timerStart(testPlayTts,5000)

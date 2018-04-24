@@ -12,10 +12,10 @@ local tinsert, ssub, sbyte, schar, sformat, slen = table.insert, string.sub, str
 
 --- ascii字符串的unicode编码的16进制字符串 转化为 ascii字符串
 -- @string inNum，待转换字符串
--- @return string，转换后的字符串
+-- @return string data，转换后的字符串
 -- @usage 
--- local str = common.ucs2ToAscii("0031003200330034")
--- str is "1234"
+-- local data = common.ucs2ToAscii("0031003200330034")
+-- data is "1234"
 function ucs2ToAscii(inNum)
     local tonum = {}
     for i = 1, slen(inNum), 4 do
@@ -25,10 +25,10 @@ function ucs2ToAscii(inNum)
 end
 --- ascii字符串 转化为 ascii字符串的unicode编码的16进制字符串(仅支持数字和+)
 -- @string inNum：待转换字符串
--- @return string,转换后的字符串
+-- @return string data,转换后的字符串
 -- @usage 
--- local str = common.nstrToUcs2Hex("+1234")
--- str is "002B0031003200330034"
+-- local data = common.nstrToUcs2Hex("+1234")
+-- data is "002B0031003200330034"
 function nstrToUcs2Hex(inNum)
     local hexs = ""
     local elem = ""
@@ -46,10 +46,10 @@ end
 --- ASCII字符串 转化为 BCD编码格式字符串(仅支持数字)
 -- @string inStr，待转换字符串
 -- @number destLen，转换后的字符串期望长度，如果实际不足，则填充F
--- @return string,转换后的字符串
+-- @return string data,转换后的字符串
 -- @usage 
--- local str = common.numToBcdNum("8618126324567")
--- str is "688121364265f7" （表示第1个字节是0x68，第2个字节为0x81，......）
+-- local data = common.numToBcdNum("8618126324567")
+-- data is "688121364265f7" （表示第1个字节是0x68，第2个字节为0x81，......）
 function numToBcdNum(inStr,destLen)
     local l,t,num = string.len(inStr or ""),{}
     
@@ -81,10 +81,10 @@ end
 
 --- BCD编码格式字符串 转化为 号码ASCII字符串(仅支持数字)
 -- @string,num：待转换字符串
--- @return string,转换后的字符串
+-- @return string data,转换后的字符串
 -- @usage 
--- local str = common.bcdNumToNum(common.fromHex("688121364265f7")) --表示第1个字节是0x68，第2个字节为0x81，......
--- str is "8618126324567"
+-- local data = common.bcdNumToNum(common.fromHex("688121364265f7")) --表示第1个字节是0x68，第2个字节为0x81，......
+-- data is "8618126324567"
 function bcdNumToNum(num)
 	local byte,v1,v2
 	local t = {}
@@ -105,8 +105,8 @@ end
 
 --- unicode小端编码 转化为 gb2312编码
 -- @string ucs2s,unicode小端编码数据
--- @return string,gb2312编码数据
--- @usage local gb = common.ucs2ToGb2312(ucs2s)
+-- @return string data,gb2312编码数据
+-- @usage local data = common.ucs2ToGb2312(ucs2s)
 function ucs2ToGb2312(ucs2s)
     local cd = iconv.open("gb2312", "ucs2")
     return cd:iconv(ucs2s)
@@ -114,8 +114,8 @@ end
 
 --- gb2312编码 转化为 unicode小端编码
 -- @string gb2312s,gb2312编码数据
--- @return string,unicode小端编码数据
--- @usage local ucs = common.gb2312ToUcs2(gb2312s)
+-- @return string data,unicode小端编码数据
+-- @usage local data = common.gb2312ToUcs2(gb2312s)
 function gb2312ToUcs2(gb2312s)
     local cd = iconv.open("ucs2", "gb2312")
     return cd:iconv(gb2312s)
@@ -123,8 +123,8 @@ end
 
 --- unicode大端编码 转化为 gb2312编码
 -- @string ucs2s,unicode大端编码数据
--- @return string ,gb2312编码数据
--- @usage gb = common.ucs2beToGb2312(ucs2s)
+-- @return string data,gb2312编码数据
+-- @usage data = common.ucs2beToGb2312(ucs2s)
 function ucs2beToGb2312(ucs2s)
     local cd = iconv.open("gb2312", "ucs2be")
     return cd:iconv(ucs2s)
@@ -132,8 +132,8 @@ end
 
 --- gb2312编码 转化为 unicode大端编码
 -- @string gb2312s,gb2312编码数据
--- @return string,unicode大端编码数据
--- @usage local ucs = common.gb2312ToUcs2be(gb2312s)
+-- @return string data,unicode大端编码数据
+-- @usage local data = common.gb2312ToUcs2be(gb2312s)
 function gb2312ToUcs2be(gb2312s)
     local cd = iconv.open("ucs2be", "gb2312")
     return cd:iconv(gb2312s)
@@ -141,8 +141,8 @@ end
 
 --- unicode小端编码 转化为 utf8编码
 -- @string ucs2s,unicode小端编码数据
--- @return string ,utf8编码数据
--- @usage u8 = common.ucs2ToUtf8(ucs2s)
+-- @return string data,utf8编码数据
+-- @usage data = common.ucs2ToUtf8(ucs2s)
 function ucs2ToUtf8(ucs2s)
     local cd = iconv.open("utf8", "ucs2")
     return cd:iconv(ucs2s)
@@ -150,8 +150,8 @@ end
 
 --- utf8编码 转化为 unicode小端编码
 -- @string utf8s,utf8编码数据
--- @return string,unicode小端编码数据
--- @usage local ucs = common.utf8ToUcs2(utf8s)
+-- @return string data,unicode小端编码数据
+-- @usage local data = common.utf8ToUcs2(utf8s)
 function utf8ToUcs2(utf8s)
     local cd = iconv.open("ucs2", "utf8")
     return cd:iconv(utf8s)
@@ -159,8 +159,8 @@ end
 
 --- unicode大端编码 转化为 utf8编码
 -- @string ucs2s,unicode大端编码数据
--- @return string ,utf8编码数据
--- @usage u8 = common.ucs2beToUtf8(ucs2s)
+-- @return string data,utf8编码数据
+-- @usage data = common.ucs2beToUtf8(ucs2s)
 function ucs2beToUtf8(ucs2s)
     local cd = iconv.open("utf8", "ucs2be")
     return cd:iconv(ucs2s)
@@ -168,8 +168,8 @@ end
 
 --- utf8编码 转化为 unicode大端编码
 -- @string utf8s,utf8编码数据
--- @return string,unicode大端编码数据
--- @usage local ucs = common.utf8ToUcs2be(utf8s)
+-- @return string data,unicode大端编码数据
+-- @usage local data = common.utf8ToUcs2be(utf8s)
 function utf8ToUcs2be(utf8s)
     local cd = iconv.open("ucs2be", "utf8")
     return cd:iconv(utf8s)
@@ -177,8 +177,8 @@ end
 
 --- utf8编码 转化为 gb2312编码
 -- @string utf8s,utf8编码数据
--- @return string,gb2312编码数据
--- @usage local gb = common.utf8ToGb2312(utf8s)
+-- @return string data,gb2312编码数据
+-- @usage local data = common.utf8ToGb2312(utf8s)
 function utf8ToGb2312(utf8s)
     local cd = iconv.open("ucs2", "utf8")
     local ucs2s = cd:iconv(utf8s)
@@ -188,8 +188,8 @@ end
 
 --- gb2312编码 转化为 utf8编码
 -- @string gb2312s,gb2312编码数据
--- @return string ,utf8编码数据
--- @usage local u8 = common.gb2312ToUtf8(gb2312s)
+-- @return string data,utf8编码数据
+-- @usage local data = common.gb2312ToUtf8(gb2312s)
 function gb2312ToUtf8(gb2312s)
     local cd = iconv.open("ucs2", "gb2312")
     local ucs2s = cd:iconv(gb2312s)
@@ -291,7 +291,7 @@ end
 -- @number ss,源时区秒
 -- @number srcTimeZone,源时区
 -- @number dstTimeZone,目的时区
--- @return table ,返回目的时区对应的时间，{year,month,day,hour,min,sec}
+-- @return table dstZoneTime,返回目的时区对应的时间，{year,month,day,hour,min,sec}
 -- @usage
 -- local dstZoneTime = common.timeZoneConvert(2018,1,1,18,00,00,0,8)
 -- dstZoneTime为{year=2018,month=1,day=2,hour=2,min=0,sec=0}

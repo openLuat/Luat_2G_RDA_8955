@@ -67,8 +67,8 @@ function getVersion()
 end
 
 --- 设置系统时间
--- @param t,系统时间，格式参考：{year=2017,month=2,day=14,hour=14,min=2,sec=58}
--- @return 无
+-- @table t,系统时间，格式参考：{year=2017,month=2,day=14,hour=14,min=2,sec=58}
+-- @return nil
 -- @usage misc.setClock({year=2017,month=2,day=14,hour=14,min=2,sec=58})
 function setClock(t)
     if t == nil or type(t) ~= "table" then return end
@@ -76,20 +76,20 @@ function setClock(t)
     req(string.format("AT+CCLK=\"%02d/%02d/%02d,%02d:%02d:%02d+32\"", string.sub(t.year, 3, 4), t.month, t.day, t.hour, t.min, t.sec), nil, rsp)
 end
 --- 获取系统时间
--- @return table,{year=2017,month=2,day=14,hour=14,min=19,sec=23}
--- @usage date = getClock()
+-- @return table time,{year=2017,month=2,day=14,hour=14,min=19,sec=23}
+-- @usage time = getClock()
 function getClock()
     return os.date("*t")
 end
 --- 获取星期
--- @number 星期，1-7分别对应周一到周日
+-- @return number week，1-7分别对应周一到周日
 -- @usage week = misc.getWeek()
 function getWeek()
     local clk = os.date("*t")
     return ((clk.wday == 1) and 7 or (clk.wday - 1))
 end
 --- 获取校准标志
--- @return boole,
+-- @return bool calib, true表示已校准，false或者nil表示未校准
 -- @usage calib = misc.getCalib()
 function getCalib()
     return calib
@@ -98,7 +98,7 @@ end
 -- @string s,新sn的字符串
 -- @function[opt=nil] cbFnc,设置结果回调函数，回调函数的调用形式为：
 -- cnFnc(result)，result为true表示成功，false或者nil为失败
--- @return 无
+-- @return nil
 -- @usage
 -- misc.setSn("1234567890")
 -- misc.setSn("1234567890",cbFnc)
@@ -111,7 +111,8 @@ function setSn(s, cbFnc)
     end
 end
 --- 获取模块序列号
--- @return string,未获取到，返回""
+-- @return string sn,序列号，如果未获取到返回""
+-- 注意：开机lua脚本运行之后，会发送at命令去查询sn，所以需要一定时间才能获取到sn。开机后立即调用此接口，基本上返回""
 -- @usage sn = misc.getSn()
 function getSn()
     return sn or ""
@@ -120,7 +121,7 @@ end
 -- @string s,新IMEI字符串
 -- @function[opt=nil] cbFnc,设置结果回调函数，回调函数的调用形式为：
 -- cnFnc(result)，result为true表示成功，false或者nil为失败
--- @return 无
+-- @return nil
 -- @usage misc.setImei(”359759002514931”)
 function setImei(s, cbFnc)
     if s ~= imei then
@@ -131,7 +132,8 @@ function setImei(s, cbFnc)
     end
 end
 --- 获取模块IMEI
--- @return string,IMEI号，如果未获取到返回""--注意：开机lua脚本运行之后，会发送at命令去查询imei，所以需要一定时间才能获取到imei。开机后立即调用此接口，基本上返回""
+-- @return string,IMEI号，如果未获取到返回""
+-- 注意：开机lua脚本运行之后，会发送at命令去查询imei，所以需要一定时间才能获取到imei。开机后立即调用此接口，基本上返回""
 -- @usage imei = misc.getImei()
 function getImei()
     return imei or ""
@@ -144,11 +146,19 @@ function getVbatt()
     return v2
 end
 
---- 打开并且配置PWM(支持2路PWM，仅支持输出)说明：当id为0时：period 取值在 80-1625 Hz范围内时，level 占空比取值范围为：1-100；period 取值在 1626-65535 Hz范围时，设x=162500/period, y=x * level / 100, x 和 y越是接近正的整数，则输出波形越准确
--- @number id,number类型，PWM输出通道，仅支持0和1，0用的是uart2 tx，1用的是uart2 rx
--- @number period,number类型:当id为0时，period表示频率，单位为Hz，取值范围为80-1625，仅支持整数,当id为1时，取值范围为0-7，仅支持整数，表示时钟周期，单位为毫秒，0-7分别对应125、250、500、1000、1500、2000、2500、3000毫秒
--- @number level,number类型:当id为0时，level表示占空比，单位为level%，取值范围为1-100，仅支持整数,当id为1时，取值范围为1-15，仅支持整数，表示一个时钟周期内的高电平时间，单位为毫秒 1-15分别对应15.6、31.2、46.9、62.5、78.1、93.7、110、125、141、156、172、187、203、219、234毫秒
--- @return 无
+--- 打开并且配置PWM(支持2路PWM，仅支持输出)
+-- 说明：
+-- 当id为0时：period 取值在 80-1625 Hz范围内时，level 占空比取值范围为：1-100；
+-- period 取值在 1626-65535 Hz范围时，设x=162500/period, y=x * level / 100, x 和 y越是接近正的整数，则输出波形越准确
+-- @number id，PWM输出通道，仅支持0和1，0用的是uart2 tx，1用的是uart2 rx
+-- @number period，
+-- 当id为0时，period表示频率，单位为Hz，取值范围为80-1625，仅支持整数
+-- 当id为1时，取值范围为0-7，仅支持整数，表示时钟周期，单位为毫秒，0-7分别对应125、250、500、1000、1500、2000、2500、3000毫秒
+-- @number level，
+-- 当id为0时，level表示占空比，单位为level%，取值范围为1-100，仅支持整数
+-- 当id为1时，取值范围为1-15，仅支持整数，表示一个时钟周期内的高电平时间，单位为毫秒
+--                      1-15分别对应15.6、31.2、46.9、62.5、78.1、93.7、110、125、141、156、172、187、203、219、234毫秒
+-- @return nil
 function openPwm(id, period, level)
     assert(type(id) == "number" and type(period) == "number" and type(level) == "number", "openpwm type error")
     assert(id == 0 or id == 1, "openpwm id error: " .. id)
@@ -160,8 +170,8 @@ function openPwm(id, period, level)
 end
 
 --- 关闭PWM
--- @number id,number类型，PWM输出通道，仅支持0和1，0用的是uart2 tx，1用的是uart2 rx
--- @return 无
+-- @number id，PWM输出通道，仅支持0和1，0用的是uart2 tx，1用的是uart2 rx
+-- @return nil
 function closePwm(id)
     assert(id == 0 or id == 1, "closepwm id error: " .. id)
     req("AT+SPWM=" .. id .. ",0,0")

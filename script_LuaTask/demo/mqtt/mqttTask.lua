@@ -25,30 +25,41 @@ end
 sys.taskInit(
     function()
         while true do
-            --等待网络环境准备就绪
-            while not socket.isReady() do sys.waitUntil("IP_READY_IND") end
-            local imei = misc.getImei()
-            --创建一个MQTT客户端
-            local mqttClient = mqtt.client(imei,600,"user","password")
-            --阻塞执行MQTT CONNECT动作，直至成功
-            --如果使用ssl连接，打开--[[,{caCert="ca.crt"}]]，根据自己的需求配置
-            while not mqttClient:connect("lbsmqtt.airm2m.com",1884,"tcp"--[[,{caCert="ca.crt"}]]) do
-                sys.wait(2000)
+            if not socket.isReady() then
+                --等待网络环境准备就绪，超时时间是5分钟
+                sys.waitUntil("IP_READY_IND",300000)
             end
-            ready = true
-            --订阅主题
-            if mqttClient:subscribe({["/event0"]=0, ["/中文event1"]=1}) then
-                mqttOutMsg.init()
-                --循环处理接收和发送的数据
-                while true do
-                    if not mqttInMsg.proc(mqttClient) then log.error("mqttTask.mqttInMsg.proc error") break end
-                    if not mqttOutMsg.proc(mqttClient) then log.error("mqttTask.mqttOutMsg proc error") break end
+            
+            if socket.isReady() then
+                local imei = misc.getImei()
+                --创建一个MQTT客户端
+                local mqttClient = mqtt.client(imei,600,"user","password")
+                --阻塞执行MQTT CONNECT动作，直至成功
+                --如果使用ssl连接，打开mqttClient:connect("lbsmqtt.airm2m.com",1884,"tcp_ssl",{caCert="ca.crt"})，根据自己的需求配置
+                --mqttClient:connect("lbsmqtt.airm2m.com",1884,"tcp_ssl",{caCert="ca.crt"})
+                if mqttClient:connect("lbsmqtt.airm2m.com",1884,"tcp") then
+                    ready = true
+                    --订阅主题
+                    if mqttClient:subscribe({["/event0"]=0, ["/中文event1"]=1}) then
+                        mqttOutMsg.init()
+                        --循环处理接收和发送的数据
+                        while true do
+                            if not mqttInMsg.proc(mqttClient) then log.error("mqttTask.mqttInMsg.proc error") break end
+                            if not mqttOutMsg.proc(mqttClient) then log.error("mqttTask.mqttOutMsg proc error") break end
+                        end
+                        mqttOutMsg.unInit()
+                    end
+                    ready = false
                 end
-                mqttOutMsg.unInit()
+                --断开MQTT连接
+                mqttClient:disconnect()
+                sys.wait(5000)
+            else
+                --进入飞行模式，20秒之后，退出飞行模式
+                net.switchFly(true)
+                sys.wait(20000)
+                net.switchFly(false)
             end
-            ready = false
-            --断开MQTT连接
-            mqttClient:disconnect()
         end
     end
 )

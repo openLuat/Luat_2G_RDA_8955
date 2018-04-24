@@ -58,7 +58,10 @@ local function taskAudio()
         FILE = audiocore.play,
         TTS = function(text) req("AT+QTTS=1") req(string.format("AT+QTTS=%d,\"%s\"",2,string.toHex(common.utf8ToUcs2(text)))) end,
         TTSCC = function(text) req("AT+QTTS=1") req(string.format("AT+QTTS=%d,\"%s\"",4,string.toHex(common.utf8ToUcs2(text)))) end,
-        RECORD = function(id) return audiocore.play("/RecDir/rec00"..id) end,
+        RECORD = function(id)
+            f,d=record.getSize()
+            ril.request("AT+AUDREC=1,0,2," .. tostring(id) .. "," .. d*1000)
+            end,
     }
     
     local stopFnc =
@@ -66,7 +69,10 @@ local function taskAudio()
         FILE = audiocore.stop,
         TTS = function() req("AT+QTTS=3") sys.waitUntil("AUDIO_STOP_END") end,
         TTSCC = function() req("AT+QTTS=3") sys.waitUntil("AUDIO_STOP_END") end,
-        RECORD = function(id) return audiocore.stop("/RecDir/rec00"..id) end,
+        function(id)
+            f,d=record.getSize()
+            ril.request("AT+AUDREC=1,0,3," .. tostring(id) .. "," .. d*1000)
+            end,
     }
 
     while true do
@@ -74,12 +80,12 @@ local function taskAudio()
         --检查参数
         if not playFnc[sType] then
             playEnd(3)
-            break
+            if sType==nil then break end
         end
         --开始播放
         if playFnc[sType](sPath)==false then
             playEnd(1)
-            break
+            if sType==nil then break end
         end
         --挂起播放，等待播放成功、播放失败或者有新的播放请求激活协程
         local _,msg,param = sys.waitUntil("AUDIO_PLAY_END")
@@ -93,7 +99,7 @@ local function taskAudio()
             else
                 stopFnc[sType](sPath)
                 playEnd(0)
-                break
+                if sType==nil then break end
             end
         elseif msg=="NEW" then
             stopFnc[sType](sPath)
@@ -102,7 +108,7 @@ local function taskAudio()
         else
             stopFnc[sType](sPath)
             playEnd(1)
-            break
+            if sType==nil then break end
         end
     end
 end
@@ -162,7 +168,7 @@ rtos.on(rtos.MSG_AUDIO,audioMsg)
 
 --- 播放音频
 -- @number priority，音频优先级，数值越大，优先级越高
--- @string type，音频类型，目前仅支持"FILE"、"TTS"、"TTSCC"
+-- @string type，音频类型，目前仅支持"FILE"、"TTS"、"TTSCC","RECORD"
 -- @string path，音频文件路径，跟typ有关
 --               typ为"FILE"时：表示音频文件路径
 --               typ为"TTS"时：表示要播放的UTF8编码格式的数据
@@ -193,14 +199,14 @@ end
 
 --- 设置喇叭音量等级
 -- @number vol，音量值为0-7，0为静音
--- @return bool，设置成功返回true，失败返回false
+-- @return bool result，设置成功返回true，失败返回false
 -- @usage audio.setVolume(7)
 function setVolume(vol)
     return audiocore.setvol(vol)
 end
 --- 设置麦克音量等级
 -- @number vol，音量值为0-15，0为静音
--- @return bool，设置成功返回true,失败返回false
+-- @return bool result，设置成功返回true,失败返回false
 -- @usage audio.setMicVolume(14)
 function setMicVolume(vol)
     return audiocore.setmicvol(vol)
@@ -208,7 +214,7 @@ end
 
 --- 设置优先级相同时的播放策略
 -- @number strategy，优先级相同时的播放策略；0：表示继续播放正在播放的音频，忽略请求播放的新音频；1：表示停止正在播放的音频，播放请求播放的新音频
--- @return 无
+-- @return nil
 -- @usage audio.setStrategy(0)
 -- @usage audio.setStrategy(1)
 function setStrategy(strategy)

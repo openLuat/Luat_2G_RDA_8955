@@ -43,7 +43,7 @@ local function readrcd()
     if rcdcnt<=0 then
         sys.timerStop(readrcd)
         --播放录音内容
-        audio.play(0,"FILE",record.getFilePath(),7,playcb)
+        audio.play(0,"RECORD",1,7,playcb)
     --还没有全部读取出来
     else
         rcdoffset = rcdoffset+RCD_READ_UNIT

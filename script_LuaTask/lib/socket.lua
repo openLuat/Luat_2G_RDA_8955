@@ -109,15 +109,15 @@ local function socket(protocol, cert)
     return setmetatable(o, mt)
 end
 --- 创建基于TCP的socket对象
--- @bool ssl，是否为ssl连接，true表示是，其余表示否
--- @table cert，ssl连接需要的证书配置，只有ssl参数为true时，才参数才有意义，cert格式如下：
+-- @bool[opt=nil] ssl，是否为ssl连接，true表示是，其余表示否
+-- @table[opt=nil] cert，ssl连接需要的证书配置，只有ssl参数为true时，才参数才有意义，cert格式如下：
 -- {
 --     caCert = "ca.crt", --CA证书文件(Base64编码 X.509格式)，如果存在此参数，则表示客户端会对服务器的证书进行校验；不存在则不校验
 --     clientCert = "client.crt", --客户端证书文件(Base64编码 X.509格式)，服务器对客户端的证书进行校验时会用到此参数
 --     clientKey = "client.key", --客户端私钥文件(Base64编码 X.509格式)
 --     clientPassword = "123456", --客户端证书文件密码[可选]
 -- }
--- @return 无
+-- @return nil
 -- @usage 
 -- c = socket.tcp()
 -- c = socket.tcp(true)
@@ -128,7 +128,7 @@ function tcp(ssl,cert)
     return socket("TCP"..(ssl==true and "SSL" or ""), (ssl==true) and cert or nil)
 end
 --- 创建基于UDP的socket对象
--- @return 无
+-- @return nil
 -- @usage c = socket.udp()
 function udp()
     return socket("UDP")
@@ -169,10 +169,10 @@ local function sslInputCert(t,f)
     sSslInputCert = sSslInputCert..t..f.."&"
 end
 
---- socket:connect 连接服务器
--- @param address ip地址或者域名
--- @param port 端口
--- @return result true - 成功，false - 失败
+--- 连接服务器
+-- @string address 服务器地址，支持ip和域名
+-- @param port string或者number类型，服务器端口
+-- @return bool result true - 成功，false - 失败
 -- @usage  c = socket.tcp(); c:connect();
 function mt.__index:connect(address, port)
     assert(self.co == coroutine.running(), "socket:connect: coroutine mismatch")
@@ -225,14 +225,18 @@ function mt.__index:connect(address, port)
     socketStatusNtfy()
     return true
 end
---- socket:send
--- @param data 数据
+--- 发送数据
+-- @string data 数据
 -- @return result true - 成功，false - 失败
 -- @usage  c = socket.tcp(); c:connect(); c:send("12345678");
 function mt.__index:send(data)
     assert(self.co == coroutine.running(), "socket:send: coroutine mismatch")
     if self.error then
         log.warn('socket.client:send', 'error', self.error)
+        return false
+    end
+    if self.id==nil then
+        log.warn('socket.client:send', 'closed')
         return false
     end
 
@@ -249,8 +253,8 @@ function mt.__index:send(data)
     end
     return true
 end
---- socket:recv([timeout])
--- @param timeout 可选参数，接收超时时间
+--- 接收数据
+-- @number[opt=0] timeout 可选参数，接收超时时间
 -- @return result true - 成功，false - 失败
 -- @return data 如果成功的话，返回接收到的数据，超时时返回错误为"timeout"
 -- @usage  c = socket.tcp(); c:connect(); result, data = c:recv()
@@ -263,7 +267,7 @@ function mt.__index:recv(timeout)
 
     if #self.input == 0 then
         self.wait = self.ssl and "+SSL RECEIVE" or "+RECEIVE"
-        if timeout then
+        if timeout and timeout~=0 then
             local r, s = sys.wait(timeout)
             if r == nil then
                 return false, "timeout"
@@ -296,8 +300,8 @@ function mt.__index:sslDestroy()
         socketStatusNtfy()
     end
 end
---- socket:close
--- @return 无
+--- 销毁一个socket
+-- @return nil
 -- @usage  c = socket.tcp(); c:connect(); c:send("123"); c:close()
 function mt.__index:close()
     assert(self.co == coroutine.running(), "socket:close: coroutine mismatch")
@@ -309,14 +313,16 @@ function mt.__index:close()
         coroutine.yield()
         socketStatusNtfy()
     end
-    ril.deRegUrc((self.ssl and "SSL&" or "")..self.id, onSocketURC)
-    table.insert((self.ssl and validSsl or valid), 1, self.id)
-    if self.ssl then
-        socketsSsl[self.id] = nil
-    else
-        sockets[self.id] = nil
+    if self.id~=nil then
+        ril.deRegUrc((self.ssl and "SSL&" or "")..self.id, onSocketURC)
+        table.insert((self.ssl and validSsl or valid), 1, self.id)
+        if self.ssl then
+            socketsSsl[self.id] = nil
+        else
+            sockets[self.id] = nil
+        end
+        self.id = nil
     end
-    self.id = nil
 end
 local function onResponse(cmd, success, response, intermediate)
     local prefix = string.match(cmd, "AT(%+%u+)")

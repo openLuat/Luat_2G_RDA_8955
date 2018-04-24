@@ -64,11 +64,10 @@ coroutine.resume = function(...)
         if not arg[1] then
             log.error("coroutine.resume", arg[2])
             if #coroutine.errors > 10 then
-                local item = table.remove(coroutine.errors, 1)
-                log.error('coroutine.errors', 'remove oldest', item)
-                errDump.appendErr(item)
+                log.error('coroutine.errors', 'remove oldest', table.remove(coroutine.errors, 1))                
             end
             table.insert(coroutine.errors, arg[2])
+            errDump.appendErr(arg[2])
         end
         return unpack(arg)
     end

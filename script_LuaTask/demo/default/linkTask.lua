@@ -25,29 +25,39 @@ end
 sys.taskInit(
     function()
         while true do
-            --等待网络环境准备就绪
-            while not socket.isReady() do sys.waitUntil("IP_READY_IND") end
-            local imei = misc.getImei()
-            --创建一个MQTT客户端
-            local mqttClient = mqtt.client(imei,600,"user","password")
-            --阻塞执行MQTT CONNECT动作，直至成功
-            while not mqttClient:connect("lbsmqtt.airm2m.com",1884,"tcp") do
-                sys.wait(2000)
+            if not socket.isReady() then
+                --等待网络环境准备就绪，超时时间是5分钟
+                sys.waitUntil("IP_READY_IND",300000)
             end
-            ready = true
-            --订阅主题
-            if mqttClient:subscribe("/v1/device/"..misc.getImei().."/set",1) then
-                linkOutMsg.init()
-                --循环处理接收和发送的数据
-                while true do
-                    if not linkInMsg.proc(mqttClient) then log.error("linkTask.linkInMsg.proc error") break end
-                    if not linkOutMsg.proc(mqttClient) then log.error("linkTask.linkOutMsg proc error") break end
+            
+            if socket.isReady() then
+                local imei = misc.getImei()
+                --创建一个MQTT客户端
+                local mqttClient = mqtt.client(imei,600,"user","password")
+                --阻塞执行MQTT CONNECT动作，直至成功
+                if mqttClient:connect("lbsmqtt.airm2m.com",1884,"tcp") then
+                    ready = true
+                    --订阅主题
+                    if mqttClient:subscribe("/v1/device/"..misc.getImei().."/set",1) then
+                        linkOutMsg.init()
+                        --循环处理接收和发送的数据
+                        while true do
+                            if not linkInMsg.proc(mqttClient) then log.error("linkTask.linkInMsg.proc error") break end
+                            if not linkOutMsg.proc(mqttClient) then log.error("linkTask.linkOutMsg proc error") break end
+                        end
+                        linkOutMsg.unInit()
+                    end
+                    ready = false
                 end
-                linkOutMsg.unInit()
+                --断开MQTT连接
+                mqttClient:disconnect()
+                sys.wait(5000)
+            else
+                --进入飞行模式，20秒之后，退出飞行模式
+                net.switchFly(true)
+                sys.wait(20000)
+                net.switchFly(false)
             end
-            ready = false
-            --断开MQTT连接
-            mqttClient:disconnect()
         end
     end
 )
