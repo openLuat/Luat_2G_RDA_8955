@@ -9,7 +9,8 @@ require "log"
 require "ril"
 module(..., package.seeall)
 
-local ID, FILE = 1, '/RecDir/rec001'
+local ID=1
+local FILE='/RecDir/rec00'..tostring(ID)
 local recording
 local stoping
 local duration

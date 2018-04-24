@@ -69,7 +69,7 @@
   <li><a href="../modules/sms.html">sms</a></li>
   <li><a href="../modules/socket.html">socket</a></li>
   <li><a href="../modules/sys.html">sys</a></li>
-  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/uiwin.html">uiwin</a></li>
   <li><a href="../modules/update.html">update</a></li>
   <li><a href="../modules/utils.html">utils</a></li>
   <li><a href="../modules/wdt.html">wdt</a></li>
@@ -107,7 +107,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#getWeek">
-    getWeek (1)
+    getWeek ()
     </a></td>
 	<td class="summary">获取星期</td>
 	</tr>
@@ -151,7 +151,10 @@
 	<td class="name" nowrap><a href="#openPwm">
     openPwm (id, period, level)
     </a></td>
-	<td class="summary">打开并且配置PWM(支持2路PWM，仅支持输出)说明：当id为0时：period 取值在 80-1625 Hz范围内时，level 占空比取值范围为：1-100；period 取值在 1626-65535 Hz范围时，设x=162500/period, y=x * level / 100, x 和 y越是接近正的整数，则输出波形越准确</td>
+	<td class="summary">打开并且配置PWM(支持2路PWM，仅支持输出)
+ 说明：
+ 当id为0时：period 取值在 80-1625 Hz范围内时，level 占空比取值范围为：1-100；
+ period 取值在 1626-65535 Hz范围时，设x=162500/period, y=x * level / 100, x 和 y越是接近正的整数，则输出波形越准确</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#closePwm">
@@ -181,6 +184,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
         <pre class="example">系统时间，格式参考：{year=2017,month=2,day=14,hour=14,min=2,sec=58}</pre>
         </li>
     </ul>
@@ -188,7 +192,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -213,35 +217,33 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">table,{year=2017,month=2,day=14,hour=14,min=19,sec=23}</pre></il>
+        <pre class="example">table time,{year=2017,month=2,day=14,hour=14,min=19,sec=23}</pre></il>
     </ul>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example">date = getClock()</pre></il>
+        <li><pre class="example">time = getClock()</pre></il>
     </ul>
 
 </dd>
     <dt>
     <a name = "getWeek"></a>
     <strong  style="color: red;">
-    getWeek (1)
+    getWeek ()
     </strong>
     </dt>
     <dd>
     <pre class="example"  style="color: red;">获取星期</pre>
 
 
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">1</span>
-            <span class="types"><span class="type">number</span></span>
-        <pre class="example">-7分别对应周一到周日</pre>
-        </li>
-    </ul>
 
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number week，1-7分别对应周一到周日</pre></il>
+    </ul>
 
 
 
@@ -265,7 +267,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">boole,</pre></il>
+        <pre class="example">bool calib, true表示已校准，false或者nil表示未校准</pre></il>
     </ul>
 
 
@@ -303,7 +305,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -329,7 +331,8 @@ misc.setSn(<span class="string">"1234567890"</span>,cbFnc)</pre></il>
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string,未获取到，返回""</pre></il>
+        <pre class="example">string sn,序列号，如果未获取到返回""
+ 注意：开机lua脚本运行之后，会发送at命令去查询sn，所以需要一定时间才能获取到sn。开机后立即调用此接口，基本上返回""</pre></il>
     </ul>
 
 
@@ -367,7 +370,7 @@ misc.setSn(<span class="string">"1234567890"</span>,cbFnc)</pre></il>
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -392,7 +395,8 @@ misc.setSn(<span class="string">"1234567890"</span>,cbFnc)</pre></il>
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">string,IMEI号，如果未获取到返回""--注意：开机lua脚本运行之后，会发送at命令去查询imei，所以需要一定时间才能获取到imei。开机后立即调用此接口，基本上返回""</pre></il>
+        <pre class="example">string,IMEI号，如果未获取到返回""
+ 注意：开机lua脚本运行之后，会发送at命令去查询imei，所以需要一定时间才能获取到imei。开机后立即调用此接口，基本上返回""</pre></il>
     </ul>
 
 
@@ -435,29 +439,37 @@ misc.setSn(<span class="string">"1234567890"</span>,cbFnc)</pre></il>
     </strong>
     </dt>
     <dd>
-    <pre class="example"  style="color: red;">打开并且配置PWM(支持2路PWM，仅支持输出)说明：当id为0时：period 取值在 80-1625 Hz范围内时，level 占空比取值范围为：1-100；period 取值在 1626-65535 Hz范围时，设x=162500/period, y=x * level / 100, x 和 y越是接近正的整数，则输出波形越准确</pre>
+    <pre class="example"  style="color: red;">打开并且配置PWM(支持2路PWM，仅支持输出)
+ 说明：
+ 当id为0时：period 取值在 80-1625 Hz范围内时，level 占空比取值范围为：1-100；
+ period 取值在 1626-65535 Hz范围时，设x=162500/period, y=x * level / 100, x 和 y越是接近正的整数，则输出波形越准确</pre>
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">id</span>
             <span class="types"><span class="type">number</span></span>
-        <pre class="example">number类型，PWM输出通道，仅支持0和1，0用的是uart2 tx，1用的是uart2 rx</pre>
+        <pre class="example">PWM输出通道，仅支持0和1，0用的是uart2 tx，1用的是uart2 rx</pre>
         </li>
         <li><span class="parameter">period</span>
             <span class="types"><span class="type">number</span></span>
-        <pre class="example">number类型:当id为0时，period表示频率，单位为Hz，取值范围为80-1625，仅支持整数,当id为1时，取值范围为0-7，仅支持整数，表示时钟周期，单位为毫秒，0-7分别对应125、250、500、1000、1500、2000、2500、3000毫秒</pre>
+        <pre class="example">
+ 当id为0时，period表示频率，单位为Hz，取值范围为80-1625，仅支持整数
+ 当id为1时，取值范围为0-7，仅支持整数，表示时钟周期，单位为毫秒，0-7分别对应125、250、500、1000、1500、2000、2500、3000毫秒</pre>
         </li>
         <li><span class="parameter">level</span>
             <span class="types"><span class="type">number</span></span>
-        <pre class="example">number类型:当id为0时，level表示占空比，单位为level%，取值范围为1-100，仅支持整数,当id为1时，取值范围为1-15，仅支持整数，表示一个时钟周期内的高电平时间，单位为毫秒 1-15分别对应15.6、31.2、46.9、62.5、78.1、93.7、110、125、141、156、172、187、203、219、234毫秒</pre>
+        <pre class="example">
+ 当id为0时，level表示占空比，单位为level%，取值范围为1-100，仅支持整数
+ 当id为1时，取值范围为1-15，仅支持整数，表示一个时钟周期内的高电平时间，单位为毫秒
+                      1-15分别对应15.6、31.2、46.9、62.5、78.1、93.7、110、125、141、156、172、187、203、219、234毫秒</pre>
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -478,14 +490,14 @@ misc.setSn(<span class="string">"1234567890"</span>,cbFnc)</pre></il>
     <ul>
         <li><span class="parameter">id</span>
             <span class="types"><span class="type">number</span></span>
-        <pre class="example">number类型，PWM输出通道，仅支持0和1，0用的是uart2 tx，1用的是uart2 rx</pre>
+        <pre class="example">PWM输出通道，仅支持0和1，0用的是uart2 tx，1用的是uart2 rx</pre>
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">无</pre></il>
+        <pre class="example">nil</pre></il>
     </ul>
 
 
@@ -499,7 +511,7 @@ misc.setSn(<span class="string">"1234567890"</span>,cbFnc)</pre></il>
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-17 13:24:42 </i>
+<i style="float:right;">Last updated 2018-04-24 17:25:11 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

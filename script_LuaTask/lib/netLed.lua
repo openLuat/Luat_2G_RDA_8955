@@ -108,19 +108,19 @@ local function taskLed(ledPinSetFunc)
 end
 
 --- 配置网络指示灯并且立即执行配置后的动作
--- @bool switch，是否打开网络指示灯功能，true为打开，false为关闭
+-- @bool flag，是否打开网络指示灯功能，true为打开，false为关闭
 -- @number pin，控制网络指示灯闪烁的GPIO引脚，例如pio.P1_1表示GPIO33
--- @return 无
+-- @return nil
 -- @usage setup(true,pio.P1_1)表示打开网络指示灯功能，GPIO33控制指示灯
 -- @usage setup(false)表示关闭网络指示灯功能
-function setup(switch,pin)
-    --log.info("netLed.setup",switch,pin,ledSwitch)
+function setup(flag,pin)
+    --log.info("netLed.setup",flag,pin,ledSwitch)
     local oldSwitch = ledSwitch
-    if switch~=ledSwitch then
-        ledSwitch = switch
+    if flag~=ledSwitch then
+        ledSwitch = flag
         sys.publish("NET_LED_UPDATE")
     end
-    if switch and not oldSwitch then
+    if flag and not oldSwitch then
         sys.taskInit(taskLed, pins.setup(pin or ledPin, 0))
     end        
 end
@@ -129,7 +129,7 @@ end
 -- @string state，某种工作状态，仅支持"FLYMODE"、"SIMERR"、"IDLE"、"GSM"、"GPRS"、"SCK"
 -- @number on，指示灯点亮时长，单位毫秒，0xFFFF表示常亮，0表示常灭
 -- @number off，指示灯熄灭时长，单位毫秒，0xFFFF表示常灭，0表示常亮
--- @return 无
+-- @return nil
 -- @usage updateBlinkTime("FLYMODE",1000,500)表示飞行模式工作状态下，指示灯闪烁规律为：亮1秒，灭0.5秒
 -- @usage updateBlinkTime("SCK",0xFFFF,0)表示有socket连接上后台的工作状态下，指示灯闪烁规律为：常亮
 -- @usage updateBlinkTime("SIMERR",0,0xFFFF)表示SIM卡异常状态下，指示灯闪烁规律为：常灭

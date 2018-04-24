@@ -109,13 +109,13 @@ end
 --              lng：string类型或者nil，经度，整数部分3位，小数部分7位，例如"121.4736522"
 --
 --              addr：string类型，UCS2大端编码的位置字符串。调用lbsLoc.request时传入的第二个参数为true时，才返回本参数
--- @bool reqAddr，是否需要服务器返回地址字符串信息，true返回，false或者nil不返回
--- @number timeout，请求超时时间，单位毫秒，默认20000毫秒
--- @string productKey，IOT网站上的产品证书，此参数可选，用户如果在main.lua中定义了PRODUCT_KEY变量，就不需要传入此参数
--- @string host，服务器域名，此参数可选，目前仅lib中agps.lua使用此参数。用户脚本中不需要传入此参数
--- @string port，服务器端口，此参数可选，目前仅lib中agps.lua使用此参数。用户脚本中不需要传入此参数
--- @bool reqTime，是否需要服务器返回时间信息，true返回，false或者nil不返回，此参数可选，目前仅lib中agps.lua使用此参数。用户脚本中不需要传入此参数
--- @return 无
+-- @bool[opt=nil] reqAddr，是否需要服务器返回地址字符串信息，true返回，false或者nil不返回
+-- @number[opt=20000] timeout，请求超时时间，单位毫秒，默认20000毫秒
+-- @string[opt=nil] productKey，IOT网站上的产品证书，此参数可选，用户如果在main.lua中定义了PRODUCT_KEY变量，就不需要传入此参数
+-- @string[opt=nil] host，服务器域名，此参数可选，目前仅lib中agps.lua使用此参数。用户脚本中不需要传入此参数
+-- @string[opt=nil] port，服务器端口，此参数可选，目前仅lib中agps.lua使用此参数。用户脚本中不需要传入此参数
+-- @bool[opt=nil] reqTime，是否需要服务器返回时间信息，true返回，false或者nil不返回，此参数可选，目前仅lib中agps.lua使用此参数。用户脚本中不需要传入此参数
+-- @return nil
 -- @usage lbsLoc.request(cbFnc)
 -- @usage lbsLoc.request(cbFnc,true)
 -- @usage lbsLoc.request(cbFnc,nil,20000)

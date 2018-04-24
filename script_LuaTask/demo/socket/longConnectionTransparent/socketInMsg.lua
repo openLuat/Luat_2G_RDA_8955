@@ -16,7 +16,7 @@ function proc(socketClient)
     while true do
         result,data = socketClient:recv(2000)
         --接收到数据
-        if result and data~="timeout" then
+        if result then
             log.info("socketInMsg.proc",data)
                 
             sys.publish("SOCKET_RECV_DATA",data)
@@ -28,5 +28,5 @@ function proc(socketClient)
         end
     end
 	
-    return data=="timeout" or result
+    return result or data=="timeout"
 end

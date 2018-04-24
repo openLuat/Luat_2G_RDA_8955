@@ -7,10 +7,10 @@
 module(..., package.seeall)
 
 --- 闪烁指示灯
--- @param ledPin,ledPin(1)用pins.setup注册返回的方法
--- @param light, light-亮灯时间ms
--- @param dark, dark-灭灯时间ms
--- @return null
+-- @function ledPin,ledPin(1)用pins.setup注册返回的方法
+-- @number light, light-亮灯时间ms
+-- @number dark, dark-灭灯时间ms
+-- @return nil
 -- @usage led.blinkPwm(lenPin,500,500)
 -- @usage 调用函数需要使用任务支持
 function blinkPwm(ledPin, light, dark)
@@ -20,12 +20,12 @@ function blinkPwm(ledPin, light, dark)
     sys.wait(dark)
 end
 --- 等级指示灯
--- @param ledPin, ledPin(1)用pins.setup注册返回的方法
--- @param bl,亮灯时间ms
--- @param bd,灭灯时间ms
--- @param cnt,重复次数 (等级的级别,亮灭1次算数字1)
--- @param gap,间隔时间 (每次循环周期的间隔)
--- @return 无
+-- @function ledPin, ledPin(1)用pins.setup注册返回的方法
+-- @number bl,亮灯时间ms
+-- @number bd,灭灯时间ms
+-- @number cnt,重复次数 (等级的级别,亮灭1次算数字1)
+-- @number gap,间隔时间 (每次循环周期的间隔)
+-- @return nil
 -- @usage led.leveled(ledPin,200,200,4,1000)
 -- @usage 调用函数需要使用任务支持
 function levelLed(ledPin, bl, bd, cnt, gap)    
@@ -35,8 +35,8 @@ function levelLed(ledPin, bl, bd, cnt, gap)
 end
 
 --- 呼吸灯
--- @param ledPin, 呼吸灯的ledPin(1)用pins.setup注册返回的方法
--- @return 无
+-- @function ledPin, 呼吸灯的ledPin(1)用pins.setup注册返回的方法
+-- @return nil
 -- @usage led.breateLed(ledPin)
 -- @usage 调用函数需要使用任务支持
 function breateLed(ledPin)

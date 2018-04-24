@@ -69,7 +69,7 @@
   <li><a href="../modules/sms.html">sms</a></li>
   <li><a href="../modules/socket.html">socket</a></li>
   <li><a href="../modules/sys.html">sys</a></li>
-  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/uiwin.html">uiwin</a></li>
   <li><a href="../modules/update.html">update</a></li>
   <li><a href="../modules/utils.html">utils</a></li>
   <li><a href="../modules/wdt.html">wdt</a></li>
@@ -95,7 +95,7 @@
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#request">
-    request (method, url, cert, head, body, timeout, cbFnc, rcvFileName)
+    request (method, url<strong  style="color: gray;">[, cert=nil]</strong><strong  style="color: gray;">[, head=nil]</strong><strong  style="color: gray;">[, body=nil]</strong><strong  style="color: gray;">[, timeout=30000]</strong><strong  style="color: gray;">[, cbFnc=nil]</strong><strong  style="color: gray;">[, rcvFileName=nil]</strong>)
     </a></td>
 	<td class="summary">发送HTTP请求</td>
 	</tr>
@@ -111,7 +111,7 @@
     <dt>
     <a name = "request"></a>
     <strong  style="color: red;">
-    request (method, url, cert, head, body, timeout, cbFnc, rcvFileName)
+    request (method, url<strong  style="color: green;">[, cert=nil]</strong><strong  style="color: green;">[, head=nil]</strong><strong  style="color: green;">[, body=nil]</strong><strong  style="color: green;">[, timeout=30000]</strong><strong  style="color: green;">[, cbFnc=nil]</strong><strong  style="color: green;">[, rcvFileName=nil]</strong>)
     </strong>
     </dt>
     <dd>
@@ -123,7 +123,7 @@
         <li><span class="parameter">method</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
         <pre class="example"> HTTP请求方法
-<p> 支持"GET"，"HEAD"，"POST"，"OPTIONS"，"PUT"，"DELETE"，"TRACE"，"CONNECT"</pre>
+ 支持"GET"，"HEAD"，"POST"，"OPTIONS"，"PUT"，"DELETE"，"TRACE"，"CONNECT"</pre>
         </li>
         <li><span class="parameter">url</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
@@ -139,6 +139,8 @@
  |------------------------------------------------------------------------------|</pre>
         </li>
         <li><span class="parameter">cert</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         [<em>此参数可选，默认值为：</em> nil]
         <pre class="example">table或者nil类型，ssl证书，当url为https类型时，此参数才有意义。cert格式如下：
  {
      caCert = "ca.crt", --CA证书文件(Base64编码 X.509格式)，如果存在此参数，则表示客户端会对服务器的证书进行校验；不存在则不校验
@@ -149,6 +151,7 @@
         </li>
         <li><span class="parameter">head</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         [<em>此参数可选，默认值为：</em> nil]
         <pre class="example">nil或者table类型，自定义请求头
 <p>              http.lua会自动添加Host: XXX、Connection: short、Content-Length: XXX三个请求头
 <p>              如果这三个请求头满足不了需求，head参数传入自定义请求头，如果自定义请求头中存在Host、Connection、Content-Length三个请求头，将覆盖http.lua中自动添加的同名请求头
@@ -156,6 +159,7 @@
 <p>              如果没有自定义请求头，传入nil或者{}；否则传入{head1="value1", head2="value2", head3="value3"}，value中不能有\r\n</pre>
         </li>
         <li><span class="parameter">body</span>
+         [<em>此参数可选，默认值为：</em> nil]
         <pre class="example">nil、string或者table类型，请求实体
 <p>              如果body仅仅是一串数据，可以直接传入一个string类型的body即可
 <p>              如果body的数据比较复杂，包括字符串数据和文件，则传入table类型的数据，格式如下：
@@ -168,10 +172,12 @@
         </li>
         <li><span class="parameter">timeout</span>
             <span class="types"><span class="type">number</span></span>
+         [<em>此参数可选，默认值为：</em> 30000]
         <pre class="example">请求发送成功后，接收服务器返回应答数据的超时时间，单位毫秒，默认为30秒</pre>
         </li>
         <li><span class="parameter">cbFnc</span>
             <span class="types"><span class="type">function</span></span>
+         [<em>此参数可选，默认值为：</em> nil]
         <pre class="example">执行HTTP请求的回调函数(请求发送结果以及应答数据接收结果都通过此函数通知用户)，回调函数的调用形式为：
 <p>              cbFnc(result,prompt,head,body)
 <p>              result：true或者false，true表示成功收到了服务器的应答，false表示请求发送失败或者接收服务器应答失败
@@ -181,6 +187,7 @@
         </li>
         <li><span class="parameter">rcvFileName</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         [<em>此参数可选，默认值为：</em> nil]
         <pre class="example">保存“服务器应答实体数据”的文件名，可以传入完整的文件路径，也可以传入单独的文件名，如果是文件名，http.lua会自动生成一个完整路径，通过cbFnc的参数body传出</pre>
         </li>
     </ul>
@@ -188,7 +195,7 @@
     <h3>Returns:</h3>
     <ul>
         <li>
-        <pre class="example">如果传入了rcvFileName，则返回对应的完整路径；其余情况都返回nil</pre></il>
+        <pre class="example">string rcvFilePath，如果传入了rcvFileName，则返回对应的完整路径；其余情况都返回nil</pre></il>
     </ul>
 
 
@@ -216,7 +223,7 @@ http.request(<span class="string">"GET"</span>,<span class="string">"https://www
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-17 13:24:42 </i>
+<i style="float:right;">Last updated 2018-04-24 17:25:11 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

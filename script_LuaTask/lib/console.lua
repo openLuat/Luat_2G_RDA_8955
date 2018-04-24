@@ -1,4 +1,5 @@
 --- 模块功能：Luat控制台.
+-- 使用说明参考demo/console下的《console功能使用说明.docx》
 -- @module console
 -- @author openLuat
 -- @license MIT
