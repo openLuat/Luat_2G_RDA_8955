@@ -12,7 +12,7 @@ package.path = "/?.lua;".."/?.luae;"..package.path
 --实时参数配置存储在paraname文件中
 --para：实时参数表
 --config：默认参数表
-local paraname,para,libdftconfig,configname,econfigname = "/para.lua",{}
+local paraname,paranamebak,para,libdftconfig,configname,econfigname = "/para.lua","/para_bak.lua",{}
 
 --[[
 函数名：print
@@ -31,6 +31,8 @@ end
 返回值：无
 ]]
 function restore()
+	os.remove(paraname)
+	os.remove(paranamebak)
 	local fpara,fconfig = io.open(paraname,"wb"),io.open(configname,"rb")
 	if not fconfig then fconfig = io.open(econfigname,"rb") end
 	fpara:write(fconfig:read("*a"))
@@ -101,21 +103,48 @@ end
 返回值：无
 ]]
 local function load()
-	local f = io.open(paraname,"rb")
-	if not f or f:read("*a") == "" then
-		if f then f:close() end
-		restore()
+	local f,fBak,fExist,fBakExist
+	f = io.open(paraname,"rb")
+	fBak = io.open(paranamebak,"rb")
+	
+	if f then
+		fExist = f:read("*a")~=""
+		f:close()
+	end
+	if fBak then
+		fBakExist = fBak:read("*a")~=""
+		fBak:close()
+	end
+	
+	print("load fExist fBakExist",fExist,fBakExist)
+	
+	local fResult,fBakResult
+	if fExist then
+		fResult,para = pcall(require,string.match(paraname,"/(.+)%.lua"))
+	end
+	
+	print("load fResult",fResult)
+	
+	if fResult then
+		os.remove(paranamebak)
+		upd()
 		return
 	end
-	f:close()
 	
-	f,para = pcall(require,string.match(paraname,"/(.+)%.lua"))
-	if not f then
+	if fBakExist then
+		fBakResult,para = pcall(require,string.match(paranamebak,"/(.+)%.lua"))
+	end
+	
+	print("load fBakResult",fBakResult)
+	
+	if fBakResult then
+		os.remove(paraname)
+		upd()
+		return
+	else
 		para = {}
 		restore()
-		return
 	end
-	upd()
 end
 
 --[[
@@ -140,9 +169,12 @@ local function save(s)
 		end
 	end
 
-	local fpara = io.open(paraname, 'wb')
-	fpara:write(table.concat(f))
-	fpara:close()
+	local fparabak = io.open(paranamebak, 'wb')
+	fparabak:write(table.concat(f))
+	fparabak:close()
+	
+	os.remove(paraname)
+	os.rename(paranamebak,paraname)
 end
 
 --[[
