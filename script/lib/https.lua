@@ -193,11 +193,10 @@ function ntfy(idx,evt,result,item)
 	--连接被动断开
 	elseif evt == "STATE" and result == "CLOSED" then
 		tclients[hidx].sckconnected=false
-		tclients[hidx].httpconnected=false
 		tclients[hidx].sckconning = false
-		if tclients[hidx].rcvcb then tclients[hidx].rcvcb(1,tclients[hidx].statuscode,tclients[hidx].rcvhead,tclients[hidx].filepath or tclients[hidx].rcvbody) end
+		if tclients[hidx].rcvcb then tclients[hidx].rcvcb(tclients[hidx].contentlen==0x7FFFFFFF and 0 or 1,tclients[hidx].statuscode,tclients[hidx].rcvhead,tclients[hidx].filepath or tclients[hidx].rcvbody) end
 		sys.timer_stop(timerfnc,hidx)
-		resetpara(hidx,false)
+		resetpara(hidx)
 		--长连接时使用
 		if tclients[hidx].mode then
 			sys.timer_start(reconn,RECONN_PERIOD*1000,idx)
@@ -205,8 +204,9 @@ function ntfy(idx,evt,result,item)
 	--连接主动断开（调用link.shut后的异步事件）
 	elseif evt == "STATE" and result == "SHUTED" then
 		tclients[hidx].sckconnected=false
-		tclients[hidx].httpconnected=false
 		tclients[hidx].sckconning = false
+		sys.timer_stop(timerfnc,hidx)
+		resetpara(hidx)
 		--长连接时使用
 		if tclients[hidx].mode then
 			socketssl.disconnect(idx,"RECONN")
@@ -215,8 +215,9 @@ function ntfy(idx,evt,result,item)
 	--连接主动断开（调用socketssl.disconnect后的异步事件）
 	elseif evt == "DISCONNECT" then
 		tclients[hidx].sckconnected=false
-		tclients[hidx].httpconnected=false
 		tclients[hidx].sckconning = false
+		sys.timer_stop(timerfnc,hidx)
+		resetpara(hidx)
 		if item=="USER" then
 			if tclients[hidx].discb then tclients[hidx].discb(idx) end
 			tclients[hidx].discing = false
@@ -227,6 +228,10 @@ function ntfy(idx,evt,result,item)
 		end
 	--连接主动断开并且销毁（调用socketssl.close后的异步事件）
 	elseif evt == "CLOSE" then
+		tclients[hidx].sckconnected=false
+		tclients[hidx].sckconning = false
+		sys.timer_stop(timerfnc,hidx)
+		resetpara(hidx)
 		local cb = tclients[hidx].destroycb
 		table.remove(tclients,hidx)
 		if cb then cb() end
@@ -240,11 +245,11 @@ end
 function resetpara(hidx,clrdata)
 	tclients[hidx].statuscode=nil
 	tclients[hidx].rcvhead=nil
-	tclients[hidx].rcvcb,tclients[hidx].rcvbody,tclients[hidx].rcvLen=nil
+	tclients[hidx].rcvbody,tclients[hidx].rcvLen=nil
 	tclients[hidx].status=nil
 	tclients[hidx].result=nil
 	tclients[hidx].rcvChunked,tclients[hidx].chunkSize=nil
-	tclients[hidx].filepath,tclients[hidx].filelen=nil
+	tclients[hidx].filelen=nil
 	if clrdata or clrdata==nil then tclients[hidx].rcvData="" end
 end
 
@@ -293,7 +298,7 @@ function rcv(idx,data)
 				
 			end
 			if not tclients[hidx].rcvChunked then
-				tclients[hidx].contentlen = tonumber(smatch(heads,"Content%-Length:%s*(%d+)\r\n"),10)
+				tclients[hidx].contentlen = tonumber(smatch(heads,"Content%-Length:%s*(%d+)\r\n"),10) or 0x7FFFFFFF
 			end
 			tclients[hidx].rcvData = ssub(tclients[hidx].rcvData,d2+1,-1)
 		end
@@ -402,7 +407,6 @@ function create(host,port)
 		sckconnected=false,
 		sckreconncnt=0,
 		sckreconncyclecnt=0,
-		httpconnected=false,
 		discing=false,
 		status=false,
 		rcvbody=nil,
@@ -442,7 +446,7 @@ function thttp:connect(connectedcb,sckerrcb)
 	
 	tclients[getclient(self.sckidx)]=self
 	
-	if self.httpconnected then print("thttp:connect already connected") return end
+	if self.sckconnected then print("thttp:connect already connected") return end
 	if not self.sckconnected then
 		connect(self.sckidx,self.prot,self.host,self.port,self.crtconfig) 
 	end
@@ -556,6 +560,8 @@ function thttp:request(cmdtyp,url,head,body,rcvcb,filepath)
 	if filepath then
 		self.filepath = (ssub(filepath,1,1)~="/" and "/" or "")..filepath
 		if ssub(filepath,1,1)~="/" and rtos.make_dir and rtos.make_dir("/http_down") then self.filepath = "/http_down"..self.filepath end
+	else
+		self.filepath = nil
 	end
 
 	if not head or head=="" or (type(head)=="table" and #head==0) then
@@ -608,11 +614,11 @@ end
 		CONNECTED：连接状态
 ]]
 function thttp:getstatus()
-	if self.httpconnected then
+	if self.sckconnected then
 		return "CONNECTED"
-	elseif self.sckconnected or self.sckconning then
+	elseif self.sckconning then
 		return "CONNECTING"
-	elseif self.disconnect then
+	else
 		return "DISCONNECTED"
 	end
 end
