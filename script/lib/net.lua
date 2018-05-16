@@ -720,6 +720,7 @@ local function cgattind(v)
 		cgatt = v
 		procled()
 	end
+	return true
 end
 
 --[[
