@@ -18,7 +18,7 @@ local function init()
 	for _,v in ipairs(allpins) do
 		if v.init == false then
 			-- 不做初始化
-		elseif v.ptype == nil or v.ptype == "GPIO" then
+		elseif (v.ptype == nil or v.ptype == "GPIO") and not v.inited then
 			v.inited = true
 			pio.pin.setdir(v.dir or pio.OUTPUT,v.pin)
 			--[[if v.dir == nil or v.dir == pio.OUTPUT then
@@ -67,10 +67,14 @@ function dereg(cfg1,...)
 		end
 	end
 	
-	for k,v in pairs(allpins) do
-		pio.pin.close(unpack(arg,i,i).pin)
-		if v.pin==unpack(arg,i,i).pin then
-			table.remove(allpins,k)
+	local i
+	for i=1,arg.n do
+		for k,v in pairs(allpins) do
+			if v.pin==unpack(arg,i,i).pin then
+				pio.pin.close(v.pin)
+				table.remove(allpins,k)
+				print("dereg",v.pin)
+			end
 		end
 	end
 end
