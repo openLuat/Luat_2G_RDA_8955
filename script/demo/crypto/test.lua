@@ -96,17 +96,18 @@ end
 ]]
 local function crctest()
 	local originstr = "sdfdsfdsfdsffdsfdsfsdfs1234"
-	--crypto.crc16()第一个参数是校验方法，必须为以下几个。第二个为字符串。
-	print("crc16_MODBUS",string.format("%04X",crypto.crc16("MODBUS",originstr)))
-	print("crc16_IBM",string.format("%04X",crypto.crc16("IBM",originstr)))
-	print("crc16_X25",string.format("%04X",crypto.crc16("X25",originstr)))
-	print("crc16_MAXIM",string.format("%04X",crypto.crc16("MAXIM",originstr)))
-	print("crc16_USB",string.format("%04X",crypto.crc16("USB",originstr)))
-	print("crc16_CCITT",string.format("%04X",crypto.crc16("CCITT",originstr)))
-	print("crc16_CCITT-FALSE",string.format("%04X",crypto.crc16("CCITT-FALSE",originstr)))
-	print("crc16_XMODEM",string.format("%04X",crypto.crc16("XMODEM",originstr)))
-	print("crc16_DNP",string.format("%04X",crypto.crc16("DNP",originstr)))
-	--注意这种方式只能过使用crc16_modbus检验方法，为了兼容之前的版本，以上校验不可以使用这种方式调用
+	if tonumber(string.match(rtos.get_version(),"Luat_V(%d+)_"))>=21 then
+		--crypto.crc16()第一个参数是校验方法，必须为以下几个；第二个参数为计算校验的字符串
+		print("crc16_MODBUS",string.format("%04X",crypto.crc16("MODBUS",originstr)))
+		print("crc16_IBM",string.format("%04X",crypto.crc16("IBM",originstr)))
+		print("crc16_X25",string.format("%04X",crypto.crc16("X25",originstr)))
+		print("crc16_MAXIM",string.format("%04X",crypto.crc16("MAXIM",originstr)))
+		print("crc16_USB",string.format("%04X",crypto.crc16("USB",originstr)))
+		print("crc16_CCITT",string.format("%04X",crypto.crc16("CCITT",originstr)))
+		print("crc16_CCITT-FALSE",string.format("%04X",crypto.crc16("CCITT-FALSE",originstr)))
+		print("crc16_XMODEM",string.format("%04X",crypto.crc16("XMODEM",originstr)))
+		print("crc16_DNP",string.format("%04X",crypto.crc16("DNP",originstr)))
+	end
 	print("crc16_modbus",string.format("%04X",crypto.crc16_modbus(originstr,slen(originstr))))
 	
 	print("crc32",string.format("%08X",crypto.crc32(originstr,slen(originstr))))

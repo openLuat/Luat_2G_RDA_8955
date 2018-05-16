@@ -673,6 +673,7 @@ local function gprsind(s)
 	if s and base.next(linklist) and not ipstatus then
 		link.setupIP()
 	end
+	return true
 end
 
 function inputcrt(t,f,d)
