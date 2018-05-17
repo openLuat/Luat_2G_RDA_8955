@@ -126,7 +126,7 @@ local function getnxtsnd(hidx,sndidx,sndpos)
 		else
 			local fileData = io.filedata(item.body[sndidx].file,0,io.filesize(item.body[sndidx].file))
 			local encodestr = crypto.base64_encode(fileData,slen(fileData))
-			return ssub(encodestr,sndpos,sndpos+PACKET_LEN),sndidx,sndpos+PACKET_LEN
+			return ssub(encodestr,sndpos+1,sndpos+PACKET_LEN),sndidx,sndpos+PACKET_LEN
 		end
 	end
 
@@ -296,7 +296,7 @@ function rcv(idx,data)
 
 			end
 			if not tclients[hidx].rcvChunked then
-				tclients[hidx].contentlen = tonumber(smatch(heads,"Content%-Length:%s*(%d+)\r\n"),10) or 0x7FFFFFFF
+				tclients[hidx].contentlen = tonumber(smatch(string.upper(heads) ,"CONTENT%-LENGTH:%s*(%d+)\r\n"),10) or 0x7FFFFFFF
 			end
 			tclients[hidx].rcvData = ssub(tclients[hidx].rcvData,d2+1,-1)
 		end
