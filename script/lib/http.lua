@@ -50,7 +50,7 @@ end
 参数  ：
 		sckidx：socket idx
         data：发送的数据，在发送结果事件处理函数ntfy中，会赋值到item.data中
-		para：发送的参数，在发送结果事件处理函数ntfy中，会赋值到item.para中 
+		para：发送的参数，在发送结果事件处理函数ntfy中，会赋值到item.para中
 返回值：调用发送接口的结果（并不是数据发送是否成功的结果，数据发送是否成功的结果在ntfy中的SEND事件中通知），true为成功，其他为失败
 ]]
 function snd(sckidx,data,para)
@@ -75,7 +75,7 @@ function reconn(sckidx)
 	--sckconning表示正在尝试连接后台，一定要判断此变量，否则有可能发起不必要的重连，导致sckreconncnt增加，实际的重连次数减少
 	if tclients[hidx].sckconning then return end
 	--一个连接周期内的重连
-	if tclients[hidx].sckreconncnt < RECONN_MAX_CNT then		
+	if tclients[hidx].sckreconncnt < RECONN_MAX_CNT then
 		tclients[hidx].sckreconncnt = tclients[hidx].sckreconncnt+1
 		socket.disconnect(sckidx,"RECONN")
 		tclients[hidx].sckconning = true
@@ -92,7 +92,7 @@ function reconn(sckidx)
 			end
 		else
 			link.shut()
-		end		
+		end
 	end
 end
 
@@ -114,7 +114,6 @@ end
 ]]
 local function getnxtsnd(hidx,sndidx,sndpos)
 	local item,idx = tclients[hidx]
-	
 	if type(item.body[sndidx])=="string" then
 		if sndpos>=slen(item.body[sndidx]) then
 			idx = sndidx+1
@@ -125,16 +124,20 @@ local function getnxtsnd(hidx,sndidx,sndpos)
 		if sndpos>=item.body[sndidx].len then
 			idx = sndidx+1
 		else
-			return io.filedata(item.body[sndidx].file,sndpos,PACKET_LEN),sndidx,sndpos+PACKET_LEN
+			local fileData = io.filedata(item.body[sndidx].file,0,io.filesize(item.body[sndidx].file))
+			local encodestr = crypto.base64_encode(fileData,slen(fileData))
+			return ssub(encodestr,sndpos,sndpos+PACKET_LEN),sndidx,sndpos+PACKET_LEN
 		end
 	end
-	
+
 	if type(item.body[idx])=="string" then
-		return ssub(item.body[idx],1,PACKET_LEN),idx,PACKET_LEN		
+		return ssub(item.body[idx],1,PACKET_LEN),idx,PACKET_LEN
 	elseif type(item.body[idx])=="table" then
-		return io.filedata(item.body[idx].file,0,PACKET_LEN),idx,PACKET_LEN
+		local fileData = io.filedata(item.body[idx].file,0,io.filesize(item.body[idx].file))
+		local encodestr = crypto.base64_encode(fileData,slen(fileData))
+		return ssub(encodestr,1,PACKET_LEN),idx,PACKET_LEN
 	end
-	
+
 	return ""
 end
 
@@ -165,7 +168,7 @@ function ntfy(idx,evt,result,item)
 		else
 			--RECONN_PERIOD秒后重连
 			sys.timer_start(reconn,RECONN_PERIOD*1000,idx)
-		end	
+		end
 	--数据发送结果（调用socket.send后的异步事件）
 	elseif evt == "SEND" then
 		if result then
@@ -183,7 +186,7 @@ function ntfy(idx,evt,result,item)
 			if tclients[hidx].sckerrcb then
 				tclients[hidx].sckreconncnt=0
 				tclients[hidx].sckreconncyclecnt=0
-				tclients[hidx].sckerrcb("SEND") 
+				tclients[hidx].sckerrcb("SEND")
 			end
 		end
 	--连接被动断开
@@ -216,7 +219,7 @@ function ntfy(idx,evt,result,item)
 		if item=="USER" then
 			if tclients[hidx].discb then tclients[hidx].discb(idx) end
 			tclients[hidx].discing = false
-		end	
+		end
 	--长连接时使用
 		if tclients[hidx].mode or item=="RECONN" then
 			connectitem(hidx)
@@ -252,7 +255,7 @@ end
 函数名：timerfnc
 功能  ：接收数据超时的定时器处理函数
 参数  ：
-        hidx：http client在tclients表中的索引	
+        hidx：http client在tclients表中的索引
 返回值：无
 ]]
 function timerfnc(hidx)
@@ -264,7 +267,7 @@ end
 函数名：rcv
 功能  ：数据接收处理函数
 参数  ：
-        idx：http client对应的socket id	
+        idx：http client对应的socket id
         data：收到的数据
 返回值：无
 ]]
@@ -272,16 +275,16 @@ function rcv(idx,data)
 	local hidx = getclient(idx)
 	--设置一个定时器，时间为30秒
 	sys.timer_start(timerfnc,30000,hidx)
-	
+
 	if data and tclients[hidx].rcvcb then
 		tclients[hidx].rcvData = (tclients[hidx].rcvData or "")..data
 		local d1,d2,v1
-		
+
 		--状态行和头
 		if not tclients[hidx].statuscode then
 			d1,d2 = sfind(tclients[hidx].rcvData,"\r\n\r\n")
 			if not(d1 and d2) then print("wait heads complete") return end
-			
+
 			local heads,k,v = ssub(tclients[hidx].rcvData,1,d2)
 			tclients[hidx].statuscode = smatch(heads,"%s(%d+)%s")
 			local _,crlf = sfind(heads,"\r\n")
@@ -290,14 +293,14 @@ function rcv(idx,data)
 			for k,v in sgmatch(heads,"(.-):%s*(.-)\r\n") do
 				tclients[hidx].rcvhead[k] = v
 				if (k=="Transfer-Encoding") and (v=="chunked") then tclients[hidx].rcvChunked = true end
-				
+
 			end
 			if not tclients[hidx].rcvChunked then
 				tclients[hidx].contentlen = tonumber(smatch(heads,"Content%-Length:%s*(%d+)\r\n"),10) or 0x7FFFFFFF
 			end
 			tclients[hidx].rcvData = ssub(tclients[hidx].rcvData,d2+1,-1)
 		end
-		
+
 		--chunk编码传输(body)
 		if tclients[hidx].rcvChunked then
 			while true do
@@ -308,13 +311,13 @@ function rcv(idx,data)
 					tclients[hidx].chunkSize = tonumber(v1,16)
 					tclients[hidx].rcvData = ssub(tclients[hidx].rcvData,d2+1,-1)
 				end
-				
+
 				print("chunk-size",tclients[hidx].chunkSize,slen(tclients[hidx].rcvData))
-				
+
 				if slen(tclients[hidx].rcvData)<tclients[hidx].chunkSize+2 then print("wait chunk-data complete") return end
 				if tclients[hidx].chunkSize>0 then
 					local chunkData = ssub(tclients[hidx].rcvData,1,tclients[hidx].chunkSize)
-					if tclients[hidx].filepath then	
+					if tclients[hidx].filepath then
 						local f = io.open(tclients[hidx].filepath,"a+")
 						f:write(chunkData)
 						f:close()
@@ -337,7 +340,7 @@ function rcv(idx,data)
 			local rmnLen = tclients[hidx].contentlen-(tclients[hidx].rcvLen or 0)
 			local sData = ssub(tclients[hidx].rcvData,1,rmnLen)
 			tclients[hidx].rcvLen = (tclients[hidx].rcvLen or 0)+slen(sData)
-			
+
 			if tclients[hidx].filepath then
 				local f = io.open(tclients[hidx].filepath,"a+")
 				f:write(sData)
@@ -346,7 +349,7 @@ function rcv(idx,data)
 				tclients[hidx].rcvbody = (tclients[hidx].rcvbody or "")..sData
 			end
 
-			tclients[hidx].rcvData = ssub(tclients[hidx].rcvData,rmnLen+1,-1)			
+			tclients[hidx].rcvData = ssub(tclients[hidx].rcvData,rmnLen+1,-1)
 			if tclients[hidx].rcvLen==tclients[hidx].contentlen then
 				tclients[hidx].rcvcb(0,tclients[hidx].statuscode,tclients[hidx].rcvhead,tclients[hidx].filepath or tclients[hidx].rcvbody)
 				sys.timer_stop(timerfnc,hidx)
@@ -395,7 +398,7 @@ function create(host,port)
 	{
 		prot="TCP",
 		host=host,
-		port=port or 80,		
+		port=port or 80,
 		sckidx=socket.SCK_MAX_CNT-#tclients-2,
 		sckconning=false,
 		sckconnected=false,
@@ -418,19 +421,19 @@ end
 函数名：connect
 功能  ：连接http服务器
 参数  ：
-        connectedcb:function类型，socket connected 成功回调函数	
+        connectedcb:function类型，socket connected 成功回调函数
 		sckerrcb：function类型，socket连接失败的回调函数[可选]
 返回值：无
 ]]
 function thttp:connect(connectedcb,sckerrcb)
 	self.connectedcb=connectedcb
 	self.sckerrcb=sckerrcb
-	
+
 	tclients[getclient(self.sckidx)]=self
-	
+
 	if self.sckconnected then print("thttp:connect already connected") return end
 	if not self.sckconnected then
-		connect(self.sckidx,self.prot,self.host,self.port) 
+		connect(self.sckidx,self.prot,self.host,self.port)
     end
 end
 
@@ -476,7 +479,7 @@ function thttp:destroy(destroycb)
 	end
 end
 
-function clrsndbody(hidx)	
+function clrsndbody(hidx)
 	local i=0
 	while tclients[hidx].body[i] do
 		if type(tclients[hidx].body[i])=="table" then
@@ -487,12 +490,12 @@ function clrsndbody(hidx)
 	tclients[hidx].body=nil
 end
 
- 
+
 --[[
 函数名：request
 功能  ：发送HTTP请求
 参数  ：
-        cmdtyp：string类型，HTTP的请求方法，"GET"、"POST"或者"HEAD"	
+        cmdtyp：string类型，HTTP的请求方法，"GET"、"POST"或者"HEAD"
 		url：string类型，HTTP请求行中的URL字段
 		head：nil、""或者table类型，HTTP的请求头，lib中默认为自动添加Connection和Host请求头
 			如果需要添加其他请求头，本参数传入table类型即可，格式为{"head1: value1","head2: value2",...}
@@ -509,7 +512,7 @@ end
 返回值：如果传入了filepath，返回处理后的文件保存的完整路径；其余情况没有返回值
 ]]
 function thttp:request(cmdtyp,url,head,body,rcvcb,filepath)
-	local headstr="" 
+	local headstr=""
 	--默认传送方式为"GET"
 	self.cmdtyp=cmdtyp or "GET"
 	--默认为根目录
@@ -518,7 +521,7 @@ function thttp:request(cmdtyp,url,head,body,rcvcb,filepath)
 	self.head={}
 	self.body=body or ""
 	self.rcvcb=rcvcb
-	
+
 	--重构body参数
 	if type(self.body)=="string" then
 		--self.body = {len=slen(self.body), sndidx=1, sndpos=0, [1]=self.body}
@@ -529,8 +532,10 @@ function thttp:request(cmdtyp,url,head,body,rcvcb,filepath)
 	while self.body[i] do
 		if type(self.body[i])=="string" then
 			bodylen = bodylen+slen(self.body[i])
-		elseif type(self.body[i])=="table" then			
-			self.body[i].len = io.filesize(self.body[i].file)
+		elseif type(self.body[i])=="table" then
+			local filedata = io.filedata(self.body[i].file,0,io.filesize(self.body[i].file))
+			local encodestr = crypto.base64_encode(filedata,slen(filedata))
+			self.body[i].len = slen(encodestr)
 			bodylen = bodylen+self.body[i].len
 		else
 			assert(false,"unsupport body type")
@@ -538,7 +543,7 @@ function thttp:request(cmdtyp,url,head,body,rcvcb,filepath)
 		i = i+1
 	end
 	self.body.len = bodylen
-	
+
 	if filepath then
 		self.filepath = (ssub(filepath,1,1)~="/" and "/" or "")..filepath
 		if ssub(filepath,1,1)~="/" and rtos.make_dir and rtos.make_dir("/http_down") then self.filepath = "/http_down"..self.filepath end
@@ -561,13 +566,13 @@ function thttp:request(cmdtyp,url,head,body,rcvcb,filepath)
 		end
 		if not hosthead then table.insert(self.head,1,"Host: "..self.host) end
 		if not connhead then table.insert(self.head,1,"Connection: keep-alive") end
-		if not conlen and cmdtyp=="POST" and self.body~="" and self.body~=nil then 
-			table.insert(self.head,1,"Content-Length: "..self.body.len) 
+		if not conlen and cmdtyp=="POST" and self.body~="" and self.body~=nil then
+			table.insert(self.head,1,"Content-Length: "..self.body.len)
 		end
 	else
 		assert(false,"head format error")
 	end
-	
+
 	headstr=cmdtyp.." "..self.url.." HTTP/1.1"..'\r\n'
 	for k,v in pairs(self.head) do
 		headstr=headstr..v..'\r\n'
@@ -575,10 +580,10 @@ function thttp:request(cmdtyp,url,head,body,rcvcb,filepath)
 	headstr = headstr.."\r\n"
 	self.body[0] = headstr
 	local sndata,sndpara = headstr,{sndidx=0,sndpos=utils.min(PACKET_LEN,slen(headstr))}
-	if type(self.body[1])=="string" and ((slen(self.body[1])+slen(headstr))<=PACKET_LEN) then 
+	if type(self.body[1])=="string" and ((slen(self.body[1])+slen(headstr))<=PACKET_LEN) then
 		sndata = headstr..self.body[1]
 		sndpara = {sndidx=1,sndpos=utils.min(PACKET_LEN,slen(self.body[1]))}
-	end		
+	end
 	if not snd(self.sckidx,sndata,sndpara) then
 		clrsndbody(getclient(self.sckidx))
 		if self.sckerrcb then self.sckerrcb("SEND") end
