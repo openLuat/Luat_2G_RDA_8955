@@ -7,6 +7,9 @@ Luat_VXXXX_8955_SSL_UI.lod：支持SSL、SPI接口的LCD功能
 Luat_VXXXX_8955_TTS_UI.lod：支持TTS、SPI接口的LCD功能
 Luat_VXXXX_8955_TTSX.lod：支持TTS功能
 Luat_VXXXX_8955_UI.lod：支持SPI接口的LCD功能
+Luat_VXXXX_8955_SSL_FLOAT.lod：支持SSL功能、浮点数
+Luat_VXXXX_8955_SSL_UI_FLOAT.lod：支持SSL功能、PI接口的LCD功能、浮点数
+Luat_VXXXX_8955F.lod：64M flash版本（Air202F），支持SSL、TTS、SPI接口的LCD功能
 
 
 
