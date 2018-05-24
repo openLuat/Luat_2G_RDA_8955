@@ -66,12 +66,12 @@ function numtobcdnum(num)
   end
 
   if len%2 ~= 0 then --奇数位
-    for i=1, len/2  do
+    for i=1, (len-(len%2))/2  do
       convnum = convnum .. ssub(num, i*2,i*2) .. ssub(num, i*2-1,i*2-1)
     end
     convnum = convnum .. "F" .. ssub(num,len, len)
   else--偶数位
-    for i=1, len/2  do
+    for i=1, (len-(len%2))/2  do
       convnum = convnum .. ssub(num, i*2,i*2) .. ssub(num, i*2-1,i*2-1)
     end
   end
@@ -100,7 +100,7 @@ function bcdnumtonum(num)
   
   len,num = len-2,ssub(num, 3,-1)
   
-  for i=1, len/2  do
+  for i=1, (len-(len%2))/2  do
     convnum = convnum .. ssub(num, i*2,i*2) .. ssub(num, i*2-1,i*2-1)
   end
     

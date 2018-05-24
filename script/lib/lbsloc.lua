@@ -106,7 +106,7 @@ local function bcd(d,n)
 		if i == l then
 			num = 0xf0+num
 		else
-			num = (num%0x10)*0x10 + num/0x10
+			num = (num%0x10)*0x10 + (num-(num%0x10))/0x10
 		end
 
 		table.insert(t,num)
@@ -240,11 +240,11 @@ local function trans(lat,lng)
 (XXXXXXX * 6 / 1000000).."."..(XXXXXXX * 6 % 1000000)得到的就是string类型的分，
 例如0.9999999度最终结果就是string类型的59.999994分
 ]]
-	local lam1,lam2 = tonumber(ssub(la,4,-1))*6/1000000,tonumber(ssub(la,4,-1))*6%1000000
+	local lam1,lam2 = (tonumber(ssub(la,4,-1))*6-(tonumber(ssub(la,4,-1))*6%1000000))/1000000,tonumber(ssub(la,4,-1))*6%1000000
 	if slen(lam1)<2 then lam1 = srep("0",2-slen(lam1))..lam1 end
 	if slen(lam2)<6 then lam2 = srep("0",6-slen(lam2))..lam2 end
 	
-	local lnm1,lnm2 = tonumber(ssub(ln,4,-1))*6/1000000,tonumber(ssub(ln,4,-1))*6%1000000
+	local lnm1,lnm2 = (tonumber(ssub(ln,4,-1))*6-(tonumber(ssub(ln,4,-1))*6%1000000))/1000000,tonumber(ssub(ln,4,-1))*6%1000000
 	if slen(lnm1)<2 then lnm1 = srep("0",2-slen(lnm1))..lnm1 end
 	if slen(lnm2)<6 then lnm2 = srep("0",6-slen(lnm2))..lnm2 end
 	

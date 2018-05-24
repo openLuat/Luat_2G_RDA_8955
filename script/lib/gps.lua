@@ -99,7 +99,7 @@ local function getmilli(v,vr)
 		return
 	end
 	v2 = ssub(v,1,L-2)
-	v1 = tostring(tonumber(ssub(v,L-1,L) .. vr)*10/6)
+	v1 = tostring((tonumber(ssub(v,L-1,L) .. vr)*10-(tonumber(ssub(v,L-1,L) .. vr)*10%6))/6)
 	ov1 = ssub(v,L-1,L) .. vr
 	L = slen(v1)
 	if L > 7 then
@@ -116,7 +116,7 @@ local function getmilli(v,vr)
 
 	T = v2 .. "." .. v1
 	OT = v2 .. "." .. ov1
-	R = tonumber(v2..ssub(v1,1,5)) * 36 + tonumber(ssub(v1,6,7))*36/100
+	R = tonumber(v2..ssub(v1,1,5)) * 36 + (tonumber(ssub(v1,6,7))*36-(tonumber(ssub(v1,6,7))*36%100))/100
 	return OT,T,R
 end
 
@@ -414,7 +414,7 @@ local function proc(s)
 		local r1,r2 = smatch(spd1, "(%d+)%.*(%d*)")
 		if r1 then
 			if gps.spdtyp == GPS_KILOMETER_SPD then
-				gps.spd = (tonumber(r1)*1852/1000)
+				gps.spd = (tonumber(r1)*1852-(tonumber(r1)*1852%1000))/1000
 			else
 				gps.spd = tonumber(r1)
 			end
@@ -470,7 +470,7 @@ function diffofloc(latti1, longti1, latti2, longti2,typ) --typ=true:·µ»Øa+b ; ·ñ
 	R1 = I1 .. ssub(R1,1,5)
 	R2 = I2 .. ssub(R2,1,5)
 	d = tonumber(R1)-tonumber(R2)
-	d = d*111/100
+	d = (d*111-(d*111%100))/100
 	if typ == true then
 		diff =  (d>0 and d or (-d))
 	else

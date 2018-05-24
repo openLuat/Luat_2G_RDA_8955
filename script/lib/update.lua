@@ -102,6 +102,7 @@ end
 返回值：无
 ]]
 local function retry(param)
+	print("retry",param,state,getretries)
 	--升级状态已结束直接退出
 	if state~="CONNECT" and state~="UPDATE" and state~="CHECK" then
 		return
@@ -183,7 +184,7 @@ local function getpack(data)
 	save(string.sub(data,3,-1))
 	--如果是用户自定义模式，产生一个内部消息UP_PROGRESS_IND，表示升级进度
 	if updmode == 1 then
-		dispatch("UP_EVT","UP_PROGRESS_IND",packid*100/total)
+		dispatch("UP_EVT","UP_PROGRESS_IND",(packid*100-((packid*100)%total))/total)
 	end
 
 	--获取下一包数据
@@ -232,6 +233,7 @@ end
 ]]
 function upend(succ)
 	print("upend",succ)
+	if not succ then os.remove(UPDATEPACK) end
 	updsuc = succ
 	local tmpsta = state
 	state = "IDLE"
@@ -264,6 +266,7 @@ end
 ]]
 function reqcheck()
 	print("reqcheck",usersvr)
+	os.remove(UPDATEPACK)
 	state = "CHECK"
 	if usersvr then
 		send(lid,string.format("%s,%s,%s",misc.getimei(),base.PROJECT.."_"..sys.getcorever(),base.VERSION))
