@@ -121,6 +121,7 @@ end
 ]]
 function upend(succ)
 	print("upend",succ,state,updmode)
+	if not succ then os.remove(UPDATEPACK) end
 	updsuc = succ
 	local tmpsta = state
 	state = "IDLE"
@@ -212,7 +213,15 @@ local function recv(id,data)
 		local _,d = string.find(rcvBuf,"\r\n\r\n")
 		if d then
 			local statusCode = string.match(rcvBuf,"HTTP/1.1 (%d+)")
-			if statusCode~="200" then print("statusCode error",statusCode) upend(false) return end
+			if statusCode~="200" then
+				print("statusCode error",statusCode)
+				local msg = string.match(rcvBuf,"\"msg\":%s*\"(.-)\"")
+				if msg and msg:len()<=200 then
+					print("error msg",common.ucs2betoutf8(common.hexstobins(msg:gsub("\\u",""))))
+				end
+				upend(false)
+				return
+			end
 			
 			contentLen = string.match(rcvBuf,"Content%-Length: (%d+)")
 			if not contentLen or contentLen=="0" then print("contentLen error",contentLen) sys.timer_start(retry,CMD_GET_TIMEOUT) return end

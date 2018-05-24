@@ -36,7 +36,7 @@ local function enclen(s)
 	local ret,len,digit = "",slen(s)
 	repeat
 		digit = len % 128
-		len = len / 128
+		len = (len-digit) / 128
 		if len > 0 then
 			digit = bit.bor(digit,0x80)
 		end
@@ -769,7 +769,7 @@ function rcv(idx,data)
 	local mqttclientidx = getclient(idx)
 	if not mqttclientidx or not tclients[mqttclientidx].sckconnected then return end
 	print("rcv",slen(data)>200 and slen(data) or common.binstohexs(data))
-	sys.timer_start(pingreq,tclients[mqttclientidx].keepalive*1000/2,idx)	
+	sys.timer_start(pingreq,(tclients[mqttclientidx].keepalive*1000-(tclients[mqttclientidx].keepalive*1000%2))/2,idx)	
 	tclients[mqttclientidx].sckrcvs = tclients[mqttclientidx].sckrcvs..data
 	if slen(tclients[mqttclientidx].sckrcvs)>1024*10 then collectgarbage() end
 

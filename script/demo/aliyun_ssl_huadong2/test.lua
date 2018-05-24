@@ -20,6 +20,7 @@ local PRODUCT_KEY = "b0FMK1Ga5cp"
 ]]
 local function getDeviceName()
 	--默认使用设备的IMEI作为设备名称
+	--return "862991419835241"
 	return misc.getimei()
 end
 
@@ -31,8 +32,8 @@ end
 ]]
 local function getDeviceSecret()
 	--默认使用设备的SN作为设备证书
-	--用户单体测试时，可以在此处直接返回阿里云的iot控制台上生成的设备证书，例如return "Pa0EaHDiOB8s18KwtpdOmdrWP2EGD1Mt"
-	--return "Pa0EaHDiOB8s18KwtpdOmdrWP2EGD1Mt"
+	--用户单体测试时，可以在此处直接返回阿里云的iot控制台上生成的设备证书，例如return "y7MTCG6Gk33Ux26bbWSpANl4OaI0bg5Q"
+	--return "y7MTCG6Gk33Ux26bbWSpANl4OaI0bg5Q"
 	return misc.getsn()
 end
 
@@ -136,6 +137,8 @@ end
 --注意：如果使用imei和sn作为设备名称和设备证书时，不要把getDeviceName和getDeviceSecret替换为misc.getimei()和misc.getsn()
 --因为开机就调用misc.getimei()和misc.getsn()，获取不到值
 aliyuniotssl.config(PRODUCT_KEY,nil,getDeviceName,getDeviceSecret)
+--setMqtt接口不是必须的，aLiYun.lua中有这个接口设置的参数默认值，如果默认值满足不了需求，参考下面注释掉的代码，去设置参数
+--aliyuniotssl.setMqtt(0)
 aliyuniotssl.regcb(connectedcb,connecterrcb)
 
 

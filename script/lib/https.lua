@@ -196,6 +196,7 @@ function ntfy(idx,evt,result,item)
 		tclients[hidx].sckconning = false
 		if tclients[hidx].rcvcb then tclients[hidx].rcvcb(tclients[hidx].contentlen==0x7FFFFFFF and 0 or 1,tclients[hidx].statuscode,tclients[hidx].rcvhead,tclients[hidx].filepath or tclients[hidx].rcvbody) end
 		sys.timer_stop(timerfnc,hidx)
+		sys.timer_stop(reconn,idx)
 		resetpara(hidx)
 		--长连接时使用
 		if tclients[hidx].mode then
@@ -206,6 +207,7 @@ function ntfy(idx,evt,result,item)
 		tclients[hidx].sckconnected=false
 		tclients[hidx].sckconning = false
 		sys.timer_stop(timerfnc,hidx)
+		sys.timer_stop(reconn,idx)
 		resetpara(hidx)
 		--长连接时使用
 		if tclients[hidx].mode then
@@ -217,6 +219,7 @@ function ntfy(idx,evt,result,item)
 		tclients[hidx].sckconnected=false
 		tclients[hidx].sckconning = false
 		sys.timer_stop(timerfnc,hidx)
+		sys.timer_stop(reconn,idx)
 		resetpara(hidx)
 		if item=="USER" then
 			if tclients[hidx].discb then tclients[hidx].discb(idx) end
@@ -231,6 +234,7 @@ function ntfy(idx,evt,result,item)
 		tclients[hidx].sckconnected=false
 		tclients[hidx].sckconning = false
 		sys.timer_stop(timerfnc,hidx)
+		sys.timer_stop(reconn,idx)
 		resetpara(hidx)
 		local cb = tclients[hidx].destroycb
 		table.remove(tclients,hidx)
@@ -631,7 +635,7 @@ end
 ]]
 function thttp:getrcvpercent()
 	if not self.rcvChunked and self.rcvLen and self.rcvLen>0 and self.contentlen and self.contentlen>0 then
-		return 100*self.rcvLen/self.contentlen
+		return (100*self.rcvLen-(100*self.rcvLen%self.contentlen))/self.contentlen
 	end
 	return 0
 end

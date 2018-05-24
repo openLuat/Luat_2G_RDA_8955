@@ -218,7 +218,7 @@ local function bcd(d,n)
 		if i == l then
 			num = 0xf0+num
 		else
-			num = (num%0x10)*0x10 + num/0x10
+			num = (num%0x10)*0x10 + (num-(num%0x10))/0x10
 		end
 
 		table.insert(t,num)
