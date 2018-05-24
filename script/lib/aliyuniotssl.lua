@@ -9,6 +9,7 @@ local mqttclient,gaddr,gports,gclientid,gusername,gpassword
 local gportidx = 1
 local gconnectedcb,gconnecterrcb,gevtcbs
 local productKey,deviceName
+local sKeepAlive,sCleanSession,sWill
 
 --[[
 函数名：print
@@ -76,9 +77,12 @@ function connect(change)
 		mqttclient = mqttssl.create("TCP",gaddr,gports[gportidx])
 	end
 	--配置遗嘱参数,如果有需要，打开下面一行代码，并且根据自己的需求调整will参数
-	--mqttclient:configwill(1,0,0,"/willtopic","will payload")
+	if sWill then
+		mqttclient:configwill(1,sWill.qos,sWill.retain,sWill.topic,sWill.payload)
+	end
+	mqttclient:setcleansession(sCleanSession)
 	--连接mqtt服务器
-	mqttclient:connect(gclientid,240,gusername,gpassword,consucb,gconnecterrcb,sckerrcb)
+	mqttclient:connect(gclientid,sKeepAlive or 240,gusername,gpassword,consucb,gconnecterrcb,sckerrcb)
 end
 
 --[[
@@ -119,6 +123,19 @@ function config(productkey,productsecret,devicename,devicesecret)
 	end
 	productKey,deviceName = productkey,devicename
 	sys.dispatch("ALIYUN_AUTH_BGN",productkey,productsecret,devicename,devicesecret)
+end
+
+--- 设置MQTT数据通道的参数
+-- @number[opt=1] cleanSession 1/0
+-- @table[opt=nil] will 遗嘱参数，格式为{qos=, retain=, topic=, payload=}
+-- @number[opt=240] keepAlive，单位秒
+-- @return nil
+-- @usage
+-- aliyuniotssl.setMqtt(0)
+-- aliyuniotssl.setMqtt(1,{qos=0,retain=1,topic="/willTopic",payload="will payload"})
+-- aliyuniotssl.setMqtt(1,{qos=0,retain=1,topic="/willTopic",payload="will payload"},120)
+function setMqtt(cleanSession,will,keepAlive)
+    sCleanSession,sWill,sKeepAlive = cleanSession,will,keepAlive
 end
 
 function regcb(connectedcb,connecterrcb)

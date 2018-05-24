@@ -19,7 +19,7 @@ local UART_ID = 1
 local function read()
 	local s
 	while true do
-		s = uart.read(UART_ID,"*l",0)
+		s = uart.read(UART_ID,"*l")
 		if not s or string.len(s) == 0 then break end
 		print("read bin",s)
 		print("read hex",common.binstohexs(s))

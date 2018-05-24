@@ -86,7 +86,7 @@ gps.setfixmode(0)
 --如果不调用此接口，默认也为仅gps.lua内部处理NEMA数据
 --如果gps.lua内部不处理，把nema数据通过回调函数cb提供给外部程序处理，参数设置为1,nemacb
 --如果gps.lua和外部程序都处理，参数设置为2,nemacb
-gps.setnemamode(0)
+gps.setnemamode(2,nemacb)
 --如果需要GPS的时间来同步模块时间，则打开下面这行注释的代码
 --gps.settimezone(gps.GPS_BEIJING_TIME)
 gps_open(testidx)

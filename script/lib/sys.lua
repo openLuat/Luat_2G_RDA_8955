@@ -27,7 +27,7 @@ local tonumber = base.tonumber
 --lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
 SCRIPT_LIB_VER = "1.1.9"
 --脚本发布时的最新core软件版本号
-CORE_MIN_VER = "Luat_V0020_8955"
+CORE_MIN_VER = "Luat_V0022_8955"
 
 --是否允许“脚本异常时 或者 脚本调用sys.restart接口时”的重启
 --是否有挂起的等待重启的事件
@@ -47,7 +47,7 @@ function refresh()
 end
 
 --定时器支持的单步最大时长，单位毫秒
-local MAXMS = 0x7fffffff/17
+local MAXMS = (0x7fffffff-(0x7fffffff%17))/17
 --定时器id
 local uniquetid = 0
 --定时器id表
@@ -153,8 +153,8 @@ function timer_start(fnc,ms,...)
 	end
 	--如果时长超过单步支持的最大时长，则拆分为几个定时器
 	if ms > MAXMS then
-		local count = ms/MAXMS + (ms%MAXMS == 0 and 0 or 1)
-		local step = ms/count
+		local count = (ms-(ms%MAXMS))/MAXMS + (ms%MAXMS == 0 and 0 or 1)
+		local step = (ms-(ms%count))/count
 		tval = {cb = fnc, step = step, total = count, times = 0}
 		ms = step
 	--时长未超过单步支持的最大时长

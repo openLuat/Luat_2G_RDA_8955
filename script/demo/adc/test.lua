@@ -26,14 +26,14 @@ local function read()
 	--adcval为number类型，表示adc的原始值，无效值为0xFFFF
 	--voltval为number类型，表示转换后的电压值，单位为毫伏，无效值为0xFFFF；adc.read接口返回的voltval放大了3倍，所以需要除以3还原成原始电压
 	local adcval,voltval = adc.read(ADC_ID)
-	print("adc.read",adcval,voltval/3,voltval)
+	print("adc.read",adcval,(voltval-(voltval%3))/3,voltval)
 	--如果adcval有效
 	if adcval and adcval~=0xFFFF then
 	end
 	--如果voltval有效	
 	if voltval and voltval~=0xFFFF then
 		--adc.read接口返回的voltval放大了3倍，所以此处除以3
-		voltval = voltval/3
+		voltval = (voltval-(voltval%3))/3
 	end
 end
 

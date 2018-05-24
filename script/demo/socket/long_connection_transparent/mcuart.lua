@@ -116,7 +116,7 @@ local function read()
 	--如果接收缓冲器不为空，则不会通知Lua脚本
 	--所以Lua脚本中收到中断读串口数据时，每次都要把接收缓冲区中的数据全部读出，这样才能保证底层core中的新数据中断上来，此read函数中的while语句中就保证了这一点
 	while true do
-		data = uart.read(UART_ID,"*l",0)
+		data = uart.read(UART_ID,"*l")
 		if not data or string.len(data) == 0 then break end
 		--print("read",string.len(data)--[[data,common.binstohexs(data)]])
 		proc(data)
