@@ -634,7 +634,8 @@ local function degreeMinuteToDegree(inStr)
         if intLen~=4 and intLen~=5 then log.error("gps.degreeMinuteToDegree integer error",inStr) return "" end
         if slen(fraction)<5 then fraction = fraction..srep("0",5-slen(fraction)) end
         fraction = ssub(fraction,1,5)
-        fraction = tostring(tonumber(ssub(integer,intLen-1,intLen)..fraction)*10/6)
+        local temp = tonumber(ssub(integer,intLen-1,intLen)..fraction)*10
+        fraction = tostring((temp-(temp%6))/6)
         local fracLen = slen(fraction)
         if fracLen>7 then
             fraction = ssub(fraction,1,7)
@@ -677,7 +678,7 @@ end
 -- @usage gps.getSpeed()
 function getSpeed()
     local integer = tonumber(smatch(speed,"(%d+)") or "0")
-    return integer*1852/1000,integer
+    return (integer*1852 - (integer*1852%1000))/1000,integer
 end
 
 --- 获取方向角

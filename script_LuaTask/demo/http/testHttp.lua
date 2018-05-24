@@ -29,11 +29,12 @@ local function cbFncFile(result,prompt,head,filePath)
         end
     end
     if result and filePath then
-        log.info("testHttp.cbFncFile","fileSize="..io.fileSize(filePath))
+        local size = io.fileSize(filePath)
+        log.info("testHttp.cbFncFile","fileSize="..size)
         
         --输出文件内容，如果文件太大，一次性读出文件内容可能会造成内存不足，分次读出可以避免此问题
         if size<=4096 then
-            log.info("testHttp.cbFncFile",filehandle:read("*all"))
+            log.info("testHttp.cbFncFile",io.readFile(filePath))
         else
 			
         end

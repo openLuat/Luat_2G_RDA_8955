@@ -1,4 +1,4 @@
---- 模块功能：串口功能测试
+--- 模块功能：串口功能测试(非TASK版，串口帧有自定义的结构)
 -- @author openLuat
 -- @module uart.testUart
 -- @license MIT
@@ -50,7 +50,7 @@ local function parse(data)
     local cmdtyp = string.byte(data,1)
     local body,result = string.sub(data,2,tail-1)
     
-    log.info("testUart1.parse",data:toHex(),cmdtyp,body:toHex())
+    log.info("testUart.parse",data:toHex(),cmdtyp,body:toHex())
     
     if cmdtyp == CMD_SCANNER then
         write("CMD_SCANNER")
@@ -103,11 +103,11 @@ local function read()
     --如果接收缓冲器不为空，则不会通知Lua脚本
     --所以Lua脚本中收到中断读串口数据时，每次都要把接收缓冲区中的数据全部读出，这样才能保证底层core中的新数据中断上来，此read函数中的while语句中就保证了这一点
     while true do        
-        data = uart.read(UART_ID,"*l",0)
+        data = uart.read(UART_ID,"*l")
         if not data or string.len(data) == 0 then break end
         --打开下面的打印会耗时
-        log.info("testUart1.read bin",data)
-        log.info("testUart1.read hex",data:toHex())
+        log.info("testUart.read bin",data)
+        log.info("testUart.read hex",data:toHex())
         proc(data)
     end
 end
@@ -120,18 +120,18 @@ end
 返回值：无
 ]]
 function write(s)
-    log.info("testUart1.write",s)
+    log.info("testUart.write",s)
     uart.write(UART_ID,s.."\r\n")
 end
 
 local function writeOk()
-    log.info("testUart1.writeOk")
+    log.info("testUart.writeOk")
 end
 
 
---保持系统处于唤醒状态，此处只是为了测试需要，所以此模块没有地方调用pm.sleep("testUart1")休眠，不会进入低功耗休眠状态
---在开发“要求功耗低”的项目时，一定要想办法保证pm.wake("testUart1")后，在不需要串口时调用pm.sleep("testUart1")
-pm.wake("testUart1")
+--保持系统处于唤醒状态，此处只是为了测试需要，所以此模块没有地方调用pm.sleep("testUart")休眠，不会进入低功耗休眠状态
+--在开发“要求功耗低”的项目时，一定要想办法保证pm.wake("testUart")后，在不需要串口时调用pm.sleep("testUart")
+pm.wake("testUart")
 --注册串口的数据接收函数，串口收到数据后，会以中断方式，调用read接口读取数据
 uart.on(UART_ID,"receive",read)
 --注册串口的数据发送通知函数

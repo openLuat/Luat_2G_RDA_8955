@@ -38,6 +38,31 @@ local function hmacMd5Test()
     log.info("testCrypto.hmac_md5",crypto.hmac_md5(originStr,slen(originStr),signKey,slen(signKey)))
 end
 
+--- xxtea算法测试
+-- @return 无
+-- @usage xxteaTest()
+local function xxteaTest()
+    if crypto.xxtea_encrypt then
+        local text = "Hello World!";
+        local key = "07946";
+        local encrypt_data = crypto.xxtea_encrypt(text, key);
+        log.info("testCrypto.xxteaTest","xxtea_encrypt:"..encrypt_data)
+        local decrypt_data = crypto.xxtea_decrypt(encrypt_data, key);
+        log.info("testCrypto.xxteaTest","decrypt_data:"..decrypt_data)
+    end
+end
+--- 流式md5算法测试
+-- @return 无
+-- @usage flowMd5Test()
+local function flowMd5Test()
+    local fmd5Obj=crypto.flow_md5()
+    local testTable={"lqlq666lqlq946","07946lq94607946","lq54075407540707946"}
+    for i=1, #(testTable) do  
+        fmd5Obj:update(testTable[i])
+    end 
+    log.info("testCrypto.flowMd5Test",fmd5Obj:hexdigest())
+end
+
 --- md5算法测试
 -- @return 无
 -- @usage md5Test()
@@ -75,6 +100,20 @@ end
 -- @usage crcTest()
 local function crcTest()
     local originStr = "sdfdsfdsfdsffdsfdsfsdfs1234"
+    
+    if tonumber(string.match(rtos.get_version(),"Luat_V(%d+)_"))>=21 then
+        --crypto.crc16()第一个参数是校验方法，必须为以下几个；第二个参数为计算校验的字符串
+        log.info("testCrypto.crc16_MODBUS",string.format("%04X",crypto.crc16("MODBUS",originStr)))
+        log.info("testCrypto.crc16_IBM",string.format("%04X",crypto.crc16("IBM",originStr)))
+        log.info("testCrypto.crc16_X25",string.format("%04X",crypto.crc16("X25",originStr)))
+        log.info("testCrypto.crc16_MAXIM",string.format("%04X",crypto.crc16("MAXIM",originStr)))
+        log.info("testCrypto.crc16_USB",string.format("%04X",crypto.crc16("USB",originStr)))
+        log.info("testCrypto.crc16_CCITT",string.format("%04X",crypto.crc16("CCITT",originStr)))
+        log.info("testCrypto.crc16_CCITT-FALSE",string.format("%04X",crypto.crc16("CCITT-FALSE",originStr)))
+        log.info("testCrypto.crc16_XMODEM",string.format("%04X",crypto.crc16("XMODEM",originStr)))
+        log.info("testCrypto.crc16_DNP",string.format("%04X",crypto.crc16("DNP",originStr)))
+    end
+    
     log.info("testCrypto.crc16_modbus",string.format("%04X",crypto.crc16_modbus(originStr,slen(originStr))))
     log.info("testCrypto.crc32",string.format("%08X",crypto.crc32(originStr,slen(originStr))))
 end
@@ -286,6 +325,9 @@ local function test()
     sha1Test()
     crcTest()
     aesTest()
+    flowMd5Test()
+    --xxtea 需要lod打开支持
+    xxteaTest()
 end
 
 sys.timerStart(test,5000)

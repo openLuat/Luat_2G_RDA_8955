@@ -19,7 +19,7 @@ local function encodeLen(len)
     local digit
     repeat
         digit = len % 128
-        len = len / 128
+        len = (len - digit) / 128
         if len > 0 then
             digit = bit.bor(digit, 0x80)
         end
@@ -104,7 +104,7 @@ local function unpack(s)
 
     local header = string.byte(s, 1)
 
-    local packet = { id = header / 16, dup = (header % 16) / 8, qos = bit.band(header, 0x06) / 2 }
+    local packet = { id = (header - (header % 16))/ 16, dup = ((header % 16) - ((header % 16) % 8))/ 8, qos = bit.band(header, 0x06) / 2 }
     local nextpos
 
     if packet.id == CONNACK then
@@ -135,7 +135,7 @@ mqttc.__index = mqttc
 -- @string[opt=""] username 用户名，用户名为空配置为""或者nil
 -- @string[opt=""] password 密码，密码为空配置为""或者nil
 -- @number[opt=1] cleanSession 1/0
--- @table[opt={flag=0, qos=0, retain=0, topic="", payload=""}] will 遗嘱参数，格式为{qos=, retain=, topic=, payload=}
+-- @table[opt=nil] will 遗嘱参数，格式为{qos=, retain=, topic=, payload=}
 -- @return table mqttc client实例
 -- @usage
 -- mqttc = mqtt.client("clientid-123")

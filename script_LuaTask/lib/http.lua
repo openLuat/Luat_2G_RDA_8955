@@ -15,7 +15,7 @@ local function response(client,cbFnc,result,prompt,head,body)
 end
 
 local function receive(client,timeout,cbFnc,result,prompt,head,body)
-    res,data = client:recv(timeout)
+    local res,data = client:recv(timeout)
     if not res then
         response(client,cbFnc,result,prompt or "receive timeout",head,body)
     end

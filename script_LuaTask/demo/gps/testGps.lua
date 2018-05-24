@@ -59,7 +59,7 @@ local function test(idx)
     elseif idx==2 then
         --执行完下面三行代码打开GPS后，5分钟之后GPS会关闭
         gps.open(gps.DEFAULT,{tag="TEST1",cb=test1Cb})
-        sys.timer_start(gps.close,30000,gps.DEFAULT,{tag="TEST1"})
+        sys.timerStart(gps.close,300000,gps.DEFAULT,{tag="TEST1"})
         gps.open(gps.TIMERORSUC,{tag="TEST2",val=10,cb=test2Cb})
         gps.open(gps.TIMER,{tag="TEST3",val=60,cb=test3Cb}) 
     end

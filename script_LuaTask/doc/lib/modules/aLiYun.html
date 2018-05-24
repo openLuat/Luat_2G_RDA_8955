@@ -83,7 +83,7 @@
 <p>模块功能：阿里云物联网套件客户端功能.</p>
 <pre>
 <p>
- 目前的产品节点类型仅支持“设备”，设备认证方式仅支持“一机一密”</p>
+ 目前的产品节点类型仅支持“设备”，设备认证方式支持“一机一密和“一型一密”</p>
 </pre>
     <h3>Info:</h3>
     <ul>
@@ -98,9 +98,15 @@
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#setup">
-    setup (productKey<strong  style="color: gray;">[, productSecret=nil]</strong>, getDeviceNameFnc, getDeviceSecretFnc)
+    setup (productKey<strong  style="color: gray;">[, productSecret=nil]</strong>, getDeviceNameFnc, getDeviceSecretFnc<strong  style="color: gray;">[, setDeviceSecretFnc=nil]</strong>)
     </a></td>
 	<td class="summary">配置阿里云物联网套件的产品信息和设备信息</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setMqtt">
+    setMqtt (<strong  style="color: gray;">[cleanSession=1]</strong><strong  style="color: gray;">[, will=nil]</strong><strong  style="color: gray;">[, keepAlive=240]</strong>)
+    </a></td>
+	<td class="summary">设置MQTT数据通道的参数</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#subscribe">
@@ -132,7 +138,7 @@
     <dt>
     <a name = "setup"></a>
     <strong  style="color: red;">
-    setup (productKey<strong  style="color: green;">[, productSecret=nil]</strong>, getDeviceNameFnc, getDeviceSecretFnc)
+    setup (productKey<strong  style="color: green;">[, productSecret=nil]</strong>, getDeviceNameFnc, getDeviceSecretFnc<strong  style="color: green;">[, setDeviceSecretFnc=nil]</strong>)
     </strong>
     </dt>
     <dd>
@@ -148,7 +154,9 @@
         <li><span class="parameter">productSecret</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          [<em>此参数可选，默认值为：</em> nil]
-        <pre class="example">产品密钥</pre>
+        <pre class="example">产品密钥
+ 一机一密认证方案时，此参数传入nil
+ 一型一密认证方案时，此参数传入真实的产品密钥</pre>
         </li>
         <li><span class="parameter">getDeviceNameFnc</span>
             <span class="types"><span class="type">function</span></span>
@@ -157,6 +165,11 @@
         <li><span class="parameter">getDeviceSecretFnc</span>
             <span class="types"><span class="type">function</span></span>
         <pre class="example">获取设备密钥的函数</pre>
+        </li>
+        <li><span class="parameter">setDeviceSecretFnc</span>
+            <span class="types"><span class="type">function</span></span>
+         [<em>此参数可选，默认值为：</em> nil]
+        <pre class="example">设置设备密钥的函数，一型一密认证方案才需要此参数</pre>
         </li>
     </ul>
 
@@ -170,7 +183,53 @@
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example">aLiYun.setup(<span class="string">"b0FMK1Ga5cp"</span>,<span class="keyword">nil</span>,getDeviceNameFnc,getDeviceSecretFnc)</pre></il>
+        <li><pre class="example">aLiYun.setup(<span class="string">"b0FMK1Ga5cp"</span>,<span class="keyword">nil</span>,getDeviceNameFnc,getDeviceSecretFnc)
+aLiYun.setup(<span class="string">"a1AoVqkCIbG"</span>,<span class="string">"7eCdPyR6fYPntFcM"</span>,getDeviceNameFnc,getDeviceSecretFnc,setDeviceSecretFnc)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "setMqtt"></a>
+    <strong  style="color: red;">
+    setMqtt (<strong  style="color: green;">[cleanSession=1]</strong><strong  style="color: green;">[, will=nil]</strong><strong  style="color: green;">[, keepAlive=240]</strong>)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置MQTT数据通道的参数</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cleanSession</span>
+            <span class="types"><span class="type">number</span></span>
+         [<em>此参数可选，默认值为：</em> 1]
+        <pre class="example"> 1/0</pre>
+        </li>
+        <li><span class="parameter">will</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         [<em>此参数可选，默认值为：</em> nil]
+        <pre class="example"> 遗嘱参数，格式为{qos=, retain=, topic=, payload=}</pre>
+        </li>
+        <li><span class="parameter">keepAlive</span>
+            <span class="types"><span class="type">number</span></span>
+         [<em>此参数可选，默认值为：</em> 240]
+        <pre class="example">单位秒</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">aLiYun.setMqtt(<span class="number">0</span>)
+aLiYun.setMqtt(<span class="number">1</span>,{qos=<span class="number">0</span>,retain=<span class="number">1</span>,topic=<span class="string">"/willTopic"</span>,payload=<span class="string">"will payload"</span>})
+aLiYun.setMqtt(<span class="number">1</span>,{qos=<span class="number">0</span>,retain=<span class="number">1</span>,topic=<span class="string">"/willTopic"</span>,payload=<span class="string">"will payload"</span>},<span class="number">120</span>)</pre></il>
     </ul>
 
 </dd>
@@ -308,7 +367,7 @@ aLiYun.publish(<span class="string">"/b0FMK1Ga5cp/862991234567890/update"</span>
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-04-24 17:25:11 </i>
+<i style="float:right;">Last updated 2018-05-24 10:38:16 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

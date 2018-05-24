@@ -50,6 +50,12 @@ local getGpio5Fnc = pins.setup(pio.P0_5)
 sys.timerLoopStart(function()
     log.info("testGpioSingle.getGpio5Fnc",getGpio5Fnc())
 end,1000)
+--GPIO上下拉配置(V0021版本后的lod才支持此功能)
+if tonumber(string.match(rtos.get_version(),"Luat_V(%d+)_"))>=21 then
+    pio.pin.setpull(pio.PULLUP,pio.P0_5)  --配置为上拉
+    --pio.pin.setpull(pio.PULLDOWN,pio.P0_5)  --配置为下拉
+    --pio.pin.setpull(pio.NOPULL,pio.P0_5)  --不配置上下拉
+end
 
 
 function gpio4IntFnc(msg)

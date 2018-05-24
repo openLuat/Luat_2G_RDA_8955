@@ -9,12 +9,12 @@ require "log"
 require "ril"
 module(..., package.seeall)
 
-local ID=1
-local FILE='/RecDir/rec00'..tostring(ID)
+local ID, FILE = 1, '/RecDir/rec001'
 local recording
 local stoping
 local duration
 local recordCallback
+local flag_s=false
 
 --- 开始录音
 -- @param seconds 录音时长，单位：秒
@@ -104,6 +104,17 @@ ril.regUrc("+AUDREC", function(data)
             if recordCallback then recordCallback(result, size) recordCallback = nil end
             recording = false
             stoping = false
+        --录音播放相关
+        elseif action=="2" then
+            if size > 0 then
+                if not flag_s then            
+                    sys.publish("AUDIO_PLAY_END","SUCCESS")
+                else
+                    flag_s=false
+                end
+			else
+			    sys.publish("AUDIO_PLAY_END","ERROR")
+            end
         end
     end
 end)
@@ -119,5 +130,9 @@ ril.regRsp("+AUDREC", function(cmd, success)
         end
     elseif action == '0' then
         if stoping and not success then stoping = false end -- 失败直接结束，成功则等到+AUDREC上报才判定停止录音成功
+    --停止播放录音
+    elseif action=="3" then
+        flag_s=true
+		sys.publish("AUDIO_STOP_END")
     end
 end)

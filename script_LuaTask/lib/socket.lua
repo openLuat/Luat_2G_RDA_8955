@@ -117,7 +117,7 @@ end
 --     clientKey = "client.key", --客户端私钥文件(Base64编码 X.509格式)
 --     clientPassword = "123456", --客户端证书文件密码[可选]
 -- }
--- @return nil
+-- @return client，创建成功返回socket客户端对象；创建失败返回nil
 -- @usage 
 -- c = socket.tcp()
 -- c = socket.tcp(true)
@@ -128,7 +128,7 @@ function tcp(ssl,cert)
     return socket("TCP"..(ssl==true and "SSL" or ""), (ssl==true) and cert or nil)
 end
 --- 创建基于UDP的socket对象
--- @return nil
+-- @return client，创建成功返回socket客户端对象；创建失败返回nil
 -- @usage c = socket.udp()
 function udp()
     return socket("UDP")
