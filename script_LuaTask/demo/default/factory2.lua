@@ -19,7 +19,7 @@ local UART_ID = 2
 local function read()
     local s
     while true do
-        s = uart.read(UART_ID,"*l",0)
+        s = uart.read(UART_ID,"*l")
         if not s or string.len(s) == 0 then break end
         log.info("read bin",s)
         log.info("read hex",string.toHex(s))

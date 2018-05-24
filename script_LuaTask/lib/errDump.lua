@@ -15,6 +15,7 @@
 -- @copyright openLuat
 -- @release 2017.09.26
 require"socket"
+require"misc"
 module(..., package.seeall)
 
 --错误信息文件以及错误信息内容

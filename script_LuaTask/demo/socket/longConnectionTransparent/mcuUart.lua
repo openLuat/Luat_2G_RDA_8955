@@ -16,9 +16,8 @@ local uartID = 1
 
 local function taskRead()
     local cacheData = ""
-    local co = coroutine.running()
     while true do
-        local s = uart.read(uartID, "*l")
+        local s = uart.read(uartID,"*l")
         if s == "" then
             uart.on(uartID,"receive",function() sys.publish("UART_RECEIVE") end)
             if not sys.waitUntil("UART_RECEIVE",1000) then

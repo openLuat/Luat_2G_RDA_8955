@@ -58,10 +58,7 @@ local function taskAudio()
         FILE = audiocore.play,
         TTS = function(text) req("AT+QTTS=1") req(string.format("AT+QTTS=%d,\"%s\"",2,string.toHex(common.utf8ToUcs2(text)))) end,
         TTSCC = function(text) req("AT+QTTS=1") req(string.format("AT+QTTS=%d,\"%s\"",4,string.toHex(common.utf8ToUcs2(text)))) end,
-        RECORD = function(id)
-            f,d=record.getSize()
-            ril.request("AT+AUDREC=1,0,2," .. tostring(id) .. "," .. d*1000)
-            end,
+        RECORD = function(id) f,d=record.getSize() req("AT+AUDREC=1,0,2," .. id .. "," .. d*1000)end,   
     }
     
     local stopFnc =
@@ -69,10 +66,7 @@ local function taskAudio()
         FILE = audiocore.stop,
         TTS = function() req("AT+QTTS=3") sys.waitUntil("AUDIO_STOP_END") end,
         TTSCC = function() req("AT+QTTS=3") sys.waitUntil("AUDIO_STOP_END") end,
-        function(id)
-            f,d=record.getSize()
-            ril.request("AT+AUDREC=1,0,3," .. tostring(id) .. "," .. d*1000)
-            end,
+        RECORD = function(id) f,d=record.getSize() req("AT+AUDREC=1,0,3," .. id .. "," .. d*1000) sys.waitUntil("AUDIO_STOP_END") end,        
     }
 
     while true do
@@ -173,6 +167,7 @@ rtos.on(rtos.MSG_AUDIO,audioMsg)
 --               typ为"FILE"时：表示音频文件路径
 --               typ为"TTS"时：表示要播放的UTF8编码格式的数据
 --               typ为"TTSCC"时：表示要播放给通话对端的UTF8编码格式的数据
+--               typ为"RECORD"时：表示要播放的录音id
 -- @number[opt=4] vol，播放音量，取值范围0到7，0为静音
 -- @function[opt=nil] cbFnc，音频播放结束时的回调函数，回调函数的调用形式如下：
 -- cbFnc(result)
