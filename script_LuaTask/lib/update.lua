@@ -8,6 +8,7 @@
 require "misc"
 require "http"
 require "log"
+require "common"
 
 module(..., package.seeall)
 
@@ -45,6 +46,14 @@ function clientTask()
                         sys.restart("UPDATE_DOWNLOAD_SUCCESS")
                     end
                 else
+                    local fileSize = io.fileSize(UPD_FILE_PATH)
+                    if fileSize>0 and fileSize<=200 then
+                        local body = io.readFile(UPD_FILE_PATH)
+                        local msg = body:match("\"msg\":%s*\"(.-)\"")
+                        if msg and msg:len()<=200 then
+                            log.warn("update.error",common.ucs2beToUtf8((msg:gsub("\\u","")):fromHex()))
+                        end
+                    end                    
                     os.remove(UPD_FILE_PATH)
                     if sCbFnc then sCbFnc(false) end
                 end

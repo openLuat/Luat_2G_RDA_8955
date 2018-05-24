@@ -59,6 +59,9 @@ local RILCMD = {
     ["+SSLDESTROY"] = 10,
     ["+SSLTERM"] = 10,
     ["+CIFSR"] = 10,
+    ["+CTFSGETID"] = 2,
+    ["+CTFSDECRYPT"] = 2,
+    ["+CTFSAUTH"] = 2,
 }
 
 --radioready：AT命令通道是否准备就绪

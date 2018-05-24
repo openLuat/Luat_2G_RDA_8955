@@ -29,7 +29,7 @@ end
 返回值：无
 ]]
 function getLocCb(result,lat,lng,addr)
-    log.info("testLbsLoc.getLocCb",result,lat,lng,result==0 and common.ucs2beToGb2312(addr) or "")
+    log.info("testLbsLoc.getLocCb",result,lat,lng,(result==0 and addr) and common.ucs2beToGb2312(addr) or "")
     --获取经纬度成功
     if result==0 then
     --失败

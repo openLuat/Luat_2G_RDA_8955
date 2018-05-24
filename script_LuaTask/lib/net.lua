@@ -34,7 +34,7 @@ local lac, ci, rssi = "", "", 0
 --multicellcb：获取多小区的回调函数
 local cellinfo, multicellcb = {}
 --注册标志参数，creg3：true为没注册，为false为注册成功
-local creg3
+--local creg3
 --[[
 函数名：checkCRSM
 功能：如果注册被拒绝，运行此函数，先判断是否取得imsi号，再判断是否是中国移动卡
@@ -42,6 +42,7 @@ local creg3
 参数：
 返回值：
 ]]
+--[[
 local function checkCRSM()
     local imsi = sim.getImsi()
     if imsi and imsi ~= "" then
@@ -55,6 +56,7 @@ local function checkCRSM()
         sys.timerStart(checkCRSM, 5000)
     end
 end
+]]
 
 --[[
 函数名：creg
@@ -72,16 +74,18 @@ local function creg(data)
             return
         end
     end
-    creg3 = false
+    --creg3 = false
     --已注册
     if p1 == "1" or p1 == "5" then
         s = "REGISTERED"
     --未注册
     else
+        --[[
         if p1 == "3" then
             creg3 = true
             checkCRSM()
         end
+        ]]
         s = "UNREGISTER"
     end
     --注册状态发生了改变
@@ -178,7 +182,7 @@ local function ceng(data)
 end
 
 -- crsm更新计数
-local crsmUpdCnt = 0
+--local crsmUpdCnt = 0
 
 -- 更新FPLMN的应答处理
 -- @string cmd  ,此应答对应的AT命令
@@ -186,6 +190,7 @@ local crsmUpdCnt = 0
 -- @string response ,AT命令的应答中的执行结果字符串
 -- @string intermediate ,AT命令的应答中的中间信息
 -- @return 无
+--[[
 function crsmResponse(cmd, success, response, intermediate)
     log.debug("net.crsmResponse", success)
     if success then
@@ -199,6 +204,7 @@ function crsmResponse(cmd, success, response, intermediate)
         end
     end
 end
+]]
 
 --[[
 函数名：neturc
@@ -217,11 +223,11 @@ local function neturc(data, prefix)
     elseif prefix == "+CENG" then
         --解析ceng信息
         ceng(data)
-    elseif prefix == "+CRSM" then
+    --[[elseif prefix == "+CRSM" then
         local str = string.lower(data)
         if string.match(str, "64f000") or string.match(str, "64f020") or string.match(str, "64f040") or string.match(str, "64f070") then
             ril.request("AT+CRSM=214,28539,0,0,12,\"64f01064f03064f002fffff\"", nil, crsmResponse)
-        end
+        end]]
     end
 end
 
@@ -448,7 +454,7 @@ end)
 --注册+CREG和+CENG通知的处理函数
 ril.regUrc("+CREG", neturc)
 ril.regUrc("+CENG", neturc)
-ril.regUrc("+CRSM", neturc)
+--ril.regUrc("+CRSM", neturc)
 --注册AT+CCSQ和AT+CENG?命令的应答处理函数
 ril.regRsp("+CSQ", rsp)
 ril.regRsp("+CENG", rsp)

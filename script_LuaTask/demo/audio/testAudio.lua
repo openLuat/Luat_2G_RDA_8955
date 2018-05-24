@@ -6,7 +6,7 @@
 -- @release 2018.03.19
 
 module(...,package.seeall)
-
+require"record"
 require"audio"
 require"common"
 
@@ -15,7 +15,8 @@ require"common"
 --CALL：来电铃声
 --SMS：新短信铃声
 --TTS：TTS播放
-PWRON,CALL,SMS,TTS = 3,2,1,0
+--REC:录音音频
+PWRON,CALL,SMS,TTS,REC = 4,3,2,1,0
 
 local function testCb(r)
     log.info("testAudio.testCb",r)
@@ -76,6 +77,14 @@ local function testPlayConflict()
         --10秒钟后，循环播放开机铃声
         sys.timerStart(audio.play,10000,PWRON,"FILE","/ldata/pwron.mp3",7,nil,true)        
     end
+
+
+    if false then
+        --循环播放录音
+        audio.play(REC,"RECORD",1,7,nil,true)
+        --5秒钟后，循环播放开机铃声
+        sys.timerStart(audio.play,5000,PWRON,"FILE","/ldata/pwron.mp3",7,nil,true)        
+    end   
 end
 
 
@@ -86,7 +95,7 @@ local function tesTtsNew()
 end
 
 
---每次打开下面的一种分支进行测试,测试录音与播放请看record的例程
+--每次打开下面的一种分支进行测试
 if true then
     if string.match(rtos.get_version(),"TTS") then
         sys.timerStart(testPlayTts,5000)
@@ -97,4 +106,8 @@ if true then
     end
 else
     sys.timerStart(testPlayConflict,5000)
+    
+    --5秒后，开始录音6秒，之后进行播放冲突测试接口
+    --sys.timerStart(record.start,5000,6,testPlayConflict)
 end
+

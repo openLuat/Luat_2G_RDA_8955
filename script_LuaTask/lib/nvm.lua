@@ -81,47 +81,47 @@ end
 ]]
 local function load()
     local f,fBak,fExist,fBakExist
-	f = io.open(paraname,"rb")
-	fBak = io.open(paranamebak,"rb")
+    f = io.open(paraname,"rb")
+    fBak = io.open(paranamebak,"rb")
 	
-	if f then
-		fExist = f:read("*a")~=""
-		f:close()
-	end
-	if fBak then
-		fBakExist = fBak:read("*a")~=""
-		fBak:close()
-	end
+    if f then
+        fExist = f:read("*a")~=""
+        f:close()
+    end
+    if fBak then
+        fBakExist = fBak:read("*a")~=""
+        fBak:close()
+    end
 	
-	print("load fExist fBakExist",fExist,fBakExist)
+    print("load fExist fBakExist",fExist,fBakExist)
 	
-	local fResult,fBakResult
-	if fExist then
-		fResult,para = pcall(require,string.match(paraname,"/(.+)%.lua"))
-	end
+    local fResult,fBakResult
+    if fExist then
+        fResult,para = pcall(require,string.match(paraname,"/(.+)%.lua"))
+    end
 	
-	print("load fResult",fResult)
+    print("load fResult",fResult)
 	
-	if fResult then
-		os.remove(paranamebak)
-		upd()
-		return
-	end
+    if fResult then
+        os.remove(paranamebak)
+        upd()
+        return
+    end
 	
-	if fBakExist then
-		fBakResult,para = pcall(require,string.match(paranamebak,"/(.+)%.lua"))
-	end
+    if fBakExist then
+        fBakResult,para = pcall(require,string.match(paranamebak,"/(.+)%.lua"))
+    end
 	
-	print("load fBakResult",fBakResult)
+    print("load fBakResult",fBakResult)
 	
-	if fBakResult then
-		os.remove(paraname)
-		upd()
-		return
-	else
-		para = {}
-		restore()
-	end
+    if fBakResult then
+        os.remove(paraname)
+        upd()
+        return
+    else
+        para = {}
+        restore()
+    end
 end
 
 --[[
@@ -147,13 +147,12 @@ local function save(s)
     end
 
 
-	local fparabak = io.open(paranamebak, 'wb')
-	fparabak:write(table.concat(f))
-	fparabak:close()
+    local fparabak = io.open(paranamebak, 'wb')
+    fparabak:write(table.concat(f))
+    fparabak:close()
 	
-	os.remove(paraname)
-	
-	os.rename(paranamebak,paraname)
+    os.remove(paraname)	
+    os.rename(paranamebak,paraname)
 end
 
 --- 初始化参数存储模块
@@ -200,8 +199,9 @@ end
 -- @param s，是否立即写入到文件系统中，false不写入，其余的都写入
 -- @return bool或者nil，成功返回true，失败返回nil
 -- @usage nvm.sett("score","chinese",100)，参数score["chinese"]赋值为100，立即写入文件系统
--- @usage nvm.set("score","chinese",100,"SVR")，参数score["chinese"]赋值为100，立即写入文件系统，如果旧值不是100，会产生一个TPARA_CHANGED_IND消息，携带 "score","chinese",100,"SVR" 4个参数
--- @usage nvm.set("score","chinese",100,nil,false)，参数class赋值为Class2，不写入文件系统
+-- @usage nvm.sett("score","chinese",100,"SVR")，参数score["chinese"]赋值为100，立即写入文件系统，
+-- 如果旧值不是100，会产生一个TPARA_CHANGED_IND消息，携带 "score","chinese",100,"SVR" 4个参数
+-- @usage nvm.sett("score","chinese",100,nil,false)，参数class赋值为Class2，不写入文件系统
 function sett(k,kk,v,r,s)
     local bchg = true
     if type(v) ~= "table" then
@@ -243,11 +243,22 @@ end
 -- @usage nvm.restore()
 function restore()
     os.remove(paraname)
-	os.remove(paranamebak)
+    os.remove(paranamebak)
     local fpara,fconfig = io.open(paraname,"wb"),io.open(configname,"rb")
     if not fconfig then fconfig = io.open(econfigname,"rb") end
     fpara:write(fconfig:read("*a"))
     fpara:close()
     fconfig:close()
     upd(true)
+end
+
+--- 请求删除参数文件.
+-- 此接口一般用在远程升级时，需要用新的config.lua覆盖原来的参数文件的场景，在此场景下，远程升级包下载成功后，在确定要重启前调用此接口
+-- 下次开机执行nvm.init("config.lua")时，会用新的config.lua文件自动覆盖参数文件；以后再开机就不会自动覆盖了
+-- 也就是说"nvm.remove()->重启->nvm.init("config.lua")"是一个仅执行一次的完整操作
+-- @return nil
+-- @usage nvm.remove()
+function remove()
+    os.remove(paraname)
+    os.remove(paranamebak)
 end

@@ -1,5 +1,5 @@
 --- 模块功能：阿里云物联网套件客户端功能.
--- 目前的产品节点类型仅支持“设备”，设备认证方式仅支持“一机一密”
+-- 目前的产品节点类型仅支持“设备”，设备认证方式支持“一机一密和“一型一密”
 -- @module aLiYun
 -- @author openLuat
 -- @license MIT
@@ -12,7 +12,8 @@ require"mqtt"
 
 module(..., package.seeall)
 
-local sProductKey,sProductSecret,sGetDeviceNameFnc,sGetDeviceSecretFnc
+local sProductKey,sProductSecret,sGetDeviceNameFnc,sGetDeviceSecretFnc,sSetDeviceSecretFnc
+local sKeepAlive,sCleanSession,sWill
 
 local outQuene =
 {
@@ -81,7 +82,7 @@ function clientDataTask(host,tPorts,clientId,user,password)
     while true do
         while not socket.isReady() do sys.waitUntil("IP_READY_IND") end
 
-        local mqttClient = mqtt.client(clientId,240,user,password)
+        local mqttClient = mqtt.client(clientId,sKeepAlive or 240,user,password,sCleanSession,sWill)
         local portIdx = 0
         while true do
             portIdx = portIdx%(#tPorts)+1
@@ -121,6 +122,20 @@ function clientDataTask(host,tPorts,clientId,user,password)
     end
 end
 
+
+local function getDeviceSecretCb(result,prompt,head,body)
+    log.info("aLiYun.getDeviceSecretCb",result,prompt)
+    if result and body then
+        local tJsonDecode = json.decode(body)
+        if tJsonDecode and tJsonDecode["data"] and tJsonDecode["data"]["deviceSecret"] and tJsonDecode["data"]["deviceSecret"]~=""  then
+            sSetDeviceSecretFnc(tJsonDecode["data"]["deviceSecret"])
+        end
+    end
+    sys.publish("GetDeviceSecretEnd")
+    
+end
+
+
 local function authCbFnc(result,statusCode,head,body)
     log.info("aLiYun.authCbFnc",result,statusCode,body)
     sys.publish("ALIYUN_AUTH_IND",result,statusCode,body)
@@ -129,11 +144,9 @@ end
 function clientAuthTask()
     while not socket.isReady() do sys.waitUntil("IP_READY_IND") end
     while true do
-    
         local retryCnt = 0
-        
         local data = "clientId"..sGetDeviceNameFnc().."deviceName"..sGetDeviceNameFnc().."productKey"..sProductKey
-        local signKey = sGetDeviceSecretFnc()
+        local signKey= sGetDeviceSecretFnc()
         local sign = crypto.hmac_md5(data,data:len(),signKey,signKey:len())
         local body = "productKey="..sProductKey.."&sign="..sign.."&clientId="..sGetDeviceNameFnc().."&deviceName="..sGetDeviceNameFnc()
         
@@ -163,6 +176,19 @@ function clientAuthTask()
                     end
                 end
             end
+
+            if sProductSecret then
+                local random=rtos.tick()
+                local data = "deviceName"..sGetDeviceNameFnc().."productKey"..sProductKey.."random"..random
+                local psignKey = sProductSecret
+                local sign = crypto.hmac_md5(data,data:len(),psignKey,psignKey:len())
+                local body="productKey="..sProductKey.."&deviceName="..sGetDeviceNameFnc().."&random="..random.."&sign="..sign.."&signMethod=HmacMD5"
+                http.request("POST","https://iot-auth.cn-shanghai.aliyuncs.com/auth/register/device",nil,
+                    {['Content-Type']="application/x-www-form-urlencoded"},
+                    body,30000,getDeviceSecretCb)
+                sys.waitUntil("GetDeviceSecretEnd")
+            end
+
             retryCnt = retryCnt+1
             if retryCnt==3 then
                 break
@@ -173,18 +199,34 @@ function clientAuthTask()
     end
 end
 
-
 --- 配置阿里云物联网套件的产品信息和设备信息
 -- @string productKey，产品标识
 -- @string[opt=nil] productSecret，产品密钥
+-- 一机一密认证方案时，此参数传入nil
+-- 一型一密认证方案时，此参数传入真实的产品密钥
 -- @function getDeviceNameFnc，获取设备名称的函数
 -- @function getDeviceSecretFnc，获取设备密钥的函数
+-- @function[opt=nil] setDeviceSecretFnc，设置设备密钥的函数，一型一密认证方案才需要此参数
 -- @return nil
 -- @usage
 -- aLiYun.setup("b0FMK1Ga5cp",nil,getDeviceNameFnc,getDeviceSecretFnc)
-function setup(productKey,productSecret,getDeviceNameFnc,getDeviceSecretFnc)
-    sProductKey,sProductSecret,sGetDeviceNameFnc,sGetDeviceSecretFnc = productKey,productSecret,getDeviceNameFnc,getDeviceSecretFnc
+-- aLiYun.setup("a1AoVqkCIbG","7eCdPyR6fYPntFcM",getDeviceNameFnc,getDeviceSecretFnc,setDeviceSecretFnc)
+function setup(productKey,productSecret,getDeviceNameFnc,getDeviceSecretFnc,setDeviceSecretFnc)
+    sProductKey,sProductSecret,sGetDeviceNameFnc,sGetDeviceSecretFnc,sSetDeviceSecretFnc = productKey,productSecret,getDeviceNameFnc,getDeviceSecretFnc,setDeviceSecretFnc
     sys.taskInit(clientAuthTask)
+end
+
+--- 设置MQTT数据通道的参数
+-- @number[opt=1] cleanSession 1/0
+-- @table[opt=nil] will 遗嘱参数，格式为{qos=, retain=, topic=, payload=}
+-- @number[opt=240] keepAlive，单位秒
+-- @return nil
+-- @usage
+-- aLiYun.setMqtt(0)
+-- aLiYun.setMqtt(1,{qos=0,retain=1,topic="/willTopic",payload="will payload"})
+-- aLiYun.setMqtt(1,{qos=0,retain=1,topic="/willTopic",payload="will payload"},120)
+function setMqtt(cleanSession,will,keepAlive)
+    sCleanSession,sWill,sKeepAlive = cleanSession,will,keepAlive
 end
 
 --- 订阅主题

@@ -10,9 +10,9 @@ require "log"
 module(..., package.seeall)
 
 -- lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "2.0.1"
+SCRIPT_LIB_VER = "2.0.2"
 -- 脚本发布时的最新core软件版本号
-CORE_MIN_VER = "Luat_V0020_8955"
+CORE_MIN_VER = "Luat_V0022_8955"
 
 -- TaskID最大值
 local TASK_TIMER_ID_MAX = 0x1FFFFFFF
@@ -32,7 +32,7 @@ local para = {}
 local loop = {}
 
 
---- 启动GSM协议栈。例如在充电开机未启动GSM协议栈状态下，如果用户长按键正常开机，此时调用此接口启动GSM协议栈即可
+-- 启动GSM协议栈。例如在充电开机未启动GSM协议栈状态下，如果用户长按键正常开机，此时调用此接口启动GSM协议栈即可
 -- @return 无
 -- @usage sys.powerOn()
 function powerOn()

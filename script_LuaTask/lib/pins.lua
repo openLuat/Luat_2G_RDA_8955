@@ -4,26 +4,20 @@
 -- @license MIT
 -- @copyright openLuat
 -- @release 2017.09.23 11:34
+require"sys"
 module(..., package.seeall)
 local interruptCallbacks = {}
 
 --- 配置GPIO模式
 -- @number pin，GPIO ID
---
 -- GPIO 0到GPIO 31表示为pio.P0_0到pio.P0_31
---
 -- GPIO 32到GPIO XX表示为pio.P1_0到pio.P1_(XX-32)，例如GPIO33 表示为pio.P1_1
 -- @param val，number、nil或者function类型
---
 -- 配置为输出模式时，为number类型，表示默认电平，0是低电平，1是高电平
---
 -- 配置为输入模式时，为nil
---
 -- 配置为中断模式时，为function类型，表示中断处理函数
 -- @return function
---
 -- 配置为输出模式时，返回的函数，可以设置IO的电平
---
 -- 配置为输入或者中断模式时，返回的函数，可以实时获取IO的电平
 -- @usage setOutputFnc = pins.setup(pio.P1_1,0)，配置GPIO 33，输出模式，默认输出低电平；
 --执行setOutputFnc(0)可输出低电平，执行setOutputFnc(1)可输出高电平

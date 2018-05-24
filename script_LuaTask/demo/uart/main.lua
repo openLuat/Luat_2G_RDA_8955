@@ -57,8 +57,10 @@ errDump.request("udp://ota.airm2m.com:9072")
 --require "update"
 --update.request()
 
---加载串口功能测试模块
+--加载串口功能测试模块（串口1，非TASK方式实现，串口帧有自定义的结构）
 require "testUart"
+--加载串口功能测试模块（串口2，TASK方式实现，串口帧没有自定义的结构，依靠软件定时器来处理帧数据）
+require "testUartTask"
 
 --启动系统框架
 sys.init(0, 0)
