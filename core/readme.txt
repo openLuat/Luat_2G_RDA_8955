@@ -1,11 +1,12 @@
 RDA8955芯片的Air模块的Flash总空间都为4MB
-目前有7种底层软件：
+目前有11种底层软件：
 Luat_VXXXX_8955.lod：不支持SSL、TTS、SPI接口的LCD功能
 Luat_VXXXX_8955_SSL.lod：支持SSL功能
 Luat_VXXXX_8955_SSL_TTS.lod：支持SSL、TTS功能，不支持MP3、MIDI、录音功能
 Luat_VXXXX_8955_SSL_UI.lod：支持SSL、SPI接口的LCD功能
 Luat_VXXXX_8955_TTS_UI.lod：支持TTS、SPI接口的LCD功能
-Luat_VXXXX_8955_TTSX.lod：支持TTS功能
+Luat_VXXXX_8955_TTS1.lod：支持TTS功能
+Luat_VXXXX_8955_TTS2.lod：支持TTS功能、不支持MP3、MIDI、录音、json
 Luat_VXXXX_8955_UI.lod：支持SPI接口的LCD功能
 Luat_VXXXX_8955_SSL_FLOAT.lod：支持SSL功能、浮点数
 Luat_VXXXX_8955_SSL_UI_FLOAT.lod：支持SSL功能、PI接口的LCD功能、浮点数
@@ -42,7 +43,7 @@ LuaDB 脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件，图片文件
 文件系统（例如脚本运行过程中创建的参数文件，录音文件，远程升级文件等）可用796KB
 
 
-
+文件系统的实际空间可通过rtos.get_fs_free_size()打印
 
 无论是哪一种底层软件，关于文件系统空间的使用，注意以下几点：
 如果用烧写工具烧写脚本和资源时，自动勾选了压缩功能（默认不勾选，只有脚本和资源大小超过Lua脚本和资源可用空间时，才会自动勾选），则开机后，会自动解压缩所有的脚本和资源文件到文件系统中
