@@ -39,6 +39,7 @@ local function taskWdt(rst, wd)
                 rst(0)
                 log.error("wdt.taskWdt", "WatchDog <--> AirM2M didn't respond : wdt reset 153b")
                 sys.wait(100)
+                rst(1)
             end
         end
         -- 2分钟后再喂
