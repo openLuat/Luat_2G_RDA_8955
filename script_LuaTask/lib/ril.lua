@@ -279,7 +279,7 @@ local function procatc(data)
             vwrite(uart.ATC, currarg, "\026")
         --发送数据
         elseif cmdhead == "+CIPSEND" or cmdhead == "+SSLSEND" or cmdhead == "+SSLCERT" then
-            log.info("ril.procatc.send", currarg)
+            log.info("ril.procatc.send", "first 200 bytes", currarg:sub(1,200))
             vwrite(uart.ATC, currarg)
         else
             log.error("error promot cmd:", currcmd)
@@ -338,7 +338,9 @@ local function procatc(data)
                 isurc = true
             end
         elseif cmdhead == "+SSLINIT" or cmdhead == "+SSLCERT" or cmdhead == "+SSLCREATE" or cmdhead == "+SSLCONNECT" or cmdhead == "+SSLSEND" or cmdhead == "+SSLDESTROY" or cmdhead == "+SSLTERM" then
-            if string.match(data, "^SSL&%d,") then
+            if string.match(data, "^SSL&%d, *CLOSED") or string.match(data, "^SSL&%d, *ERROR")then
+                isurc = true
+            elseif string.match(data, "^SSL&%d,") then
                 respdata = data
                 if string.match(data, "ERROR") then
                     result = false
