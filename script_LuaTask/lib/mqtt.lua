@@ -12,7 +12,7 @@ module(..., package.seeall)
 
 -- MQTT 指令id
 local CONNECT, CONNACK, PUBLISH, PUBACK, PUBREC, PUBREL, PUBCOMP, SUBSCRIBE, SUBACK, UNSUBSCRIBE, UNSUBACK, PINGREQ, PINGRESP, DISCONNECT = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
-local CLIENT_COMMAND_TIMEOUT = 5000
+local CLIENT_COMMAND_TIMEOUT = 20000
 
 local function encodeLen(len)
     local s = ""

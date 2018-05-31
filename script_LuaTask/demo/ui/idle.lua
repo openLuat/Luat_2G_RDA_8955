@@ -65,3 +65,4 @@ end
 
 ntp.timeSync()
 sys.timerLoopStart(clkind,60000)
+sys.subscribe("TIME_UPDATE_IND",clkind)

@@ -8,14 +8,14 @@
 --[[
 注意：此文件的配置，硬件上使用的是LCD专用的SPI引脚，不是标准的SPI引脚
 disp库目前仅支持SPI接口的屏，硬件连线图如下：
-Air模块 LCD
-GND--地
-SPI_CS--片选
-SPI_CLK--时钟
-SPI_DO--数据
-SPI_DI--数据/命令选择
-VDDIO--电源
-UART1_CTS--复位
+Air模块			LCD
+GND-------------地
+LCD_CS----------片选
+LCD_CLK---------时钟
+LCD_DATA--------数据
+LCD_DC----------数据/命令选择
+VDDIO-----------电源
+LCD_RST---------复位
 ]]
 
 module(...,package.seeall)

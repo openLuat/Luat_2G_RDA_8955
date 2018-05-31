@@ -22,6 +22,10 @@ local function receive(client,timeout,cbFnc,result,prompt,head,body)
     return res,data
 end
 
+local function getFileBase64Len(s)
+    if s then return (io.fileSize(s)+2)/3*4 end
+end
+
 local function taskClient(method,protocal,auth,host,port,path,cert,head,body,timeout,cbFnc,rcvFilePath)
     while not socket.isReady() do
         if not sys.waitUntil("IP_READY_IND",timeout) then return response(nil,cbFnc,false,"network not ready") end
@@ -34,7 +38,7 @@ local function taskClient(method,protocal,auth,host,port,path,cert,head,body,tim
             bodyLen = body:len()
         elseif type(body)=="table" then
             for i=1,#body do
-                bodyLen = bodyLen + (type(body[i])=="string" and string.len(body[i]) or io.fileSize(body[i].file))
+                bodyLen = bodyLen + (type(body[i])=="string" and string.len(body[i]) or getFileBase64Len(body[i].file_base64) or io.fileSize(body[i].file))
             end
         end
     end
@@ -69,14 +73,15 @@ local function taskClient(method,protocal,auth,host,port,path,cert,head,body,tim
                     return response(client,cbFnc,false,"send body fail")
                 end
             else
-                local file = io.open(body[i].file,"rb")
+                local file = io.open(body[i].file or body[i].file_base64,"rb")
                 if file then
                     while true do
-                        local dat = file:read(1460)
+                        local dat = file:read(body[i].file and 1460 or 1095)
                         if not dat then
                             io.close(file)
                             break
                         end
+                        if body[i].file_base64 then dat=crypto.base64_encode(dat,#dat) end
                         if not client:send(dat) then
                             io.close(file)
                             return response(client,cbFnc,false,"send file fail")
@@ -209,43 +214,35 @@ end
 --     clientPassword = "123456", --客户端证书文件密码[可选]
 -- }
 -- @table[opt=nil] head，nil或者table类型，自定义请求头
---
---              http.lua会自动添加Host: XXX、Connection: short、Content-Length: XXX三个请求头
---
---              如果这三个请求头满足不了需求，head参数传入自定义请求头，如果自定义请求头中存在Host、Connection、Content-Length三个请求头，将覆盖http.lua中自动添加的同名请求头
---
---              head格式如下：
---
---              如果没有自定义请求头，传入nil或者{}；否则传入{head1="value1", head2="value2", head3="value3"}，value中不能有\r\n
+--      http.lua会自动添加Host: XXX、Connection: short、Content-Length: XXX三个请求头
+--      如果这三个请求头满足不了需求，head参数传入自定义请求头，如果自定义请求头中存在Host、Connection、Content-Length三个请求头，将覆盖http.lua中自动添加的同名请求头
+--      head格式如下：
+--          如果没有自定义请求头，传入nil或者{}；否则传入{head1="value1", head2="value2", head3="value3"}，value中不能有\r\n
 -- @param[opt=nil] body，nil、string或者table类型，请求实体
+--      如果body仅仅是一串数据，可以直接传入一个string类型的body即可
 --
---              如果body仅仅是一串数据，可以直接传入一个string类型的body即可
+--      如果body的数据比较复杂，包括字符串数据和文件，则传入table类型的数据，格式如下：
+--      {
+--          [1] = "string1",
+--          [2] = {file="/ldata/test.jpg"},
+--          [3] = "string2"
+--      }
+--      例如上面的这个body，索引必须为连续的数字(从1开始)，实际传输时，先发送字符串"string1"，再发送文件/ldata/test.jpg的内容，最后发送字符串"string2"
 --
---              如果body的数据比较复杂，包括字符串数据和文件，则传入table类型的数据，格式如下：
---
---              {
---
---                  [1] = "string1",
---
---                  [2] = {file="/ldata/test.jpg"},
---
---                  [3] = "string2"
---
---              }
---
---              例如上面的这个body，索引必须为连续的数字(从1开始)，实际传输时，先发送字符串"string1"，再发送文件/ldata/test.jpg的内容，最后发送字符串"string2"
+--      如果传输的文件内容需要进行base64编码再上传，请把file改成file_base64，格式如下：
+--      {
+--          [1] = "string1",
+--          [2] = {file_base64="/ldata/test.jpg"},
+--          [3] = "string2"
+--      }
+--      例如上面的这个body，索引必须为连续的数字(从1开始)，实际传输时，先发送字符串"string1"，再发送文件/ldata/test.jpg经过base64编码后的内容，最后发送字符串"string2"
 -- @number[opt=30000] timeout，请求发送成功后，接收服务器返回应答数据的超时时间，单位毫秒，默认为30秒
 -- @function[opt=nil] cbFnc，执行HTTP请求的回调函数(请求发送结果以及应答数据接收结果都通过此函数通知用户)，回调函数的调用形式为：
---
---              cbFnc(result,prompt,head,body)
---
---              result：true或者false，true表示成功收到了服务器的应答，false表示请求发送失败或者接收服务器应答失败
---
---              prompt：string类型，result为true时，表示服务器的应答码；result为false时，表示错误信息
---
---              head：table或者nil类型，表示服务器的应答头；result为true时，此参数为{head1="value1", head2="value2", head3="value3"}，value中不包含\r\n；result为false时，此参数为nil
---
---              body：string类型，如果调用request接口时传入了rcvFileName，此参数表示下载文件的完整路径；否则表示接收到的应答实体数据
+--      cbFnc(result,prompt,head,body)
+--      result：true或者false，true表示成功收到了服务器的应答，false表示请求发送失败或者接收服务器应答失败
+--      prompt：string类型，result为true时，表示服务器的应答码；result为false时，表示错误信息
+--      head：table或者nil类型，表示服务器的应答头；result为true时，此参数为{head1="value1", head2="value2", head3="value3"}，value中不包含\r\n；result为false时，此参数为nil
+--      body：string类型，如果调用request接口时传入了rcvFileName，此参数表示下载文件的完整路径；否则表示接收到的应答实体数据
 -- @string[opt=nil] rcvFileName，保存“服务器应答实体数据”的文件名，可以传入完整的文件路径，也可以传入单独的文件名，如果是文件名，http.lua会自动生成一个完整路径，通过cbFnc的参数body传出
 -- @return string rcvFilePath，如果传入了rcvFileName，则返回对应的完整路径；其余情况都返回nil
 -- @usage 
