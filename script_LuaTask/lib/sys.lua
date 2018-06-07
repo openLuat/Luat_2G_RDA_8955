@@ -10,9 +10,7 @@ require "log"
 module(..., package.seeall)
 
 -- lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "2.0.2"
--- 脚本发布时的最新core软件版本号
-CORE_MIN_VER = "Luat_V0022_8955"
+SCRIPT_LIB_VER = "2.0.3"
 
 -- TaskID最大值
 local TASK_TIMER_ID_MAX = 0x1FFFFFFF
@@ -98,30 +96,6 @@ function taskInit(fun, ...)
     return co
 end
 
---[[
-检查底层软件版本号和lib脚本需要的最小底层软件版本号是否匹配
-]]
-local function checkCoreVer()
-    local realver = rtos.get_version()
-    --如果没有获取到底层软件版本号
-    if not realver or realver == "" then
-        log.error("checkCoreVer[no core ver error];")
-        return
-    end
-    
-    local buildver = string.match(realver, "Luat_V(%d+)_")
-    --如果底层软件版本号格式错误
-    if not buildver then
-        log.error("checkCoreVer[core ver format error]" .. realver .. ";")
-        return
-    end
-    
-    --lib脚本需要的底层软件版本号大于底层软件的实际版本号
-    if tonumber(string.match(CORE_MIN_VER, "Luat_V(%d+)_")) > tonumber(buildver) then
-        log.info("ril.checkCoreVer" .. realver .. "," .. CORE_MIN_VER .. ";")
-    end
-end
-
 --- Luat平台初始化
 -- @param mode 充电开机是否启动GSM协议栈，1不启动，否则启动
 -- @param lprfnc 用户应用脚本中定义的“低电关机处理函数”，如果有函数名，则低电时，本文件中的run接口不会执行任何动作，否则，会延时1分钟自动关机
@@ -142,7 +116,6 @@ function init(mode, lprfnc)
             rtos.poweron(0)
         end
     end
-    checkCoreVer()
 end
 
 ------------------------------------------ rtos消息回调处理部分 ------------------------------------------
