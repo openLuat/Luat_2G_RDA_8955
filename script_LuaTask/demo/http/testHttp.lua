@@ -51,6 +51,8 @@ http.request("GET","www.lua.org",nil,nil,nil,nil,cbFnc)
 --http.request("GET","www.lua.org:80/about.html",nil,nil,nil,30000,cbFnc)
 --http.request("POST","www.iciba.com",nil,nil,"Luat",30000,cbFnc)
 --http.request("POST","36.7.87.100:6500",nil,{head1="value1"},{[1]="begin\r\n",[2]={file="/lua/http.lua"},[3]="end\r\n"},30000,cbFnc)
+--http.request("POST","http://lq946.ngrok.xiaomiqiu.cn/",nil,nil,{[1]="begin\r\n",[2]={file_base64="/lua/http.lua"},[3]="end\r\n"},30000,cbFnc)
+
 --下面4行代码是利用文件流模式，上传录音文件的demo，使用的URL是随意编造的
 --[[
 http.request("POST","www.test.com/postTest?imei=1&iccid=2",nil,

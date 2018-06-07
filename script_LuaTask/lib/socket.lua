@@ -16,7 +16,6 @@ local sockets = {}
 local socketsSsl = {}
 -- 单次发送数据最大值
 local SENDSIZE = 1460
-local SENDSIZE_SSL = 10240
 -- 缓冲区最大下标
 local INDEX_MAX = 49
 
@@ -239,8 +238,8 @@ function mt.__index:send(data)
         log.warn('socket.client:send', 'closed')
         return false
     end
-
-    for i = 1, string.len(data), (self.ssl and SENDSIZE_SSL or SENDSIZE) do
+    
+    for i = 1, string.len(data), SENDSIZE do
         -- 按最大MTU单元对data分包
         local stepData = string.sub(data, i, i + SENDSIZE - 1)
         --发送AT命令执行数据发送
