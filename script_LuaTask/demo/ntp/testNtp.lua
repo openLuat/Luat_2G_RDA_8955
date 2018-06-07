@@ -4,16 +4,16 @@
 -- @license MIT
 -- @copyright openLuat
 -- @release 2018.03.28
+module(..., package.seeall)
 
-module(...,package.seeall)
-
-require"ntp"
-require"misc"
+require "ntp"
+require "misc"
 
 local function prinTime()
     local tm = misc.getClock()
-    log.info("testNtp.printTime",tm.year,tm.month,tm.day,tm.hour,tm.min,tm.sec)
+    -- log.info("testNtp.printTime",tm.year,tm.month,tm.day,tm.hour,tm.min,tm.sec)
+    log.info("testNtp.printTime", string.format("%04d/%02d/%02d,%02d:%02d:%02d", tm.year, tm.month, tm.day, tm.hour, tm.min, tm.sec))
 end
 
-sys.timerLoopStart(prinTime,1000)
+sys.timerLoopStart(prinTime, 1000)
 ntp.timeSync()
