@@ -12,18 +12,21 @@ local sbyte, ssub = string.byte, string.sub
 module(..., package.seeall)
 -- NTP服务器域名集合
 local timeServer = {
-    "ntp1.aliyun.com",
-    "edu.ntp.org.cn",  
+    "cn.pool.ntp.org",
+    "edu.ntp.org.cn",
     "cn.ntp.org.cn",
-    "ntp2.aliyun.com",
-    "ntp3.aliyun.com",
-    "ntp4.aliyun.com",
-    "ntp5.aliyun.com",
-    "ntp7.aliyun.com",
-    "ntp6.aliyun.com",
     "s2c.time.edu.cn",
-    "194.109.22.18",
-    "210.72.145.44",
+    "time1-7.aliyun.com",
+    "time.pool.aliyun.com",
+    "tw.pool.ntp.org",
+    "0.cn.pool.ntp.org",
+    "0.tw.pool.ntp.org",
+    "ntp3.apple.com",
+    "1.cn.pool.ntp.org",
+    "1.tw.pool.ntp.org",
+    "3.cn.pool.ntp.org",
+    "3.tw.pool.ntp.org",
+
 }
 -- 同步超时等待时间
 local NTP_TIMEOUT = 8000
@@ -42,7 +45,7 @@ end
 -- @return 无
 -- @usage ntp.getServers({"1edu.ntp.org.cn","cn.ntp.org.cn"})
 function setServers(st)
-    timeServer =  st
+    timeServer = st
 end
 
 --- NTP同步标志
@@ -60,32 +63,32 @@ end
 -- @usage ntp.ntpTime(1) -- 1小时同步1次
 -- @usage ntp.ntpTime(nil,fnc) -- 只同步1次，同步成功后执行fnc()
 -- @usage ntp.ntpTime(24,fnc) -- 24小时同步1次，同步成功后执行fnc()
-function ntpTime(ts,fnc)
+function ntpTime(ts, fnc)
     local rc, data, ntim
     ntpEnd = false
     while true do
         for i = 1, #timeServer do
             while not socket.isReady() do sys.waitUntil('IP_READY_IND') end
             local c = socket.udp()
-            if c:connect(timeServer[i], "123") then                
+            if c:connect(timeServer[rtos.tick() % #timeServer + 1], "123") then
                 if c:send(string.fromHex("E30006EC0000000000000000314E31340000000000000000000000000000000000000000000000000000000000000000")) then
                     rc, data = c:recv(NTP_TIMEOUT)
                     if rc and #data == 48 then
                         ntim = os.date("*t", (sbyte(ssub(data, 41, 41)) - 0x83) * 2 ^ 24 + (sbyte(ssub(data, 42, 42)) - 0xAA) * 2 ^ 16 + (sbyte(ssub(data, 43, 43)) - 0x7E) * 2 ^ 8 + (sbyte(ssub(data, 44, 44)) - 0x80) + 1)
                         misc.setClock(ntim)
-                        ntpEnd = true 
+                        ntpEnd = true
                         if type(fnc) == "function" then fnc(ntim) end
-                        c:close() 
+                        c:close()
                         break
                     end
-                end 
+                end
             end
-            c:close() 
-            sys.wait(1000)     
+            c:close()
+            sys.wait(1000)
         end
-        if ntpEnd then 
+        if ntpEnd then
             sys.publish("NTP_SUCCEED")
-            log.info("ntp.timeSync is date:", ntim.year .. "/" .. ntim.month .. "/" .. ntim.day .. "," .. ntim.hour .. ":" .. ntim.min .. ":" .. ntim.sec) 
+            log.info("ntp.timeSync is date:", ntim.year .. "/" .. ntim.month .. "/" .. ntim.day .. "," .. ntim.hour .. ":" .. ntim.min .. ":" .. ntim.sec)
             if ts == nil or type(ts) ~= "number" then break end
             sys.wait(ts * 3600 * 1000)
         else
@@ -102,7 +105,6 @@ end
 -- @usage ntp.timeSync(1) -- 1小时同步1次
 -- @usage ntp.timeSync(nil,fnc) -- 只同步1次，同步成功后执行fnc()
 -- @usage ntp.timeSync(24,fnc) -- 24小时同步1次，同步成功后执行fnc()
-function timeSync(ts,fnc)
-    sys.taskInit(ntpTime,ts,fnc)
+function timeSync(ts, fnc)
+    sys.taskInit(ntpTime, ts, fnc)
 end
-
