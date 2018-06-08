@@ -35,8 +35,7 @@ local function init()
         bpp = 1, --位深度，1表示单色。单色屏就设置为1，不可修改
         bus = disp.BUS_SPI, --led位标准SPI接口，不可修改
         yoffset = 32, --Y轴偏移
-        hwfillcolor = 0x0, --填充色，黑色
-        -- hwfillcolor = 0xFFFF, --填充色，黑色
+        hwfillcolor = 0x0000, --填充白色， , 0xFFFF 为黑色反色
         pinrst = pio.P0_3, --reset，复位引脚
         pinrs = pio.P0_12, --rs，命令/数据选择引脚
         --初始化命令
@@ -51,7 +50,7 @@ local function init()
             0x10, --set high column address
             0x60, --set start line address
             0x81, --set contrast control register
-            0xdf, --
+            0xFF, -- 亮度（0- 255）
             0xa1, --set segment re-map 0 to 127
             0xa6, --set normal display
             0xa8, --set multiplex ratio(1 to 64)
@@ -60,7 +59,7 @@ local function init()
             0xd3, --set display offset
             0x20, --not offset
             0xd5, --set display clock divide ratio/oscillator frequency
-            0xf0, --set divide ratio
+            0xF0, --set divide ratio
             0xd9, --set pre-charge period
             0x22, --
             0xda, --set com pins hardware configuration
