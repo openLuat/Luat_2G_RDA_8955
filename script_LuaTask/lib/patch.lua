@@ -55,23 +55,18 @@ end
 
 --Lua自带的os.date接口指向自定义的safeosdate接口
 os.date = safeosdate
-coroutine.errors = {} -- 记录最近的10次协程错误
 
 -- 对coroutine.resume加一个修饰器用于捕获协程错误
 local rawcoresume = coroutine.resume
 coroutine.resume = function(...)
-    function wrapper(...)
+    function wrapper(co,...)
         if not arg[1] then
-            log.error("coroutine.resume", arg[2])
-            if #coroutine.errors > 10 then
-                log.error('coroutine.errors', 'remove oldest', table.remove(coroutine.errors, 1))                
-            end
-            table.insert(coroutine.errors, arg[2])
-            errDump.appendErr(arg[2])
+            local traceBack = debug.traceback(co)          
+            errDump.appendErr((traceBack and traceBack~="") and (arg[2].."\r\n"..traceBack) or arg[2])
         end
         return unpack(arg)
     end
-    return wrapper(rawcoresume(unpack(arg)))
+    return wrapper(arg[1],rawcoresume(unpack(arg)))
 end
 
 os.clockms = function() return rtos.tick()/16 end

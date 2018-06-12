@@ -1,4 +1,9 @@
---- 模块功能：网络授时
+--- 模块功能：网络授时.
+-- 重要提醒！！！！！！
+-- 本功能模块采用多个免费公共的NTP服务器来同步时间
+-- 并不能保证任何时间任何地点都能百分百同步到正确的时间
+-- 所以，如果用户项目中的业务逻辑严格依赖于时间同步功能
+-- 则不要使用使用本功能模块，建议使用自己的应用服务器来同步时间
 -- @module ntp
 -- @author openLuat
 -- @license MIT
@@ -16,17 +21,14 @@ local timeServer = {
     "edu.ntp.org.cn",
     "cn.ntp.org.cn",
     "s2c.time.edu.cn",
-    "time1-7.aliyun.com",
-    "time.pool.aliyun.com",
+    "time1.aliyun.com",
     "tw.pool.ntp.org",
     "0.cn.pool.ntp.org",
     "0.tw.pool.ntp.org",
-    "ntp3.apple.com",
     "1.cn.pool.ntp.org",
     "1.tw.pool.ntp.org",
     "3.cn.pool.ntp.org",
     "3.tw.pool.ntp.org",
-
 }
 -- 同步超时等待时间
 local NTP_TIMEOUT = 8000
@@ -67,10 +69,15 @@ function ntpTime(ts, fnc)
     local rc, data, ntim
     ntpEnd = false
     while true do
+        local tUnusedSvr = {}
+        for i=1,#timeServer do
+            tUnusedSvr[i] = timeServer[i]
+        end
         for i = 1, #timeServer do
             while not socket.isReady() do sys.waitUntil('IP_READY_IND') end
             local c = socket.udp()
-            if c:connect(timeServer[rtos.tick() % #timeServer + 1], "123") then
+            local idx = rtos.tick() % #tUnusedSvr + 1
+            if c:connect(tUnusedSvr[idx], "123") then
                 if c:send(string.fromHex("E30006EC0000000000000000314E31340000000000000000000000000000000000000000000000000000000000000000")) then
                     rc, data = c:recv(NTP_TIMEOUT)
                     if rc and #data == 48 then
@@ -83,6 +90,16 @@ function ntpTime(ts, fnc)
                     end
                 end
             end
+            
+            local cnt,n,m = #tUnusedSvr,1
+            for m=1,cnt do
+                if m~=idx then 
+                    tUnusedSvr[n] = tUnusedSvr[m]
+                    n = n+1
+                end
+            end
+            tUnusedSvr[cnt] = nil
+            
             c:close()
             sys.wait(1000)
         end
@@ -97,7 +114,12 @@ function ntpTime(ts, fnc)
         end
     end
 end
----  自动同步时间任务适合独立执行
+---  自动同步时间任务适合独立执行.
+-- 重要提醒！！！！！！
+-- 本功能模块采用多个免费公共的NTP服务器来同步时间
+-- 并不能保证任何时间任何地点都能百分百同步到正确的时间
+-- 所以，如果用户项目中的业务逻辑严格依赖于时间同步功能
+-- 则不要使用使用本功能模块，建议使用自己的应用服务器来同步时间
 -- @return 无
 -- @param ts,每隔ts小时同步1次
 -- @param fnc,同步成功后回调函数
@@ -108,3 +130,4 @@ end
 function timeSync(ts, fnc)
     sys.taskInit(ntpTime, ts, fnc)
 end
+
