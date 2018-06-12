@@ -711,6 +711,9 @@ function getgpslocation(format)
 	return rstr
 end
 
+function getLastLocation()
+    return (gps.long and gps.long~=0) and gps.long or "", (gps.lati and gps.lati~=0) and gps.lati or ""
+end
 --[[
 函数名：getgpssatenum
 功能  ：获取GPS可见卫星个数
@@ -878,7 +881,7 @@ function init(ionum,dir,edge,period,id,baud,databits,parity,stopbits,apgspwronup
 	gps.sn = 0
 	gps.sates = ""
 	gps.filterbgn = nil
-	gps.filtertime = 5
+	gps.filtertime = 2
 	gps.fix = 0
 	gps.ds3d = 0
 	gps.timezone = nil

@@ -1,6 +1,11 @@
 --[[
 模块名称：网络时间更新
 模块功能：只在每次开机或者重启时，连接NTP服务器，更新系统时间
+-- 重要提醒！！！！！！
+-- 本功能模块采用多个免费公共的NTP服务器来同步时间
+-- 并不能保证任何时间任何地点都能百分百同步到正确的时间
+-- 所以，如果用户项目中的业务逻辑严格依赖于时间同步功能
+-- 则不要使用使用本功能模块，建议使用自己的应用服务器来同步时间
 请先自行百度学习NTP协议
 然后再阅读本模块
 模块最后修改时间：2017.03.22
@@ -27,27 +32,22 @@ local sbyte,ssub = string.byte,string.sub
 --可用的NTP服务器域名集合，按照顺序去连接服务器同步时间，同步成功后，就退出，不再继续遍历
 local tserver =
 {	
+	"cn.pool.ntp.org",
 	"ntp1.aliyun.com",
-	"ntp2.aliyun.com",
-	"ntp3.aliyun.com",
-	"ntp4.aliyun.com",
-	"ntp5.aliyun.com",
-	"ntp7.aliyun.com",
-	"ntp6.aliyun.com",	
+	"cn.ntp.org.cn",    
 	"s2c.time.edu.cn",
-	"194.109.22.18",
-	"210.72.145.44",
-	--[["ntp.sjtu.edu.cn",
-	"s1a.time.edu.cn",
-	"s1b.time.edu.cn",
-	"s1c.time.edu.cn",
-	"s1d.time.edu.cn",
-	"s2a.time.edu.cn",	
-	"s2d.time.edu.cn",
-	"s2e.time.edu.cn",
-	"s2g.time.edu.cn",
-	"s2h.time.edu.cn",
-	"s2m.time.edu.cn",]]
+	"tw.pool.ntp.org",    
+	"0.cn.pool.ntp.org",
+	"0.tw.pool.ntp.org",	
+	"1.cn.pool.ntp.org",
+	"1.tw.pool.ntp.org",
+	"ntp2.aliyun.com",
+	"2.cn.pool.ntp.org",
+	"2.tw.pool.ntp.org",
+	"ntp3.aliyun.com",
+	"3.cn.pool.ntp.org",
+	"3.tw.pool.ntp.org",
+	"edu.ntp.org.cn", 
 }
 --当前连接的服务器在tserver中的索引
 local tserveridx = 1
@@ -55,7 +55,7 @@ local tserveridx = 1
 --REQUEST命令等待时间
 local REQUEST_TIMEOUT = 8000
 --每次REQUEST命令重试次数
-local REQUEST_RETRY_TIMES = 3
+local REQUEST_RETRY_TIMES = 1
 --socket id
 local lid
 --与当前的NTP服务器时间同步已经重试的次数
@@ -90,7 +90,7 @@ end
 返回值：无
 ]]
 function upend(suc)
-	print("ntp.upend",suc)
+	print("ntp.upend",tserver[tserveridx],suc)
 	--停止重试定时器
 	sys.timer_stop(retry)
 	retries = 0
