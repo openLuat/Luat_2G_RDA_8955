@@ -39,6 +39,7 @@ local state,total,last,checksum,packid,getretries,retries,reconnect = "IDLE",0,0
 local PRODUCT_KEY = 0
 
 local mt = {}
+local lastLbsLng,lastLbsLat = "",""
 
 local function startupdatetimer()
 	if gpssupport and ispt then
@@ -64,8 +65,25 @@ local function gpsstateind(id,data)
 		isfix = false
 	elseif data == gps.GPS_NO_CHIP_EVT then
 		gpssupport = false
-	elseif data == GPS_BINARY_ACK_EVT then
+	elseif data == gps.GPS_BINARY_ACK_EVT then
 		print("syy gpsind GPS_BINARY_ACK_EVT")
+	elseif data==gps.GPS_OPEN_EVT then
+		local lng,lat = gps.getLastLocation()
+		if lng=="" or lat=="" then
+			lng,lat = lastLbsLng,lastLbsLat
+		end
+		if lng~="" and lat~="" then
+			gps.open(gps.TIMERORSUC,{cause="lib.agps.lua.fastFix",val=4})
+			local tm = os.date("*t")
+			sys.timer_start(function(slng,slat,stm)
+								local t = stm.year..","..stm.month..","..stm.day..","..stm.hour..","..stm.min..","..stm.sec.."*"
+								print("setFastFix",slat,slng,t)
+								writeapgs("$PGKC634,"..t)
+								writeapgs("$PGKC635,"..lat..","..lng..",0,"..t)
+							end,
+							2000,
+							lng,lat,common.transftimezone(tm.year,tm.month,tm.day,tm.hour,tm.min,tm.sec,8,0))
+		end
 	end
 	return true
 end
@@ -439,6 +457,7 @@ local function rcv(id,data)
 		local lat,lng,latdm,lngdm = trans(unbcd(ssub(data,2,6)),unbcd(ssub(data,7,11)))
 		print("syy rcv",lat,lng)
 		if not lat or not lng then return end
+		lastLbsLng,lastLbsLat = lng,lat  
 		local str = '$PGKC635,'..lat..','..lng..',0,'
 		print("syy rcv str",str)
 		if not gps.isfix() then

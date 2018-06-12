@@ -125,6 +125,11 @@ local function getnxtsnd(hidx,sndidx,sndpos)
 		if sndpos>=item.body[sndidx].len then
 			idx = sndidx+1
 		else
+			if item.body[sndidx].file_base64 then
+				local mdat=io.filedata(item.body[sndidx].file_base64,sndpos/4*3,PACKET_LEN/4*3)
+				mdat=crypto.base64_encode(mdat,#mdat)
+				return mdat,sndidx,sndpos+PACKET_LEN
+			end
 			return io.filedata(item.body[sndidx].file,sndpos,PACKET_LEN),sndidx,sndpos+PACKET_LEN
 		end
 	end
@@ -132,6 +137,11 @@ local function getnxtsnd(hidx,sndidx,sndpos)
 	if type(item.body[idx])=="string" then
 		return ssub(item.body[idx],1,PACKET_LEN),idx,PACKET_LEN		
 	elseif type(item.body[idx])=="table" then
+		if item.body[idx].file_base64 then
+			local mdat=io.filedata(item.body[idx].file_base64,0,PACKET_LEN/4*3)
+			mdat=crypto.base64_encode(mdat,#mdat)
+			return mdat,idx,PACKET_LEN
+		end
 		return io.filedata(item.body[idx].file,0,PACKET_LEN),idx,PACKET_LEN
 	end
 	
@@ -491,7 +501,11 @@ function clrsndbody(hidx)
 	tclients[hidx].body=nil
 end
 
+local function getFileBase64Len(s)
+	if s then return (io.filesize(s)+2)/3*4 end
  
+end
+
 --[[
 函数名：request
 功能  ：发送HTTP请求
@@ -508,6 +522,13 @@ end
 				[3]="end"
 			}
 			先发送字符串begin，然后发送文件"/ldata/post.jpg"的内容，最后发送字符串end
+			如果想对文件内容进行base64编码，请将file改成file_base64,例如：
+			{
+				[1]="begin",
+				[2]={file_base64="/ldata/post.jpg"},
+				[3]="end"
+			}
+
 		rcvcb：function类型，应答实体的数据回调函数
 		filepath：string类型，应答实体的数据保存为文件的路径，例如"download.bin"，[可选]
 返回值：如果传入了filepath，返回处理后的文件保存的完整路径；其余情况没有返回值
@@ -534,7 +555,7 @@ function thttp:request(cmdtyp,url,head,body,rcvcb,filepath)
 		if type(self.body[i])=="string" then
 			bodylen = bodylen+slen(self.body[i])
 		elseif type(self.body[i])=="table" then			
-			self.body[i].len = io.filesize(self.body[i].file)
+			self.body[i].len =getFileBase64Len(self.body[i].file_base64) or io.filesize(self.body[i].file)
 			bodylen = bodylen+self.body[i].len
 		else
 			assert(false,"unsupport body type")
