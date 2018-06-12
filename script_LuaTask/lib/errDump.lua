@@ -50,7 +50,7 @@ end
 function appendErr(s)
     if s and (s:len()+libErr:len())<=LIB_ERR_MAX_LEN then
         s=s.."\r\n"
-        log.info("errDump.appendErr", s)
+        log.error("errDump.appendErr", s)
         libErr = libErr .. s
         sWritingFile = true
         local result = io.writeFile(LIB_ERR_FILE, libErr)

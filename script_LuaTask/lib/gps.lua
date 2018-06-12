@@ -602,8 +602,9 @@ function setRunMode(mode,runTm,sleepTm)
     if isOpen() then writeCmd(runModeStr) runModeStr="" end
 end
 
-function setFastFix(lat,lng,tm)
+function setFastFix(lat,lng,tm)    
     local t = tm.year..","..tm.month..","..tm.day..","..tm.hour..","..tm.min..","..tm.sec.."*"
+    log.info("gps.setFastFix",lat,lng,t)
     writeCmd("$PGKC634,"..t)
     writeCmd("$PGKC635,"..lat..","..lng..",0,"..t)
 end
@@ -663,6 +664,10 @@ function getLocation()
             latType=latitudeType, 
             lat=isFix() and degreeMinuteToDegree(latitude) or ""
          }
+end
+
+function getLastLocation()
+    return (longitude and longitude~="") and degreeMinuteToDegree(longitude) or "", (latitude and latitude~="") and degreeMinuteToDegree(latitude) or ""
 end
 
 --- 获取海拔
