@@ -34,8 +34,9 @@ local linklist = {}
 local ipstatus,shuting = "IP INITIAL"
 --GPRS数据网络附着状态，"1"附着，其余未附着
 local cgatt
+local DEFAULT_APN = "CMIOT"
 --apn，用户名，密码
-local apnname = "CMNET"
+local apnname = DEFAULT_APN
 local username=''
 local password=''
 --socket发起连接请求后，如果在connectnoretinterval毫秒后没有任何应答，如果connectnoretrestart为true，则会重启软件
@@ -960,10 +961,10 @@ end
 --sim卡的默认apn表
 local apntable =
 {
-	["46000"] = "CMNET",
-	["46002"] = "CMNET",
-	["46004"] = "CMNET",
-	["46007"] = "CMNET",
+	["46000"] = DEFAULT_APN,
+	["46002"] = DEFAULT_APN,
+	["46004"] = DEFAULT_APN,
+	["46007"] = DEFAULT_APN,
 	["46001"] = "UNINET",
 	["46006"] = "UNINET",
 	["46011"] = "",
@@ -984,10 +985,10 @@ local function proc(id,para)
 		if apnflag then
 			if apn then
 				local temp1,temp2,temp3=apn.get_default_apn(tonumber(sim.getmcc(),16),tonumber(sim.getmnc(),16))
-				if temp1 == '' or temp1 == nil then temp1="CMNET" end
+				if temp1 == '' or temp1 == nil then temp1=DEFAULT_APN end
 				setapn(temp1,temp2,temp3)
 			else
-				setapn(apntable[sim.getmcc()..sim.getmnc()] or "CMNET")
+				setapn(apntable[sim.getmcc()..sim.getmnc()] or DEFAULT_APN)
 			end
 		end
 	--飞行模式状态变化
