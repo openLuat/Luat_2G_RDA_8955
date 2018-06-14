@@ -251,6 +251,18 @@ local function trans(lat,lng)
 	return ssub(la,1,3).."."..ssub(la,4,-1),ssub(ln,1,3).."."..ssub(ln,4,-1),ssub(la,1,3)..lam1.."."..lam2,ssub(ln,1,3)..lnm1.."."..lnm2
 end
 
+local function printErr(result)
+	print("根据基站查询经纬度失败")
+	if result==2 then
+		print("main.lua中的PRODUCT_KEY和此设备在iot.openluat.com中所属项目的ProductKey必须一致，请去检查")
+	else
+		print("基站数据库查询不到所有小区的位置信息")
+		print("在trace中向上搜索encellinfo，然后在电脑浏览器中打开http://bs.openluat.com/，手动查找encellinfo后的所有小区位置")
+		print("如果手动可以查到位置，则服务器存在BUG，直接向技术人员反映问题")
+		print("如果手动无法查到位置，则基站数据库还没有收录当前设备的小区位置信息，向技术人员反馈，我们会尽快收录")
+	end
+end
+
 --[[
 函数名：rcv
 功能  ：socket接收数据的处理函数
@@ -261,12 +273,14 @@ end
 ]]
 local function rcv(id,s)
 	print("rcv",slen(s),(slen(s)<270) and common.binstohexs(s) or "")
-	if slen(s)<11 then return end
+	local result = sbyte(s,1)
+	if slen(s)<11 then printErr(result) return end
 	reqend(true)
 	local tmpcb=usercb
 	usercb=nil
-	sys.timer_stop(tmoutfnc)
-	if sbyte(s,1)~=0 then
+	sys.timer_stop(tmoutfnc)	
+	if result~=0 then
+		printErr(result)
 		if tmpcb then tmpcb(3) end
 	else
 		local lat,lng,latdm,lngdm = trans(unbcd(ssub(s,2,6)),unbcd(ssub(s,7,11)))
