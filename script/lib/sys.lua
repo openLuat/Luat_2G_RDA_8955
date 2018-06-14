@@ -25,7 +25,7 @@ local assert = base.assert
 local tonumber = base.tonumber
 
 --lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "1.2.0"
+SCRIPT_LIB_VER = "1.2.1"
 
 --是否允许“脚本异常时 或者 脚本调用sys.restart接口时”的重启
 --是否有挂起的等待重启的事件
