@@ -74,6 +74,15 @@ local function taskClient(cbFnc,reqAddr,timeout,productKey,host,port,reqTime)
                                 reqAddr and data:sub(13,12+data:byte(12)) or nil,
                                 data:sub(reqAddr and (13+data:byte(12)) or 12,-1))
                         else
+                            log.warn("lbsLoc.query","根据基站查询经纬度失败")
+                            if data:byte(1)==2 then
+                                log.warn("lbsLoc.query","main.lua中的PRODUCT_KEY和此设备在iot.openluat.com中所属项目的ProductKey必须一致，请去检查")
+                            else
+                                log.warn("lbsLoc.query","基站数据库查询不到所有小区的位置信息")
+                                log.warn("lbsLoc.query","在trace中向上搜索encellinfo，然后在电脑浏览器中打开http://bs.openluat.com/，手动查找encellinfo后的所有小区位置")
+                                log.warn("lbsLoc.query","如果手动可以查到位置，则服务器存在BUG，直接向技术人员反映问题")
+                                log.warn("lbsLoc.query","如果手动无法查到位置，则基站数据库还没有收录当前设备的小区位置信息，向技术人员反馈，我们会尽快收录")
+                            end
                             cbFnc(5)
                         end                        
                         return

@@ -95,6 +95,16 @@ local function sha1Test()
     log.info("testCrypto.sha1",crypto.sha1(originStr,slen(originStr)))
 end
 
+--- sha256算法测试
+-- @return 无
+-- @usage sha256Test()
+local function sha256Test()
+    local originStr = "sdfdsfdsfdsffdsfdsfsdfs1234"
+    if crypto.sha256 then
+        log.info("testCrypto.sha256",crypto.sha256(originStr):toHex())
+    end
+end
+
 --- crc算法测试
 -- @return 无
 -- @usage crcTest()
@@ -323,6 +333,7 @@ local function test()
     md5Test()
     hmacSha1Test()
     sha1Test()
+    sha256Test()
     crcTest()
     aesTest()
     flowMd5Test()
