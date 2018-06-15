@@ -22,6 +22,7 @@ module(..., package.seeall)
 local EPH_TIME_FILE = "/ephTime.txt"
 local writeEphIdx,sEphData,writeEphSta = 0
 local EPH_UPDATE_INTERVAL = 4*3600
+local lastLbsLng,lastLbsLat = "",""
 
 local function runTimer()
     sys.timerStart(updateEph,EPH_UPDATE_INTERVAL*1000)
@@ -110,7 +111,7 @@ local function checkEph()
 end
 
 local function setFastFix(lng,lat,tm)
-    gps.setFastFix(lng,lat,tm)
+    gps.setFastFix(lat,lng,tm)
     if checkEph() then updateEph() end
 end
 
@@ -118,19 +119,23 @@ end
 local function getLocCb(result,lat,lng,addr,time)
     log.info("agps.getLocCb",result,lat,lng,time and time:len() or 0)
     
-    if result==0 and not gps.isFix() then
-        local tm = {year=0,month=0,day=0,hour=0,min=0,sec=0}
-        if time:len()==6 then            
-            tm = {year=time:byte(1)+2000,month=time:byte(2),day=time:byte(3),hour=time:byte(4),min=time:byte(5),sec=time:byte(6)}
-            misc.setClock(tm)
-            tm = common.timeZoneConvert(tm.year,tm.month,tm.day,tm.hour,tm.min,tm.sec,8,0)
-        end
-        gps.open(gps.TIMER,{tag="lib.agps.lua.fastFix",val=5})
-        sys.timerStart(setFastFix,2000,lng,lat,tm)
-    else
-        if checkEph() then updateEph() end
+    if result==0 then
+        lastLbsLng,lastLbsLat = lng,lat
+        if not gps.isFix() then
+            local tm = {year=0,month=0,day=0,hour=0,min=0,sec=0}
+            if time:len()==6 then            
+                tm = {year=time:byte(1)+2000,month=time:byte(2),day=time:byte(3),hour=time:byte(4),min=time:byte(5),sec=time:byte(6)}
+                misc.setClock(tm)
+                tm = common.timeZoneConvert(tm.year,tm.month,tm.day,tm.hour,tm.min,tm.sec,8,0)
+            end
+            gps.open(gps.TIMERORSUC,{tag="lib.agps.lua.fastFix",val=4})
+            sys.timerStart(setFastFix,2000,lng,lat,tm)
+        end        
     end
     
+    if result~=0 or gps.isFix() then
+        if checkEph() then updateEph() end
+    end    
 end
 
 
@@ -140,6 +145,16 @@ sys.subscribe("GPS_STATE", function(evt,para)
         runTimer()
     elseif evt=="BINARY_CMD_ACK" or evt=="WRITE_EPH_ACK" or evt=="WRITE_EPH_END_ACK" then
         writeEph()
+    elseif evt=="OPEN" then
+        local lng,lat = gps.getLastLocation()
+        if lng=="" or lat=="" then
+            lng,lat = lastLbsLng,lastLbsLat
+        end
+        if lng~="" and lat~="" then
+            gps.open(gps.TIMERORSUC,{tag="lib.agps.lua.fastFix",val=4})
+            local tm = os.date("*t")
+            sys.timerStart(setFastFix,2000,lng,lat,common.timeZoneConvert(tm.year,tm.month,tm.day,tm.hour,tm.min,tm.sec,8,0))
+        end
     end
 end)
 sys.subscribe("IP_READY_IND", function()

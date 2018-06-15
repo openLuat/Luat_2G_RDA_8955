@@ -36,7 +36,6 @@ local function init()
         bus = disp.BUS_SPI, --led位标准SPI接口，不可修改
         yoffset = 32, --Y轴偏移
         hwfillcolor = 0x0, --填充色，黑色
-        -- hwfillcolor = 0xFFFF, --填充色，黑色
         pinrst = pio.P0_3, --reset，复位引脚
         pinrs = pio.P0_12, --rs，命令/数据选择引脚
         --初始化命令

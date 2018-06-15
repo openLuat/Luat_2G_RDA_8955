@@ -6,6 +6,7 @@ require"common"
 local ssub,schar,smatch,sbyte,slen = string.sub,string.char,string.match,string.byte,string.len
 local ADDR,PORT ="www.lua.org",80
 --local ADDR,PORT ="www.linuxhub.org",80
+--local ADDR,PORT ="lq946.ngrok.xiaomiqiu.cn",80
 local httpclient
 
 --[[
@@ -102,6 +103,8 @@ local function connectedcb()
 	]]
 	httpclient:request("GET","/",{},"",rcvcb)
 	--httpclient:request("GET","/",{},"",rcvcbfile,"download.bin")
+	--httpclient:request("POST","/",{},{[1]="begin\r\n",[2]={file="/lua/test.lua"},[3]="end\r\n"},rcvcb)
+	--httpclient:request("POST","/",{},{[1]="begin\r\n",[2]={file_base64="/lua/test.lua"},[3]="end\r\n"},rcvcb)
 end 
 
 --[[
