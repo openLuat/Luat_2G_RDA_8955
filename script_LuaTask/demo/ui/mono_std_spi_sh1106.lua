@@ -1,4 +1,4 @@
---- 模块功能：SSH 1106驱动芯片LCD命令配置
+--- 模块功能：SH 1106驱动芯片LCD命令配置
 -- @author openLuat
 -- @module ui.mono_std_spi_ssd1306
 -- @license MIT
