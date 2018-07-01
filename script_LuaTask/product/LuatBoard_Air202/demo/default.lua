@@ -183,6 +183,7 @@ sys.taskInit(function()
             if err_dog >= 120 then sys.restart("模块未能成功附着网络！") end
             sys.wait(1000)
         end
+        err_dog = 0
         -- 初始化订阅主题
         datalink = 1 -- 数据指示常亮等待数据
         if mqttc:subscribe(sub, serverconf.qos) then
