@@ -170,7 +170,7 @@ end)
 
 sys.taskInit(function()
     local err_dog = 0
-    while not socket.isReady() do if not sys.waitUntil('IP_READY_IND', 240 * 1000) then sys.restart("模块未能成功附着网络！") end end
+    while not socket.isReady() do if not sys.waitUntil('IP_READY_IND', 120 * 1000) then sys.restart("模块未能成功附着网络！") end end
     -- 创建MQTT客户端,客户端ID为IMEI号
     willmsg.imei = misc.getImei()
     local will = {qos = 1, retain = 1, topic = serverconf.lastwill, payload = json.encode(willmsg)}
@@ -178,13 +178,16 @@ sys.taskInit(function()
     local pub = string.format(serverconf.pub .. misc.getImei())
     local sub = string.format(serverconf.sub .. misc.getImei())
     while true do
-        while not mqttc:connect(serverconf.ip, serverconf.port) do sys.wait(1000) end
+        while not mqttc:connect(serverconf.ip, serverconf.port) do
+            err_dog = err_dog + 1
+            if err_dog >= 120 then sys.restart("模块未能成功附着网络！") end
+            sys.wait(1000)
+        end
         -- 初始化订阅主题
         datalink = 1 -- 数据指示常亮等待数据
         if mqttc:subscribe(sub, serverconf.qos) then
             datalink = 2 -- 数据发送指示快速闪烁
             if not mqttc:publish(pub, upStatus(), serverconf.qos) then break end
-            log.info('upload is done!')
             datalink = 1 -- 数据指示灯常亮等待发送
             while true do
                 -- 处理服务器的下发数据请求
@@ -203,10 +206,11 @@ sys.taskInit(function()
                         elseif cnf.cmd == "syscmd" then
                             if cnf.type == "reboot" then
                                 sys.restart("Server remote restart.")
-                            elseif cnf.type == "onFly" then
+                            elseif cnf.type == "fly" and cnf.ext == 0 then
                                 net.switchFly(true)
-                            else
-                                net.switchFly(false)
+                            elseif cnf.type == "fly" and cnf.ext == 1 then
+                                sys.timerStart(net.switchFly, 60000, false)
+                                net.switchFly(true)
                             end
                         elseif cnf.cmd == "demo" then
                             demotype, demoext = cnf.type, cnf.ext
@@ -227,8 +231,6 @@ sys.taskInit(function()
             end
         end
         mqttc:disconnect()
-        err_dog = err_dog + 1
-        if err_dog >= 5 then sys.restart("模块未能成功附着网络！") end
         datalink = 0 -- 服务器断开链接数据指示灯慢闪
         sys.wait(1000)
     end
@@ -322,3 +324,4 @@ sys.taskInit(function()
         end
     end
 end)
+net.switchFly(false)
