@@ -31,7 +31,7 @@ function read(id)
     local data = i2c.recv(id, 0x5C, 8)
     i2c.close(id)
     if data == nil or data == 0 then return end
-    log.info("AM2320 HEX data: ", data:tohex())
+    log.info("AM2320 HEX data: ", data:toHex())
     local _, crc = pack.unpack(data, '<H', 7)
     data = data:sub(1, 6)
     if crc == crypto.crc16_modbus(data, 6) then

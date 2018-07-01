@@ -27,7 +27,7 @@ local willmsg = {cmd = "offline", type = "willmsg", imei = ''}
 local timeout, datalink = 60 * 1000
 -- MQTT服务器配置表
 serverconf = {
-    ip = "47.96.86.11",
+    ip = "mqttluatboard.openluat.com",
     port = 1883,
     sub = "/luatask/demo/cmd/",
     pub = "/luatask/demo/rep/",
@@ -93,7 +93,7 @@ end
 local function getxpos(width, str)
     return (width - string.len(str) * 8) / 2
 end
-function uiDemo(str)
+function uiDemo(str, str2, str3, str4)
     mono_std_spi_ssd1306.init(0x0)
     local WIDTH, HEIGHT = disp.getlcdinfo()
     disp.clear()
@@ -116,6 +116,9 @@ function uiDemo(str)
     else
         -- disp.puttext(common.utf8ToGb2312("str"), lcd.getxpos(common.utf8ToGb2312("待机界面")), 0)
         disp.puttext(common.utf8ToGb2312(str), getxpos(WIDTH, common.utf8ToGb2312(str)), 0)
+        if str2 ~= nil then disp.puttext(common.utf8ToGb2312(str2), getxpos(WIDTH, common.utf8ToGb2312(str2)), 16) end
+        if str3 ~= nil then disp.puttext(common.utf8ToGb2312(str3), getxpos(WIDTH, common.utf8ToGb2312(str3)), 32) end
+        if str4 ~= nil then disp.puttext(common.utf8ToGb2312(str4), getxpos(WIDTH, common.utf8ToGb2312(str4)), 48) end
     end
     --刷新LCD显示缓冲区到LCD屏幕上
     disp.update()
@@ -134,36 +137,6 @@ function clockDemo(...)
     disp.update()
 end
 
-
---- 闪烁灯任务
--- @return 无
--- @usage 每10秒自动切换到下一种指示灯状态
--- @usage 1、正常闪烁 500ms 亮灭
--- @usage 2、心跳灯,100ms亮，1.5秒灭
--- @usage 3、等级指示灯 闪4次，间隔1秒
--- @usage 4、呼吸灯
-function ledTaskDemo()
-    local ledpin = pins.setup(pio.P0_29, 0)
-    while true do
-        -- 正常闪烁指示灯 500ms亮 500ms灭
-        for i = 1, 10 do
-            led.blinkPwm(ledpin, 500, 500)
-            sys.wait(1)
-        end
-        -- 心跳灯
-        for i = 1, 10 do
-            led.blinkPwm(ledpin, 100, 1500)
-            sys.wait(1)
-        end
-        -- 等级指示灯
-        for i = 1, 10 do
-            led.levelLed(ledpin, 250, 250, 4, 1000)
-            sys.wait(1)
-        end
-    
-    end
-end
--- sys.taskInit(ledTaskDemo)
 -- NETLED指示灯任务
 sys.taskInit(function()
     local ledpin = pins.setup(pio.P0_29, 1)
@@ -227,8 +200,14 @@ sys.taskInit(function()
                             elseif cnf.type == 'serverconf' then
                                 if not mqttc:publish(pub, upServerConf(), serverconf.qos) then break end
                             end
-                        elseif cnf.cmd == "reset" then
-                            sys.restart("Server remote restart.")
+                        elseif cnf.cmd == "syscmd" then
+                            if cnf.type == "reboot" then
+                                sys.restart("Server remote restart.")
+                            elseif cnf.type == "onFly" then
+                                net.switchFly(true)
+                            else
+                                net.switchFly(false)
+                            end
                         elseif cnf.cmd == "demo" then
                             demotype, demoext = cnf.type, cnf.ext
                             sys.publish("RECV_CMD_DEMO")
@@ -255,39 +234,91 @@ sys.taskInit(function()
     end
 end)
 sys.taskInit(function()
+    local io33 = pins.setup(pio.P1_1, 0)
     while true do
         if demotype == "ui" then
+            log.info("------uiDemo代码正在运行-------")
             uiDemo(demoext)
             sys.waitUntil("RECV_CMD_DEMO")
         elseif demotype == "update" then
-            update.run()
+            log.info("------远程升级Demo代码正在运行-------")
+            if demoext == "reboot" then
+                update.request()
+            else
+                update.request(function()log.info("------远程升级Demo运行完成！-------") end)
+            end
             sys.waitUntil("RECV_CMD_DEMO")
         elseif demotype == "i2c" then
-            i2cDemo(demoext)
+            log.info("------i2cDemo代码正在运行-------")
+            local temp, hum = AM2320.read(2, 0x5c)
+            if not temp then temp, hum = 250, 300 end
+            temp = temp / 10 .. "." .. temp % 10 .. "C"
+            hum = hum / 10 .. "." .. hum % 10 .. "%"
+            msg.ext.temp = temp
+            msg.ext.hum = hum
+            log.info("hmi ambient temperature and humidity:", temp, hum)
+            local c = misc.getClock()
+            local date = string.format('%04d年%02d月%02d日', c.year, c.month, c.day)
+            uiDemo(date, "温度: " .. temp, "湿度: " .. hum, "LuatBoard-Air202")
             sys.waitUntil("RECV_CMD_DEMO", 10000)
         elseif demotype == "qrcode" then
+            log.info("-----二维码Demo代码正在运行-------")
             appQRCode(demoext)
             sys.waitUntil("RECV_CMD_DEMO")
         elseif demotype == "audio" then
-            -- audio.play(0, "FILE", "/ldata/call.mp3", 7)
+            log.info("-----播放mp3Demo代码正在运行-------")
+            local file = "/ldata/" .. demoext .. ".mp3"
+            if io.exists(file) then
+                audio.play(0, "FILE", file, 7)
+            end
             sys.waitUntil("RECV_CMD_DEMO", 1000)
         elseif demotype == "led" then
+            log.info("-----LedDemo代码正在运行-------")
             ledDemo(demoext)
             sys.waitUntil("RECV_CMD_DEMO", 1000)
         elseif demotype == "lbs" then
-            sys.waitUntil("RECV_CMD_DEMO")
-        elseif demotype == "clock" then
-            clockDemo()
+            log.info("-----基站定位Demo代码正在运行-------")
+            sys.publish('IP_READY_IND')
+            uiDemo("经度:" .. msg.lng, "维度:" .. msg.lat, "地址:" .. msg.addr)
             sys.waitUntil("RECV_CMD_DEMO", 60000)
+        elseif demotype == "ntp" then
+            log.info("-----时间同步Demo代码正在运行-------")
+            clockDemo()
+            ntp.timeSync(1, function()log.info("----------------> AutoTimeSync is Done ! <----------------")sys.wait(1000)clockDemo() end)
+            sys.waitUntil("RECV_CMD_DEMO", 60000)
+        elseif demotype == "io" then
+            log.info("-----远程控制Demo代码正在运行-------")
+            io33(demoext)
+            sys.waitUntil("RECV_CMD_DEMO", 1000)
         end
         sys.wait(10)
     end
 end)
 
-
-function i2cDemo(...)
--- body
-end
-function ledDemo(...)
--- body
-end
+--- 闪烁灯任务
+-- @return 无
+-- @usage 每10秒自动切换到下一种指示灯状态
+-- @usage 1、正常闪烁 500ms 亮灭
+-- @usage 2、心跳灯,100ms亮，1.5秒灭
+-- @usage 3、等级指示灯 闪4次，间隔1秒
+-- @usage 4、呼吸灯
+sys.taskInit(function()
+    local ledpin = pins.setup(pio.P1_1, 0)
+    while true do
+        -- 正常闪烁指示灯 500ms亮 500ms灭
+        for i = 1, 10 do
+            led.blinkPwm(ledpin, 500, 500)
+            sys.wait(10)
+        end
+        -- 心跳灯
+        for i = 1, 10 do
+            led.blinkPwm(ledpin, 100, 1500)
+            sys.wait(10)
+        end
+        -- 等级指示灯
+        for i = 1, 10 do
+            led.levelLed(ledpin, 250, 250, 4, 1000)
+            sys.wait(10)
+        end
+    end
+end)
