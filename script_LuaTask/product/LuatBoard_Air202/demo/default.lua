@@ -14,6 +14,7 @@ require "update"
 require "common"
 require "lbsLoc"
 require "mono_std_spi_ssd1306"
+require "mono_lcd_i2c_ssd1306"
 
 module(..., package.seeall)
 
@@ -71,7 +72,6 @@ end
 --- 二维码显示函数
 local function appQRCode(str)
     if str == nil or str == "" then str = 'http://www.openluat.com' end
-    mono_std_spi_ssd1306.init(0xFFFF)
     -- qrencode.encode(string) 创建二维码信息
     -- @param string 二维码字符串
     -- @return width 生成的二维码信息宽度
@@ -94,7 +94,6 @@ local function getxpos(width, str)
     return (width - string.len(str) * 8) / 2
 end
 function uiDemo(str, str2, str3, str4)
-    mono_std_spi_ssd1306.init(0x0)
     local WIDTH, HEIGHT = disp.getlcdinfo()
     disp.clear()
     if str == nil or str == "" or str == "logo" then
@@ -124,12 +123,11 @@ function uiDemo(str, str2, str3, str4)
     disp.update()
 end
 function clockDemo(...)
-    mono_std_spi_ssd1306.init(0x0)
     local WIDTH, HEIGHT = disp.getlcdinfo()
     disp.clear()
     local c = misc.getClock()
     local date = string.format('%04d年%02d月%02d日', c.year, c.month, c.day)
-    local time = string.format('%02d:%02d  星期%d', c.hour, c.min, misc.getWeek())
+    local time = string.format('%02d:%02d:%02d 周%d', c.hour, c.min, c.sec, misc.getWeek())
     disp.puttext(common.utf8ToGb2312(date), getxpos(WIDTH, common.utf8ToGb2312(date)), 4)
     disp.puttext(common.utf8ToGb2312(time), getxpos(WIDTH, common.utf8ToGb2312(time)), 24)
     disp.puttext(common.utf8ToGb2312("LuatBoard-Air202"), getxpos(WIDTH, common.utf8ToGb2312("LuatBoard-Air202")), 44)
@@ -215,6 +213,11 @@ sys.taskInit(function()
                             end
                         elseif cnf.cmd == "demo" then
                             demotype, demoext = cnf.type, cnf.ext
+                            if demotype == "qrcode" then
+                                mono_std_spi_ssd1306.init(0xFFFF)
+                            else
+                                mono_std_spi_ssd1306.init(0x0)
+                            end
                             sys.publish("RECV_CMD_DEMO")
                             if not mqttc:publish(pub, upStatus(), serverconf.qos) then break end
                         end
@@ -238,11 +241,14 @@ sys.taskInit(function()
 end)
 sys.taskInit(function()
     local io33 = pins.setup(pio.P1_1, 0)
+    mono_std_spi_ssd1306.init(0xFFFF)
     while true do
+        -- UI DEMO
         if demotype == "ui" then
             log.info("------uiDemo代码正在运行-------")
             uiDemo(demoext)
             sys.waitUntil("RECV_CMD_DEMO")
+        -- UPDATE DEMO
         elseif demotype == "update" then
             log.info("------远程升级Demo代码正在运行-------")
             if demoext == "reboot" then
@@ -251,6 +257,7 @@ sys.taskInit(function()
                 update.request(function()log.info("------远程升级Demo运行完成！-------") end)
             end
             sys.waitUntil("RECV_CMD_DEMO")
+        -- i2c DEMO
         elseif demotype == "i2c" then
             log.info("------i2cDemo代码正在运行-------")
             local temp, hum = AM2320.read(2, 0x5c)
@@ -264,10 +271,12 @@ sys.taskInit(function()
             local date = string.format('%04d年%02d月%02d日', c.year, c.month, c.day)
             uiDemo(date, "温度: " .. temp, "湿度: " .. hum, "LuatBoard-Air202")
             sys.waitUntil("RECV_CMD_DEMO", 10000)
+        -- QRCODE DEMO
         elseif demotype == "qrcode" then
             log.info("-----二维码Demo代码正在运行-------")
             appQRCode(demoext)
             sys.waitUntil("RECV_CMD_DEMO")
+        -- Audio Demo
         elseif demotype == "audio" then
             log.info("-----播放mp3Demo代码正在运行-------")
             local file = "/ldata/" .. demoext .. ".mp3"
@@ -275,20 +284,23 @@ sys.taskInit(function()
                 audio.play(0, "FILE", file, 7)
             end
             sys.waitUntil("RECV_CMD_DEMO", 1000)
+        -- LED DEMO
         elseif demotype == "led" then
             log.info("-----LedDemo代码正在运行-------")
             ledDemo(demoext)
             sys.waitUntil("RECV_CMD_DEMO", 1000)
+        -- 基站定位DEMO
         elseif demotype == "lbs" then
             log.info("-----基站定位Demo代码正在运行-------")
             sys.publish('IP_READY_IND')
             uiDemo("经度:" .. msg.lng, "维度:" .. msg.lat, "地址:" .. msg.addr)
             sys.waitUntil("RECV_CMD_DEMO", 60000)
+        -- NTP同步并显示DEMO
         elseif demotype == "ntp" then
             log.info("-----时间同步Demo代码正在运行-------")
             clockDemo()
-            ntp.timeSync(1, function()log.info("----------------> AutoTimeSync is Done ! <----------------")sys.wait(1000)clockDemo() end)
-            sys.waitUntil("RECV_CMD_DEMO", 60000)
+            sys.waitUntil("RECV_CMD_DEMO", 1000)
+        -- GPIO DEMO
         elseif demotype == "io" then
             log.info("-----远程控制Demo代码正在运行-------")
             io33(demoext)
@@ -305,24 +317,52 @@ end)
 -- @usage 2、心跳灯,100ms亮，1.5秒灭
 -- @usage 3、等级指示灯 闪4次，间隔1秒
 -- @usage 4、呼吸灯
+-- sys.taskInit(function()
+--     while true do
+--         -- 正常闪烁指示灯 500ms亮 500ms灭
+--         for i = 1, 5 do
+--             led.blinkPwm(ledpin, 500, 500)
+--             sys.wait(10)
+--         end
+--         -- 心跳灯
+--         for i = 1, 10 do
+--             led.blinkPwm(ledpin, 100, 1500)
+--             sys.wait(10)
+--         end
+--         -- 等级指示灯
+--         for i = 1, 10 do
+--             led.levelLed(ledpin, 250, 250, 4, 1000)
+--             sys.wait(10)
+--         end
+--     end
+-- end)
 sys.taskInit(function()
-    local ledpin = pins.setup(pio.P1_1, 0)
+    if i2c.setup(2, i2c.SLOW) ~= i2c.SLOW then
+        log.error("I2C.init is: ", "fail")
+    end
+    ccnt = 0
     while true do
-        -- 正常闪烁指示灯 500ms亮 500ms灭
-        for i = 1, 10 do
-            led.blinkPwm(ledpin, 500, 500)
-            sys.wait(10)
-        end
-        -- 心跳灯
-        for i = 1, 10 do
-            led.blinkPwm(ledpin, 100, 1500)
-            sys.wait(10)
-        end
-        -- 等级指示灯
-        for i = 1, 10 do
-            led.levelLed(ledpin, 250, 250, 4, 1000)
-            sys.wait(10)
-        end
+        mono_lcd_i2c_ssd1306.init(2, 0x3c)
+        ccnt = ccnt + 1
+        sys.wait(10000)
+    -- audio.chime()
     end
 end)
+
+function ledDemo()
+    pmd.ldoset(5, pmd.LDO_VMMC)
+    local ledpin1 = pins.setup(pio.P0_8, 0)
+    local ledpin2 = pins.setup(pio.P0_11, 0)
+    local ledpin3 = pins.setup(pio.P0_3, 0)
+    local ledpin4 = pins.setup(pio.P0_12, 0)
+    local ledpin5 = pins.setup(pio.P0_10, 0)
+    local flow tmp = {1, 0, 0, 0, 0}
+    ledpin1 = flow[1]
+    ledpin2 = flow[2]
+    ledpin3 = flow[3]
+    ledpin4 = flow[4]
+    ledpin5 = flow[5]
+    tmp = table.remove(flow)
+    table.insert(flow, tmp)
+end
 net.switchFly(false)
