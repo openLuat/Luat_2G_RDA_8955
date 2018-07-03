@@ -19,8 +19,6 @@ require "mono_lcd_i2c_ssd1306"
 module(..., package.seeall)
 
 -- 本地存储文件
-local DEVICE_CONF = "/device.conf"
-local SERVER_CONF = "/server.conf"
 local demotype, demoext = "qrcode"
 -- 上报遗言的json表
 local willmsg = {cmd = "offline", type = "willmsg", imei = ''}
@@ -134,7 +132,81 @@ function clockDemo(...)
     --刷新LCD显示缓冲区到LCD屏幕上
     disp.update()
 end
-
+function ledDemo(ext)
+    ext = tonumber(ext) or 1
+    pmd.ldoset(5, pmd.LDO_VMMC)
+    ledpin1 = pins.setup(pio.P0_8, 0)
+    ledpin2 = pins.setup(pio.P0_11, 0)
+    ledpin3 = pins.setup(pio.P0_3, 0)
+    ledpin4 = pins.setup(pio.P0_12, 0)
+    ledpin5 = pins.setup(pio.P0_10, 0)
+    if ext == 1 then
+        -- 流水灯
+        local flow, tmp = {1, 0, 0, 0, 0}, 0
+        while true do
+            ledpin1(flow[1])
+            ledpin2(flow[2])
+            ledpin3(flow[3])
+            ledpin4(flow[4])
+            ledpin5(flow[5])
+            tmp = table.remove(flow, 1)
+            table.insert(flow, tmp)
+            log.info("流水灯的亮灭顺序：", flow[1], flow[2], flow[3], flow[4], flow[5])
+            if sys.waitUntil("RECV_CMD_DEMO", 1000) then break end
+        end
+    elseif ext == 2 then
+        -- 跑马灯
+        local flow, tmp = {0, 1, 1, 1, 1}, 0
+        while true do
+            ledpin1(flow[1])
+            ledpin2(flow[2])
+            ledpin3(flow[3])
+            ledpin4(flow[4])
+            ledpin5(flow[5])
+            tmp = table.remove(flow)
+            table.insert(flow, 1, tmp)
+            log.info("跑马灯的亮灭顺序：", flow[1], flow[2], flow[3], flow[4], flow[5])
+            if sys.waitUntil("RECV_CMD_DEMO", 1000) then break end
+        end
+    elseif ext == 3 then
+        local flow, tmp = {0, 0, 0, 0, 0}, 0
+        -- 等级灯
+        for i = 1, #flow do
+            ledpin1(flow[1])
+            ledpin2(flow[2])
+            ledpin3(flow[3])
+            ledpin4(flow[4])
+            ledpin5(flow[5])
+            flow[i] = 1
+            log.info("等级灯的亮灭顺序：", flow[1], flow[2], flow[3], flow[4], flow[5])
+            if sys.waitUntil("RECV_CMD_DEMO", 1000) then break end
+        end
+    elseif ext == 4 then
+        local flow, tmp = {0, 0, 0, 0, 0}, 0
+        -- 心跳等级灯
+        for i = 1, #flow do
+            ledpin1(flow[1])
+            ledpin2(flow[2])
+            ledpin3(flow[3])
+            ledpin4(flow[4])
+            ledpin5(flow[5])
+            for j = 1, 4 do
+                default["ledpin" .. i](0)
+                if sys.waitUntil("RECV_CMD_DEMO", 900) then break end
+                default["ledpin" .. i](1)
+                if sys.waitUntil("RECV_CMD_DEMO", 100) then break end
+            end
+            flow[i] = 1
+            log.info("心跳等级灯的亮灭顺序：", flow[1], flow[2], flow[3], flow[4], flow[5])
+            if sys.waitUntil("RECV_CMD_DEMO", 1000) then break end
+        end
+        pins.close(pio.P0_8)
+        pins.close(pio.P0_11)
+        pins.close(pio.P0_3)
+        pins.close(pio.P0_12)
+        pins.close(pio.P0_10)
+    end
+end
 -- NETLED指示灯任务
 sys.taskInit(function()
     local ledpin = pins.setup(pio.P0_29, 1)
@@ -165,9 +237,29 @@ sys.taskInit(function()
     end
 end)
 
-
 sys.taskInit(function()
     local err_dog = 0
+    -- 定义执行环境，命令行下输入的脚本的print重写到命令行的write
+    local execute_env = {
+        printf = function(...)
+            for i, v in ipairs(arg) do
+                arg[i] = type(v) == "nil" and "nil" or tostring(v)
+            end
+            log.info("远程代码执行结果: ")
+            log.info(table.concat(arg, "\t"))
+        end,
+        sendat = function(cmd, data)
+            ril.request(cmd, data, function(cmd, success, response, intermediate)
+                if intermediate then
+                    log.info("远程AT指令执行返回值：" .. intermediate)
+                end
+                if response then
+                    log.info("远程指令执行结果：" .. response)
+                end
+            end, nil)
+        end,
+    }
+    setmetatable(execute_env, {__index = _G})
     while not socket.isReady() do if not sys.waitUntil('IP_READY_IND', 120 * 1000) then sys.restart("模块未能成功附着网络！") end end
     -- 创建MQTT客户端,客户端ID为IMEI号
     willmsg.imei = misc.getImei()
@@ -215,11 +307,26 @@ sys.taskInit(function()
                             demotype, demoext = cnf.type, cnf.ext
                             if demotype == "qrcode" then
                                 mono_std_spi_ssd1306.init(0xFFFF)
-                            else
+                            elseif demotype ~= "led" then
                                 mono_std_spi_ssd1306.init(0x0)
                             end
                             sys.publish("RECV_CMD_DEMO")
                             if not mqttc:publish(pub, upStatus(), serverconf.qos) then break end
+                        elseif cnf.cmd == "shell" then
+                            -- 执行用户输入的脚本
+                            if cnf.type == "printf" then
+                                cnf.ext = cnf.type .. "(" .. cnf.ext .. ")"
+                            else
+                                cnf.ext = cnf.type .. "('" .. cnf.ext .. "')"
+                            end
+                            xpcall(function()
+                                local f = loadstring(cnf.ext)
+                                setfenv(f, execute_env)
+                                f()
+                            end,
+                            function()-- 错误输出
+                                log.debug(debug.traceback())
+                            end)
                         end
                     end
                 elseif packet == 'timeout' then -- 服务器下发指令超时处理
@@ -246,7 +353,11 @@ sys.taskInit(function()
         -- UI DEMO
         if demotype == "ui" then
             log.info("------uiDemo代码正在运行-------")
-            uiDemo(demoext)
+            if type(demoext) == "table" then
+                uiDemo(demoext.str1, demoext.str2, demoext.str3, demoext.str4)
+            else
+                uiDemo(demoext)
+            end
             sys.waitUntil("RECV_CMD_DEMO")
         -- UPDATE DEMO
         elseif demotype == "update" then
@@ -274,6 +385,7 @@ sys.taskInit(function()
         -- QRCODE DEMO
         elseif demotype == "qrcode" then
             log.info("-----二维码Demo代码正在运行-------")
+            if type(demoext) == "table" then demoext = table.concat(demoext) end
             appQRCode(demoext)
             sys.waitUntil("RECV_CMD_DEMO")
         -- Audio Demo
@@ -283,12 +395,13 @@ sys.taskInit(function()
             if io.exists(file) then
                 audio.play(0, "FILE", file, 7)
             end
-            sys.waitUntil("RECV_CMD_DEMO", 1000)
+            sys.waitUntil("RECV_CMD_DEMO")
         -- LED DEMO
         elseif demotype == "led" then
             log.info("-----LedDemo代码正在运行-------")
-            ledDemo(demoext)
-            sys.waitUntil("RECV_CMD_DEMO", 1000)
+            demoext = tonumber(demoext) or 1
+            if demoext ~= nil then ledDemo(demoext) end
+            sys.waitUntil("RECV_CMD_DEMO", 2000)
         -- 基站定位DEMO
         elseif demotype == "lbs" then
             log.info("-----基站定位Demo代码正在运行-------")
@@ -303,39 +416,13 @@ sys.taskInit(function()
         -- GPIO DEMO
         elseif demotype == "io" then
             log.info("-----远程控制Demo代码正在运行-------")
-            io33(demoext)
+            demoext = tonumber(demoext)
+            if demoext ~= nil then io33(demoext) end
             sys.waitUntil("RECV_CMD_DEMO", 1000)
         end
         sys.wait(10)
     end
 end)
-
---- 闪烁灯任务
--- @return 无
--- @usage 每10秒自动切换到下一种指示灯状态
--- @usage 1、正常闪烁 500ms 亮灭
--- @usage 2、心跳灯,100ms亮，1.5秒灭
--- @usage 3、等级指示灯 闪4次，间隔1秒
--- @usage 4、呼吸灯
--- sys.taskInit(function()
---     while true do
---         -- 正常闪烁指示灯 500ms亮 500ms灭
---         for i = 1, 5 do
---             led.blinkPwm(ledpin, 500, 500)
---             sys.wait(10)
---         end
---         -- 心跳灯
---         for i = 1, 10 do
---             led.blinkPwm(ledpin, 100, 1500)
---             sys.wait(10)
---         end
---         -- 等级指示灯
---         for i = 1, 10 do
---             led.levelLed(ledpin, 250, 250, 4, 1000)
---             sys.wait(10)
---         end
---     end
--- end)
 sys.taskInit(function()
     if i2c.setup(2, i2c.SLOW) ~= i2c.SLOW then
         log.error("I2C.init is: ", "fail")
@@ -345,24 +432,8 @@ sys.taskInit(function()
         mono_lcd_i2c_ssd1306.init(2, 0x3c)
         ccnt = ccnt + 1
         sys.wait(10000)
-    -- audio.chime()
     end
 end)
 
-function ledDemo()
-    pmd.ldoset(5, pmd.LDO_VMMC)
-    local ledpin1 = pins.setup(pio.P0_8, 0)
-    local ledpin2 = pins.setup(pio.P0_11, 0)
-    local ledpin3 = pins.setup(pio.P0_3, 0)
-    local ledpin4 = pins.setup(pio.P0_12, 0)
-    local ledpin5 = pins.setup(pio.P0_10, 0)
-    local flow tmp = {1, 0, 0, 0, 0}
-    ledpin1 = flow[1]
-    ledpin2 = flow[2]
-    ledpin3 = flow[3]
-    ledpin4 = flow[4]
-    ledpin5 = flow[5]
-    tmp = table.remove(flow)
-    table.insert(flow, tmp)
-end
+
 net.switchFly(false)
