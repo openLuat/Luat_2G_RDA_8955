@@ -245,8 +245,7 @@ sys.taskInit(function()
             for i, v in ipairs(arg) do
                 arg[i] = type(v) == "nil" and "nil" or tostring(v)
             end
-            log.info("远程代码执行结果: ")
-            log.info(table.concat(arg, "\t"))
+            log.info("远程代码执行结果: ", table.concat(arg, "\t"))
         end,
         sendat = function(cmd, data)
             ril.request(cmd, data, function(cmd, success, response, intermediate)
