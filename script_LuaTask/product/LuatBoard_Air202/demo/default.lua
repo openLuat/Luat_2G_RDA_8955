@@ -23,7 +23,7 @@ local demotype, demoext = "qrcode"
 -- 上报遗言的json表
 local willmsg = {cmd = "offline", type = "willmsg", imei = ''}
 -- 服务器上报数据间隔时长，间隔期间用于阻塞读取服务器下发的指令
-local timeout, datalink = 60 * 1000
+local timeout, datalink = 1
 -- MQTT服务器配置表
 serverconf = {
     ip = "mqttluatboard.openluat.com",
@@ -281,7 +281,7 @@ sys.taskInit(function()
             datalink = 1 -- 数据指示灯常亮等待发送
             while true do
                 -- 处理服务器的下发数据请求
-                local r, packet = mqttc:receive(60 * 1000)-- 处理服务器下发指令
+                local r, packet = mqttc:receive(timeout * 60000)-- 处理服务器下发指令
                 if r then -- 这里是有数据下发的处理
                     datalink = 2 -- 数据接收指示灯快闪
                     local cnf, result, err = json.decode(packet.payload)
@@ -301,6 +301,8 @@ sys.taskInit(function()
                             elseif cnf.type == "fly" and cnf.ext == 1 then
                                 sys.timerStart(net.switchFly, 60000, false)
                                 net.switchFly(true)
+                            elseif cnf.type == "upfreq" then
+                                timeout = tonumber(cnf.ext) or timeout
                             end
                         elseif cnf.cmd == "demo" then
                             demotype, demoext = cnf.type, cnf.ext

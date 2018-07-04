@@ -2,7 +2,7 @@
 --PROJECT：ascii string类型，可以随便定义，只要不使用,就行
 --VERSION：ascii string类型，如果使用Luat物联云平台固件升级的功能，必须按照"X.X.X"定义，X表示1位数字；否则可随便定义
 PROJECT = "LUATBOARD-AIR202"
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 PRODUCT_KEY = "aVyWNJl9CX6RRT9DKusErrrkH87NzvWo"
 -- 日志级别
 require "log"
