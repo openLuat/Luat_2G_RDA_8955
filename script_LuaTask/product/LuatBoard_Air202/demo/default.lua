@@ -296,9 +296,9 @@ sys.taskInit(function()
                         elseif cnf.cmd == "syscmd" then
                             if cnf.type == "reboot" then
                                 sys.restart("Server remote restart.")
-                            elseif cnf.type == "fly" and cnf.ext == 0 then
+                            elseif cnf.type == "fly" and cnf.ext == 0 or cnf.ext == "true" then
                                 net.switchFly(true)
-                            elseif cnf.type == "fly" and cnf.ext == 1 then
+                            elseif cnf.type == "fly" and cnf.ext == 1 or cnf.ext == "false" then
                                 sys.timerStart(net.switchFly, 60000, false)
                                 net.switchFly(true)
                             elseif cnf.type == "upfreq" then
