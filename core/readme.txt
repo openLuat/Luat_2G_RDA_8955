@@ -51,5 +51,5 @@ LuaDB 脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件，图片文件
 
 
 
-Air202、Air800模块的RAM总空间都为4MB
+8955模块的RAM总空间都为4MB
 其中Lua运行内存1024KB，Luat框架引用的一些lua模块需要占用一定的运行内存，可通过sys.lua中的run函数中的代码--print("mem:",base.collectgarbage("count"))实时打印已占用的空间
