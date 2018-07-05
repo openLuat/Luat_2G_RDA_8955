@@ -58,30 +58,20 @@ os.date = safeosdate
 
 -- 对coroutine.resume加一个修饰器用于捕获协程错误
 local rawcoresume = coroutine.resume
-coroutine.resume = function(...)
-    function wrapper(co, ...)
+coroutine.resume = function(co, ...)
+    function wrapper(...)
         if not arg[1] then
-            log.error("coroutine.resume", arg[2])
-            local traceBack = debug.traceback(co)
-            log.error("coroutine.traceBack", traceBack)
-            errDump.appendErr((traceBack and traceBack ~= "") and (arg[2] .. "\r\n" .. traceBack) or arg[2])
+            log.error("coroutine.resume", co, arg[2])
+            socket.printStatus()
+            if #coroutine.errors > 10 then
+                log.error('coroutine.errors', 'remove oldest', table.remove(coroutine.errors, 1))
+            end
+            table.insert(coroutine.errors, arg[2])
+            if errDump then errDump.appendErr(arg[2]) end
         end
         return unpack(arg)
     end
-    return wrapper(arg[1], rawcoresume(unpack(arg)))
-end
-local rawcoresume = coroutine.resume
-coroutine.resume = function(...)
-    function wrapper(co, ...)
-        if not arg[1] then
-            log.error("coroutine.resume", arg[2])
-            local traceBack = debug.traceback(co)
-            log.error("coroutine.traceBack", traceBack)
-            errDump.appendErr((traceBack and traceBack ~= "") and (arg[2] .. "\r\n" .. traceBack) or arg[2])
-        end
-        return unpack(arg)
-    end
-    return wrapper(arg[1], rawcoresume(unpack(arg)))
+    return wrapper(rawcoresume(co, unpack(arg)))
 end
 
 os.clockms = function() return rtos.tick() / 16 end
