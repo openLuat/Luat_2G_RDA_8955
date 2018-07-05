@@ -2,7 +2,7 @@
 修改记录：
     一、lib脚本修改
 	lib脚本版本号：2.0.6
-	(1)patch.lua： 新增powerKey功能模块，可配置开机键功能
+	(1)patch.lua： 增加log.error()捕获线程错误
 		【新功能重要性】：一般
 		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
 		【新功能说明】：打印信息增加原有的log.error(...)输出,方便luatools捕获第一手信息。
