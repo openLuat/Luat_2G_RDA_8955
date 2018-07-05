@@ -277,69 +277,70 @@ sys.taskInit(function()
         datalink = 1 -- 数据指示常亮等待数据
         if mqttc:subscribe(sub, serverconf.qos) then
             datalink = 2 -- 数据发送指示快速闪烁
-            if not mqttc:publish(pub, upStatus(), serverconf.qos) then break end
-            datalink = 1 -- 数据指示灯常亮等待发送
-            while true do
-                -- 处理服务器的下发数据请求
-                local r, packet = mqttc:receive(timeout * 60000)-- 处理服务器下发指令
-                if r then -- 这里是有数据下发的处理
-                    datalink = 2 -- 数据接收指示灯快闪
-                    local cnf, result, err = json.decode(packet.payload)
-                    if result then
-                        log.info("收到服务器下发指令:", packet.payload)
-                        if cnf.cmd == 'read' then
-                            if cnf.type == 'status' then
-                                if not mqttc:publish(pub, upStatus(), serverconf.qos) then break end
-                            elseif cnf.type == 'serverconf' then
-                                if not mqttc:publish(pub, upServerConf(), serverconf.qos) then break end
-                            end
-                        elseif cnf.cmd == "syscmd" then
-                            if cnf.type == "reboot" then
-                                sys.restart("Server remote restart.")
-                            elseif cnf.type == "fly" and cnf.ext == 0 or cnf.ext == "true" then
-                                net.switchFly(true)
-                            elseif cnf.type == "fly" and cnf.ext == 1 or cnf.ext == "false" then
-                                sys.timerStart(net.switchFly, 60000, false)
-                                net.switchFly(true)
-                            elseif cnf.type == "upfreq" then
-                                timeout = tonumber(cnf.ext) or timeout
-                            end
-                        elseif cnf.cmd == "demo" then
-                            demotype, demoext = cnf.type, cnf.ext
-                            if demotype == "qrcode" then
-                                mono_std_spi_ssd1306.init(0xFFFF)
-                            elseif demotype ~= "led" then
-                                mono_std_spi_ssd1306.init(0x0)
-                            end
-                            sys.publish("RECV_CMD_DEMO")
-                            if not mqttc:publish(pub, upStatus(), serverconf.qos) then break end
-                        elseif cnf.cmd == "shell" then
-                            -- 执行用户输入的脚本
-                            if cnf.type == "printf" then
-                                cnf.ext = cnf.type .. "(" .. cnf.ext .. ")"
-                            else
-                                cnf.ext = cnf.type .. "('" .. cnf.ext .. "')"
-                            end
-                            xpcall(function()
-                                local f = loadstring(cnf.ext)
-                                setfenv(f, execute_env)
-                                f()
-                            end,
-                            function()-- 错误输出
-                                log.debug(debug.traceback())
-                            end)
-                        end
-                    end
-                elseif packet == 'timeout' then -- 服务器下发指令超时处理
-                    datalink = 2 -- 数据发送指示快速闪烁
-                    if not mqttc:publish(pub, upStatus(), serverconf.qos) then break end
-                    datalink = 1 -- 数据指示灯常亮等待发送
-                    log.info('MqttServer recv is timeout')
-                else
-                    log.info('The MQTTServer connection is broken.')
-                    break
-                end
+            if mqttc:publish(pub, upStatus(), serverconf.qos) then
                 datalink = 1 -- 数据指示灯常亮等待发送
+                while true do
+                    -- 处理服务器的下发数据请求
+                    local r, packet = mqttc:receive(timeout * 60000)-- 处理服务器下发指令
+                    if r then -- 这里是有数据下发的处理
+                        datalink = 2 -- 数据接收指示灯快闪
+                        local cnf, result, err = json.decode(packet.payload)
+                        if result then
+                            log.info("收到服务器下发指令:", packet.payload)
+                            if cnf.cmd == 'read' then
+                                if cnf.type == 'status' then
+                                    if not mqttc:publish(pub, upStatus(), serverconf.qos) then break end
+                                elseif cnf.type == 'serverconf' then
+                                    if not mqttc:publish(pub, upServerConf(), serverconf.qos) then break end
+                                end
+                            elseif cnf.cmd == "syscmd" then
+                                if cnf.type == "reboot" then
+                                    sys.restart("Server remote restart.")
+                                elseif cnf.type == "fly" and cnf.ext == 0 or cnf.ext == "true" then
+                                    net.switchFly(true)
+                                elseif cnf.type == "fly" and cnf.ext == 1 or cnf.ext == "false" then
+                                    sys.timerStart(net.switchFly, 60000, false)
+                                    net.switchFly(true)
+                                elseif cnf.type == "upfreq" then
+                                    timeout = tonumber(cnf.ext) or timeout
+                                end
+                            elseif cnf.cmd == "demo" then
+                                demotype, demoext = cnf.type, cnf.ext
+                                if demotype == "qrcode" then
+                                    mono_std_spi_ssd1306.init(0xFFFF)
+                                elseif demotype ~= "led" then
+                                    mono_std_spi_ssd1306.init(0x0)
+                                end
+                                sys.publish("RECV_CMD_DEMO")
+                                if not mqttc:publish(pub, upStatus(), serverconf.qos) then break end
+                            elseif cnf.cmd == "shell" then
+                                -- 执行用户输入的脚本
+                                if cnf.type == "printf" then
+                                    cnf.ext = cnf.type .. "(" .. cnf.ext .. ")"
+                                else
+                                    cnf.ext = cnf.type .. "('" .. cnf.ext .. "')"
+                                end
+                                xpcall(function()
+                                    local f = loadstring(cnf.ext)
+                                    setfenv(f, execute_env)
+                                    f()
+                                end,
+                                function()-- 错误输出
+                                    log.debug(debug.traceback())
+                                end)
+                            end
+                        end
+                    elseif packet == 'timeout' then -- 服务器下发指令超时处理
+                        datalink = 2 -- 数据发送指示快速闪烁
+                        if not mqttc:publish(pub, upStatus(), serverconf.qos) then break end
+                        datalink = 1 -- 数据指示灯常亮等待发送
+                        log.info('MqttServer recv is timeout')
+                    else
+                        log.info('The MQTTServer connection is broken.')
+                        break
+                    end
+                    datalink = 1 -- 数据指示灯常亮等待发送
+                end
             end
         end
         mqttc:disconnect()
