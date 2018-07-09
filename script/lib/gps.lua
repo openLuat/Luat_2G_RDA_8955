@@ -134,13 +134,13 @@ local function getstrength(sg)
 	end
 	if tonumber(lineno)== 1  then
 		gps.sates = ""
-		gps.sn = 0
+		gps.sn,gps.sn1 = 0,0
 		--gps.gsv = ""
 	end
 
 	local tmpstr,i = sgv_str
 	for i=1,4 do
-		local d1,d2,id,elevation,azimuth,strength = sfind(tmpstr,"(%d+),(%d*),(%d*),(%d*)")
+		local d1,d2,id,elevation,azimuth,strength = sfind(tmpstr,"(%d+),([%-]*%d*),(%d*),(%d*)")
 		if id == nil then
 			return
 		end
@@ -153,6 +153,9 @@ local function getstrength(sg)
 			if strength > gps.sn then
 				gps.sn = strength
 			end
+			if tonumber(id)==1 and strength > gps.sn1 then
+				gps.sn1 = strength
+			end   
 		end
 		local idx,cur,fnd,tmpid = 0,id..","..elevation..","..azimuth..","..strength..",",false
 		for tmpid in string.gmatch(gps.gsv,"(%d+),%d*,%d*,%d*,") do
@@ -678,7 +681,7 @@ function closegps(tag)
 	gps.findall = false
 	gps.satenum = 0
 	gps.locationsatenum = 0
-	gps.sn = 0
+	gps.sn,gps.sn1 = 0,0
 	gps.sates = ""
 	gps.gsv = ""
 	gps.ds3d = 0
@@ -762,6 +765,10 @@ end
 ]]
 function getgpssn()
 	return gps.sn or 0
+end
+
+function getsn1()
+	return gps.sn1 or 0
 end
 
 --[[
@@ -878,7 +885,7 @@ function init(ionum,dir,edge,period,id,baud,databits,parity,stopbits,apgspwronup
 	gps.findall = false
 	gps.satenum = 0
 	gps.locationsatenum = 0
-	gps.sn = 0
+	gps.sn,gps.sn1 = 0,0
 	gps.sates = ""
 	gps.filterbgn = nil
 	gps.filtertime = 2
