@@ -48,14 +48,16 @@ end
 -- @return bool result，true表示成功，false或者nil表示失败
 -- @usage errDump.appendErr("net working timeout!")
 function appendErr(s)
-    if s and (s:len()+libErr:len())<=LIB_ERR_MAX_LEN then
+    if s then
         s=s.."\r\n"
-        log.error("errDump.appendErr", s)
-        libErr = libErr .. s
-        sWritingFile = true
-        local result = io.writeFile(LIB_ERR_FILE, libErr)
-        sWritingFile = false
-        return result
+        log.error("errDump.appendErr",s)
+        if (s:len()+libErr:len())<=LIB_ERR_MAX_LEN then            
+            libErr = libErr..s
+            sWritingFile = true
+            local result = io.writeFile(LIB_ERR_FILE, libErr)
+            sWritingFile = false
+            return result
+        end
     end
 end
 

@@ -5,8 +5,8 @@
 -- @copyright openLuat
 -- @release 2018.03.27
 --[[
-注意：此文件的配置，硬件上使用的是LCD专用的SPI引脚，不是标准的SPI引脚
-disp库目前仅支持SPI接口的屏，硬件连线图如下：
+注意：disp库目前支持I2C接口和SPI接口的屏，此文件的配置，硬件上使用的是LCD专用的SPI引脚，不是标准的SPI引脚
+硬件连线图如下：
 Air模块			LCD
 GND-------------地
 LCD_CS----------片选

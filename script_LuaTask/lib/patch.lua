@@ -4,7 +4,7 @@
 -- @license MIT
 -- @copyright openLuat
 -- @release 2017.10.21
-require "log"
+
 module(..., package.seeall)
 
 --[[
@@ -59,19 +59,17 @@ os.date = safeosdate
 -- 对coroutine.resume加一个修饰器用于捕获协程错误
 local rawcoresume = coroutine.resume
 coroutine.resume = function(...)
-    function wrapper(co, ...)
+    function wrapper(co,...)
         if not arg[1] then
-            log.error("coroutine.resume", arg[2])
-            local traceBack = debug.traceback(co)
-            log.error("coroutine.traceBack", traceBack)
-            errDump.appendErr((traceBack and traceBack ~= "") and (arg[2] .. "\r\n" .. traceBack) or arg[2])
+            local traceBack = debug.traceback(co)          
+            errDump.appendErr((traceBack and traceBack~="") and (arg[2].."\r\n"..traceBack) or arg[2])
         end
         return unpack(arg)
     end
-    return wrapper(arg[1], rawcoresume(unpack(arg)))
+    return wrapper(arg[1],rawcoresume(unpack(arg)))
 end
 
-os.clockms = function() return rtos.tick() / 16 end
+os.clockms = function() return rtos.tick()/16 end
 
 --保存Lua自带的json.decode接口
 if json and json.decode then oldjsondecode = json.decode end

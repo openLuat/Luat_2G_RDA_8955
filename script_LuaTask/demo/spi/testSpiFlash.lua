@@ -31,7 +31,7 @@ local function readFlashID()
     pio.pin.setval(1,pio.P0_10)
 end
 
-local function init()
+local function loop()
     --打开SPI引脚的供电
     pmd.ldoset(6,pmd.LDO_VMMC) 
     
@@ -44,8 +44,9 @@ local function init()
     pio.pin.setdir(pio.OUTPUT,pio.P0_10)
     pio.pin.setval(1,pio.P0_10)
     
-    sys.timerStart(readFlashID,5000)
+    readFlashID()
+    spi.close(spi.SPI_1)
 end
 
 
-sys.timerStart(init,5000)
+sys.timerLoopStart(loop,5000)

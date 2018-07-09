@@ -23,16 +23,21 @@ local appid
 local function refresh()
     --清空LCD显示缓冲区
     disp.clear()
+    local oldColor = lcd.setcolor(0xF100)
     disp.puttext(common.utf8ToGb2312("待机界面"),lcd.getxpos(common.utf8ToGb2312("待机界面")),0)
     local tm = misc.getClock()
     local datestr = string.format("%04d",tm.year).."-"..string.format("%02d",tm.month).."-"..string.format("%02d",tm.day)
     local timestr = string.format("%02d",tm.hour)..":"..string.format("%02d",tm.min)
     --显示日期
+    lcd.setcolor(0x07E0)
     disp.puttext(datestr,lcd.getxpos(datestr),24)
     --显示时间
+    lcd.setcolor(0x001F)
     disp.puttext(timestr,lcd.getxpos(timestr),44)
+    
     --刷新LCD显示缓冲区到LCD屏幕上
     disp.update()
+    lcd.setcolor(oldColor)
 end
 
 --窗口类型的消息处理函数表
