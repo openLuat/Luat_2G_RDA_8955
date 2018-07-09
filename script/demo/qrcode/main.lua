@@ -12,8 +12,8 @@ require"sys"
 如果写在后面的其他位置，很有可能无法输出错误信息，从而增加调试难度
 ]]
 --sys.opntrace(true,1)
-require"color_standard_spi_st7735"
---require"mono_standard_spi_ssd1306"
+require"color_lcd_spi_st7735"
+--require"mono_std_spi_ssd1306"
 require"qrcode"
 
 --加载硬件看门狗功能模块

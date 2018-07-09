@@ -215,7 +215,8 @@ local function parsevalidbody()
 	end
 	
 	sys.dispatch("ALIYUN_DATA_BGN",rmqtt and host or productkey..".iot-as-mqtt.cn-shanghai.aliyuncs.com",#ports~=0 and ports or {1883},getdevice("name"),iotId,iotToken)	
-	sys.timer_stop(reconn)	
+	sys.timer_stop(reconn)
+	return true
 end
 
 --[[
@@ -262,7 +263,7 @@ local function parse()
 	end
 	
 	rcvbuf = ""
-	parsevalidbody()
+	if not parsevalidbody() then sys.dispatch("ALIYUN_AUTH_ERROR") end
 	socketssl.close(SCK_IDX)
 end
 

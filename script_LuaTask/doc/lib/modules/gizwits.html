@@ -1,0 +1,331 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luat开源项目脚本lib</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>script_LuaTask lib</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/aLiYun.html">aLiYun</a></li>
+  <li><a href="../modules/aLiYunOta.html">aLiYunOta</a></li>
+  <li><a href="../modules/agps.html">agps</a></li>
+  <li><a href="../modules/audio.html">audio</a></li>
+  <li><a href="../modules/cc.html">cc</a></li>
+  <li><a href="../modules/clib.html">clib</a></li>
+  <li><a href="../modules/common.html">common</a></li>
+  <li><a href="../modules/console.html">console</a></li>
+  <li><a href="../modules/errDump.html">errDump</a></li>
+  <li><strong>gizwits</strong></li>
+  <li><a href="../modules/gps.html">gps</a></li>
+  <li><a href="../modules/http.html">http</a></li>
+  <li><a href="../modules/lbsLoc.html">lbsLoc</a></li>
+  <li><a href="../modules/led.html">led</a></li>
+  <li><a href="../modules/link.html">link</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/misc.html">misc</a></li>
+  <li><a href="../modules/mqtt.html">mqtt</a></li>
+  <li><a href="../modules/net.html">net</a></li>
+  <li><a href="../modules/netLed.html">netLed</a></li>
+  <li><a href="../modules/ntp.html">ntp</a></li>
+  <li><a href="../modules/nvm.html">nvm</a></li>
+  <li><a href="../modules/patch.html">patch</a></li>
+  <li><a href="../modules/pb.html">pb</a></li>
+  <li><a href="../modules/pins.html">pins</a></li>
+  <li><a href="../modules/pm.html">pm</a></li>
+  <li><a href="../modules/powerKey.html">powerKey</a></li>
+  <li><a href="../modules/record.html">record</a></li>
+  <li><a href="../modules/ril.html">ril</a></li>
+  <li><a href="../modules/sim.html">sim</a></li>
+  <li><a href="../modules/sms.html">sms</a></li>
+  <li><a href="../modules/socket.html">socket</a></li>
+  <li><a href="../modules/sys.html">sys</a></li>
+  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/update.html">update</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wdt.html">wdt</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>gizwits</code></h1>
+<p>模块功能：机智云物联网套件客户端功能</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: openLuat</li>
+        <li><strong>Release</strong>: 2018.07.04</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: openLuat</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#publish">
+    publish (topic, payload<strong  style="color: gray;">[, qos=0]</strong><strong  style="color: gray;">[, cbFnc=nil]</strong>, cbPara)
+    </a></td>
+	<td class="summary">发布一条消息
+ 手动编写并发送一条mqtt消息</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#transmissionSend">
+    transmissionSend (flag, ccmd, sn, cmd, topic)
+    </a></td>
+	<td class="summary">发布一条透传消息
+ 按照机智云带ack的格式发送一条消息</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setup">
+    setup (PRODUCT_KEY, PRODUCT_SECRET, getDeviceName, getDeviceSecret)
+    </a></td>
+	<td class="summary">初始化机智云注册所需要的数据</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on">
+    on (evt, cbFnc)
+    </a></td>
+	<td class="summary">注册事件的处理函数</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "publish"></a>
+    <strong  style="color: red;">
+    publish (topic, payload<strong  style="color: green;">[, qos=0]</strong><strong  style="color: green;">[, cbFnc=nil]</strong>, cbPara)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">发布一条消息
+ 手动编写并发送一条mqtt消息</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">topic</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">UTF8编码的主题</pre>
+        </li>
+        <li><span class="parameter">payload</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">负载</pre>
+        </li>
+        <li><span class="parameter">qos</span>
+            <span class="types"><span class="type">number</span></span>
+         [<em>此参数可选，默认值为：</em> 0]
+        <pre class="example">质量等级，0/1/2，默认0</pre>
+        </li>
+        <li><span class="parameter">cbFnc</span>
+            <span class="types"><span class="type">function</span></span>
+         [<em>此参数可选，默认值为：</em> nil]
+        <pre class="example">消息发布结果的回调函数</pre>
+        </li>
+        <li><span class="parameter">cbPara</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">标志</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">publish(topic,msg,<span class="number">0</span>)</pre></il>
+        <li><pre class="example">publish(topic,msgbody,<span class="number">0</span>,{cb=cbFnc,para=cbPara})</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "transmissionSend"></a>
+    <strong  style="color: red;">
+    transmissionSend (flag, ccmd, sn, cmd, topic)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">发布一条透传消息
+ 按照机智云带ack的格式发送一条消息</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">flag</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">通讯协议手册中的flag</pre>
+        </li>
+        <li><span class="parameter">ccmd</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">命令字，ack返回为0094</pre>
+        </li>
+        <li><span class="parameter">sn</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">包序号</pre>
+        </li>
+        <li><span class="parameter">cmd</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">业务指令</pre>
+        </li>
+        <li><span class="parameter">topic</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">UTF8编码的主题</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gizwits.transmissionSend(<span class="number">0</span>,<span class="global">string</span>.fromHex(<span class="string">"0094"</span>),<span class="global">string</span>.fromHex(<span class="string">"000000001"</span>),<span class="string">"cmd"</span>,<span class="string">"dev2app/12345/67890"</span>))  <span class="comment">--回复ack</span></pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "setup"></a>
+    <strong  style="color: red;">
+    setup (PRODUCT_KEY, PRODUCT_SECRET, getDeviceName, getDeviceSecret)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">初始化机智云注册所需要的数据</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">PRODUCT_KEY</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">机智云应用列表中的Product Key</pre>
+        </li>
+        <li><span class="parameter">PRODUCT_SECRET</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">机智云应用列表中的Product Secret</pre>
+        </li>
+        <li><span class="parameter">getDeviceName</span>
+            <span class="types"><span class="type">function</span></span>
+        <pre class="example">获取设备mac地址的函数</pre>
+        </li>
+        <li><span class="parameter">getDeviceSecret</span>
+            <span class="types"><span class="type">function</span></span>
+        <pre class="example">获取设备passcode的函数</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gizwits.setup(<span class="string">"PRODUCT_KEY"</span>,<span class="string">"PRODUCT_SECRET"</span>,getDeviceName,getDeviceSecret)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "on"></a>
+    <strong  style="color: red;">
+    on (evt, cbFnc)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">注册事件的处理函数</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">evt</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">事件
+ "connect"表示连接结果事件
+ "receive"表示接收到消息事件</pre>
+        </li>
+        <li><span class="parameter">cbFnc</span>
+            <span class="types"><span class="type">function</span></span>
+        <pre class="example">事件的处理函数
+ 当evt为"connect"时，cbFnc的调用形式为：cbFnc(result)，result为true表示连接成功，false或者nil表示连接失败
+ 当evt为"receive"时，cbFnc的调用形式为：cbFnc(topic,qos,payload)，topic为UTF8编码的主题(string类型)，qos为质量等级(number类型)，payload为原始编码的负载(string类型)
+ 当evt为"transmissionRev"时，cbFnc的调用形式为：cbFnc(flag,ccmd,sn,cmd,topic)，flag为数值型的量，ccmd为命令字，sn为包序号，cmd为透传消息内容，topic为UTF8编码的主题(string类型)</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gizwits.on(<span class="string">"transmissionRev"</span>,rcvTransCbFnc)</pre></il>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-07-09 17:00:27 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+
