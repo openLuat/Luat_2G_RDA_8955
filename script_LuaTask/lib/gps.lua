@@ -38,7 +38,7 @@ local powerCbFnc
 local uartID,uartBaudrate,uartDatabits,uartParity,uartStopbits = 2,115200,8,uart.PAR_NONE,uart.STOP_1
 --搜星模式命令字符串，"$PGKC115," .. gps .. "," .. glonass .. "," .. beidou .. "," .. galieo .. "*"
 local aerialModeStr = ""
---运行模式命令字符串，"$PGKC105," .. mod .. "," .. rt .. "," .. st .. "*"
+--运行模式命令字符串，"$PGKC105," .. mode .. "," .. rt .. "," .. st .. "*"
 local runModeStr = ""
 --正常运行模式下NMEA数据上报间隔命令字符串，"$PGKC101," .. interval .. "*"
 local nmeaReportStr = ""
@@ -74,7 +74,7 @@ local function getstrength(sg)
 
 	local tmpstr,i = sgv_str
 	for i=1,4 do
-		local d1,d2,id,elevation,azimuth,strength = sfind(tmpstr,"(%d+),(%d*),(%d*),(%d*)")
+		local d1,d2,id,elevation,azimuth,strength = sfind(tmpstr,"(%d+),([%-]*%d*),(%d*),(%d*)")
 		if id == nil then
 			return
 		end
@@ -598,7 +598,7 @@ function setRunMode(mode,runTm,sleepTm)
         if isOpen() then writeCmd(nmeaReportStr) nmeaReportStr="" end
     end
 
-    runModeStr = "$PGKC105,"..mod..((mode==1 or mode==2) and (","..rt..","..st) or "").."*"
+    runModeStr = "$PGKC105,"..mode..((mode==1 or mode==2) and (","..rt..","..st) or "").."*"
     if isOpen() then writeCmd(runModeStr) runModeStr="" end
 end
 

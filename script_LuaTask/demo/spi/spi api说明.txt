@@ -51,3 +51,15 @@ data：string类型，要发送的数据
 
 返回值：string类型，读取的数据内容
 spi.send_recv(id,data)
+
+
+
+--[[
+功能：关闭SPI
+
+参数：
+id：SPI的ID，spi.SPI_1表示SPI1，Air201、Air202、Air800只有SPI1，固定传spi.SPI_1即可
+
+返回值：number类型，1表示成功，0表示失败
+]]
+spi.close(id)
