@@ -517,7 +517,7 @@ end
 --id：socket id
 --len：这次收到的数据总长度
 --data：已经收到的数据内容
-local rcvd = {id = 0,len = 0,data = ""}
+local rcvd = {id = 0,len = 0,rcvLen = 0,data = {}}
 
 --[[
 函数名：rcvdfilter
@@ -532,23 +532,26 @@ local function rcvdfilter(data)
 		return data
 	end
 	--剩余未收到的数据长度
-	local restlen = rcvd.len - string.len(rcvd.data)
+	local restlen = rcvd.len - rcvd.rcvLen
 	if  string.len(data) > restlen then -- at通道的内容比剩余未收到的数据多
 		-- 截取网络发来的数据
-		rcvd.data = rcvd.data .. string.sub(data,1,restlen)
+		table.insert(rcvd.data,string.sub(data,1,restlen))
+		rcvd.rcvLen = rcvd.rcvLen+restlen
 		-- 剩下的数据仍按at进行后续处理
 		data = string.sub(data,restlen+1,-1)
 	else
-		rcvd.data = rcvd.data .. data
+		table.insert(rcvd.data,data)
+		rcvd.rcvLen = rcvd.rcvLen+data:len()
 		data = ""
 	end
 
-	if rcvd.len == string.len(rcvd.data) then
+	if rcvd.len == rcvd.rcvLen then
 		--通知接收数据
-		recv(rcvd.id,rcvd.len,rcvd.data)
+		recv(rcvd.id,rcvd.len,table.concat(rcvd.data))
 		rcvd.id = 0
 		rcvd.len = 0
-		rcvd.data = ""
+		rcvd.rcvLen = 0
+		rcvd.data = {}
 		return data
 	else
 		return data, rcvdfilter
