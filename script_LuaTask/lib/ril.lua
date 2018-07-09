@@ -22,7 +22,7 @@ local transparentmode
 local rcvfunc
 
 --执行AT命令后1分钟无反馈，判定at命令执行失败，则重启软件
-local TIMEOUT = 60000
+local TIMEOUT,DATA_TIMEOUT = 60000,60000
 
 --AT命令的应答类型
 --NORESULT：收到的应答数据当做urc通知处理，如果发送的AT命令不处理应答或者没有设置类型，默认为此类型
@@ -299,7 +299,7 @@ local function procatc(data)
         --字符串类型
         elseif cmdtype == STRING then
             --进一步检查格式
-            if string.match(data, rspformt or "^%w+$") then
+            if string.match(data, rspformt or "^.+$") then
                 interdata = data
             else
                 isurc = true
@@ -462,7 +462,11 @@ local function sendat()
         end
     end
     --启动AT命令应答超时定时器
-    sys.timerStart(atimeout, TIMEOUT)
+    if currcmd:match("^AT%+CIPSTART") or currcmd:match("^AT%+CIPSEND") or currcmd:match("^AT%+SSLCREATE") or currcmd:match("^AT%+SSLCONNECT") or currcmd:match("^AT%+SSLSEND") then
+        sys.timerStart(atimeout,DATA_TIMEOUT)
+    else
+        sys.timerStart(atimeout, TIMEOUT)
+    end
     
     log.info("ril.sendat", currcmd)
     --向虚拟串口中发送AT命令
@@ -555,6 +559,10 @@ function sendtransparentdata(data)
     if not transparentmode then return end
     vwrite(uart.ATC, data)
     return true
+end
+
+function setDataTimeout(tm)
+    DATA_TIMEOUT = (tm<60000 and 60000 or tm)
 end
 
 --注册“AT命令的虚拟串口数据接收消息”的处理函数

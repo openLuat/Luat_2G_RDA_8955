@@ -36,17 +36,17 @@ local function encodeUTF8(s)
     end
 end
 
-local function packCONNECT(clientId, keepAlive, username, password, cleanSession, will)
-    local content = pack.pack(">PbbHPAAAA",								
-								"MQTT",
-								4,
-								(#username == 0 and 0 or 1) * 128 + (#password == 0 and 0 or 1) * 64 + will.retain * 32 + will.qos * 8 + will.flag * 4 + cleanSession * 2,
-								keepAlive,
-								clientId,
-								encodeUTF8(will.topic),
-								encodeUTF8(will.payload),
-								encodeUTF8(username),
-								encodeUTF8(password))
+local function packCONNECT(clientId, keepAlive, username, password, cleanSession, will, version)
+    local content = pack.pack(">PbbHPAAAA",
+                                version == "3.1" and "MQIsdp" or "MQTT",
+                                version == "3.1" and 3 or 4,
+                                (#username == 0 and 0 or 1) * 128 + (#password == 0 and 0 or 1) * 64 + will.retain * 32 + will.qos * 8 + will.flag * 4 + cleanSession * 2,
+                                keepAlive,
+                                clientId,
+                                encodeUTF8(will.topic),
+                                encodeUTF8(will.payload),
+                                encodeUTF8(username),
+                                encodeUTF8(password))
     return pack.pack(">bAA",
         CONNECT * 16,
         encodeLen(string.len(content)),
@@ -136,12 +136,14 @@ mqttc.__index = mqttc
 -- @string[opt=""] password 密码，密码为空配置为""或者nil
 -- @number[opt=1] cleanSession 1/0
 -- @table[opt=nil] will 遗嘱参数，格式为{qos=, retain=, topic=, payload=}
+-- @string[opt="3.1.1"] version MQTT版本号
 -- @return table mqttc client实例
 -- @usage
 -- mqttc = mqtt.client("clientid-123")
 -- mqttc = mqtt.client("clientid-123",200)
 -- mqttc = mqtt.client("clientid-123",nil,"user","password")
-function client(clientId, keepAlive, username, password, cleanSession, will)
+-- mqttc = mqtt.client("clientid-123",nil,"user","password",nil,nil,"3.1")
+function client(clientId, keepAlive, username, password, cleanSession, will, version)
     local o = {}
     local packetId = 1
 
@@ -156,6 +158,7 @@ function client(clientId, keepAlive, username, password, cleanSession, will)
     o.username = username or ""
     o.password = password or ""
     o.cleanSession = cleanSession or 1
+    o.version = version or "3.1.1"
     o.will = will
     o.commandTimeout = CLIENT_COMMAND_TIMEOUT
     o.cache = {} -- 接收到的mqtt数据包缓冲
@@ -309,7 +312,7 @@ function mqttc:connect(host, port, transport, cert)
         return false
     end
 
-    if not self:write(packCONNECT(self.clientId, self.keepAlive, self.username, self.password, self.cleanSession, self.will)) then
+    if not self:write(packCONNECT(self.clientId, self.keepAlive, self.username, self.password, self.cleanSession, self.will, self.version)) then
         log.info("mqtt.client:connect", "send fail")
         return false
     end

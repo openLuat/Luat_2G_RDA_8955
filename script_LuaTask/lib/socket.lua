@@ -38,11 +38,11 @@ end
 local function errorInd(error)
     for k,v in pairs({sockets,socketsSsl}) do
         for _, c in pairs(v) do -- IP状态出错时，通知所有已连接的socket
-            if c.connected or c.created then
+            --if c.connected or c.created then
                 if error == 'CLOSED' and not c.ssl then c.connected = false socketStatusNtfy() end
                 c.error = error
-                coroutine.resume(c.co, false)
-            end
+                if c.co and coroutine.status(c.co)=="suspended" then coroutine.resume(c.co, false) end
+            --end
         end
     end
 end
@@ -399,3 +399,17 @@ function printStatus()
         end
     end
 end
+
+--- 设置TCP层自动重传的参数
+-- @number[opt=4] retryCnt，重传次数；取值范围0到12
+-- @number[opt=16] retryMaxTimeout，限制每次重传允许的最大超时时间(单位秒)，取值范围1到16
+-- @return nil
+-- @usage
+-- setTcpResendPara(3,8)
+-- setTcpResendPara(4,16)
+function setTcpResendPara(retryCnt,retryMaxTimeout)
+    req("AT+TCPUSERPARAM=6,"..(retryCnt or 4)..",7200,"..(retryMaxTimeout or 16))
+    ril.setDataTimeout((3*(retryMaxTimeout-8)+(retryCnt-3)*(16-8)+60) * 1000)
+end
+
+setTcpResendPara(4,16)

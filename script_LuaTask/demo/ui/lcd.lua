@@ -7,6 +7,7 @@
 --根据自己的lcd类型以及使用的spi引脚，打开下面的其中一个文件进行测试
 --mono表示黑白屏，color表示彩屏
 --std_spi表示使用标准的SPI引脚，lcd_spi表示使用LCD专用的SPI引脚
+--i2c表示使用i2c引脚
 -- require "mono_std_spi_sh1106"
 require "mono_std_spi_ssd1306"
 -- require "mono_std_spi_st7567"
@@ -18,6 +19,7 @@ require "mono_std_spi_ssd1306"
 -- require "mono_lcd_spi_st7567"
 -- require "color_lcd_spi_st7735"
 -- require "color_lcd_spi_gc9106"
+-- require "mono_i2c_ssd1306"
 module(..., package.seeall)
 
 --LCD分辨率的宽度和高度(单位是像素)
@@ -34,4 +36,8 @@ str：string类型，要显示的字符串
 ]]
 function getxpos(str)
     return (WIDTH - string.len(str) * CHAR_WIDTH) / 2
+end
+
+function setcolor(color)
+    if BPP~=1 then return disp.setcolor(color) end
 end
