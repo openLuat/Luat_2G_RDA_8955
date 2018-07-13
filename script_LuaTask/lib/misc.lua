@@ -11,7 +11,7 @@ module(..., package.seeall)
 --imei：IMEI
 -- calib 校准标志
 local sn, imei, calib, ver
-local setSnCbFnc,setImeiCbFnc
+local setSnCbFnc,setImeiCbFnc,setClkCbFnc
 
 --[[
 函数名：rsp
@@ -45,8 +45,9 @@ local function rsp(cmd, success, response, intermediate)
         else
             calib = false
         end
-    elseif prefix == '+CCLK' and success then
-        sys.publish('TIME_UPDATE_IND')
+    elseif prefix == '+CCLK' then
+        if success then sys.publish('TIME_UPDATE_IND') end
+        if setClkCbFnc then setClkCbFnc(getClock(),success) end
     elseif cmd:match("AT%+WISN=") then
         if success then
             req("AT+WISN?")
@@ -68,11 +69,16 @@ end
 
 --- 设置系统时间
 -- @table t,系统时间，格式参考：{year=2017,month=2,day=14,hour=14,min=2,sec=58}
+-- @function[opt=nil] cbFnc，设置结果回调函数，回调函数的调用形式为：
+-- cnFnc(time，result)，result为true表示成功，false或者nil为失败；time表示设置之后的系统时间，table类型，例如{year=2017,month=2,day=14,hour=14,min=19,sec=23}
 -- @return nil
 -- @usage misc.setClock({year=2017,month=2,day=14,hour=14,min=2,sec=58})
-function setClock(t)
-    if t == nil or type(t) ~= "table" then return end
-    if t.year - 2000 > 38 then return end
+function setClock(t,cbFnc)
+    if type(t) ~= "table" or (t.year-2000>38) then
+        if cbFnc then cbFnc(getClock(),false) end
+        return
+    end
+    setClkCbFnc = cbFnc
     req(string.format("AT+CCLK=\"%02d/%02d/%02d,%02d:%02d:%02d+32\"", string.sub(t.year, 3, 4), t.month, t.day, t.hour, t.min, t.sec), nil, rsp)
 end
 --- 获取系统时间

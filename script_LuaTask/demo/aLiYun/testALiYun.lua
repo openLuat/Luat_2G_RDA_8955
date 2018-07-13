@@ -11,21 +11,22 @@ module(...,package.seeall)
 require"aLiYun"
 require"misc"
 
---阿里云华东2站点上创建的产品的ProductKey，用户根据实际值自行修改
+--采用一机一密认证方案时：
+--PRODUCT_KEY为阿里云华东2站点上创建的产品的ProductKey，用户根据实际值自行修改
 local PRODUCT_KEY = "b0FMK1Ga5cp"
---采用“一机一密”认证方案除了上面的PRODUCT_KEY外，还需要设备名称和设备密钥
+--除了上面的PRODUCT_KEY外，还需要提供获取DeviceName的函数、获取DeviceSecret的函数
 --设备名称使用函数getDeviceName的返回值，默认为设备的IMEI
 --设备密钥使用函数getDeviceSecret的返回值，默认为设备的SN
 --单体测试时，可以直接修改getDeviceName和getDeviceSecret的返回值
 --批量量产时，使用设备的IMEI和SN；合宙生产的模块，都有唯一的IMEI，用户可以在自己的产线批量写入跟IMEI（设备名称）对应的SN（设备密钥）
 --或者用户自建一个服务器，设备上报IMEI给服务器，服务器返回对应的设备密钥，然后调用misc.setSn接口写到设备的SN中
 
---local PRODUCT_KEY = "a1AoVqkCIbG"
---local PRODUCE_SECRET="7eCdPyR6fYPntFcM"
---采用“一型一密”认证方案时打开上面的注释，比“一机一密”认证方式额外提供提供PRODUCE_SECRET，PRODUCE_SECRET的值根据实际值自行修改
---设备请求接入时，云端动态下发该设备的DeviceSecret，DeviceSecret的保存方法默认使用setDeviceSecret将设备的SN替换成DeviceSecret
---之后设备密钥的获取便使用函数getDeviceSecret的返回值，然后使用ProductKey、DeviceName和DeviceSecret进行认证并建立连接。
---请参考126行的aLiYun.setup(PRODUCT_KEY,PRODUCE_SECRET,getDeviceName,getDeviceSecret,setDeviceSecret)去配置参数 
+--采用一型一密认证方案时：
+--PRODUCT_KEY和PRODUCE_SECRET为阿里云华东2站点上创建的产品的ProductKey和ProductSecret，用户根据实际值自行修改
+--local PRODUCT_KEY = "b1KCi45LcCP"
+--local PRODUCE_SECRET = "VWll9fiYWKiwraBk"
+--除了上面的PRODUCT_KEY和PRODUCE_SECRET外，还需要提供获取DeviceName的函数、获取DeviceSecret的函数、设置DeviceSecret的函数
+--设备第一次在某个product下使用时，会先去云端动态注册，获取到DeviceSecret后，调用设置DeviceSecret的函数保存DeviceSecret
 
 --[[
 函数名：getDeviceName
@@ -34,11 +35,11 @@ local PRODUCT_KEY = "b0FMK1Ga5cp"
 返回值：设备名称
 ]]
 local function getDeviceName()
-    --默认使用设备的IMEI作为设备名称
-    --用户单体测试时，可以在此处直接返回阿里云的iot控制台上注册的设备名称，例如return "868575021150844"
-    --return "Air202Test13"
-    --return "862991419835241"
+    --默认使用设备的IMEI作为设备名称，用户可以根据项目需求自行修改    
     return misc.getImei()
+    
+    --用户单体测试时，可以在此处直接返回阿里云的iot控制台上注册的设备名称，例如return "862991419835241"
+    --return "862991419835241"
 end
 
 --[[
@@ -48,7 +49,7 @@ end
 返回值：无
 ]]
 local function setDeviceSecret(s)
-    --默认使用设备的SN作为设备密钥
+    --默认使用设备的SN作为设备密钥，用户可以根据项目需求自行修改
     misc.setSn(s)
 end
 
@@ -60,10 +61,11 @@ end
 返回值：设备密钥
 ]]
 local function getDeviceSecret()
-    --默认使用设备的SN作为设备密钥
+    --默认使用设备的SN作为设备密钥，用户可以根据项目需求自行修改
+    return misc.getSn()
+    
     --用户单体测试时，可以在此处直接返回阿里云的iot控制台上生成的设备密钥，例如return "y7MTCG6Gk33Ux26bbWSpANl4OaI0bg5Q"
     --return "y7MTCG6Gk33Ux26bbWSpANl4OaI0bg5Q"
-    return misc.getSn()
 end
 
 --阿里云客户端是否处于连接状态
@@ -116,17 +118,23 @@ local function connectCbFnc(result)
     end
 end
 
---配置产品key，设备名称和设备密钥；采用一机一密的认证方式是，第二个参数传入nil，采用一型一密认证方式时，需要PRODUCE_SECRET，并提供第五个参数
---注意：如果使用imei和sn作为设备名称和设备证书时，不要把getDeviceName和getDeviceSecret替换为misc.getImei()和misc.getSn()
---注意：采用一型一密认证方式时，仅在首次激活时动态下发DeviceSecret
---因为开机就调用misc.getImei()和misc.getSn()，获取不到值
---一机一密
+-- 认证结果的处理函数
+-- @bool result，认证结果，true表示认证成功，false或者nil表示认证失败
+local function authCbFnc(result)
+    log.info("testALiYun.authCbFnc",result)
+end
+
+--采用一机一密认证方案时：
+--配置：ProductKey、获取DeviceName的函数、获取DeviceSecret的函数；其中aLiYun.setup中的第二个参数必须传入nil
 aLiYun.setup(PRODUCT_KEY,nil,getDeviceName,getDeviceSecret)
---一型一密
+
+--采用一型一密认证方案时：
+--配置：ProductKey、ProductSecret、获取DeviceName的函数、获取DeviceSecret的函数、设置DeviceSecret的函数
 --aLiYun.setup(PRODUCT_KEY,PRODUCE_SECRET,getDeviceName,getDeviceSecret,setDeviceSecret)
 
 --setMqtt接口不是必须的，aLiYun.lua中有这个接口设置的参数默认值，如果默认值满足不了需求，参考下面注释掉的代码，去设置参数
 --aLiYun.setMqtt(0)
+aLiYun.on("auth",authCbFnc)
 aLiYun.on("connect",connectCbFnc)
 
 

@@ -82,9 +82,8 @@ function ntpTime(ts, fnc)
                     rc, data = c:recv(NTP_TIMEOUT)
                     if rc and #data == 48 then
                         ntim = os.date("*t", (sbyte(ssub(data, 41, 41)) - 0x83) * 2 ^ 24 + (sbyte(ssub(data, 42, 42)) - 0xAA) * 2 ^ 16 + (sbyte(ssub(data, 43, 43)) - 0x7E) * 2 ^ 8 + (sbyte(ssub(data, 44, 44)) - 0x80) + 1)
-                        misc.setClock(ntim)
+                        misc.setClock(ntim,fnc)
                         ntpEnd = true
-                        if type(fnc) == "function" then fnc(ntim) end
                         c:close()
                         break
                     end

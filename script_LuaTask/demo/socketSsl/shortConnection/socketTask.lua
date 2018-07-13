@@ -18,9 +18,11 @@ sys.taskInit(
         --单向认证测试时，此变量设置为false；双向认证测试时，此变量设置为true
         local mutualAuth = false
         local socketClient,connectResult
+        local retryConnectCnt = 0
             
         while true do
             if not socket.isReady() then
+                retryConnectCnt = 0
                 --等待网络环境准备就绪，超时时间是5分钟
                 sys.waitUntil("IP_READY_IND",300000)
             end
@@ -41,6 +43,7 @@ sys.taskInit(
                 end
                 
                 if connectResult then
+                    retryConnectCnt = 0
                     if socketClient:send("GET / HTTP/1.1\r\nHost: 36.7.87.100\r\nConnection: keep-alive\r\n\r\n") then
                         result,data = socketClient:recv(5000)
                         if result then
@@ -48,10 +51,13 @@ sys.taskInit(
                             log.info("socketTask.recv",data)
                         end
                     end
+                else
+                    retryConnectCnt = retryConnectCnt+1
                 end
                 
                 --断开socket连接
                 socketClient:close()
+                if retryConnectCnt>=5 then link.shut() retryConnectCnt=0 end
                 sys.wait(20000)
             else
                 --进入飞行模式，20秒之后，退出飞行模式
