@@ -5,7 +5,10 @@
 -- @copyright openLuat
 -- @release 2017.9.20
 
+require"net"
+
 module(..., package.seeall)
+
 local publish = sys.publish
 local request = ril.request
 local ready = false
@@ -23,6 +26,10 @@ end
 
 function setDnsIP(ip1,ip2)
     dnsIP = "\""..(ip1 or "").."\",\""..(ip2 or "").."\""
+end
+
+function shut()
+	request('AT+CIPSHUT')
 end
 
 -- SIM卡 IMSI READY以后自动设置APN

@@ -135,25 +135,33 @@ local function getDeviceSecretCb(result,prompt,head,body)
     
 end
 
-
 local function authCbFnc(result,statusCode,head,body)
     log.info("aLiYun.authCbFnc",result,statusCode,body)
     sys.publish("ALIYUN_AUTH_IND",result,statusCode,body)
 end
 
-function clientAuthTask()
-    while not socket.isReady() do sys.waitUntil("IP_READY_IND") end
-    while true do
-        local retryCnt = 0
+local function getBody(tag)
+    if tag=="auth" then
         local data = "clientId"..sGetDeviceNameFnc().."deviceName"..sGetDeviceNameFnc().."productKey"..sProductKey
         local signKey= sGetDeviceSecretFnc()
         local sign = crypto.hmac_md5(data,data:len(),signKey,signKey:len())
-        local body = "productKey="..sProductKey.."&sign="..sign.."&clientId="..sGetDeviceNameFnc().."&deviceName="..sGetDeviceNameFnc()
-        
+        return "productKey="..sProductKey.."&sign="..sign.."&clientId="..sGetDeviceNameFnc().."&deviceName="..sGetDeviceNameFnc()
+    elseif tag=="register" then
+        local random=rtos.tick()
+        local data = "deviceName"..sGetDeviceNameFnc().."productKey"..sProductKey.."random"..random
+        local sign = crypto.hmac_md5(data,data:len(),sProductSecret,sProductSecret:len())
+        return "productKey="..sProductKey.."&deviceName="..sGetDeviceNameFnc().."&random="..random.."&sign="..sign.."&signMethod=HmacMD5"
+    end
+end
+
+function clientAuthTask()
+    while not socket.isReady() do sys.waitUntil("IP_READY_IND") end
+    while true do
+        local retryCnt,authBody = 0,getBody("auth")
         while true do
             http.request("POST",
                      "https://iot-auth.cn-shanghai.aliyuncs.com/auth/devicename",
-                     nil,{["Content-Type"]="application/x-www-form-urlencoded"},body,20000,authCbFnc)
+                     nil,{["Content-Type"]="application/x-www-form-urlencoded"},authBody,20000,authCbFnc)
                      
             local _,result,statusCode,body = sys.waitUntil("ALIYUN_AUTH_IND")
             --log.info("aLiYun.clientAuthTask1",result and statusCode=="200",body)
@@ -163,6 +171,7 @@ function clientAuthTask()
                 if result and tJsonDecode["message"]=="success" and tJsonDecode["data"] and type(tJsonDecode["data"])=="table" then
                     --log.info("aLiYun.clientAuthTask3",tJsonDecode["data"]["iotId"],tJsonDecode["data"]["iotToken"])
                     if tJsonDecode["data"]["iotId"] and tJsonDecode["data"]["iotId"]~="" and tJsonDecode["data"]["iotToken"] and tJsonDecode["data"]["iotToken"]~="" then
+                        if evtCb["auth"] then evtCb["auth"](true) end
                         local ports,host,returnMqtt = {}
                         if tJsonDecode["data"]["resources"] and type(tJsonDecode["data"]["resources"])=="table" then
                             if tJsonDecode["data"]["resources"]["mqtt"] then
@@ -176,17 +185,14 @@ function clientAuthTask()
                     end
                 end
             end
-
-            if sProductSecret then
-                local random=rtos.tick()
-                local data = "deviceName"..sGetDeviceNameFnc().."productKey"..sProductKey.."random"..random
-                local psignKey = sProductSecret
-                local sign = crypto.hmac_md5(data,data:len(),psignKey,psignKey:len())
-                local body="productKey="..sProductKey.."&deviceName="..sGetDeviceNameFnc().."&random="..random.."&sign="..sign.."&signMethod=HmacMD5"
+            
+            if sProductSecret then                
                 http.request("POST","https://iot-auth.cn-shanghai.aliyuncs.com/auth/register/device",nil,
                     {['Content-Type']="application/x-www-form-urlencoded"},
-                    body,30000,getDeviceSecretCb)
+                    getBody("register"),30000,getDeviceSecretCb)
                 sys.waitUntil("GetDeviceSecretEnd")
+                sys.wait(1000)
+                authBody = getBody("auth")
             end
 
             retryCnt = retryCnt+1
@@ -195,6 +201,7 @@ function clientAuthTask()
             end
         end
         
+        if evtCb["auth"] then evtCb["auth"](false) end
         sys.wait(5000)
     end
 end
@@ -257,9 +264,11 @@ end
 
 --- 注册事件的处理函数
 -- @string evt，事件
--- "connect"表示连接结果事件
--- "receive"表示接收到消息事件
+-- "auth"表示鉴权服务器认证结果事件
+-- "connect"表示接入服务器连接结果事件
+-- "receive"表示接收到接入服务器的消息事件
 -- @function cbFnc，事件的处理函数
+-- 当evt为"auth"时，cbFnc的调用形式为：cbFnc(result)，result为true表示认证成功，false或者nil表示认证失败
 -- 当evt为"connect"时，cbFnc的调用形式为：cbFnc(result)，result为true表示连接成功，false或者nil表示连接失败
 -- 当evt为"receive"时，cbFnc的调用形式为：cbFnc(topic,qos,payload)，topic为UTF8编码的主题(string类型)，qos为质量等级(number类型)，payload为原始编码的负载(string类型)
 -- @return nil
