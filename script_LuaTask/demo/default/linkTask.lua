@@ -24,8 +24,10 @@ end
 --启动MQTT客户端任务
 sys.taskInit(
     function()
+        local retryConnectCnt = 0
         while true do
             if not socket.isReady() then
+                retryConnectCnt = 0
                 --等待网络环境准备就绪，超时时间是5分钟
                 sys.waitUntil("IP_READY_IND",300000)
             end
@@ -36,6 +38,7 @@ sys.taskInit(
                 local mqttClient = mqtt.client(imei,600,"user","password")
                 --阻塞执行MQTT CONNECT动作，直至成功
                 if mqttClient:connect("lbsmqtt.airm2m.com",1884,"tcp") then
+                    retryConnectCnt = 0
                     ready = true
                     --订阅主题
                     if mqttClient:subscribe("/v1/device/"..misc.getImei().."/set",1) then
@@ -48,9 +51,12 @@ sys.taskInit(
                         linkOutMsg.unInit()
                     end
                     ready = false
+                else
+                    retryConnectCnt = retryConnectCnt+1
                 end
                 --断开MQTT连接
                 mqttClient:disconnect()
+                if retryConnectCnt>=5 then link.shut() retryConnectCnt=0 end
                 sys.wait(5000)
             else
                 --进入飞行模式，20秒之后，退出飞行模式
