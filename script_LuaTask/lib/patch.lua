@@ -61,8 +61,13 @@ local rawcoresume = coroutine.resume
 coroutine.resume = function(...)
     function wrapper(co,...)
         if not arg[1] then
-            local traceBack = debug.traceback(co)          
-            errDump.appendErr((traceBack and traceBack~="") and (arg[2].."\r\n"..traceBack) or arg[2])
+            local traceBack = debug.traceback(co)
+            traceBack = (traceBack and traceBack~="") and (arg[2].."\r\n"..traceBack) or arg[2]
+            if errDump and errDump.appendErr and type(errDump.appendErr)=="function" then
+                errDump.appendErr(traceBack)
+            else
+                log.error("coroutine.resume",traceBack)
+            end
         end
         return unpack(arg)
     end
