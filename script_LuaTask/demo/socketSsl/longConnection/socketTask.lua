@@ -47,7 +47,7 @@ sys.taskInit(
                 --双向认证测试
                 if mutualAuth then                   
                     --创建一个socket ssl tcp客户端
-                    socketClient = socket.tcp(true,{caCert="ca1.crt",clientCert="client.crt",clientKey="client.key"})
+                    socketClient = socket.tcp(true,{caCert="ca.crt",clientCert="client.crt",clientKey="client.key"})
                     --阻塞执行socket connect动作，直至成功
                     connectResult = socketClient:connect("36.7.87.100","4434")
                 --单向认证测试

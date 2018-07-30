@@ -83,12 +83,13 @@ local function taskAudio()
         end
         --挂起播放，等待播放成功、播放失败或者有新的播放请求激活协程
         local _,msg,param = sys.waitUntil("AUDIO_PLAY_END")
-        
+
         log.info("audio.taskAudio resume msg",msg)        
         if msg=="SUCCESS" then
             if sDup then
                 if sDupInterval and sDupInterval>0 then
-                    sys.wait(sDupInterval)
+                    sys.waitUntil("AUDIO_PLAY_END",sDupInterval)
+                    if sType==nil then break end
                 end
             else
                 stopFnc[sType](sPath)
@@ -98,7 +99,11 @@ local function taskAudio()
         elseif msg=="NEW" then
             stopFnc[sType](sPath)
             playEnd(4)
+            if sType==nil then break end
             update(param.pri,param.typ,param.pth,param.vl,param.c,param.dp,param.dpIntval)
+        elseif msg=="STOP" then
+            playEnd(5)
+            break
         else
             stopFnc[sType](sPath)
             playEnd(1)
@@ -177,9 +182,10 @@ rtos.on(rtos.MSG_AUDIO,audioMsg)
 --                   2-播放优先级不够，没有播放
 --                   3-传入的参数出错，没有播放
 --                   4-被新的播放请求中止
+--                   5-调用audio.stop接口主动停止
 -- @bool[opt=nil] dup，是否循环播放，true循环，false或者nil不循环
 -- @number[opt=0] dupInterval，循环播放间隔(单位毫秒)，dup为true时，此值才有意义
--- @return result，bool或者nil类型，同步调用成功返回true，否则返回nil
+-- @return result，bool或者nil类型，同步调用成功返回true，否则返回false
 -- @usage audio.play(0,"FILE","/ldata/call.mp3")
 -- @usage audio.play(0,"FILE","/ldata/call.mp3",7)
 -- @usage audio.play(0,"FILE","/ldata/call.mp3",7,cbFnc)
@@ -190,6 +196,23 @@ function play(priority,type,path,vol,cbFnc,dup,dupInterval)
         taskID = sys.taskInit(taskAudio)
     end
     return true
+end
+
+--- 停止音频播放
+-- @return nil
+-- @usage audio.stop()
+function stop()
+    if sType then
+        if sType=="FILE" then
+            audiocore.stop()
+        elseif sType=="TTS" or sType=="TTSCC" then
+            req("AT+QTTS=3")
+        elseif sType=="RECORD" then
+            f,d=record.getSize() req("AT+AUDREC=1,0,3," .. sPath .. "," .. d*1000)
+        end
+        sPriority,sType,sPath,sVol,sCb,sDup,sDupInterval = nil
+        sys.publish("AUDIO_PLAY_END","STOP")
+    end
 end
 
 --- 设置喇叭音量等级
