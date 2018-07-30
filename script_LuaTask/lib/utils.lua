@@ -6,7 +6,7 @@
 -- @release 2017.10.19
 module(..., package.seeall)
 
---- 字符转16进制,如"123abc"转为"313233616263"
+--- 将Lua字符串转成HEX字符串，如"123abc"转为"313233616263"
 -- @string str 输入字符串
 -- @string[opt=""] separator 输出的16进制字符串分隔符
 -- @return hexstring 16进制组成的串
@@ -20,7 +20,7 @@ function string.toHex(str,separator)
         return string.format("%02X"..(separator or ""), string.byte(c))
     end)
 end
---- 16进制转字符，如"313233616263"转为"123abc", 函数里加入了过滤分隔符，可以过滤掉大部分分隔符（可参见正则表达式中\s和\p的范围）。
+--- 将HEX字符串转成Lua字符串，如"313233616263"转为"123abc", 函数里加入了过滤分隔符，可以过滤掉大部分分隔符（可参见正则表达式中\s和\p的范围）。
 -- @string hex,16进制组成的串
 -- @return charstring,字符组成的串
 -- @return len,输出字符串的长度

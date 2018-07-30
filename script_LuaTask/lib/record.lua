@@ -70,7 +70,11 @@ end
 -- @return duration 录音时长
 -- @usage fileSize, duration = record.getSize()
 function getSize()
-    return io.fileSize(FILE), duration and (duration-1)/1000+1 or 0
+    local size,duration = io.fileSize(FILE),0
+    if size>6 then
+        duration = ((size-6)-((size-6)%1600))/1600
+    end
+    return size, duration
 end
 
 --- 删除录音

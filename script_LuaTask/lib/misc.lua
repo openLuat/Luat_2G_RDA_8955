@@ -10,7 +10,7 @@ module(..., package.seeall)
 --sn：序列号
 --imei：IMEI
 -- calib 校准标志
-local sn, imei, calib, ver
+local sn, imei, calib, ver, muid
 local setSnCbFnc,setImeiCbFnc,setClkCbFnc
 
 --[[
@@ -60,6 +60,8 @@ local function rsp(cmd, success, response, intermediate)
         else
             if setImeiCbFnc then setImeiCbFnc(false) end
         end
+    elseif cmd:match("AT%+MUID?") then
+        if intermediate then muid = intermediate:match("+MUID:%s*\"(.+)\"") end
     end
 end
 
@@ -152,6 +154,14 @@ function getVbatt()
     return v2
 end
 
+--- 获取模块MUID
+-- @return string,MUID号，如果未获取到返回""
+-- 注意：开机lua脚本运行之后，会发送at命令去查询muid，所以需要一定时间才能获取到muid。开机后立即调用此接口，基本上返回""
+-- @usage muid = misc.getMuid()
+function getMuid()
+    return muid or ""
+end
+
 --- 打开并且配置PWM(支持2路PWM，仅支持输出)
 -- 说明：
 -- 当id为0时：period 取值在 80-1625 Hz范围内时，level 占空比取值范围为：1-100；
@@ -187,6 +197,7 @@ end
 ril.regRsp("+ATWMFT", rsp)
 ril.regRsp("+WISN", rsp)
 ril.regRsp("+CGSN", rsp)
+ril.regRsp("+MUID", rsp)
 ril.regRsp("+WIMEI", rsp)
 ril.regRsp("+AMFAC", rsp)
 ril.regRsp("+CFUN", rsp)
@@ -198,3 +209,4 @@ req("AT+ATWMFT=99")
 req("AT+WISN?")
 --查询IMEI
 req("AT+CGSN")
+req("AT+MUID?")

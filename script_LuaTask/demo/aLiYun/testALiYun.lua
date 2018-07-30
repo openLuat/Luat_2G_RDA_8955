@@ -10,6 +10,7 @@ module(...,package.seeall)
 
 require"aLiYun"
 require"misc"
+require"pm"
 
 --采用一机一密认证方案时：
 --PRODUCT_KEY为阿里云华东2站点上创建的产品的ProductKey，用户根据实际值自行修改
@@ -154,42 +155,52 @@ require"aLiYunOta"
 --[[
 函数名：otaCb
 功能  ：新固件文件下载结束后的回调函数
+        通过uart1（115200,8,uart.PAR_NONE,uart.STOP_1）把下载成功的文件，发送到MCU，发送成功后，删除此文件
 参数  ：
 		result：下载结果，true为成功，false为失败
 		filePath：新固件文件保存的完整路径，只有result为true时，此参数才有意义
 返回值：无
 ]]
-
 local function otaCb(result,filePath)
     log.info("testALiYun.otaCb",result,filePath)
     if result then
-        --根据自己的需求，去使用文件filePath
-        local fileHandle = io.open(filePath,"rb")
-        if not fileHandle then log.error("testALiYun.otaCb open file error") return end
-        local current = fileHandle:seek()
-        local size = fileHandle:seek("end")
-        fileHandle:seek("set",current)
-        --输出文件长度
-        log.info("testALiYun.otaCb size",size)
+        local uartID = 1
+        sys.taskInit(
+            function()                
+                local fileHandle = io.open(filePath,"rb")
+                if not fileHandle then
+                    log.error("testALiYun.otaCb open file error")
+                    if filePath then os.remove(filePath) end
+                    return
+                end
+                
+                pm.wake("UART_SENT2MCU")
+                uart.on(uartID,"sent",function() sys.publish("UART_SENT2MCU_OK") end)
+                uart.setup(uartID,115200,8,uart.PAR_NONE,uart.STOP_1,nil,1)
+                while true do
+                    local data = fileHandle:read(1460)
+                    if not data then break end
+                    uart.write(uartID,data)
+                    sys.waitUntil("UART_SENT2MCU_OK")
+                end
+                --此处上报新固件版本号（仅供测试使用）
+                --用户开发自己的程序时，根据下载下来的新固件，执行升级动作
+                --升级成功后，调用aLiYunOta.setVer上报新固件版本号
+                --如果升级失败，调用aLiYunOta.setVer上报旧固件版本号
+                aLiYunOta.setVer("MCU_VERSION_1.0.1")
+                
+                uart.close(uartID)
+                pm.sleep("UART_SENT2MCU")
+                fileHandle:close()
+                if filePath then os.remove(filePath) end
+            end
+        )
 
-        --输出文件内容，如果文件太大，一次性读出文件内容可能会造成内存不足，分次读出可以避免此问题
-        if size<=4096 then
-            log.data("testALiYun.otaCb data",fileHandle:read("*all"))
-        else
-            --分段读取文件内容
-        end
-
-        fileHandle:close()
-
-        --此处上报新固件版本号（仅供测试使用）
-        --用户开发自己的程序时，根据下载下来的新固件，执行升级动作
-        --升级成功后，调用aLiYunOta.setVer上报新固件版本号
-        --如果升级失败，调用aLiYunOta.setVer上报旧固件版本号
-        aLiYunOta.setVer("MCU_VERSION_1.0.1")
-    end
-
-    --文件使用完之后，如果以后不再需求，需要自行删除
-    if filePath then os.remove(filePath) end
+        
+    else
+        --文件使用完之后，如果以后不再需求，需要自行删除
+        if filePath then os.remove(filePath) end
+    end    
 end
 
 
