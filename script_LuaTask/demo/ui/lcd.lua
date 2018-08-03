@@ -9,9 +9,9 @@
 --std_spi表示使用标准的SPI引脚，lcd_spi表示使用LCD专用的SPI引脚
 --i2c表示使用i2c引脚
 -- require "mono_std_spi_sh1106"
-require "mono_std_spi_ssd1306"
+-- require "mono_std_spi_ssd1306"
 -- require "mono_std_spi_st7567"
--- require "color_std_spi_st7735"
+require "color_std_spi_st7735"
 -- require "color_std_spi_ILI9341"
 -- require "color_lcd_spi_ILI9341"
 -- require "mono_lcd_spi_sh1106"
