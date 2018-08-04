@@ -12,6 +12,7 @@
 -- require "mono_std_spi_ssd1306"
 -- require "mono_std_spi_st7567"
 require "color_std_spi_st7735"
+-- require "color_std_spi_st7735l"
 -- require "color_std_spi_ILI9341"
 -- require "color_lcd_spi_ILI9341"
 -- require "mono_lcd_spi_sh1106"
