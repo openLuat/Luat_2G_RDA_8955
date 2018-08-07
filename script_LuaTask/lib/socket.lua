@@ -4,8 +4,8 @@
 -- @license MIT
 -- @copyright openLuat
 -- @release 2017.9.25
-require"link"
-require"utils"
+require "link"
+require "utils"
 module(..., package.seeall)
 
 local req = ril.request
@@ -32,28 +32,28 @@ local function isSocketActive(ssl)
 end
 
 local function socketStatusNtfy()
-    sys.publish("SOCKET_ACTIVE",isSocketActive() or isSocketActive(true))
+    sys.publish("SOCKET_ACTIVE", isSocketActive() or isSocketActive(true))
 end
 
 local function errorInd(error)
-    for k,v in pairs({sockets,socketsSsl}) do
+    for k, v in pairs({sockets, socketsSsl}) do
         for _, c in pairs(v) do -- IP状态出错时，通知所有已连接的socket
             --if c.connected or c.created then
-                if error == 'CLOSED' and not c.ssl then c.connected = false socketStatusNtfy() end
-                c.error = error
-                if c.co and coroutine.status(c.co)=="suspended" then coroutine.resume(c.co, false) end
-            --end
+            if error == 'CLOSED' and not c.ssl then c.connected = false socketStatusNtfy() end
+            c.error = error
+            if c.co and coroutine.status(c.co) == "suspended" then coroutine.resume(c.co, false) end
+        --end
         end
     end
 end
 
-sys.subscribe("IP_ERROR_IND", function() errorInd('IP_ERROR_IND') end)
-sys.subscribe('IP_SHUT_IND', function() errorInd('CLOSED') end)
+sys.subscribe("IP_ERROR_IND", function()errorInd('IP_ERROR_IND') end)
+sys.subscribe('IP_SHUT_IND', function()errorInd('CLOSED') end)
 
 --订阅rsp返回的消息处理函数
 local function onSocketURC(data, prefix)
     local tag, id, result = string.match(data, "([SSL]*)[&]*(%d), *([%u :%d]+)")
-    tSocket = (tag=="SSL" and socketsSsl or sockets)
+    tSocket = (tag == "SSL" and socketsSsl or sockets)
     if not id or not tSocket[id] then
         log.error('socket: urc on nil socket', data, id, tSocket[id], socketsSsl[id])
         return
@@ -68,7 +68,7 @@ local function onSocketURC(data, prefix)
         return
     end
     
-    if tag=="SSL" and string.find(result,"ERROR:")==1 then return end
+    if tag == "SSL" and string.find(result, "ERROR:") == 1 then return end
     
     if string.find(result, "ERROR") or result == "CLOSED" then
         if result == 'CLOSED' and not tSocket[id].ssl then tSocket[id].connected = false socketStatusNtfy() end
@@ -117,14 +117,14 @@ end
 --     clientPassword = "123456", --客户端证书文件密码[可选]
 -- }
 -- @return client，创建成功返回socket客户端对象；创建失败返回nil
--- @usage 
+-- @usage
 -- c = socket.tcp()
 -- c = socket.tcp(true)
 -- c = socket.tcp(true, {caCert="ca.crt"})
 -- c = socket.tcp(true, {caCert="ca.crt", clientCert="client.crt", clientKey="client.key"})
 -- c = socket.tcp(true, {caCert="ca.crt", clientCert="client.crt", clientKey="client.key", clientPassword="123456"})
-function tcp(ssl,cert)
-    return socket("TCP"..(ssl==true and "SSL" or ""), (ssl==true) and cert or nil)
+function tcp(ssl, cert)
+    return socket("TCP" .. (ssl == true and "SSL" or ""), (ssl == true) and cert or nil)
 end
 --- 创建基于UDP的socket对象
 -- @return client，创建成功返回socket客户端对象；创建失败返回nil
@@ -134,18 +134,18 @@ function udp()
 end
 
 local sslInited
-local tSslInputCert,sSslInputCert = {},""
+local tSslInputCert, sSslInputCert = {}, ""
 
 local function sslInit()
     if not sslInited then
         sslInited = true
-        req("AT+SSLINIT")        
+        req("AT+SSLINIT")
     end
     
-    local i,item
-    for i=1,#tSslInputCert do
-        item = table.remove(tSslInputCert,1)
-        req(item.cmd,item.arg)
+    local i, item
+    for i = 1, #tSslInputCert do
+        item = table.remove(tSslInputCert, 1)
+        req(item.cmd, item.arg)
     end
     tSslInputCert = {}
 end
@@ -153,19 +153,19 @@ end
 local function sslTerm()
     if sslInited then
         if not isSocketActive(true) then
-            sSslInputCert,sslInited = ""
+            sSslInputCert, sslInited = ""
             req("AT+SSLTERM")
         end
     end
 end
 
-local function sslInputCert(t,f)
-    if sSslInputCert:match(t..f.."&") then return end
-    if not tSslInputCert then tSslInputCert={} end
-    local s = io.readFile((f:sub(1,1)=="/") and f or ("/ldata/"..f))
-    if not s then log.error("inputcrt err open",path) return end
-    table.insert(tSslInputCert,{cmd="AT+SSLCERT=0,\""..t.."\",\""..f.."\",1,"..s:len(), arg=s or ""})
-    sSslInputCert = sSslInputCert..t..f.."&"
+local function sslInputCert(t, f)
+    if sSslInputCert:match(t .. f .. "&") then return end
+    if not tSslInputCert then tSslInputCert = {} end
+    local s = io.readFile((f:sub(1, 1) == "/") and f or ("/ldata/" .. f))
+    if not s then log.error("inputcrt err open", path) return end
+    table.insert(tSslInputCert, {cmd = "AT+SSLCERT=0,\"" .. t .. "\",\"" .. f .. "\",1," .. s:len(), arg = s or ""})
+    sSslInputCert = sSslInputCert .. t .. f .. "&"
 end
 
 --- 连接服务器
@@ -187,34 +187,34 @@ function mt.__index:connect(address, port)
     end
     
     if self.ssl then
-        local tConfigCert,i = {}
+        local tConfigCert, i = {}
         if self.cert then
             if self.cert.caCert then
-                sslInputCert("cacrt",self.cert.caCert)
-                table.insert(tConfigCert,"AT+SSLCERT=1,"..self.id..",\"cacrt\",\""..self.cert.caCert.."\"")
+                sslInputCert("cacrt", self.cert.caCert)
+                table.insert(tConfigCert, "AT+SSLCERT=1," .. self.id .. ",\"cacrt\",\"" .. self.cert.caCert .. "\"")
             end
             if self.cert.clientCert then
-                sslInputCert("localcrt",self.cert.clientCert)
-                table.insert(tConfigCert,"AT+SSLCERT=1,"..self.id..",\"localcrt\",\""..self.cert.clientCert.."\",\""..(self.cert.clientPassword or "").."\"")
+                sslInputCert("localcrt", self.cert.clientCert)
+                table.insert(tConfigCert, "AT+SSLCERT=1," .. self.id .. ",\"localcrt\",\"" .. self.cert.clientCert .. "\",\"" .. (self.cert.clientPassword or "") .. "\"")
             end
             if self.cert.clientKey then
-                sslInputCert("localprivatekey",self.cert.clientKey)
-                table.insert(tConfigCert,"AT+SSLCERT=1,"..self.id..",\"localprivatekey\",\""..self.cert.clientKey.."\"")
+                sslInputCert("localprivatekey", self.cert.clientKey)
+                table.insert(tConfigCert, "AT+SSLCERT=1," .. self.id .. ",\"localprivatekey\",\"" .. self.cert.clientKey .. "\"")
             end
         end
         
         sslInit()
-        req(string.format("AT+SSLCREATE=%d,\"%s\",%d", self.id, address..":"..port, (self.cert and self.cert.caCert) and 0 or 1))
+        req(string.format("AT+SSLCREATE=%d,\"%s\",%d", self.id, address .. ":" .. port, (self.cert and self.cert.caCert) and 0 or 1))
         self.created = true
-        for i=1,#tConfigCert do
+        for i = 1, #tConfigCert do
             req(tConfigCert[i])
         end
-        req("AT+SSLCONNECT="..self.id)
+        req("AT+SSLCONNECT=" .. self.id)
     else
         req(string.format("AT+CIPSTART=%d,\"%s\",\"%s\",%s", self.id, self.protocol, address, port))
     end
     
-    ril.regUrc((self.ssl and "SSL&" or "")..self.id, onSocketURC)
+    ril.regUrc((self.ssl and "SSL&" or "") .. self.id, onSocketURC)
     self.wait = self.ssl and "+SSLCONNECT" or "+CIPSTART"
     if coroutine.yield() == false then
         if self.ssl then self:sslDestroy() end
@@ -234,7 +234,7 @@ function mt.__index:send(data)
         log.warn('socket.client:send', 'error', self.error)
         return false
     end
-    if self.id==nil then
+    if self.id == nil then
         log.warn('socket.client:send', 'closed')
         return false
     end
@@ -243,7 +243,7 @@ function mt.__index:send(data)
         -- 按最大MTU单元对data分包
         local stepData = string.sub(data, i, i + SENDSIZE - 1)
         --发送AT命令执行数据发送
-        req(string.format("AT+"..(self.ssl and "SSL" or "CIP").."SEND=%d,%d", self.id, string.len(stepData)), stepData)
+        req(string.format("AT+" .. (self.ssl and "SSL" or "CIP") .. "SEND=%d,%d", self.id, string.len(stepData)), stepData)
         self.wait = self.ssl and "+SSLSEND" or "+CIPSEND"
         if not coroutine.yield() then
             if self.ssl then self:sslDestroy() end
@@ -254,22 +254,34 @@ function mt.__index:send(data)
 end
 --- 接收数据
 -- @number[opt=0] timeout 可选参数，接收超时时间
+-- @string msg 可选参数，等待消息退出recvice
 -- @return result true - 成功，false - 失败
 -- @return data 如果成功的话，返回接收到的数据，超时时返回错误为"timeout"
 -- @usage  c = socket.tcp(); c:connect(); result, data = c:recv()
-function mt.__index:recv(timeout)
+function mt.__index:recv(timeout, msg)
     assert(self.co == coroutine.running(), "socket:recv: coroutine mismatch")
     if self.error then
         log.warn('socket.client:recv', 'error', self.error)
         return false
     end
-
+    
     if #self.input == 0 then
         self.wait = self.ssl and "+SSL RECEIVE" or "+RECEIVE"
-        if timeout and timeout~=0 then
+        if timeout and timeout ~= 0 then
+            --[[
             local r, s = sys.wait(timeout)
             if r == nil then
+            return false, "timeout"
+            else
+            if self.ssl and not r then self:sslDestroy() end
+            return r, s
+            end
+            --]]
+            local r, s = sys.waitUntil(msg or tostring(self.co), timeout)
+            if not r then
                 return false, "timeout"
+            elseif r and s == nil then
+                return false, msg
             else
                 if self.ssl and not r then self:sslDestroy() end
                 return r, s
@@ -312,8 +324,8 @@ function mt.__index:close()
         coroutine.yield()
         socketStatusNtfy()
     end
-    if self.id~=nil then
-        ril.deRegUrc((self.ssl and "SSL&" or "")..self.id, onSocketURC)
+    if self.id ~= nil then
+        ril.deRegUrc((self.ssl and "SSL&" or "") .. self.id, onSocketURC)
         table.insert((self.ssl and validSsl or valid), 1, self.id)
         if self.ssl then
             socketsSsl[self.id] = nil
@@ -347,7 +359,7 @@ end
 
 local function onSocketReceiveUrc(urc)
     local tag, id, len = string.match(urc, "([SSL]*) *RECEIVE,(%d), *(%d+)")
-    tSocket = (tag=="SSL" and socketsSsl or sockets)
+    tSocket = (tag == "SSL" and socketsSsl or sockets)
     len = tonumber(len)
     if len == 0 then return urc end
     local cache = {}
@@ -390,8 +402,8 @@ ril.regUrc("+SSL RECEIVE", onSocketReceiveUrc)
 
 function printStatus()
     log.info('socket.printStatus', 'valid id', table.concat(valid), table.concat(validSsl))
-
-    for m,n in pairs({sockets,socketsSsl}) do
+    
+    for m, n in pairs({sockets, socketsSsl}) do
         for _, client in pairs(n) do
             for k, v in pairs(client) do
                 log.info('socket.printStatus', 'client', client.id, k, v)
@@ -407,9 +419,9 @@ end
 -- @usage
 -- setTcpResendPara(3,8)
 -- setTcpResendPara(4,16)
-function setTcpResendPara(retryCnt,retryMaxTimeout)
-    req("AT+TCPUSERPARAM=6,"..(retryCnt or 4)..",7200,"..(retryMaxTimeout or 16))
-    ril.setDataTimeout((3*(retryMaxTimeout-8)+(retryCnt-3)*(16-8)+60) * 1000)
+function setTcpResendPara(retryCnt, retryMaxTimeout)
+    req("AT+TCPUSERPARAM=6," .. (retryCnt or 4) .. ",7200," .. (retryMaxTimeout or 16))
+    ril.setDataTimeout((3 * (retryMaxTimeout - 8) + (retryCnt - 3) * (16 - 8) + 60) * 1000)
 end
 
-setTcpResendPara(4,16)
+setTcpResendPara(4, 16)

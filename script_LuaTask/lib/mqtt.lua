@@ -4,7 +4,6 @@
 -- @license MIT
 -- @copyright openLuat
 -- @release 2017.10.24
-
 require "log"
 require "socket"
 require "utils"
@@ -38,15 +37,15 @@ end
 
 local function packCONNECT(clientId, keepAlive, username, password, cleanSession, will, version)
     local content = pack.pack(">PbbHPAAAA",
-                                version == "3.1" and "MQIsdp" or "MQTT",
-                                version == "3.1" and 3 or 4,
-                                (#username == 0 and 0 or 1) * 128 + (#password == 0 and 0 or 1) * 64 + will.retain * 32 + will.qos * 8 + will.flag * 4 + cleanSession * 2,
-                                keepAlive,
-                                clientId,
-                                encodeUTF8(will.topic),
-                                encodeUTF8(will.payload),
-                                encodeUTF8(username),
-                                encodeUTF8(password))
+        version == "3.1" and "MQIsdp" or "MQTT",
+        version == "3.1" and 3 or 4,
+        (#username == 0 and 0 or 1) * 128 + (#password == 0 and 0 or 1) * 64 + will.retain * 32 + will.qos * 8 + will.flag * 4 + cleanSession * 2,
+        keepAlive,
+        clientId,
+        encodeUTF8(will.topic),
+        encodeUTF8(will.payload),
+        encodeUTF8(username),
+        encodeUTF8(password))
     return pack.pack(">bAA",
         CONNECT * 16,
         encodeLen(string.len(content)),
@@ -86,12 +85,12 @@ end
 local function unpack(s)
     if #s < 2 then return end
     log.debug("mqtt.unpack", #s, string.toHex(string.sub(s, 1, 50)))
-
+    
     -- read remaining length
     local len = 0
     local multiplier = 1
     local pos = 2
-
+    
     repeat
         if pos > #s then return end
         local digit = string.byte(s, pos)
@@ -99,14 +98,14 @@ local function unpack(s)
         multiplier = multiplier * 128
         pos = pos + 1
     until digit < 128
-
+    
     if #s < len + pos - 1 then return end
-
+    
     local header = string.byte(s, 1)
-
-    local packet = { id = (header - (header % 16))/ 16, dup = ((header % 16) - ((header % 16) % 8))/ 8, qos = bit.band(header, 0x06) / 2 }
+    
+    local packet = {id = (header - (header % 16)) / 16, dup = ((header % 16) - ((header % 16) % 8)) / 8, qos = bit.band(header, 0x06) / 2}
     local nextpos
-
+    
     if packet.id == CONNACK then
         nextpos, packet.ackFlag, packet.rc = pack.unpack(s, "bb", pos)
     elseif packet.id == PUBLISH then
@@ -114,7 +113,7 @@ local function unpack(s)
         if packet.qos > 0 then
             nextpos, packet.packetId = pack.unpack(s, ">H", nextpos)
         end
-        packet.payload = string.sub(s, nextpos, pos+len-1)
+        packet.payload = string.sub(s, nextpos, pos + len - 1)
     elseif packet.id ~= PINGRESP then
         if len >= 2 then
             nextpos, packet.packetId = pack.unpack(s, ">H", pos)
@@ -122,7 +121,7 @@ local function unpack(s)
             packet.packetId = 0
         end
     end
-
+    
     return packet, pos + len
 end
 
@@ -146,13 +145,13 @@ mqttc.__index = mqttc
 function client(clientId, keepAlive, username, password, cleanSession, will, version)
     local o = {}
     local packetId = 1
-
+    
     if will then
         will.flag = 1
     else
-        will = { flag = 0, qos = 0, retain = 0, topic = "", payload = "" }
+        will = {flag = 0, qos = 0, retain = 0, topic = "", payload = ""}
     end
-
+    
     o.clientId = clientId
     o.keepAlive = keepAlive or 300
     o.username = username or ""
@@ -161,7 +160,7 @@ function client(clientId, keepAlive, username, password, cleanSession, will, ver
     o.version = version or "3.1.1"
     o.will = will
     o.commandTimeout = CLIENT_COMMAND_TIMEOUT
-    o.cache = {} -- 接收到的mqtt数据包缓冲
+    o.cache = {}-- 接收到的mqtt数据包缓冲
     o.inbuf = "" -- 未完成的数据缓冲
     o.connected = false
     o.getNextPacketId = function()
@@ -169,9 +168,9 @@ function client(clientId, keepAlive, username, password, cleanSession, will, ver
         return packetId
     end
     o.lastIOTime = 0
-
+    
     setmetatable(o, mqttc)
-
+    
     return o
 end
 
@@ -196,27 +195,27 @@ function mqttc:write(data)
 end
 
 -- 接收mqtt数据包
-function mqttc:read(timeout)
+function mqttc:read(timeout, msg)
     if not self:checkKeepAlive() then return false end
-
+    
     -- 处理之前缓冲的数据
     local packet, nextpos = unpack(self.inbuf)
     if packet then
         self.inbuf = string.sub(self.inbuf, nextpos)
         return true, packet
     end
-
+    
     while true do
         local recvTimeout
-
+        
         if self.keepAlive == 0 then
             recvTimeout = timeout
         else
             local kaTimeout = (self.keepAlive - (os.time() - self.lastIOTime)) * 1000
             recvTimeout = kaTimeout > timeout and timeout or kaTimeout
         end
-
-        local r, s = self.io:recv(recvTimeout == 0 and 5 or recvTimeout)
+        
+        local r, s = self.io:recv(recvTimeout == 0 and 5 or recvTimeout, msg)
         if r then
             self.inbuf = self.inbuf .. s
         elseif s == "timeout" then -- 超时，判断是否需要发送心跳包
@@ -242,15 +241,15 @@ function mqttc:read(timeout)
 end
 
 -- 等待接收指定的mqtt消息
-function mqttc:waitfor(id, timeout)
+function mqttc:waitfor(id, timeout, msg)
     for index, packet in ipairs(self.cache) do
         if packet.id == id then
             return true, table.remove(self.cache, index)
         end
     end
-
+    
     while true do
-        local r, data = self:read(timeout)
+        local r, data = self:read(timeout, msg)
         if r then
             if data.id == PUBLISH then
                 if data.qos > 0 then
@@ -265,7 +264,7 @@ function mqttc:waitfor(id, timeout)
                     return false
                 end
             end
-
+            
             if data.id == id then
                 return true, data
             end
@@ -294,37 +293,37 @@ function mqttc:connect(host, port, transport, cert)
         log.info("mqtt.client:connect", "has connected")
         return false
     end
-
+    
     if self.io then
         self.io:close()
         self.io = nil
     end
-
+    
     if transport and transport ~= "tcp" and transport ~= "tcp_ssl" then
         log.info("mqtt.client:connect", "invalid transport", transport)
         return false
     end
-
-    self.io = socket.tcp(transport=="tcp_ssl" or type(cert)=="table",cert)
-
+    
+    self.io = socket.tcp(transport == "tcp_ssl" or type(cert) == "table", cert)
+    
     if not self.io:connect(host, port) then
         log.info("mqtt.client:connect", "connect host fail")
         return false
     end
-
+    
     if not self:write(packCONNECT(self.clientId, self.keepAlive, self.username, self.password, self.cleanSession, self.will, self.version)) then
         log.info("mqtt.client:connect", "send fail")
         return false
     end
-
+    
     local r, packet = self:waitfor(CONNACK, self.commandTimeout)
     if not r or packet.rc ~= 0 then
         log.info("mqtt.client:connect", "connack error", r and packet.rc or -1)
         return false
     end
-
+    
     self.connected = true
-
+    
     return true
 end
 
@@ -340,24 +339,24 @@ function mqttc:subscribe(topic, qos)
         log.info("mqtt.client:subscribe", "not connected")
         return false
     end
-
+    
     local topics
     if type(topic) == "string" then
-        topics = { [topic] = qos and qos or 0 }
+        topics = {[topic] = qos and qos or 0}
     else
         topics = topic
     end
-
+    
     if not self:write(packSUBSCRIBE(0, self.getNextPacketId(), topics)) then
         log.info("mqtt.client:subscribe", "send failed")
         return false
     end
-
+    
     if not self:waitfor(SUBACK, self.commandTimeout) then
         log.info("mqtt.client:subscribe", "wait ack failed")
         return false
     end
-
+    
     return true
 end
 
@@ -376,41 +375,41 @@ function mqttc:publish(topic, payload, qos, retain)
         log.info("mqtt.client:publish", "not connected")
         return false
     end
-
+    
     qos = qos or 0
     retain = retain or 0
-
+    
     if not self:write(packPUBLISH(0, qos, retain, qos > 0 and self.getNextPacketId() or 0, topic, payload)) then
         log.info("mqtt.client:publish", "socket send failed")
         return false
     end
-
+    
     if qos == 0 then return true end
-
+    
     if not self:waitfor(qos == 1 and PUBACK or PUBCOMP, self.commandTimeout) then
         log.warn("mqtt.client:publish", "wait ack timeout")
         return false
     end
-
+    
     return true
 end
 
 --- 接收消息
 -- @number timeout，超时间隔，单位毫秒
 -- @return result 接收结果，true表示成功，false表示失败
--- @return data 
+-- @return data
 -- 如果成功返回的时候接收到的服务器发过来的包
 -- 如果失败返回的是错误信息，如果是超时失败，返回"timeout"
 -- @usage
 -- true, packet = mqttc:receive()
 -- false, error_message = mqttc:receive()
-function mqttc:receive(timeout)
+function mqttc:receive(timeout, msg)
     if not self.connected then
         log.info("mqtt.client:receive", "not connected")
         return false
     end
-
-    return self:waitfor(PUBLISH, timeout)
+    
+    return self:waitfor(PUBLISH, timeout, msg)
 end
 
 --- 断开与服务器的连接
