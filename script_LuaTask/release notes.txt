@@ -1,3 +1,10 @@
+发布时间：2018/08/07 16:59
+修改记录：
+	一、lib脚本修改
+	lib脚本版本号：2.0.8
+	(1)socket.lua：recv(timeout)新增参数msg,recv(timeout,msg),msg为消息接口，发布msg消息,可以唤醒recv等待的socket线程
+	(2)mqtt.lua: recv(timeout)新增参数msg,recv(timeout,msg),msg为消息接口，发布msg消息,可以唤醒recv等待的mqtt线程
+
 发布时间：2018/07/30 16:59
 修改记录：
     一、lib脚本修改
