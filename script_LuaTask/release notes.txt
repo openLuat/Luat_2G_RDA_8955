@@ -1,266 +1,293 @@
-����ʱ�䣺2018/08/07 16:59
-�޸ļ�¼��
-	һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.0.8
-	(1)socket.lua��recv(timeout)��������msg,recv(timeout,msg),msgΪ��Ϣ�ӿڣ�����msg��Ϣ,���Ի���recv�ȴ���socket�߳�
-	(2)mqtt.lua: recv(timeout)��������msg,recv(timeout,msg),msgΪ��Ϣ�ӿڣ�����msg��Ϣ,���Ի���recv�ȴ���mqtt�߳�
-
-����ʱ�䣺2018/07/30 16:59
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.0.7
-	(1)audio.lua������stop�ӿڣ�����ֹͣ���ڲ��ŵ���Ƶ
-	(2)patch.lua��������û��require errDump����ģ��ʱ��task���в����﷨����ʱ�Ҳ���errDump����������������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ������֣�
-		���������ԭ�򡿣�������ƣ�task���в����﷨����ʱ����ֹͣ��ǰtask�����У������errDump����ģ���ϱ����д��󵽵��Է������������ᵼ��������
-				  ������Ϊû��require errDump����ģ�飬��������
-		����������ʽ�����ж��Ƿ�require errDump����ģ�飬��������ˣ��ϱ����󵽵��Է����������û�м��أ�ֱ����trace�����������Ϣ
-	(2)record.lua������������¼���ļ��������£��������������������record.getSize()�ӿڶ�ȡ��¼��ʱ��Ϊ0��������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ������֣�
-		���������ԭ�򡿣����ص�¼��ʱ�������ڴ��д洢�ģ������󣬻���0
-		����������ʽ��������¼���ļ��Ĵ�Сʵʱ����¼��ʱ��
-	(4)misc.lua������getMuid�ӿڣ����Ի�ȡ����ģ���Ψһʶ����
-    ����demo�ű��޸�
-	(1)aLiYun��������������������ɺ�ͨ��uart���͵�mcu���Ĺ���
-	(2)socketSsl��ԭ����֤���ļ��ѹ��ڣ�����֤���ļ�
-
-
-
-
-����ʱ�䣺2018/07/13 14:36
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.0.6
-	(1)link.lua�� ����shut�ӿڣ�����ȥ����PDP
-	(2)update.lua���������Ƿ�Ӱ����Ʒ������������������Ĺ���
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵������update.request������һ������redir���ο�api˵��ʹ��
-	(3)aLiYun.lua��aLiYun.on�ӿ���������֤���֪ͨ���Ĺ���
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵�������ο�api��aLiYun��demoʹ��
-	(4)aLiYun.lua��������һ��һ����֤����ʱ���豸��һ��ʹ�ã���Ҫ��̬ע��3�κ󣬲�����֤�ɹ���������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ������֣�������ᵼ���豸��һ��ʹ�ã������ƶ˵�ʱ���ӳ�15������
-		���������ԭ�򡿣��豸��һ��ʹ�ã���֤ʧ��ʱ����ȥ��̬ע�ᣬע��ɹ���û�м�ʱ������֤���ģ����ǵ�����3�κ󣬲�ȥ������֤����
-		����������ʽ����ע��ɹ��󣬼�ʱ������֤����
-	(5)ntp.lua������������timeSyncʱ��������û��ص��������ص���������ʱ�����óɹ�֮ǰ�����á�������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�����ʱ��Ϊ�첽�������ص���������Ϊͬ��������ʱ���û���ƺ�
-		����������ʽ����������ʱ����첽��������֮���ٵ��ûص�����
-    ����demo�ű��޸�
-	(1)socket��socketSsl��mqtt��default������������5������������ʧ�ܣ�����ȥ����PDP�����쳣��������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ����ϵͣ�ĳЩ�ض���С���Ż����
-		���������ԭ�򡿣����Թ����з��֣���ĳЩС���ڣ���������ڴ�������ӶϿ����ڴ����ֱ��������һֱ���Ӳ��ϣ�
-				  ����ȥ����PDP�������¼���PDP��Ȼ����������Ϸ�������SIM800����Ҳ����ˣ�
-				  ������С�����õ��µ�����
-		����������ʽ������������ȥ����PDP���쳣��������
-	(2)aLiYun��������֤���֪ͨ���ܵ�ʹ��ʾ��������ע��
+﻿发布时间：2018/08/08 20:29
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.0.8
+	(1)agps.lua：修正“概率性重复下载两次星历”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air800
+		【问题出现概率】：启动星历下载流程前，如果GPS没有处于开启状态，才会出现此问题
+		【问题出现原因】：GPS开启后，有一个误操作，会导致再次执行星历下载动作
+		【问题解决方式】：修复误操作
+	(2)aLiYunOta.lua：修正“下载完MCU的升级包，用户脚本使用这个升级包之后，如果没有删除升级包。再去下载升级包，MD5校验出错”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：下载MCU的升级包之后，如果用户脚本没有删除升级包，则必现；如果删除了升级包，则不会出问题
+		【问题出现原因】：下载升级包时，lib中不会删除之前模块保存的同名升级包，新的升级包内容追加到了原来的同名升级包文件中
+		【问题解决方式】：重新下载升级包时，主动去删除之前的同名升级包
+	(3)mqtt.lua：修正“mqtt仅收到qos为0的publish消息，没有外发数据时，并不会按时发送pingreq心跳，导致被服务器超时断开”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：mqtt仅收到qos为0的publish消息，没有外发数据时，必现
+		【问题出现原因】：之前的程序以最后一次接收或者发送数据的时间为基准计算心跳时间
+		【问题解决方式】：以最后一次发送数据的时间为基准计算心跳时间
+	(4)mqtt.lua：recv(timeout)新增参数msg，recv(timeout,msg)，msg为消息参数，发布msg消息，可以唤醒recv等待的mqtt线程
+	(5)socket.lua：recv(timeout)新增参数msg，recv(timeout,msg)，msg为消息参数，发布msg消息，可以唤醒recv等待的socket线程
+    二、demo脚本修改
+	(1)http：新增“multipart/form-data模式，POST上传文本参数和文件”的功能示例代码
+	(2)ui、qrcode：删除彩屏驱动的填充色配置，此功能无用
+	(3)json：优化json.decode接口运行结果的判断
 
 
 
 
-����ʱ�䣺2018/07/09 11:14
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.0.5
-	(1)powerKey.lua�� ����powerKey����ģ�飬�����ÿ���������
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵�������ο�api�ĵ�˵��
-	(2)lbsLoc.lua����������ѯ��γ��ʧ��ʱ����trace���������������Ϣ���Ĺ���
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵��������trace���������������Ϣ��������ٵĶ�λ��ѯ��γ��ʧ�ܵ�ԭ��
-	(3)ril.lua��������SN����ʶ�����ĸ��������������ַ���������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ������д���SN�а�������ĸ��������������ַ������ȡSNʧ��
-				  ����û���Ŀ��ʹ����SN���򣬲����п���д���˳���ĸ��������������ַ����������µ��˰汾
-		���������ԭ�򡿣���ȡSNʱ����ʶ����ĸ������
-		����������ʽ������ȡʱ��ʶ�������ַ�
-	(4)gps.lua��������ִ��gps.setRunMode�ӿ�������������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air800��Air801
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�����������һ����Ч����
-		����������ʽ��������������
-	(5)mqtt.lua������MQTTЭ���3.1�汾�������ļ���
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ�����MQTT������Э��汾Ϊ3.1ʱ����������ӶϿ�������
-		���������ԭ�򡿣�δ��MQTT3.1�����������ݴ���
-		����������ʽ��������MQTT����ʱ����Э��汾ѡ�������Ĭ��ʹ��3.1.1
-	(6)socket.lua�����������ӷ����������У�����+PDP: DEACT�ϱ�ʱ�����ӹ���û�з���ʧ�ܣ���һֱ������������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ������ʺܵͣ���������������£�������֣���С�����粻�ȶ���������������ʧ��ʱ�������׳����������
-		���������ԭ�򡿣��յ�+PDP: DEACT�ϱ�ʱ��socket�����е�����״̬���������ǰ����socket�Ѿ����ӳɹ�
-		����������ʽ�����ѽ��ǰ���޸�Ϊ����Ҫ����������״̬��
-	(7)ril.lua��socket.lua��������socket.setTcpResendPara���ӿڣ�Ĭ�ϼӴ�TCP�������Դ��������Գ�ʱʱ��
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵���������ݷ���ʱ��TCPЭ��㣺ԭ��Ĭ�ϵ����Դ���Ϊ3�Σ�ÿ�����Ե����ʱʱ��Ϊ8�룻�µ�Ĭ��ֵ��Ϊ���Դ���Ϊ4�Σ�ÿ�����Ե����ʱʱ��Ϊ16�롣
-				�Ӵ����Դ����ͳ�ʱʱ�䣬�����绷����̫�õ�����£���������ݷ��͵ĳɹ��ʡ��������绷���Ϻõ�����£����޸Ŀ��Ժ��Բ���
-    ����demo�ű��޸�
-	(1)ui������sh1106��lcd��������ʾdisp.setcolor�ӿڵ�ʹ�ã�֧��i2c�ӿڵ�ssd1306��
-	(2)apn������apn��demo����ʾ�������APN
-	(3)spi������spi.close�ӿڵ�ʹ��ʾ��
+发布时间：2018/07/30 16:59
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.0.7
+	(1)audio.lua：新增stop接口，可以停止正在播放的音频
+	(2)patch.lua：修正“没有require errDump功能模块时，task运行产生语法错误时找不到errDump导致重启”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：必现；
+		【问题出现原因】：按照设计，task运行产生语法错误时，会停止当前task的运行，会调用errDump功能模块上报运行错误到调试服务器，并不会导致重启；
+				  现在因为没有require errDump功能模块，导致重启
+		【问题解决方式】：判断是否require errDump功能模块，如果加载了，上报错误到调试服务器；如果没有加载，直接在trace中输出错误信息
+	(2)record.lua：修正“存在录音文件的条件下，如果重启软件，重启后，record.getSize()接口读取的录音时长为0”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：必现；
+		【问题出现原因】：返回的录音时长是在内存中存储的，重启后，会清0
+		【问题解决方式】：根据录音文件的大小实时计算录音时长
+	(4)misc.lua：新增getMuid接口，可以获取合宙模块的唯一识别码
+    二、demo脚本修改
+	(1)aLiYun：新增“升级包下载完成后，通过uart发送到mcu”的功能
+	(2)socketSsl：原来的证书文件已过期，更新证书文件
+
+
+
+
+发布时间：2018/07/13 14:36
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.0.6
+	(1)link.lua：新增shut接口，可以去激活PDP
+	(2)update.lua：新增“是否从阿里云服务器下载升级包”的功能
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：update.request增加了一个参数redir，参考api说明使用
+	(3)aLiYun.lua：aLiYun.on接口新增“认证结果通知”的功能
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：参考api和aLiYun的demo使用
+	(4)aLiYun.lua：修正“一型一密认证方案时，设备第一次使用，需要动态注册3次后，才能认证成功”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：必现；此问题会导致设备第一次使用，接入云端的时间延长15秒左右
+		【问题出现原因】：设备第一次使用，认证失败时，会去动态注册，注册成功后，没有及时更新认证报文，而是等重试3次后，才去更新认证报文
+		【问题解决方式】：注册成功后，及时更新认证报文
+	(5)ntp.lua：修正“调用timeSync时，如果有用户回调函数，回调函数会在时间设置成功之前被调用”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：必现
+		【问题出现原因】：设置时间为异步操作，回调函数调用为同步操作，时间点没控制好
+		【问题解决方式】：在设置时间的异步操作结束之后，再调用回调函数
+    二、demo脚本修改
+	(1)socket、socketSsl、mqtt、default：新增“连续5次重连服务器失败，主动去激活PDP”的异常处理机制
+		【问题重要性】：重要
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：较低，某些特定的小区才会出现
+		【问题出现原因】：测试过程中发现，在某些小区内，与服务器在传输层连接断开后，在传输层直接重连，一直连接不上；
+				  必须去激活PDP，再重新激活PDP，然后才能连接上服务器；SIM800表现也是如此；
+				  怀疑是小区配置导致的问题
+		【问题解决方式】：增加主动去激活PDP的异常处理机制
+	(2)adc：新增adc.close接口的使用示例
+	(3)aLiYun：新增认证结果通知功能的使用示例；完善注释
+
+
+
+
+发布时间：2018/06/13 11:14
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.0.5
+	(1)powerKey.lua： 新增powerKey功能模块，可配置开机键功能
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：参考api文档说明
+	(2)lbsLoc.lua：新增“查询经纬度失败时，在trace中输出错误描述信息”的功能
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：在trace中输出错误描述信息，方便快速的定位查询经纬度失败的原因
+	(3)ril.lua：修正“SN区域不识别除字母和数字外的其他字符”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：如果写入的SN中包含除字母和数字外的其他字符，则读取SN失败
+				  如果用户项目中使用了SN区域，并且有可能写入了除字母和数字外的其他字符，则必须更新到此版本
+		【问题出现原因】：读取SN时，仅识别字母和数字
+		【问题解决方式】：读取时，识别任意字符
+	(4)gps.lua：修正“执行gps.setRunMode接口重启”的问题
+		【问题重要性】：重要
+		【问题影响模块】：Air800、Air801
+		【问题出现概率】：必现
+		【问题出现原因】：笔误，连接了一个无效变量
+		【问题解决方式】：修正变量名
+	(5)mqtt.lua：增加MQTT协议对3.1版本服务器的兼容
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：当MQTT服务器协议版本为3.1时，会出现连接断开的问题
+		【问题出现原因】：未对MQTT3.1服务器作兼容处理
+		【问题解决方式】：定义MQTT连接时增加协议版本选择参数，默认使用3.1.1
+	(6)socket.lua：修正“连接服务器过程中，出现+PDP: DEACT上报时，连接过程没有返回失败，会一直阻塞”的问题
+		【问题重要性】：重要
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：概率很低，在正常网络情况下，不会出现；在小区网络不稳定，经常出现网络失败时，才容易出现这个问题
+		【问题出现原因】：收到+PDP: DEACT上报时，socket任务中的阻塞状态，被解除的前提是socket已经连接成功
+		【问题解决方式】：把解除前提修改为“主要任务处于阻塞状态”
+	(7)ril.lua、socket.lua：新增“socket.setTcpResendPara”接口，默认加大TCP数据重试次数和重试超时时间
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：数据发送时，TCP协议层：原来默认的重试次数为3次，每次重试的最大超时时间为8秒；新的默认值改为重试次数为4次，每次重试的最大超时时间为16秒。
+				加大重试次数和超时时间，在网络环境不太好的情况下，会提高数据发送的成功率。对于网络环境较好的情况下，此修改可以忽略不计
+    二、demo脚本修改
+	(1)ui：新增sh1106的lcd驱动；演示disp.setcolor接口的使用；支持i2c接口的ssd1306屏
+	(2)apn：新增apn的demo，演示如何设置APN
+	(3)gizwits：新增机智云的demo，演示如何进行设备连接与消息透传
+	(4)spi：新增spi.close接口的使用示例
     
 
 
 
-����ʱ�䣺2018/06/12 14:00
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.0.4
-	(1)gps.lua��agps.lua��������gps�رպ��ٴ�gps��gps��λ����������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air800
-		��������ָ��ʡ�������
-		���������ԭ�򡿣��ٴδ�GPSʱ��û��д��λ�ú�ʱ�����ݵ�GPSоƬ�����޷�����GPS��λ���൱��GPSоƬ���붨λ����û����Ч
-		����������ʽ����ÿ�ο���GPS����д���ϴιر�ǰ��λ�ã���վλ�û���GPSλ�ã��͵�ǰ��ʱ������
-	(2)link.lua���ƶ���Ĭ��APN��CMNET�޸�ΪCMIOT
-		���¹�����Ҫ�ԡ�����Ҫ
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵���������û���ӳ���ƶ�����������ʹ��ԭ����CMNET�������޷�����������ʹ��CMIOT�����������޸�ΪCMIOT
-	(3)ntp.lua��NTP��������ԭ����˳������޸�Ϊ�������
-		���¹�����Ҫ�ԡ�����Ҫ
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵������������˳��������������������Ҫע�⣺
-				ntp����ģ����ö����ѹ�����NTP��������ͬ��ʱ�䣬���ܱ�֤�κ�ʱ���κεص㶼�ܰٷְ�ͬ������ȷ��ʱ��
-				����û���Ŀ�е�ҵ���߼��ϸ�������ʱ��ͬ�����ܣ���Ҫʹ��ʹ�ñ�����ģ�飬����ʹ���Լ���Ӧ�÷�������ͬ��ʱ��
-	(4)patch.lua��������Э�����д���ʱ�����traceback��Ϣ������
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵�������ɰ汾��Э�����г���ʱ��������������Ĵ���λ�ã��°汾����ʱ���������������ջ�����д���λ��
+发布时间：2018/06/12 14:00
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.0.4
+	(1)gps.lua、agps.lua：修正“gps关闭后，再打开gps，gps定位慢”的问题
+		【问题重要性】：重要
+		【问题影响模块】：Air800
+		【问题出现概率】：必现
+		【问题出现原因】：再次打开GPS时，没有写入位置和时间数据到GPS芯片，就无法加速GPS定位，相当于GPS芯片的秒定位功能没有生效
+		【问题解决方式】：每次开启GPS，都写入上次关闭前的位置（基站位置或者GPS位置）和当前的时间数据
+	(2)link.lua：移动卡默认APN由CMNET修改为CMIOT
+		【新功能重要性】：重要
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：有用户反映，移动物联网卡，使用原来的CMNET，可能无法正常上网，使用CMIOT正常，所以修改为CMIOT
+	(3)ntp.lua：NTP服务器由原来的顺序遍历修改为随机遍历
+		【新功能重要性】：重要
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：无论是顺序遍历还是随机遍历，都要注意：
+				ntp功能模块采用多个免费公共的NTP服务器来同步时间，不能保证任何时间任何地点都能百分百同步到正确的时间
+				如果用户项目中的业务逻辑严格依赖于时间同步功能，则不要使用使用本功能模块，建议使用自己的应用服务器来同步时间
+	(4)patch.lua：新增“协程运行错误时，输出traceback信息”功能
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：旧版本，协程运行出错时，仅输出最后出错的代码位置；新版本出错时，会输出整个调试栈的所有代码位置
 
 
 
 
-����ʱ�䣺2018/05/31 10:22
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.0.3
-	(1)wdt.lua����������Ƭ�����Ź��������������Airģ��ȥ��λ��Ƭ���󣬸�λ��Ƭ��������û�лָ�ΪĬ��״̬�����º�����Ҳ�޷�ȥ��λ��Ƭ����������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ���һ����Ƭ������������������Ƭ����������λ֮��֮������ٳ������������޷���Airģ�鸴λ��
-		���������ԭ�򡿣�Airģ�鸴λ��Ƭ��ʱ��Ӧ��������͵�ƽ��100�����������ߵ�ƽ���������������100�����ĸߵ�ƽ��
-		����������ʽ����100���������ߵ�ƽ
-	(2)socket.lua��������SSL���ӷ�������ʱ��������δ�������ݳ��ȴ���1460�ֽڣ���������ǰ1460�ֽڡ�������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ�������
-		���������ԭ�򡿣��ְ�����ʱ��ֻ��ȡ��ǰ1460�ֽڣ������´η���ʱ����ȡ��λ�ó���������ȡ���������͵�����
-		����������ʽ����������ȡλ�ó���������
-	(3)uiWin.lua��uiwin�ļ����޸�ΪuiWin
-		���¹�����Ҫ�ԡ�����Ҫ
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵���������޸Ĳ�����֮ǰ�İ汾������û��ű����õ���uiwin����Ҫȫ���޸�ΪuiWin
-	(4)sys.lua��ɾ�������ʹ�õ�core�Ƿ�Ϊ���°汾�����ж�
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		������˵�������������ֻ�����ѵ�ǰ���°汾��core����û��������;��������ֿ�������ɲ���Ҫ�����ţ���ɾ���˹���
-	(5)http.lua��֧�֡���base64�����ϴ��ļ����Ĺ���
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵�������ο�http��demo˵��
-	(6)ril.lua��socket��������ʱ���������̫��������ӡǰ200�ֽڵ�����
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		������˵������Ƶ�����ʹ�������ʱ��������ӡǰ200�ֽڵ����ݣ����ٴ�ӡ���ڴ��ʱ�������
-    ����demo�ű��޸�
-	(1)ui������ע��
+发布时间：2018/05/31 10:22
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.0.3
+	(1)wdt.lua：修正“单片机看门狗软件如果死机后，Air模块去复位单片机后，复位单片机的引脚没有恢复为默认状态，导致后续再也无法去复位单片机”的问题
+		【问题重要性】：重要
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：一旦单片机软件出现死机，单片机软件被复位之后，之后如果再出现死机，就无法被Air模块复位了
+		【问题出现原因】：Air模块复位单片机时，应该先输出低电平，100毫秒后，再输出高电平。代码中忘记输出100毫秒后的高电平了
+		【问题解决方式】：100毫秒后输出高电平
+	(2)socket.lua：修正“SSL连接发送数据时，如果单次传入的数据长度大于1460字节，仅发送了前1460字节”的问题
+		【问题重要性】：重要
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：必现
+		【问题出现原因】：分包发送时，只截取了前1460字节；但是下次发送时，截取的位置出错，导致取不到待发送的数据
+		【问题解决方式】：修正截取位置出错的问题
+	(3)uiWin.lua：uiwin文件名修改为uiWin
+		【新功能重要性】：重要
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：此修改不兼容之前的版本，如果用户脚本中用到了uiwin，需要全部修改为uiWin
+	(4)sys.lua：删除“检查使用的core是否为最新版本”的判断
+		【功能重要性】：一般
+		【功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【功能说明】：这个功能只是提醒当前有新版本的core，并没有其他用途；会给部分开发者造成不必要的困扰，故删除此功能
+	(5)http.lua：支持“以base64编码上传文件”的功能
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：参考http的demo说明
+	(6)ril.lua：socket发送数据时，如果数据太长，仅打印前200字节的数据
+		【功能重要性】：一般
+		【功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【功能说明】：频繁发送大量数据时，仅仅打印前200字节的数据，减少打印对内存和时间的消耗
+    二、demo脚本修改
+	(1)ui：完善注释
 
 
 
-����ʱ�䣺2018/05/24 11:04
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.0.2
-	(1)update.lua���������ʧ�ܣ���ӡ�������������ص�����ʧ����Ϣ
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵������ͨ�����ص��Թ��ߴ�ӡ����ʧ����Ϣ�����ڷ���ԭ��
-	(2)�����������õ�����/�Ĺ��ܴ��룬��֧�ָ�������lod�¹����쳣��������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ���ʹ��֧�ָ�������lod������
-		���������ԭ�򡿣�֮ǰ�Ľű�lib�Ǹ��ݲ�֧�ָ�������lod��Ƶģ�����3/2=1���������ʹ��֧�ָ�������lod��3/2=1.5��������֧����������lod�¾Ϳ��ܹ����쳣��
-		����������ʽ����a/b�Ĵ���ȫ���޸�Ϊ(a-(a%b))/b
-	(3)aLiYun.lua������������MQTT����ͨ���������Ľӿ�setMqtt
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵��������������clean session��will��keep alive����
-	(4)audio.lua��play�ӿ�֧�ֱ���¼���Ĳ���
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵�������ο�audio.play�ӿڵ�api˵��
-	(5)nvm.lua��������remove�ӿڡ�
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵�������ο�nvm.remove�ӿڵ�api˵��
-	(6)net.lua��ɾ�����ƶ�sim������������Ӫ�̵�mnc�Ĺ�ܴ�ʩ���Ĺ���
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�����ƶ�������������������mnc����ű�������д��ȡ�����ƣ�Ȼ���������������ֹ�ܴ�ʩ��һ�����¿���һ��ʹ�òŻ����
-		����������ʽ����8955�ĵײ�lod�Ѿ��������������mnc�����⣬���Խű�����Ҫ������ܴ�ʩ
-	(7)aLiYun.lua��֧�֡�һ��һ�ܡ���֤����
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵�������ο�aLiYun.setup�ӿڵ�api˵��
-    ����demo�ű��޸�
-	(1)crypto������md5��ʽ�ӿڵĹ�����ʾ����
-	(2)http���������ص������в����ļ����󡱵�����
-	(3)gpio/gpioSingle������GPIO�������Ĺ�����ʾ����
-	(4)�����������õ�����/�Ĺ��ܴ��룬��֧�ָ�������lod�¹����쳣��������
-	(5)����ʹ��uart.read�ĵط���ȥ������������������������û�����壩
-	(6)uart�����ӡ�ʹ��task�������������շ����Ĺ�����ʾ����testUartTask.lua��ʹ��������ʱ���ж�֡���ݵĽ��������ԣ�
-	(7)aLiYun�����ӡ�setMqtt�ӿڡ��Ĺ�����ʾ����
-	(8)audio������¼�����ŵĹ�����ʾ����
-	(9)aLiYun��������һ��һ�ܡ���֤�����Ĺ�����ʾ����
-	(10)lbsLoc��������getLocCb�����еĴ�ӡ����������nil����������������
-	(11)gps�������������sys.timer_start�ӿڵ���������������
-	(12)crypto������crypto.crc16�ӿڵĹ�����ʾ����
+发布时间：2018/05/24 11:04
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.0.2
+	(1)update.lua：如果升级失败，打印出来服务器返回的升级失败信息
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：通过下载调试工具打印出来失败信息，便于分析原因
+	(2)修正“所有用到除法/的功能代码，在支持浮点数的lod下工作异常”的问题
+		【问题重要性】：重要
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：使用支持浮点数的lod，必现
+		【问题出现原因】：之前的脚本lib是根据不支持浮点数的lod设计的，例如3/2=1；但是如果使用支持浮点数的lod，3/2=1.5，所以在支付浮点数的lod下就可能工作异常了
+		【问题解决方式】：a/b的代码全部修改为(a-(a%b))/b
+	(3)aLiYun.lua：新增“设置MQTT数据通道参数”的接口setMqtt
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：可以设置clean session、will、keep alive参数
+	(4)audio.lua：play接口支持本地录音的播放
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：参考audio.play接口的api说明
+	(5)nvm.lua：新增“remove接口”
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：参考nvm.remove接口的api说明
+	(6)net.lua：删除“移动sim卡限制所属运营商的mnc的规避措施”的功能
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：极低
+		【问题出现原因】：如果移动卡限制了所属的正常mnc，则脚本会重新写卡取消限制，然后主动重启。这种规避措施，一般在新卡第一次使用才会出现
+		【问题解决方式】：8955的底层lod已经解决了限制正常mnc的问题，所以脚本不需要再做规避措施
+	(7)aLiYun.lua：支持“一型一密”认证方案
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：参考aLiYun.setup接口的api说明
+    二、demo脚本修改
+	(1)crypto：新增md5流式接口的功能演示代码
+	(2)http：修正“回调函数中操作文件错误”的问题
+	(3)gpio/gpioSingle：新增GPIO上下拉的功能演示代码
+	(4)修正“所有用到除法/的功能代码，在支持浮点数的lod下工作异常”的问题
+	(5)所有使用uart.read的地方，去掉第三个参数（第三个参数没有意义）
+	(6)uart：增加“使用task处理串口数据收发”的功能演示代码testUartTask.lua（使用软件延时来判断帧数据的接收完整性）
+	(7)aLiYun：增加“setMqtt接口”的功能演示代码
+	(8)audio：新增录音播放的功能演示代码
+	(9)aLiYun：新增“一型一密”认证方案的功能演示代码
+	(10)lbsLoc：修正“getLocCb函数中的打印语句可能连接nil导致重启”的问题
+	(11)gps：修正“误调用sys.timer_start接口导致重启”的问题
+	(12)crypto：新增crypto.crc16接口的功能演示代码
 
 
 
-����ʱ�䣺2018/04/24 18:34
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.0.1
-	(1)���ƴ���ע�ͺ�API�ĵ�
-	(2)mqtt.lua��connect�ӿ��еĵ���������transport���Ӷ�"tcp_ssl"��֧�֣���ʾmqtt�ͻ���ʹ��ssl���ӷ�����
-	(3)gps.lua��
-		��1��������ʹ��gps.TIMERORSUCģ�鿪��gps��gps��λ�ɹ���û�йر�gps��������
-		��2������һЩ�ӿڣ�����ο�doc�ĵ�
-	(4)misc.lua��
-		��1���޸�setImei��setSn�ӿڵڶ�������������
-		��2����������ȡ��imei��sn�󣬷���IMEI_READY_IND��SN_READY_IND��Ϣ���Ĺ���
-	(5)socket.lua���޸ġ��������رպ�socket��ⲻ���Ͽ���������
-	(6)aLiYun.lua��aLiYunOta.lua�����������ƹ���
-	(7)audio.lua����������Ƶ���Żص��ӿ�������������һ����Ƶʧ�ܡ�������
-	(8)nvm.lua��������Ӳ������ʱ���������д�����ļ�����������ļ����ݳ������ָ���Ĭ��ֵ��������
-    ����demo�ű��޸�
-	(1)����aLiYun��demo
-	(2)default,mqtt,socket,socketSsl���Ż������쳣״̬�µĴ�������
-	(3)����demo��������errDump��update���ܵ�ʹ��˵��
+发布时间：2018/04/24 18:34
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.0.1
+	(1)完善代码注释和API文档
+	(2)mqtt.lua：connect接口中的第三个参数transport增加对"tcp_ssl"的支持，表示mqtt客户端使用ssl连接服务器
+	(3)gps.lua：
+		【1】修正“使用gps.TIMERORSUC模块开启gps后，gps定位成功，没有关闭gps”的问题
+		【2】新增一些接口，详情参考doc文档
+	(4)misc.lua：
+		【1】修改setImei和setSn接口第二个参数的意义
+		【2】新增“读取到imei和sn后，发布IMEI_READY_IND和SN_READY_IND消息”的功能
+	(5)socket.lua：修改“服务器关闭后，socket检测不到断开”的问题
+	(6)aLiYun.lua，aLiYunOta.lua：新增阿里云功能
+	(7)audio.lua：修正“音频播放回调接口中立即播放下一个音频失败”的问题
+	(8)nvm.lua：修正“硬件掉电时，如果正在写参数文件，可能造成文件内容出错，恢复成默认值”的问题
+    二、demo脚本修改
+	(1)新增aLiYun的demo
+	(2)default,mqtt,socket,socketSsl：优化网络异常状态下的处理程序
+	(3)所有demo：新增对errDump和update功能的使用说明
 
 
 
 
-����ʱ�䣺2018/4/1 09:42
-�޸ļ�¼��
-    ��һ�η���
+发布时间：2018/4/1 09:42
+修改记录：
+    第一次发布

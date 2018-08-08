@@ -86,6 +86,7 @@ local function downloadTask(url,size,md5)
         sys.timerStart(getPercent,5000)
         while true do
             gFilePath = http.request("GET",url,nil,{["Range"]="bytes="..rangeBegin.."-"},"",20000,downloadCbFnc,gName)
+            if rangeBegin==0 then os.remove(gFilePath) end
             local _,result = sys.waitUntil("ALIYUN_OTA_DOWNLOAD_IND")
             log.info("aLiYunOta.downloadTask2",result)
             if result then

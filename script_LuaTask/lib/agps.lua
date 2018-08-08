@@ -153,7 +153,7 @@ sys.subscribe("GPS_STATE", function(evt,para)
         if lng~="" and lat~="" then
             gps.open(gps.TIMERORSUC,{tag="lib.agps.lua.fastFix",val=4})
             local tm = os.date("*t")
-            sys.timerStart(setFastFix,2000,lng,lat,common.timeZoneConvert(tm.year,tm.month,tm.day,tm.hour,tm.min,tm.sec,8,0))
+            sys.timerStart(gps.setFastFix,2000,lat,lng,common.timeZoneConvert(tm.year,tm.month,tm.day,tm.hour,tm.min,tm.sec,8,0))
         end
     end
 end)

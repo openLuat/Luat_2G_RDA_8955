@@ -27,7 +27,7 @@ log.info("testJson.encode",jsondata)
 --{"KEY3":"VALUE3","KEY4":"VALUE4","KEY2":"VALUE2","KEY1":"VALUE1","KEY5":{"KEY5_2":"VALU5_2","KEY5_1":"VALU5_1"}},"KEY6":[1,2,3]}
 local origin = "{\"KEY3\":\"VALUE3\",\"KEY4\":\"VALUE4\",\"KEY2\":\"VALUE2\",\"KEY1\":\"VALUE1\",\"KEY5\":{\"KEY5_2\":\"VALU5_2\",\"KEY5_1\":\"VALU5_1\"},\"KEY6\":[1,2,3]}"
 local tjsondata,result,errinfo = json.decode(origin)
-if result then
+if result and type(tjsondata)=="table" then
     log.info("testJson.decode KEY1",tjsondata["KEY1"])
     log.info("testJson.decode KEY2",tjsondata["KEY2"])
     log.info("testJson.decode KEY3",tjsondata["KEY3"])

@@ -167,7 +167,7 @@ function client(clientId, keepAlive, username, password, cleanSession, will, ver
         packetId = packetId == 65535 and 1 or (packetId + 1)
         return packetId
     end
-    o.lastIOTime = 0
+    o.lastOTime = 0
     
     setmetatable(o, mqttc)
     
@@ -177,7 +177,7 @@ end
 -- 检测是否需要发送心跳包
 function mqttc:checkKeepAlive()
     if self.keepAlive == 0 then return true end
-    if os.time() - self.lastIOTime >= self.keepAlive then
+    if os.time() - self.lastOTime >= self.keepAlive then
         if not self:write(packZeroData(PINGREQ)) then
             log.info("mqtt.client:checkKeepAlive", "pingreq send fail")
             return false
@@ -190,7 +190,7 @@ end
 function mqttc:write(data)
     log.debug("mqtt.client:write", string.toHex(string.sub(data, 1, 50)))
     local r = self.io:send(data)
-    if r then self.lastIOTime = os.time() end
+    if r then self.lastOTime = os.time() end
     return r
 end
 
@@ -211,7 +211,7 @@ function mqttc:read(timeout, msg)
         if self.keepAlive == 0 then
             recvTimeout = timeout
         else
-            local kaTimeout = (self.keepAlive - (os.time() - self.lastIOTime)) * 1000
+            local kaTimeout = (self.keepAlive - (os.time() - self.lastOTime)) * 1000
             recvTimeout = kaTimeout > timeout and timeout or kaTimeout
         end
         
@@ -231,7 +231,7 @@ function mqttc:read(timeout, msg)
         end
         local packet, nextpos = unpack(self.inbuf)
         if packet then
-            self.lastIOTime = os.time()
+            --self.lastIOTime = os.time()
             self.inbuf = string.sub(self.inbuf, nextpos)
             if packet.id ~= PINGRESP then
                 return true, packet
