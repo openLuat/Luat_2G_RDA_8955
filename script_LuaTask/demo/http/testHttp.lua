@@ -53,7 +53,7 @@ http.request("GET","www.lua.org",nil,nil,nil,nil,cbFnc)
 --http.request("POST","36.7.87.100:6500",nil,{head1="value1"},{[1]="begin\r\n",[2]={file="/lua/http.lua"},[3]="end\r\n"},30000,cbFnc)
 --http.request("POST","http://lq946.ngrok.xiaomiqiu.cn/",nil,nil,{[1]="begin\r\n",[2]={file_base64="/lua/http.lua"},[3]="end\r\n"},30000,cbFnc)
 
---下面4行代码是利用文件流模式，上传录音文件的demo，使用的URL是随意编造的
+--如下示例代码是利用文件流模式，上传录音文件的demo，使用的URL是随意编造的
 --[[
 http.request("POST","www.test.com/postTest?imei=1&iccid=2",nil,
          {['Content-Type']="application/octet-stream",['Connection']="keep-alive"},
@@ -61,3 +61,67 @@ http.request("POST","www.test.com/postTest?imei=1&iccid=2",nil,
          30000,cbFnc)
 ]]
 
+
+--下面示例代码是利用multipart/form-data模式，上传2参数和1个照片文件
+--[[
+local function postMultipartFormData(url,cert,params,timeout,cbFnc,rcvFileName)
+    local boundary,body,k,v,kk,vv = "--------------------------"..os.time()..rtos.tick(),{}
+    
+    for k,v in pairs(params) do
+        if k=="texts" then
+            local bodyText = ""
+            for kk,vv in pairs(v) do
+                bodyText = bodyText.."--"..boundary.."\r\nContent-Disposition: form-data; name=\""..kk.."\"\r\n\r\n"..vv.."\r\n"
+            end
+            body[#body+1] = bodyText
+        elseif k=="files" then
+            local contentType =
+            {
+                jpg = "image/jpeg",
+                jpeg = "image/jpeg",
+                png = "image/png",                
+            }
+            for kk,vv in pairs(v) do
+                print(kk,vv)
+                body[#body+1] = "--"..boundary.."\r\nContent-Disposition: form-data; name=\""..kk.."\"; filename=\""..kk.."\"\r\nContent-Type: "..contentType[vv:match("%.(%w+)$")].."\r\n\r\n"
+                body[#body+1] = {file = vv}
+                body[#body+1] = "\r\n"
+            end
+        end
+    end    
+    body[#body+1] = "--"..boundary.."--\r\n"
+        
+    http.request(
+        "POST",
+        url,
+        cert,
+        {
+            ["Content-Type"] = "multipart/form-data; boundary="..boundary,
+            ["Connection"] = "keep-alive"
+        },
+        body,
+        timeout,
+        cbFnc,
+        rcvFileName
+        )    
+end
+
+postMultipartFormData(
+    "1.202.80.121:4567/api/uploadimage",
+    nil,
+    {
+        texts = 
+        {
+            ["imei"] = "862991234567890",
+            ["time"] = "20180802180345"
+        },
+        
+        files =
+        {
+            ["logo_color.jpg"] = "/ldata/logo_color.jpg"
+        }
+    },
+    60000,
+    cbFnc
+)
+]]

@@ -36,7 +36,6 @@ local function init()
         xoffset = 0, --X轴偏移
         yoffset = 0, --Y轴偏移
         freq = 13000000, --spi时钟频率，支持110K到13M（即110000到13000000）之间的整数（包含110000和13000000）
-        hwfillcolor = 0xFFFFFF, --填充色，黑色
         pinrst = pio.P0_14, --reset，复位引脚
         pinrs = pio.P0_18, --rs，命令/数据选择引脚
         --初始化命令
