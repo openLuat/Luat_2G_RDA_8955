@@ -22,7 +22,7 @@ local transparentmode
 local rcvfunc
 
 --执行AT命令后1分钟无反馈，判定at命令执行失败，则重启软件
-local TIMEOUT,DATA_TIMEOUT = 60000,60000
+local TIMEOUT,DATA_TIMEOUT = 120000,120000
 
 --AT命令的应答类型
 --NORESULT：收到的应答数据当做urc通知处理，如果发送的AT命令不处理应答或者没有设置类型，默认为此类型
@@ -151,7 +151,7 @@ end
 ]]
 local function rsp()
     --停止应答超时定时器
-    sys.timerStop(atimeout)
+    sys.timerStopAll(atimeout)
     --如果发送AT命令时已经同步指定了应答处理函数
     if currsp then
         currsp(currcmd, result, respdata, interdata)
@@ -562,7 +562,7 @@ function sendtransparentdata(data)
 end
 
 function setDataTimeout(tm)
-    DATA_TIMEOUT = (tm<60000 and 60000 or tm)
+    DATA_TIMEOUT = (tm<120000 and 120000 or tm)
 end
 
 --注册“AT命令的虚拟串口数据接收消息”的处理函数
