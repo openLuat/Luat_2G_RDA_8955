@@ -4,7 +4,7 @@
 -- @license MIT
 -- @copyright openLuat
 -- @release 2017.09.23 11:34
-require"sys"
+require "sys"
 module(..., package.seeall)
 local interruptCallbacks = {}
 
@@ -16,6 +16,8 @@ local interruptCallbacks = {}
 -- 配置为输出模式时，为number类型，表示默认电平，0是低电平，1是高电平
 -- 配置为输入模式时，为nil
 -- 配置为中断模式时，为function类型，表示中断处理函数
+-- @param pull, number, pio.PULLUP：上拉模式 。pio.PULLDOWN：下拉模式。pio.NOPULL：高阻态
+-- 默认为pio.PULLUP：上拉模式
 -- @return function
 -- 配置为输出模式时，返回的函数，可以设置IO的电平
 -- 配置为输入或者中断模式时，返回的函数，可以实时获取IO的电平
@@ -26,12 +28,13 @@ local interruptCallbacks = {}
 -- 执行getInputFnc()即可获得当前电平；如果是低电平，getInputFnc()返回0；如果是高电平，getInputFnc()返回1
 -- @usage getInputFnc = pins.setup(pio.P1_1),配置GPIO33，输入模式
 --执行getInputFnc()即可获得当前电平；如果是低电平，getInputFnc()返回0；如果是高电平，getInputFnc()返回1
-function setup(pin, val)
+function setup(pin, val, pull)
     -- 关闭该IO
     pio.pin.close(pin)
     -- 中断模式配置
     if type(val) == "function" then
         pio.pin.setdir(pio.INT, pin)
+        pio.pin.setpull(pull or pio.PULLUP, pin)
         --注册引脚中断的处理函数
         interruptCallbacks[pin] = val
         return function()
@@ -40,19 +43,23 @@ function setup(pin, val)
     end
     -- 输出模式初始化默认配置
     if val ~= nil then
-        pio.pin.setdir(val==1 and pio.OUTPUT1 or pio.OUTPUT, pin)
+        pio.pin.setdir(val == 1 and pio.OUTPUT1 or pio.OUTPUT, pin)
     -- 输入模式初始化默认配置
     else
         pio.pin.setdir(pio.INPUT, pin)
+        pio.pin.setpull(pull or pio.PULLUP, pin)
     end
     -- 返回一个自动切换输入输出模式的函数
-    return function(val,changeDir)
+    return function(val, changeDir)
         if changeDir then pio.pin.close(pin) end
         if val ~= nil then
             if changeDir then pio.pin.setdir(pio.OUTPUT, pin) end
             pio.pin.setval(val, pin)
         else
-            if changeDir then pio.pin.setdir(pio.INPUT, pin) end
+            if changeDir then
+                pio.pin.setdir(pio.INPUT, pin)
+                pio.pin.setpull(pull or pio.PULLUP, pin)
+            end
             return pio.pin.getval(pin)
         end
     end
