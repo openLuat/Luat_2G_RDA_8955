@@ -13,6 +13,15 @@ module(..., package.seeall)
 local sn, imei, calib, ver, muid
 local setSnCbFnc,setImeiCbFnc,setClkCbFnc
 
+local function timeReport()
+    sys.publish("TIME_CLK_IND")
+    sys.timerStart(setTimeReport,2000)
+end
+
+function setTimeReport()
+    sys.timerStart(timeReport,(os.time()%60==0) and 50 or (60-os.time()%60)*1000)
+end
+
 --[[
 函数名：rsp
 功能  ：本功能模块内“通过虚拟串口发送到底层core软件的AT命令”的应答处理
@@ -46,7 +55,10 @@ local function rsp(cmd, success, response, intermediate)
             calib = false
         end
     elseif prefix == '+CCLK' then
-        if success then sys.publish('TIME_UPDATE_IND') end
+        if success then
+            sys.publish('TIME_UPDATE_IND')
+            setTimeReport()
+        end
         if setClkCbFnc then setClkCbFnc(getClock(),success) end
     elseif cmd:match("AT%+WISN=") then
         if success then
@@ -210,3 +222,4 @@ req("AT+WISN?")
 --查询IMEI
 req("AT+CGSN")
 req("AT+MUID?")
+setTimeReport()

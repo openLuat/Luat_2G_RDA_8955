@@ -79,46 +79,57 @@ local function procSend(client)
 end
 
 function clientDataTask(host,tPorts,clientId,user,password)
+    local retryConnectCnt = 0
+    local portIdx = 0
     while true do
-        while not socket.isReady() do sys.waitUntil("IP_READY_IND") end
-
-        local mqttClient = mqtt.client(clientId,sKeepAlive or 240,user,password,sCleanSession,sWill)
-        local portIdx = 0
-        while true do
+        if not socket.isReady() then
+            retryConnectCnt = 0
+            --等待网络环境准备就绪，超时时间是5分钟
+            sys.waitUntil("IP_READY_IND",300000)
+        end
+        
+        if socket.isReady() then
+            local mqttClient = mqtt.client(clientId,sKeepAlive or 240,user,password,sCleanSession,sWill)
             portIdx = portIdx%(#tPorts)+1
+            
             if mqttClient:connect(host,tonumber(tPorts[portIdx]),"tcp_ssl") then
-                break
-            end
-            sys.wait(2000)
-            portIdx = portIdx+1
-        end
+                retryConnectCnt = 0
+                if aLiYunOta and aLiYunOta.connectCb then aLiYunOta.connectCb(true,sProductKey,sGetDeviceNameFnc()) end
+                if evtCb["connect"] then evtCb["connect"](true) end
 
-        if aLiYunOta and aLiYunOta.connectCb then aLiYunOta.connectCb(true,sProductKey,sGetDeviceNameFnc()) end
-        if evtCb["connect"] then evtCb["connect"](true) end
-
-        local result,prompt = procSubscribe(mqttClient)
-        if result then
-            local procs,k,v = {procReceive,procSend}
-            while true do
-                for k,v in pairs(procs) do
-                    result,prompt = v(mqttClient)
-                    if not result then log.warn("aLiYun.clientDataTask."..prompt.." error") break end
+                local result,prompt = procSubscribe(mqttClient)
+                if result then
+                    local procs,k,v = {procReceive,procSend}
+                    while true do
+                        for k,v in pairs(procs) do
+                            result,prompt = v(mqttClient)
+                            if not result then log.warn("aLiYun.clientDataTask."..prompt.." error") break end
+                        end
+                        if not result then break end
+                    end
+                else
+                    log.warn("aLiYun.clientDataTask."..prompt.." error")
                 end
-                if not result then break end
-            end
+
+                while #outQuene["PUBLISH"]>0 do
+                    local item = table.remove(outQuene["PUBLISH"],1)
+                    if item.cb then item.cb(false,item.para) end
+                end
+                if aLiYunOta and aLiYunOta.connectCb then aLiYunOta.connectCb(false,sProductKey,sGetDeviceNameFnc()) end
+                if evtCb["connect"] then evtCb["connect"](false) end
+            else
+                retryConnectCnt = retryConnectCnt+1
+            end          
+
+            mqttClient:disconnect()
+            if retryConnectCnt>=5 then link.shut() retryConnectCnt=0 end
+            sys.wait(2000)
         else
-            log.warn("aLiYun.clientDataTask."..prompt.." error")
+            --进入飞行模式，20秒之后，退出飞行模式
+            net.switchFly(true)
+            sys.wait(20000)
+            net.switchFly(false)
         end
-
-        while #outQuene["PUBLISH"]>0 do
-            local item = table.remove(outQuene["PUBLISH"],1)
-            if item.cb then item.cb(false,item.para) end
-        end
-        if aLiYunOta and aLiYunOta.connectCb then aLiYunOta.connectCb(false,sProductKey,sGetDeviceNameFnc()) end
-        if evtCb["connect"] then evtCb["connect"](false) end
-
-        mqttClient:disconnect()
-        sys.wait(2000)
     end
 end
 

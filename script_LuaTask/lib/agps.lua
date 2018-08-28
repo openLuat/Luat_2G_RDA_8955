@@ -30,7 +30,11 @@ end
 
 local function writeEphEnd()
     log.info("agps.writeEphEnd")
-    gps.writeCmd(("AAF00E0095000000C20100580D0A"):fromHex(),true)
+    local cmd,sum = (("AAF00E00950000"):fromHex())..pack.pack("<i",gps.uartBaudrate),0    
+    for i=3,cmd:len() do
+        sum = bit.bxor(sum,cmd:byte(i))
+    end
+    gps.writeCmd(cmd..string.char(sum).."\r\n")
     sys.timerStart(gps.close,2000,gps.TIMER,{tag="lib.agps.lua.eph"})
     writeEphIdx,sEphData,writeEphSta = 0
 end
@@ -38,7 +42,7 @@ end
 local function writeEph()
     log.info("agps.writeEph",writeEphSta)
     if writeEphSta=="IDLE" then
-        gps.writeCmd("$PGKC149,1,115200*")
+        gps.writeCmd("$PGKC149,1,"..gps.uartBaudrate.."*")
         writeEphSta = "WAIT_BINARY_CMD_ACK"
     elseif writeEphSta=="WAIT_BINARY_CMD_ACK" or writeEphSta=="WAIT_WRITE_EPH_CMD_ACK" then
         if sEphData and sEphData:len()>0 then

@@ -61,6 +61,15 @@ local function packSUBSCRIBE(dup, packetId, topics)
     return pack.pack(">bAA", header, encodeLen(#data), data)
 end
 
+local function packUNSUBSCRIBE(dup, packetId, topics)
+    local header = UNSUBSCRIBE * 16 + dup * 8 + 2
+    local data = pack.pack(">H", packetId)
+    for k,topic in pairs(topics) do
+        data = data .. pack.pack(">P", topic)
+    end
+    return pack.pack(">bAA", header, encodeLen(#data), data)
+end
+
 local function packPUBLISH(dup, qos, retain, packetId, topic, payload)
     local header = PUBLISH * 16 + dup * 8 + qos * 2 + retain
     local len = 2 + #topic + #payload
@@ -103,7 +112,7 @@ local function unpack(s)
     
     local header = string.byte(s, 1)
     
-    local packet = {id = (header - (header % 16)) / 16, dup = ((header % 16) - ((header % 16) % 8)) / 8, qos = bit.band(header, 0x06) / 2}
+    local packet = {id = (header - (header % 16)) / 16, dup = ((header % 16) - ((header % 16) % 8)) / 8, qos = bit.band(header, 0x06) / 2, retain = bit.band(header, 0x01)}
     local nextpos
     
     if packet.id == CONNACK then
@@ -360,6 +369,38 @@ function mqttc:subscribe(topic, qos)
     return true
 end
 
+--- 取消订阅主题
+-- @param topic，string或者table类型，一个主题时为string类型，多个主题时为table类型，主题内容为UTF8编码
+-- @return bool true表示成功，false或者nil表示失败
+-- @usage
+-- mqttc:unsubscribe("/abc") -- unsubscribe topic "/abc"
+-- mqttc:unsubscribe({"/topic1", "/topic2", "/topic3"}) -- unsubscribe multi topic
+function mqttc:unsubscribe(topic)
+    if not self.connected then
+        log.info("mqtt.client:unsubscribe", "not connected")
+        return false
+    end
+    
+    local topics
+    if type(topic) == "string" then
+        topics = {topic}
+    else
+        topics = topic
+    end
+    
+    if not self:write(packUNSUBSCRIBE(0, self.getNextPacketId(), topics)) then
+        log.info("mqtt.client:unsubscribe", "send failed")
+        return false
+    end
+    
+    if not self:waitfor(UNSUBACK, self.commandTimeout) then
+        log.info("mqtt.client:unsubscribe", "wait ack failed")
+        return false
+    end
+    
+    return true
+end
+
 --- 发布一条消息
 -- @string topic UTF8编码的字符串
 -- @string payload 用户自己控制payload的编码，mqtt.lua不会对payload做任何编码转换
@@ -395,11 +436,13 @@ function mqttc:publish(topic, payload, qos, retain)
 end
 
 --- 接收消息
--- @number timeout，超时间隔，单位毫秒
--- @return result 接收结果，true表示成功，false表示失败
+-- @number[opt=0] timeout 可选参数，接收超时时间，单位毫秒
+-- @string[opt=nil] msg 可选参数，控制socket所在的线程退出recv阻塞状态
+-- @return result 数据接收结果，true表示成功，false表示失败
 -- @return data
 -- 如果成功返回的时候接收到的服务器发过来的包
 -- 如果失败返回的是错误信息，如果是超时失败，返回"timeout"
+-- msg控制退出时，返回msg的字符串
 -- @usage
 -- true, packet = mqttc:receive()
 -- false, error_message = mqttc:receive()

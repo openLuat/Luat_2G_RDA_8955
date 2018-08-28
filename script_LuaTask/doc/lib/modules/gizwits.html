@@ -110,8 +110,14 @@
  按照机智云带ack的格式发送一条消息</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#checkUpdate">
+    checkUpdate (hard_version, soft_version)
+    </a></td>
+	<td class="summary">手动检查更新</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#setup">
-    setup (PRODUCT_KEY, PRODUCT_SECRET, getDeviceName, getDeviceSecret)
+    setup (PRODUCT_KEY, PRODUCT_SECRET, getDeviceName, getDeviceSecret, getDeviceId, setDeviceId<strong  style="color: gray;">[, getAuthKey=nil]</strong><strong  style="color: gray;">[, m2mHT=120]</strong><strong  style="color: gray;">[, extra=nil]</strong><strong  style="color: gray;">[, server="api.gizwits.com"]</strong><strong  style="color: gray;">[, port=80]</strong>)
     </a></td>
 	<td class="summary">初始化机智云注册所需要的数据</td>
 	</tr>
@@ -227,14 +233,50 @@
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example">gizwits.transmissionSend(<span class="number">0</span>,<span class="global">string</span>.fromHex(<span class="string">"0094"</span>),<span class="global">string</span>.fromHex(<span class="string">"000000001"</span>),<span class="string">"cmd"</span>,<span class="string">"dev2app/12345/67890"</span>))  <span class="comment">--回复ack</span></pre></il>
+        <li><pre class="example">gizwits.transmissionSend(<span class="number">0</span>,<span class="global">string</span>.fromHex(<span class="string">"0094"</span>),<span class="global">string</span>.fromHex(<span class="string">"00000001"</span>),<span class="string">"cmd"</span>,<span class="string">"dev2app/12345/67890"</span>))  <span class="comment">--回复ack</span></pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "checkUpdate"></a>
+    <strong  style="color: red;">
+    checkUpdate (hard_version, soft_version)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">手动检查更新</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">hard_version</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">硬件版本</pre>
+        </li>
+        <li><span class="parameter">soft_version</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">软件版本</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">string，结果</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">checkUpdate(<span class="string">"00000001"</span>,<span class="string">"00000001"</span>)</pre></il>
     </ul>
 
 </dd>
     <dt>
     <a name = "setup"></a>
     <strong  style="color: red;">
-    setup (PRODUCT_KEY, PRODUCT_SECRET, getDeviceName, getDeviceSecret)
+    setup (PRODUCT_KEY, PRODUCT_SECRET, getDeviceName, getDeviceSecret, getDeviceId, setDeviceId<strong  style="color: green;">[, getAuthKey=nil]</strong><strong  style="color: green;">[, m2mHT=120]</strong><strong  style="color: green;">[, extra=nil]</strong><strong  style="color: green;">[, server="api.gizwits.com"]</strong><strong  style="color: green;">[, port=80]</strong>)
     </strong>
     </dt>
     <dd>
@@ -258,6 +300,39 @@
         <li><span class="parameter">getDeviceSecret</span>
             <span class="types"><span class="type">function</span></span>
         <pre class="example">获取设备passcode的函数</pre>
+        </li>
+        <li><span class="parameter">getDeviceId</span>
+            <span class="types"><span class="type">function</span></span>
+        <pre class="example">保存获取到的DeviceId</pre>
+        </li>
+        <li><span class="parameter">setDeviceId</span>
+            <span class="types"><span class="type">function</span></span>
+        <pre class="example">获取保存的DeviceId</pre>
+        </li>
+        <li><span class="parameter">getAuthKey</span>
+            <span class="types"><span class="type">function</span></span>
+         [<em>此参数可选，默认值为：</em> nil]
+        <pre class="example">专用透传设备需要的auth_key的函数</pre>
+        </li>
+        <li><span class="parameter">m2mHT</span>
+            <span class="types"><span class="type">number</span></span>
+         [<em>此参数可选，默认值为：</em> 120]
+        <pre class="example">mqtt心跳时间</pre>
+        </li>
+        <li><span class="parameter">extra</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         [<em>此参数可选，默认值为：</em> nil]
+        <pre class="example">设备类型</pre>
+        </li>
+        <li><span class="parameter">server</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         [<em>此参数可选，默认值为：</em> "api.gizwits.com"]
+        <pre class="example">服务器</pre>
+        </li>
+        <li><span class="parameter">port</span>
+            <span class="types"><span class="type">number</span></span>
+         [<em>此参数可选，默认值为：</em> 80]
+        <pre class="example">端口</pre>
         </li>
     </ul>
 
@@ -323,7 +398,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-08-08 21:18:48 </i>
+<i style="float:right;">Last updated 2018-08-28 16:16:46 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

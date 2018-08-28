@@ -28,7 +28,7 @@ local tsend={}
 ]]
 local function numtobcdnum(num)
   local len, numfix,convnum = slen(num),"81",""
-  
+
   if ssub(num, 1,1) == "+" then
     numfix = "91"
     len = len-1
@@ -45,7 +45,7 @@ local function numtobcdnum(num)
       convnum = convnum .. ssub(num, i*2,i*2) .. ssub(num, i*2-1,i*2-1)
     end
   end
-  
+
   return numfix .. convnum
 end
 
@@ -58,26 +58,26 @@ end
 ]]
 local function bcdnumtonum(num)
   local len, numfix,convnum = slen(num),"",""
-  
+
   if len%2 ~= 0 then
     print("your bcdnum is err " .. num)
     return
   end
-  
+
   if ssub(num, 1,2) == "91" then
     numfix = "+"
   end
-  
+
   len,num = len-2,ssub(num, 3,-1)
-  
+
   for i=1, (len-(len%2))/2  do
     convnum = convnum .. ssub(num, i*2,i*2) .. ssub(num, i*2-1,i*2-1)
   end
-    
+
   if ssub(convnum,len,len) == "f"  or ssub(convnum,len,len) == "F" then
     convnum = ssub(convnum, 1,-2)
   end
-  
+
   return numfix .. convnum
 end
 
@@ -92,7 +92,7 @@ end
 local function _send(num,data)
     local numlen,datalen,pducnt,pdu,pdulen,udhi = sformat("%02X",slen(num)),slen(data)/2,1,"","",""
     if not ready then return false end
-    
+
     --如果发送的数据大于140字节则为长短信
     if datalen > 140 then
         --计算出长短信拆分后的总条数，长短信的每包的数据实际只有134个实际要发送的短信内容，数据的前6字节为协议头
@@ -103,11 +103,11 @@ local function _send(num,data)
     end
 
     table.insert(tsend,{sval=pducnt,rval=0,flg=true})--sval发送的包数，rval收到的包数
-    
+
     if ssub(num,1,1) == "+" then
         numlen = sformat("%02X",slen(num)-1)
     end
-    
+
     for i=1, pducnt do
         --如果是长短信
         if pducnt > 1 then
@@ -117,7 +117,7 @@ local function _send(num,data)
             udhi = "050003" .. sformat("%02X",isn) .. sformat("%02X",pducnt) .. sformat("%02X",i)
             log.info(datalen, udhi)
             pdu = "005110" .. numlen .. numtobcdnum(num) .. "000800" .. len_mul .. udhi .. ssub(data, (i-1)*134*2+1,i*134*2)
-        --发送短短信    
+        --发送短短信
         else
             datalen = sformat("%02X",datalen)
             pdu = "001110" .. numlen .. numtobcdnum(num) .. "000800" .. datalen .. data
@@ -136,7 +136,7 @@ end
 ]]
 function read(pos)
     if not ready or pos==ni or pos==0 then return false end
-    
+
     req("AT+CMGR="..pos)
     return true
 end
@@ -148,7 +148,7 @@ end
 返回值：true：删除成功，false删除失败
 ]]
 function delete(pos)
-    if not ready or pos==ni or pos==0 then return false end
+    if not ready or pos==nil or pos==0 then return false end
     req("AT+CMGD="..pos)
     return true
 end
@@ -174,9 +174,9 @@ Charmapctl = {[10]=0x0C,[20]=0x5E,[40]=0x7B,[41]=0x7D,[47]=0x5C,[60]=0x5B,[61]=0
 ]]
 function gsm7bitdecode(data,longsms)
     local ucsdata,lpcnt,tmpdata,resdata,nbyte,nleft,ucslen,olddat = "",slen(data)/2,0,0,0,0,0
-  
+
     if longsms then
-        tmpdata = tonumber("0x" .. ssub(data,1,2))   
+        tmpdata = tonumber("0x" .. ssub(data,1,2))
         resdata = bit.rshift(tmpdata,1)
         if olddat==27 then
             if Charmapctl[resdata] then--特殊字符
@@ -190,7 +190,7 @@ function gsm7bitdecode(data,longsms)
         end
         ucsdata = ucsdata .. sformat("%04X",resdata)
     else
-        tmpdata = tonumber("0x" .. ssub(data,1,2))    
+        tmpdata = tonumber("0x" .. ssub(data,1,2))
         resdata = bit.band(bit.bor(bit.lshift(tmpdata,nbyte),nleft),0x7f)
         if olddat==27 then
             if Charmapctl[resdata] then--特殊字符
@@ -203,15 +203,15 @@ function gsm7bitdecode(data,longsms)
             olddat,resdata = resdata,Charmap[resdata]
         end
         ucsdata = ucsdata .. sformat("%04X",resdata)
-   
+
         nleft = bit.rshift(tmpdata, 7-nbyte)
         nbyte = nbyte+1
         ucslen = ucslen+1
     end
-  
+
     for i=2, lpcnt do
-        tmpdata = tonumber("0x" .. ssub(data,(i-1)*2+1,i*2))   
-        if tmpdata == nil then break end 
+        tmpdata = tonumber("0x" .. ssub(data,(i-1)*2+1,i*2))
+        if tmpdata == nil then break end
         resdata = bit.band(bit.bor(bit.lshift(tmpdata,nbyte),nleft),0x7f)
         if olddat==27 then
             if Charmapctl[resdata] then--特殊字符
@@ -224,11 +224,11 @@ function gsm7bitdecode(data,longsms)
             olddat,resdata = resdata,Charmap[resdata]
         end
         ucsdata = ucsdata .. sformat("%04X",resdata)
-   
+
         nleft = bit.rshift(tmpdata, 7-nbyte)
         nbyte = nbyte+1
         ucslen = ucslen+1
-    
+
         if nbyte == 7 then
             if olddat==27 then
                 if Charmapctl[nleft] then--特殊字符
@@ -245,7 +245,7 @@ function gsm7bitdecode(data,longsms)
             ucslen = ucslen+1
         end
     end
-  
+
     return ucsdata,ucslen
 end
 
@@ -258,11 +258,11 @@ end
 ]]
 function gsm8bitdecode(data)
     local ucsdata,lpcnt = "",slen(data)/2
-   
+
     for i=1, lpcnt do
         ucsdata = ucsdata .. "00" .. ssub(data,(i-1)*2+1,i*2)
     end
-   
+
     return ucsdata,lpcnt
 end
 
@@ -284,31 +284,31 @@ local function rsp(cmd,success,response,intermediate)
             stat,alpha,len,pdu = smatch(intermediate,"+CMGR:%s*(%d),(.*),%s*(%d+)\r\n(%x+)")
             len = tonumber(len)--PDU数据长度，不包括短信息中心号码
         end
-    
+
         --收到的PDU包不为空则解析PDU包
         if pdu and pdu ~= "" then
-            local offset,addlen,addnum,flag,dcs,tz,txtlen,fo=5     
+            local offset,addlen,addnum,flag,dcs,tz,txtlen,fo=5
             pdu = ssub(pdu,(slen(pdu)/2-len)*2+1,-1)--PDU数据，不包括短信息中心号码
             fo = tonumber("0x" .. ssub(pdu,1,1))--PDU短信首字节的高4位,第6位为数据报头标志位
             if bit.band(fo, 0x4) ~= 0 then
                 longsms = true
             end
-            addlen = tonumber(sformat("%d","0x"..ssub(pdu,3,4)))--回复地址数字个数 
-      
+            addlen = tonumber(sformat("%d","0x"..ssub(pdu,3,4)))--回复地址数字个数
+
             addlen = addlen%2 == 0 and addlen+2 or addlen+3 --加上号码类型2位（5，6）or 加上号码类型2位（5，6）和1位F
-      
+
             offset = offset+addlen
-      
+
             addnum = ssub(pdu,5,5+addlen-1)
             convnum = bcdnumtonum(addnum)
-      
-            flag = tonumber(sformat("%d","0x"..ssub(pdu,offset,offset+1)))--协议标识 (TP-PID) 
+
+            flag = tonumber(sformat("%d","0x"..ssub(pdu,offset,offset+1)))--协议标识 (TP-PID)
             offset = offset+2
             dcs = tonumber(sformat("%d","0x"..ssub(pdu,offset,offset+1)))--用户信息编码方式 Dcs=8，表示短信存放的格式为UCS2编码
             offset = offset+2
             tz = ssub(pdu,offset,offset+13)--时区7个字节
             offset = offset+14
-            txtlen = tonumber(sformat("%d","0x"..ssub(pdu,offset,offset+1)))--短信文本长度 
+            txtlen = tonumber(sformat("%d","0x"..ssub(pdu,offset,offset+1)))--短信文本长度
             offset = offset+2
             data = ssub(pdu,offset,offset+txtlen*2-1)--短信文本
             if longsms then
@@ -320,9 +320,9 @@ local function rsp(cmd,success,response,intermediate)
                     data = ssub(data, 15,-1)--去掉报头7个字节
                 end
             end
-      
+
             log.info("TP-PID : ",flag, "dcs: ", dcs, "tz: ",tz, "data: ",data,"txtlen",txtlen)
-      
+
             if dcs == 0x00 then--7bit encode
                 local newlen
                 data,newlen = gsm7bitdecode(data, longsms)
@@ -334,10 +334,10 @@ local function rsp(cmd,success,response,intermediate)
                 data,txtlen = gsm8bitdecode(data)
                 log.info("8bit to ucs2 data: ",data,"txtlen",txtlen)
             end
-  
+
             for i=1, 7  do
                 t = t .. ssub(tz, i*2,i*2) .. ssub(tz, i*2-1,i*2-1)
-      
+
                 if i<=3 then
                     t = i<3 and (t .. "/") or (t .. ",")
                 elseif i <= 6 then
@@ -345,7 +345,7 @@ local function rsp(cmd,success,response,intermediate)
                 end
             end
         end
-    
+
         local pos = smatch(cmd,"AT%+CMGR=(%d+)")
         data = data or ""
         alpha = alpha or ""
@@ -386,6 +386,8 @@ local function urc(data,prefix)
         req("AT+CSCS=\"UCS2\"")
         --分发短信准备好消息
         publish("SMS_READY")
+        --清空已读短信
+        ril.request("AT+CMGD=1,3")
     elseif prefix == "+CMTI" then
         --提取短信位置
         local pos = smatch(data,"(%d+)",slen(prefix)+1)
@@ -431,7 +433,7 @@ end
 ]]
 local function longsmsind(num, data,datetime,name,total,idx,isn)
     log.info("longsmsind", "isn",isn,"total:",total, "idx:",idx,"data", data)
-    
+
     if tlongsms[isn..total] then
         if not tlongsms[isn..total]["dat"] then tlongsms[isn..total]["dat"]={} end
         tlongsms[isn..total]["dat"][idx] = data
@@ -453,7 +455,7 @@ local function longsmsind(num, data,datetime,name,total,idx,isn)
     else
         --如果2分钟后长短信还没收完整，2分钟后将自动合并已收到的长短信
         sys.timerStart(mergelongsms,120000,isn..total)
-    end    
+    end
 end
 
 --注册长短信合并处理函数
@@ -521,9 +523,12 @@ end
 --- 发送短信
 -- @string num，短信接收方号码，ASCII码字符串格式
 -- @string data，短信内容，GB2312编码的字符串
--- @function cbFnc，信发送结果异步返回时使用的回调函数，可选
--- @number idx，插入短信发送缓冲表的位置，可选，默认是插入末尾
--- @return nil
+-- @function[opt=nil] cbFnc，短信发送结果异步返回时的用户回调函数，回调函数的调用形式为：
+--              cbFnc(result,num,data)
+--              num：短信接收方的号码，ASCII码字符串格式
+--              data：短信内容，GB2312编码的字符串
+-- @number[opt=nil] idx，插入短信发送缓冲表的位置，默认是插入末尾
+-- @return result，true表示调用接口成功（并不是短信发送成功，短信发送结果，通过sendcnf返回，如果有cbFnc，会通知cbFnc函数）；返回false，表示调用接口失败
 -- @usage sms.send("10086","test",cbFnc)
 function send(num,data,cbFnc,idx)
     --号码或者内容非法
@@ -539,7 +544,7 @@ function send(num,data,cbFnc,idx)
         table.insert(tsmsnd,{num=num,data=dat,cb=cbFnc})
     end
     --如果短信发送缓冲表中只有一条短信，立即触发短信发送动作
-    if #tsmsnd==1 then _send(num,dat) if cbFnc then cbFnc(false,num,data) end return true end
+    if #tsmsnd==1 then _send(num,dat) return true end
 end
 
 
@@ -609,7 +614,7 @@ local function readcnf(result,num,data,pos,datetime,name,total,idx,isn)
         --从短信接收位置表中删除此短信的位置
         table.remove(tnewsms,1)
         if total and total >1 then
-            publish("LONG_SMS_MERGE",num,data,datetime,name,total,idx,isn)  
+            publish("LONG_SMS_MERGE",num,data,datetime,name,total,idx,isn)
             readsms()--读取下一条新短信
             return
         end
