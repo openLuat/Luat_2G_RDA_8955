@@ -4,7 +4,6 @@
 -- @license MIT
 -- @copyright openLuat
 -- @release 2017.09.23 11:34
-
 module(..., package.seeall)
 
 require "pins"
@@ -25,7 +24,7 @@ local function taskWdt(rst, wd)
         log.info("wdt.taskWdt", "AirM2M --> WATCHDOG : OK")
         sys.wait(2000)
         -- 看门狗 ---> 模块 喂脉冲
-        wd(nil,true)
+        wd(nil, true)
         for i = 1, 30 do
             if 0 ~= wd() then
                 sys.wait(100)
@@ -44,7 +43,7 @@ local function taskWdt(rst, wd)
         end
         -- 2分钟后再喂
         sys.wait(120000)
-        wd(0,true)
+        wd(0, true)
     end
 end
 
@@ -54,5 +53,5 @@ end
 -- @return 无
 -- @usage setup(pio.P0_31,pio.P0_29)
 function setup(rst, wd)
-    sys.taskInit(taskWdt, pins.setup(rst, 0), pins.setup(wd, 0))
+    sys.taskInit(taskWdt, pins.setup(rst, 0, pio.PULLUP), pins.setup(wd, 0, pio.PULLUP))
 end
