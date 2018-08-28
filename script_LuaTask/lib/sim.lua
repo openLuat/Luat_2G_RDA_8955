@@ -109,3 +109,5 @@ ril.regRsp("+CCID", rsp)
 ril.regRsp("+CIMI", rsp)
 --注册+CPIN通知的处理函数
 ril.regUrc("+CPIN", urc)
+--关闭sim卡的STK功能，有的sim卡STK功能开机会不断的发送短信，影响数据业务的稳定工作
+ril.request("AT+STON=0")

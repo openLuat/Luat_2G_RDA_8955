@@ -37,12 +37,14 @@ end
 
 local function errorInd(error)
     for k, v in pairs({sockets, socketsSsl}) do
-        for _, c in pairs(v) do -- IP状态出错时，通知所有已连接的socket
-            --if c.connected or c.created then
-            if error == 'CLOSED' and not c.ssl then c.connected = false socketStatusNtfy() end
-            c.error = error
-            if c.co and coroutine.status(c.co) == "suspended" then coroutine.resume(c.co, false) end
-        --end
+        if #v ~= 0 then
+            for _, c in pairs(v) do -- IP状态出错时，通知所有已连接的socket
+                --if c.connected or c.created then
+                if error == 'CLOSED' and not c.ssl then c.connected = false socketStatusNtfy() end
+                c.error = error
+                if c.co and coroutine.status(c.co) == "suspended" then coroutine.resume(c.co, false) end
+                --end
+            end
         end
     end
 end
@@ -253,10 +255,10 @@ function mt.__index:send(data)
     return true
 end
 --- 接收数据
--- @number[opt=0] timeout 可选参数，接收超时时间
--- @string msg 可选参数，等待消息退出recvice
--- @return result true - 成功，false - 失败
--- @return data 如果成功的话，返回接收到的数据，超时时返回错误为"timeout"
+-- @number[opt=0] timeout 可选参数，接收超时时间，单位毫秒
+-- @string[opt=nil] msg 可选参数，控制socket所在的线程退出recv阻塞状态
+-- @return result 数据接收结果，true表示成功，false表示失败
+-- @return data 如果成功的话，返回接收到的数据；超时时返回错误为"timeout"；msg控制退出时返回msg的字符串
 -- @usage  c = socket.tcp(); c:connect(); result, data = c:recv()
 function mt.__index:recv(timeout, msg)
     assert(self.co == coroutine.running(), "socket:recv: coroutine mismatch")

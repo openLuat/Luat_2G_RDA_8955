@@ -17,9 +17,9 @@ local function allocid()
 	return winid
 end
 
-local function losefocus()
-	if stack[#stack] and stack[#stack]["onlosefocus"] then
-		stack[#stack]["onlosefocus"]()
+local function loseFocus()
+	if stack[#stack] and stack[#stack]["onLoseFocus"] then
+		stack[#stack]["onLoseFocus"]()
 	end	
 end
 
@@ -34,7 +34,7 @@ function add(wnd)
 		assert("unknown uiwin type "..type(wnd))
 	end
 	--上一个窗口执行失去焦点的处理函数
-	losefocus()
+	loseFocus()
 	--为新窗口分配窗口ID
 	wnd.id = allocid()
 	--新窗口请求入栈
@@ -48,6 +48,14 @@ end
 -- @usage uiWin.remove(winId)
 function remove(winId)
 	sys.publish("UIWND_REMOVE",winId)
+end
+
+function removeAll()
+    sys.publish("UIWND_REMOVEALL")
+end
+
+function update()
+    sys.publish("UIWND_UPDATE")
 end
 
 local function onAdd(wnd)
@@ -69,8 +77,25 @@ local function onRemove(winid)
 	end
 end
 
+local function onRemoveAll()
+	local k,v
+	for k,v in ipairs(stack) do
+		table.remove(stack,k)
+	end
+end
+
 local function onUpdate()
-	stack[#stack].onUpdate()
+    if stack[#stack] and stack[#stack].onUpdate then
+        stack[#stack].onUpdate()
+    end
+end
+
+--key：自定义功能键
+--value：自定义功能键的状态
+local function onKey(key,value)
+    if stack[#stack] and stack[#stack].onKey then
+        stack[#stack].onKey(key,value)
+    end
 end
 
 --- 判断一个窗口是否处于最前显示
@@ -78,11 +103,14 @@ end
 -- @return bool，true表示最前显示，其余表示非最前显示
 -- @usage uiWin.isActive(winId)
 function isActive(winId)
-	return stack[#stack].id==winId
+    if stack[#stack] and stack[#stack].id then
+        return stack[#stack].id==winId
+    end	
 end
 
 sys.subscribe("UIWND_ADD",onAdd)
 sys.subscribe("UIWND_REMOVE",onRemove)
+sys.subscribe("UIWND_REMOVEALL",onRemoveAll)
 sys.subscribe("UIWND_UPDATE",onUpdate)
 sys.subscribe("UIWND_TOUCH",onTouch)
 sys.subscribe("UIWND_KEY",onKey)

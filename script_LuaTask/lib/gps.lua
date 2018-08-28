@@ -35,7 +35,8 @@ local psUtcTime,psGsv,psSn
 --GPS供电设置函数
 local powerCbFnc
 --串口配置
-local uartID,uartBaudrate,uartDatabits,uartParity,uartStopbits = 2,115200,8,uart.PAR_NONE,uart.STOP_1
+uartBaudrate = 115200
+local uartID,uartDatabits,uartParity,uartStopbits = 2,8,uart.PAR_NONE,uart.STOP_1
 --搜星模式命令字符串，"$PGKC115," .. gps .. "," .. glonass .. "," .. beidou .. "," .. galieo .. "*"
 local aerialModeStr = ""
 --运行模式命令字符串，"$PGKC105," .. mode .. "," .. rt .. "," .. st .. "*"
@@ -109,7 +110,7 @@ local function getstrength(sg)
 		else
 			Gsv = Gsv..cur
 		end
-		
+
 		tmpstr = ssub(tmpstr,d2+1,-1)
 	end
 end
@@ -126,7 +127,7 @@ local function parseNmea(s)
         sys.publish("GPS_STATE",smatch(hexStr,"^AAF00C000300FFFF") and "WRITE_EPH_END_ACK" or "WRITE_EPH_ACK")
         return
     end
-    
+
     local fixed
 
     if smatch(s,"GGA") then
@@ -161,7 +162,7 @@ local function parseNmea(s)
     elseif smatch(s,"BDGSV") then
         viewedBdSateCnt = tonumber(smatch(s,"%d+,%d+,(%d+)") or "0")
     elseif smatch(s,"GSA") then
-        if psSn then 
+        if psSn then
             local satesn = smatch(s,"GSA,%w*,%d*,(%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,)") or ""
             if slen(satesn) > 0 and smatch(satesn,"%d+,") then
                 SateSn = satesn
@@ -202,16 +203,16 @@ local function taskRead()
             while d1 do
                 nemaStr = ssub(cacheData,1,d2)
                 cacheData = ssub(cacheData,d2+1,-1)
-			
+
                 if nmeaMode==0 or nmeaMode==2 then
                     --解析一行NEMA数据
-                    parseNmea(nemaStr)		
+                    parseNmea(nemaStr)
                 end
                 if (nmeaMode==1 or nmeaMode==2) and nmeaCbFnc then
                     nmeaCbFnc(nemaStr)
-                end			
+                end
                 d1,d2 = sfind(cacheData,"\r\n")
-            end	
+            end
         end
     end
 end
@@ -245,11 +246,11 @@ local function _open()
     else
         pmd.ldoset(7,pmd.LDO_VCAM)
         rtos.sys32k_clk_out(1)
-    end    
+    end
     openFlag = true
     sys.publish("GPS_STATE","OPEN")
     fixFlag = false
-    Ggalng,Ggalat,Gsv,Sep = "","",""	
+    Ggalng,Ggalat,Gsv,Sep = "","",""
     if aerialModeStr~="" then writeCmd(aerialModeStr) aerialModeStr="" end
     if runModeStr~="" then writeCmd(runModeStr) runModeStr="" end
     if nmeaReportStr~="" then writeCmd(nmeaReportStr) nmeaReportStr="" end
@@ -356,11 +357,11 @@ local function existTimerItem()
 end
 
 local function timerFnc()
-    for i=1,#tList do        
+    for i=1,#tList do
         if tList[i].flag then
             log.info("gps.timerFnc@"..i,tList[i].mode,tList[i].para.tag,tList[i].para.val,tList[i].para.remain,tList[i].para.delay)
             local rmn,dly,md,cb = tList[i].para.remain,tList[i].para.delay,tList[i].mode,tList[i].para.cb
-            
+
             if rmn and rmn>0 then
                 tList[i].para.remain = rmn-1
             end
@@ -372,7 +373,7 @@ local function timerFnc()
             if isFix() and md==TIMER and rmn==0 and not tList[i].para.delay then
                 tList[i].para.delay = 1
             end
-			
+
             dly = tList[i].para.delay
             if isFix() then
                 if dly and dly==0 then
@@ -388,7 +389,7 @@ local function timerFnc()
                     if cb then cb(tList[i].para.tag) end
                     close(md,tList[i].para)
                 end
-            end            
+            end
         end
     end
     if existTimerItem() then sys.timerStart(timerFnc,1000) end
@@ -412,8 +413,8 @@ local function statInd(evt)
                     if tList[i].mode == DEFAULT then
                         if existTimerItem() then sys.timerStart(timerFnc,1000) end
                     end
-                end                
-            end            
+                end
+            end
         end
     end
 end
@@ -450,7 +451,7 @@ function open(mode,para)
         if mode~=TIMER then
             --执行回调函数
             if para.cb then para.cb(para.tag) end
-            if mode==TIMERORSUC then return end            
+            if mode==TIMERORSUC then return end
         end
     end
     addItem(mode,para)
@@ -484,7 +485,7 @@ function close(mode,para)
     for i=1,#tList do
         if tList[i].flag then
             valid = true
-        end        
+        end
     end
     --如果没有一个“GPS应用”有效，则关闭GPS
     if not valid then _close() end
@@ -602,7 +603,7 @@ function setRunMode(mode,runTm,sleepTm)
     if isOpen() then writeCmd(runModeStr) runModeStr="" end
 end
 
-function setFastFix(lat,lng,tm)    
+function setFastFix(lat,lng,tm)
     local t = tm.year..","..tm.month..","..tm.day..","..tm.hour..","..tm.min..","..tm.sec.."*"
     log.info("gps.setFastFix",lat,lng,t)
     writeCmd("$PGKC634,"..t)
@@ -645,29 +646,40 @@ local function degreeMinuteToDegree(inStr)
         end
         return ssub(integer,1,intLen-2).."."..fraction
     end
-    
+
     return ""
 end
 
 --- 获取度格式的经纬度信息
+-- @string[opt=nil] typ，返回的经纬度格式，typ为"DEGREE_MINUTE"时表示返回度分格式，其余表示返回度格式
 -- @return table location
--- {lngType="E",lng="121.123456",latType="N",lat="31.123456"}
+-- 例如typ为"DEGREE_MINUTE"时返回{lngType="E",lng="12128.44954",latType="N",lat="3114.50931"}
+-- 例如typ不是"DEGREE_MINUTE"时返回{lngType="E",lng="121.123456",latType="N",lat="31.123456"}
 -- lngType：string类型，表示经度类型，取值"E"，"W"
 -- lng：string类型，表示度格式的经度值，无效时为""
 -- latType：string类型，表示纬度类型，取值"N"，"S"
 -- lat：string类型，表示度格式的纬度值，无效时为""
 -- @usage gps.getLocation()
-function getLocation()
+function getLocation(typ)
     return {
             lngType=longitudeType,
-            lng=isFix() and degreeMinuteToDegree(longitude) or "",
-            latType=latitudeType, 
-            lat=isFix() and degreeMinuteToDegree(latitude) or ""
+            lng=isFix() and (typ=="DEGREE_MINUTE" and longitude or degreeMinuteToDegree(longitude)) or "",
+            latType=latitudeType,
+            lat=isFix() and (typ=="DEGREE_MINUTE" and latitude or degreeMinuteToDegree(latitude)) or ""
          }
 end
 
-function getLastLocation()
-    return (longitude and longitude~="") and degreeMinuteToDegree(longitude) or "", (latitude and latitude~="") and degreeMinuteToDegree(latitude) or ""
+function getLastLocation(typ)
+    if typ=="DEGREE_MINUTE" then
+        return {
+            lngType=longitudeType,
+            lng=longitude,
+            latType=latitudeType,
+            lat=latitude
+         }
+    else
+        return (longitude and longitude~="") and degreeMinuteToDegree(longitude) or "", (latitude and latitude~="") and degreeMinuteToDegree(latitude) or ""
+    end
 end
 
 --- 获取海拔
@@ -683,7 +695,14 @@ end
 -- @usage gps.getSpeed()
 function getSpeed()
     local integer = tonumber(smatch(speed,"(%d+)") or "0")
-    return (integer*1852 - (integer*1852%1000))/1000,integer
+    return (integer*1852 - (integer*1852 %1000))/1000,integer
+end
+
+--- 获取原始速度,字符串带浮点
+-- @return number speed 海里每小时的速度
+-- @usage gps.getOrgSpeed()
+function getOrgSpeed()
+    return speed
 end
 
 --- 获取方向角

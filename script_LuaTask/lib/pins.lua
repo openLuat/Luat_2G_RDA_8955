@@ -17,7 +17,7 @@ local interruptCallbacks = {}
 -- 配置为输入模式时，为nil
 -- 配置为中断模式时，为function类型，表示中断处理函数
 -- @param pull, number, pio.PULLUP：上拉模式 。pio.PULLDOWN：下拉模式。pio.NOPULL：高阻态
--- 默认为pio.PULLUP：上拉模式
+-- 如果没有设置此参数，默认的上下拉参考模块的硬件设计说明书
 -- @return function
 -- 配置为输出模式时，返回的函数，可以设置IO的电平
 -- 配置为输入或者中断模式时，返回的函数，可以实时获取IO的电平
@@ -34,7 +34,7 @@ function setup(pin, val, pull)
     -- 中断模式配置
     if type(val) == "function" then
         pio.pin.setdir(pio.INT, pin)
-        pio.pin.setpull(pull or pio.PULLUP, pin)
+        if pull then pio.pin.setpull(pull or pio.PULLUP, pin) end
         --注册引脚中断的处理函数
         interruptCallbacks[pin] = val
         return function()
@@ -47,7 +47,7 @@ function setup(pin, val, pull)
     -- 输入模式初始化默认配置
     else
         pio.pin.setdir(pio.INPUT, pin)
-        pio.pin.setpull(pull or pio.PULLUP, pin)
+        if pull then pio.pin.setpull(pull or pio.PULLUP, pin) end
     end
     -- 返回一个自动切换输入输出模式的函数
     return function(val, changeDir)
@@ -58,7 +58,7 @@ function setup(pin, val, pull)
         else
             if changeDir then
                 pio.pin.setdir(pio.INPUT, pin)
-                pio.pin.setpull(pull or pio.PULLUP, pin)
+                if pull then pio.pin.setpull(pull or pio.PULLUP, pin) end
             end
             return pio.pin.getval(pin)
         end
