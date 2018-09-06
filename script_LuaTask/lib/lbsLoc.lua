@@ -87,7 +87,7 @@ local function taskClient(cbFnc, reqAddr, timeout, productKey, host, port, reqTi
         if not sys.waitUntil("IP_READY_IND", timeout) then return cbFnc(1) end
     end
     
-    while net.getCellInfoExt() or net.getCellInfoExt() == "" do sys.wait(100) end
+    while not net.getCellInfoExt() or net.getCellInfoExt() == "" do sys.wait(100) end
     local retryCnt, sck = 0
     local reqStr = pack.pack("bAbAAA", productKey:len(), productKey, (reqAddr and 2 or 0) + (reqTime and 4 or 0), "", common.numToBcdNum(misc.getImei()), enCellInfo(net.getCellInfoExt()))
     log.info("reqStr", reqStr:toHex())
