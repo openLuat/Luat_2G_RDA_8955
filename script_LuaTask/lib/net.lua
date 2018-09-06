@@ -155,9 +155,9 @@ local function ceng(data)
         id = tonumber(id)
         --第一条CENG信息和其余的格式不同
         if id == 0 then
-            rssi, mcc, mnc, ci, lac, ta = string.match(data, "%+CENG:%d,\"%d+,(%d+),%d+,(%d+),(%d+),%d+,(%d+),%d+,%d+,(%d+),(%d+)\"")
+            rssi, mcc, mnc, ci, lac, ta = string.match(data, "%+CENG: *%d, *\"%d+, *(%d+), *%d+, *(%d+), *(%d+), *%d+, *(%d+), *%d+, *%d+, *(%d+), *(%d+)\"")
         else
-            rssi, mcc, mnc, ci, lac, ta = string.match(data, "%+CENG:%d,\"%d+,(%d+),(%d+),(%d+),%d+,(%d+),(%d+)\"")
+            rssi, mcc, mnc, ci, lac, ta = string.match(data, "%+CENG: *%d, *\"%d+, *(%d+), *(%d+), *(%d+), *%d+, *(%d+), *(%d+)\"")
         end
         --解析正确
         if rssi and ci and lac and mcc and mnc then
