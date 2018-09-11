@@ -86,7 +86,7 @@ local function main_loop()
         -- 拼接之前未成行的剩余数据
         cache_data = cache_data .. new_data
         -- 去掉回车换行
-        local line = string.match(cache_data, "(.+\r*\n)")
+        local line = string.match(cache_data, "(.-)\r?\n")
         if line then
             -- 收到一整行的数据 清除缓冲数据
             cache_data = ""
