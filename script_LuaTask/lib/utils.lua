@@ -15,9 +15,9 @@ module(..., package.seeall)
 -- string.toHex("\1\2\3") -> "010203" 3
 -- string.toHex("123abc") -> "313233616263" 6
 -- string.toHex("123abc"," ") -> "31 32 33 61 62 63 " 6
-function string.toHex(str,separator)
+function string.toHex(str, separator)
     return str:gsub('.', function(c)
-        return string.format("%02X"..(separator or ""), string.byte(c))
+        return string.format("%02X" .. (separator or ""), string.byte(c))
     end)
 end
 --- 将HEX字符串转成Lua字符串，如"313233616263"转为"123abc", 函数里加入了过滤分隔符，可以过滤掉大部分分隔符（可参见正则表达式中\s和\p的范围）。
@@ -89,7 +89,7 @@ end
 -- @usage "123,456,789":split(',') -> {'123','456','789'}
 function string.split(str, delimiter)
     local strlist = {}
-    for substr in str:gmatch(string.format("([^%s]+)", delimiter)) do
+    for substr in string.gmatch(str .. delimiter, "(.-)" .. delimiter) do
         table.insert(strlist, substr)
     end
     return strlist
