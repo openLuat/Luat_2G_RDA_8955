@@ -322,7 +322,7 @@ function run()
         -- 分发内部消息
         dispatch()
         -- 阻塞读取外部消息
-        local msg, param = rtos.receive(rtos.INF_TIMEOUT)
+        local msg, param, exparam = rtos.receive(rtos.INF_TIMEOUT)
         -- 判断是否为定时器消息，并且消息是否注册
         if msg == rtos.MSG_TIMER and timerPool[param] then
             if param < TASK_TIMER_ID_MAX then
@@ -347,7 +347,7 @@ function run()
             end
         --其他消息（音频消息、充电管理消息、按键消息等）
         elseif type(msg) == "number" then
-            handlers[msg](param)
+            handlers[msg](param, exparam)
         else
             handlers[msg.id](msg)
         end
