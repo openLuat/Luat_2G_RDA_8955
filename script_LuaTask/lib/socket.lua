@@ -43,7 +43,7 @@ local function errorInd(error)
                 if error == 'CLOSED' and not c.ssl then c.connected = false socketStatusNtfy() end
                 c.error = error
                 if c.co and coroutine.status(c.co) == "suspended" then coroutine.resume(c.co, false) end
-                --end
+            --end
             end
         end
     end
@@ -73,7 +73,9 @@ local function onSocketURC(data, prefix)
     if tag == "SSL" and string.find(result, "ERROR:") == 1 then return end
     
     if string.find(result, "ERROR") or result == "CLOSED" then
-        if result == 'CLOSED' and not tSocket[id].ssl then tSocket[id].connected = false socketStatusNtfy() end
+        if result == 'CLOSED' and not tSocket[id].ssl then
+            tSocket[id].connected = false
+            socketStatusNtfy() end
         tSocket[id].error = result
         coroutine.resume(tSocket[id].co, false)
     end
