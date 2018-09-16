@@ -34,6 +34,18 @@ function string.fromHex(hex)
         return string.char(tonumber(c, 16))
     end)
 end
+
+-- 返回字符串tonumber的转义字符串(用来支持超过31位整数的转换)
+-- @string str 输入字符串
+-- @return str 转换后的lua 二进制字符串
+-- @return len 转换了多少个字符
+-- @usage
+-- string.toValue("123456") -> "\1\2\3\4\5\6"  6
+-- string.toValue("123abc") -> "\1\2\3\a\b\c"  6
+function string.toValue(str)
+    return string.fromHex(str:gsub("%x", "0" .. "%1"))
+end
+
 --- 返回utf8编码字符串的长度
 -- @string str,utf8编码的字符串,支持中文
 -- @return number,返回字符串长度
@@ -89,8 +101,12 @@ end
 -- @usage "123,456,789":split(',') -> {'123','456','789'}
 function string.split(str, delimiter)
     local strlist = {}
-    for substr in string.gmatch(str .. delimiter, "(.-)" .. delimiter) do
-        table.insert(strlist, substr)
+    if delimiter == "" then
+        for i = 1, #str do strlist[i] = str:sub(i, i) end
+    else
+        for substr in string.gmatch(str .. delimiter, "(.-)" .. delimiter) do
+            table.insert(strlist, substr)
+        end
     end
     return strlist
 end
