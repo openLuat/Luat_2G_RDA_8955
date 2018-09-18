@@ -43,7 +43,7 @@ end
 -- string.toValue("123456") -> "\1\2\3\4\5\6"  6
 -- string.toValue("123abc") -> "\1\2\3\a\b\c"  6
 function string.toValue(str)
-    return string.fromHex(str:gsub("%x", "0" .. "%1"))
+    return string.fromHex(str:gsub("%x", "0%1"))
 end
 
 --- 返回utf8编码字符串的长度
