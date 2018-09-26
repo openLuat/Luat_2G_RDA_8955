@@ -100,11 +100,11 @@ end
 -- @return 分割后的字符串列表
 -- @usage "123,456,789":split(',') -> {'123','456','789'}
 function string.split(str, delimiter)
-    local strlist = {}
+    local strlist, tmp = {}, string.byte(delimiter)
     if delimiter == "" then
         for i = 1, #str do strlist[i] = str:sub(i, i) end
     else
-        for substr in string.gmatch(str .. delimiter, "(.-)" .. delimiter) do
+        for substr in string.gmatch(str .. delimiter, "(.-)" .. (((tmp > 96 and tmp < 123) or (tmp > 64 and tmp < 91) or (tmp > 47 and tmp < 58)) and delimiter or "%" .. delimiter)) do
             table.insert(strlist, substr)
         end
     end

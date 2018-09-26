@@ -10,7 +10,7 @@ require "patch"
 module(..., package.seeall)
 
 -- lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "2.1.3"
+SCRIPT_LIB_VER = "2.1.4"
 
 -- TaskID最大值
 local TASK_TIMER_ID_MAX = 0x1FFFFFFF
