@@ -15,6 +15,9 @@ local openFlag
 --GPS定位标志，"2D"表示2D定位，"3D"表示3D定位，其余表示未定位
 --GPS定位标志，true表示，其余表示未定位
 local fixFlag
+--GPS定位成功后，过滤掉前filterSeconds秒的经纬度信息
+--是否已经过滤完成
+local filterSeconds,filteredFlag = 0
 --从定位成功切换到定位失败，连续定位失败的次数
 local fixFailCnt = 0
 --经纬度类型和数据
@@ -115,6 +118,11 @@ local function getstrength(sg)
 	end
 end
 
+local function filterTimerFnc()
+    log.info("gps.filterTimerFnc end")
+    filteredFlag = true
+end
+
 local function parseNmea(s)
     if not s or s=="" then return end
     local lat,lng,spd,cog,gpsFind,gpsTime,gpsDate,locSateCnt,hdp,latTyp,lngTyp,altd
@@ -169,11 +177,19 @@ local function parseNmea(s)
             end
         end
     end
+    
+    if filterSeconds>0 and fixed and not fixFlag and not filteredFlag then
+        if not sys.timerIsActive(filterTimerFnc) then
+            log.info("gps.filterTimerFnc begin")
+            sys.timerStart(filterTimerFnc,filterSeconds*1000)
+        end        
+        return
+    end
 
     --定位成功
     if fixed then
         if not fixFlag then
-            fixFlag = true
+            fixFlag,filteredFlag = true,true
             fixFailCnt = 0
             sys.publish("GPS_STATE","LOCATION_SUCCESS")
         end
@@ -181,7 +197,8 @@ local function parseNmea(s)
         if fixFlag then
             fixFailCnt = fixFailCnt+1
             if fixFailCnt>=20 then
-                fixFlag = false
+                fixFlag,filteredFlag = false
+                sys.timerStop(filterTimerFnc)
                 sys.publish("GPS_STATE","LOCATION_FAIL")
             end
         end
@@ -249,7 +266,7 @@ local function _open()
     end
     openFlag = true
     sys.publish("GPS_STATE","OPEN")
-    fixFlag = false
+    fixFlag,filteredFlag = false
     Ggalng,Ggalat,Gsv,Sep = "","",""
     if aerialModeStr~="" then writeCmd(aerialModeStr) aerialModeStr="" end
     if runModeStr~="" then writeCmd(runModeStr) runModeStr="" end
@@ -269,7 +286,8 @@ local function _close()
     pm.sleep("gps.lua")
     openFlag = false
     sys.publish("GPS_STATE","CLOSE",fixFlag)
-    fixFlag = false
+    fixFlag,filteredFlag = false
+    sys.timerStop(filterTimerFnc)
     Ggalng,Ggalat,Gsv,Sep = "","",""
     log.info("gps._close")
 end
@@ -601,6 +619,14 @@ function setRunMode(mode,runTm,sleepTm)
 
     runModeStr = "$PGKC105,"..mode..((mode==1 or mode==2) and (","..rt..","..st) or "").."*"
     if isOpen() then writeCmd(runModeStr) runModeStr="" end
+end
+
+--- 设置GPS定位成功后经纬度的过滤时间.
+-- @number[opt=0] seconds，单位秒，GPS定位成功后，丢弃前seconds秒的位置信息
+-- @return nil
+-- @usage gps.setLocationFilter(2)
+function setLocationFilter(seconds)
+    filterSeconds = seconds or 0
 end
 
 function setFastFix(lat,lng,tm)

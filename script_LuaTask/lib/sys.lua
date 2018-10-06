@@ -28,6 +28,8 @@ local taskTimerPool = {}
 local para = {}
 --定时器是否循环表
 local loop = {}
+--lua脚本运行出错时，是否回退为本地烧写的版本
+local sRollBack = true
 
 
 -- 启动GSM协议栈。例如在充电开机未启动GSM协议栈状态下，如果用户长按键正常开机，此时调用此接口启动GSM协议栈即可
@@ -314,44 +316,65 @@ rtos.on = function(id, handler)
 end
 
 ------------------------------------------ Luat 主调度框架  ------------------------------------------
+
+local function safeRun()
+	-- 分发内部消息
+    dispatch()
+    -- 阻塞读取外部消息
+    local msg, param, exparam = rtos.receive(rtos.INF_TIMEOUT)
+    -- 判断是否为定时器消息，并且消息是否注册
+    if msg == rtos.MSG_TIMER and timerPool[param] then
+        if param < TASK_TIMER_ID_MAX then
+            local taskId = timerPool[param]
+            timerPool[param] = nil
+            if taskTimerPool[taskId] == param then
+                taskTimerPool[taskId] = nil
+                coroutine.resume(taskId)
+            end
+        else
+            local cb = timerPool[param]
+            --如果不是循环定时器，从定时器id表中删除此定时器
+            if not loop[param] then timerPool[param] = nil end
+            if para[param] ~= nil then
+                cb(unpack(para[param]))
+                if not loop[param] then para[param] = nil end
+            else
+                cb()
+            end
+            --如果是循环定时器，继续启动此定时器
+            if loop[param] then rtos.timer_start(param,loop[param]) end
+        end
+    --其他消息（音频消息、充电管理消息、按键消息等）
+    elseif type(msg) == "number" then
+        handlers[msg](param, exparam)
+    else
+        handlers[msg.id](msg)
+    end
+end
+
 --- run()从底层获取core消息并及时处理相关消息，查询定时器并调度各注册成功的任务线程运行和挂起
 -- @return 无
 -- @usage sys.run()
 function run()
+    local result,err
     while true do
-        -- 分发内部消息
-        dispatch()
-        -- 阻塞读取外部消息
-        local msg, param, exparam = rtos.receive(rtos.INF_TIMEOUT)
-        -- 判断是否为定时器消息，并且消息是否注册
-        if msg == rtos.MSG_TIMER and timerPool[param] then
-            if param < TASK_TIMER_ID_MAX then
-                local taskId = timerPool[param]
-                timerPool[param] = nil
-                if taskTimerPool[taskId] == param then
-                    taskTimerPool[taskId] = nil
-                    coroutine.resume(taskId)
-                end
-            else
-                local cb = timerPool[param]
-                --如果不是循环定时器，从定时器id表中删除此定时器
-                if not loop[param] then timerPool[param] = nil end
-                if para[param] ~= nil then
-                    cb(unpack(para[param]))
-                    if not loop[param] then para[param] = nil end
-                else
-                    cb()
-                end
-                --如果是循环定时器，继续启动此定时器
-                if loop[param] then rtos.timer_start(param,loop[param]) end
-            end
-        --其他消息（音频消息、充电管理消息、按键消息等）
-        elseif type(msg) == "number" then
-            handlers[msg](param, exparam)
+        if sRollBack then
+            safeRun()
         else
-            handlers[msg.id](msg)
+            result,err = pcall(safeRun)
+            if not result then restart(err) end
         end
     end
+end
+
+--- 设置“lua脚本运行出错时，是否回退原始烧写版本”的功能开关。如果没有调用此接口设置，默认回滚
+-- @bool flag，“lua脚本运行出错时，是否回退原始烧写版本”的标志，true表示回滚，false表示不回滚
+-- @return nil
+-- @usage
+-- sys.setRollBack(true)
+-- sys.setRollBack(false)
+function setRollBack(flag)
+    sRollBack = flag
 end
 
 require "clib"

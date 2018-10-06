@@ -16,7 +16,13 @@ require"lbsLoc"
 ]]
 local function reqLbsLoc()
     reqAddr = not reqAddr
-    lbsLoc.request(getLocCb,reqAddr)
+    if reqWifi==nil then
+        reqWifi = {["1a:fe:34:9e:a1:77"] = -63,["8c:be:be:2d:cd:e9"] = -81,["20:4e:7f:82:c2:c4"] = -70}
+    else
+        reqWifi=nil
+    end
+    
+    lbsLoc.request(getLocCb,reqAddr,nil,nil,nil,nil,nil,reqWifi)
 end
 
 --[[

@@ -19,6 +19,7 @@ local function cbFnc(result,prompt,head,body)
     if result and body then
         log.info("testHttp.cbFnc","bodyLen="..body:len())
     end
+    
 end
 
 local function cbFncFile(result,prompt,head,filePath)
@@ -42,6 +43,21 @@ local function cbFncFile(result,prompt,head,filePath)
     --文件使用完之后，如果以后不再用到，需要自行删除
     if filePath then os.remove(filePath) end
 end
+
+socket.setDnsParser(
+    function(domainName,token)
+        http.request("GET","119.29.29.29/d?dn="..domainName,nil,nil,nil,35000,
+            function (result,statusCode,head,body)
+                log.info("testHttp..httpDnsCb",result,statusCode,head,body)
+                if result and statusCode=="200" and body and body:match("^[%d%.]+") then
+                    sys.publish("USER_DNS_PARSE_RESULT_"..token,(body:match("^([%d%.]+)")))
+                else
+                    sys.publish("USER_DNS_PARSE_RESULT_"..token)
+                end
+            end)        
+    end
+)
+
 
 http.request("GET","www.lua.org",nil,nil,nil,nil,cbFnc)
 --http.request("GET","https://www.baidu.com",{caCert="ca.crt"},nil,nil,nil,cbFnc)

@@ -88,6 +88,7 @@ ril.regUrc("STATE", function(data)
         request("AT+CIFSR")
         request("AT+CIPSTATUS")
         if dnsIP then request("AT+CDNSCFG="..dnsIP) end
+        request("AT+CDNSCFG?")
         return
     elseif status == "IP PROCESSING" or status == "IP STATUS" then
         sys.timerStop(queryStatus)

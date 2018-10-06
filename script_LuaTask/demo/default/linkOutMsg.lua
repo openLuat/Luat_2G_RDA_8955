@@ -25,14 +25,14 @@ if gpsSupport then
 end
 
 --数据发送的消息队列
-local msgQuene = {}
+local msgQueue = {}
 
 local function enTopic(t)
     return "/v1/device/"..misc.getImei().."/"..t
 end
 
 local function insertMsg(topic,payload,qos,user)
-    table.insert(msgQuene,{t=topic,p=payload,q=qos,user=user})
+    table.insert(msgQueue,{t=topic,p=payload,q=qos,user=user})
 end
 
 local function enCellInfoExt()
@@ -187,8 +187,8 @@ end
 -- @usage linkOutMsg.unInit()
 function unInit()
     sys.timerStop(locReport)
-    while #msgQuene>0 do
-        local outMsg = table.remove(msgQuene,1)
+    while #msgQueue>0 do
+        local outMsg = table.remove(msgQueue,1)
         if outMsg.user and outMsg.user.cb then outMsg.user.cb(false,outMsg.user.para) end
     end
 end
@@ -197,7 +197,7 @@ end
 -- @return 有数据等待发送返回true，否则返回false
 -- @usage linkOutMsg.waitForSend()
 function waitForSend()
-    return #msgQuene > 0
+    return #msgQueue > 0
 end
 
 --- MQTT客户端数据发送处理
@@ -205,8 +205,8 @@ end
 -- @return 处理成功返回true，处理出错返回false
 -- @usage linkOutMsg.proc(mqttClient)
 function proc(mqttClient)
-    while #msgQuene>0 do
-        local outMsg = table.remove(msgQuene,1)
+    while #msgQueue>0 do
+        local outMsg = table.remove(msgQueue,1)
         local result = mqttClient:publish(outMsg.t,outMsg.p,outMsg.q)
         if outMsg.user and outMsg.user.cb then outMsg.user.cb(result,outMsg.user.para) end
         if not result then return end
