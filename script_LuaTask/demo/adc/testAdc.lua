@@ -15,21 +15,24 @@ local ADC_ID = 0
 -- @return 无
 -- @usage read()
 local function read()
-	-- 打开adc
-	adc.open(ADC_ID)
-	-- 读取adc
-	-- adcval为number类型，表示adc的原始值，无效值为0xFFFF
-	-- voltval为number类型，表示转换后的电压值，单位为毫伏，无效值为0xFFFF；adc.read接口返回的voltval放大了3倍，所以需要除以3还原成原始电压
-	local adcval,voltval = adc.read(ADC_ID)
-	log.info("testAdc.read",adcval,(voltval-(voltval%3))/3,voltval)
-	--如果adcval有效
-	if adcval and adcval~=0xFFFF then
-	end
-	--如果voltval有效	
-	if voltval and voltval~=0xFFFF then
-		--adc.read接口返回的voltval放大了3倍，所以此处除以3
-		voltval = (voltval-(voltval%3))/3
-	end
+    -- 打开adc
+    adc.open(ADC_ID)
+    -- 读取adc
+    -- adcval为number类型，表示adc的原始值，无效值为0xFFFF
+    -- voltval为number类型，表示转换后的电压值，单位为毫伏，无效值为0xFFFF；adc.read接口返回的voltval放大了3倍，所以需要除以3还原成原始电压
+    local adcval,voltval = adc.read(ADC_ID)
+    log.info("testAdc.read",adcval,(voltval-(voltval%3))/3,voltval)
+    --如果adcval有效
+    if adcval and adcval~=0xFFFF then
+    end
+    --如果voltval有效	
+    if voltval and voltval~=0xFFFF then
+        --adc.read接口返回的voltval放大了3倍，所以此处除以3
+        voltval = (voltval-(voltval%3))/3
+    end
+    if tonumber((rtos.get_version()):match("Luat_V(%d+)_"))>=27 then
+        adc.close(ADC_ID)
+    end
 end
 
 sys.timerLoopStart(read,1000)

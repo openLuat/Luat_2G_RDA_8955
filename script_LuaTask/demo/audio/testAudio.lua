@@ -100,7 +100,7 @@ if true then
     if string.match(rtos.get_version(),"TTS") then
         sys.timerStart(testPlayTts,5000)
         --如果要测试tts播放时，请求播放新的tts，打开下面这段代码
-        sys.timerLoopStart(tesTtsNew,5000)
+        --sys.timerLoopStart(tesTtsNew,5000)
     else
         sys.timerStart(testPlayFile,5000)
     end

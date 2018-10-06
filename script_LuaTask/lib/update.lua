@@ -17,6 +17,7 @@ local UPD_FILE_PATH = "/luazip/update.bin"
 
 
 local sUpdating,sCbFnc,sUrl,sPeriod,SRedir,sLocation
+local sDownloading
 
 local function httpDownloadCbFnc(result,statusCode,head)
     log.info("update.httpDownloadCbFnc",result,statusCode,head,sCbFnc,sPeriod)
@@ -30,6 +31,7 @@ function clientTask()
     while true do
     
         local retryCnt = 0
+        sDownloading = true
         while true do
             os.remove(UPD_FILE_PATH)
             http.request("GET",
@@ -72,6 +74,7 @@ function clientTask()
                 end
             end
         end
+        sDownloading = false
         
         if sPeriod then
             sys.wait(sPeriod)
@@ -111,4 +114,8 @@ function request(cbFnc,url,period,redir)
     if not sUpdating then        
         sys.taskInit(clientTask)
     end
+end
+
+function isDownloading()
+    return sDownloading
 end

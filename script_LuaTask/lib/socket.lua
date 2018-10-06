@@ -19,9 +19,14 @@ local SENDSIZE = 1460
 -- 缓冲区最大下标
 local INDEX_MAX = 49
 
+--用户自定义的DNS解析器
+local dnsParser
+local dnsParserToken = 0
+
 --- SOCKET 是否有可用
 -- @return 可用true,不可用false
 socket.isReady = link.isReady
+
 
 local function isSocketActive(ssl)
     for _, c in pairs(ssl and socketsSsl or sockets) do
@@ -43,7 +48,7 @@ local function errorInd(error)
                 if error == 'CLOSED' and not c.ssl then c.connected = false socketStatusNtfy() end
                 c.error = error
                 if c.co and coroutine.status(c.co) == "suspended" then coroutine.resume(c.co, false) end
-            --end
+                --end
             end
         end
     end
@@ -73,9 +78,7 @@ local function onSocketURC(data, prefix)
     if tag == "SSL" and string.find(result, "ERROR:") == 1 then return end
     
     if string.find(result, "ERROR") or result == "CLOSED" then
-        if result == 'CLOSED' and not tSocket[id].ssl then
-            tSocket[id].connected = false
-            socketStatusNtfy() end
+        if result == 'CLOSED' and not tSocket[id].ssl then tSocket[id].connected = false socketStatusNtfy() end
         tSocket[id].error = result
         coroutine.resume(tSocket[id].co, false)
     end
@@ -208,6 +211,7 @@ function mt.__index:connect(address, port)
         end
         
         sslInit()
+        self.address = address
         req(string.format("AT+SSLCREATE=%d,\"%s\",%d", self.id, address .. ":" .. port, (self.cert and self.cert.caCert) and 0 or 1))
         self.created = true
         for i = 1, #tConfigCert do
@@ -220,7 +224,38 @@ function mt.__index:connect(address, port)
     
     ril.regUrc((self.ssl and "SSL&" or "") .. self.id, onSocketURC)
     self.wait = self.ssl and "+SSLCONNECT" or "+CIPSTART"
-    if coroutine.yield() == false then
+    
+    local r, s = coroutine.yield()
+    
+    if r==false and s=="DNS" then
+        if self.ssl then self:sslDestroy() self.error = nil end
+        
+        require"http"
+        --请求腾讯云免费HttpDns解析
+        http.request("GET","119.29.29.29/d?dn="..address,nil,nil,nil,40000,
+            function (result,statusCode,head,body)
+                log.info("socket.httpDnsCb",result,statusCode,head,body)
+                sys.publish("SOCKET_HTTPDNS_RESULT",result,statusCode,head,body)
+            end)
+        local _,result,statusCode,head,body = sys.waitUntil("SOCKET_HTTPDNS_RESULT")
+        
+        --DNS解析成功
+        if result and statusCode=="200" and body and body:match("^[%d%.]+") then
+            return self:connect(body:match("^([%d%.]+)"),port)
+        --DNS解析失败
+        else
+            if dnsParser then
+                dnsParserToken = dnsParserToken+1
+                dnsParser(address,dnsParserToken)
+                local result,ip = sys.waitUntil("USER_DNS_PARSE_RESULT_"..dnsParserToken,40000)
+                if result and ip and ip:match("^[%d%.]+") then
+                    return self:connect(ip:match("^[%d%.]+"),port)
+                end
+            end
+        end
+    end
+    
+    if r == false then
         if self.ssl then self:sslDestroy() end
         return false
     end
@@ -308,7 +343,7 @@ function mt.__index:sslDestroy()
     assert(self.co == coroutine.running(), "socket:sslDestroy: coroutine mismatch")
     if self.ssl and (self.connected or self.created) then
         self.connected = false
-        self.created = false
+        self.created = false        
         req("AT+SSLDESTROY=" .. self.id)
         self.wait = "+SSLDESTROY"
         coroutine.yield()
@@ -348,6 +383,10 @@ local function onResponse(cmd, success, response, intermediate)
         log.warn('socket: response on nil socket', cmd, response)
         return
     end
+    
+    if cmd:match("^AT%+SSLCREATE") then
+        tSocket[id].createResp = response
+    end
     if tSocket[id].wait == prefix then
         if (prefix == "+CIPSTART" or prefix == "+SSLCONNECT") and success then
             -- CIPSTART,SSLCONNECT 返回OK只是表示被接受
@@ -356,8 +395,21 @@ local function onResponse(cmd, success, response, intermediate)
         if (prefix == '+CIPSEND' or prefix == "+SSLSEND") and response:match("%d, *([%u%d :]+)") ~= 'SEND OK' then
             success = false
         end
-        if not success then tSocket[id].error = response end
-        coroutine.resume(tSocket[id].co, success)
+        
+        local reason,address
+        if not success then
+            if prefix == "+CIPSTART" then
+                address = cmd:match("AT%+CIPSTART=%d,\"%a+\",\"(.+)\",%d+")
+            elseif prefix == "+SSLCONNECT" and (tSocket[id].createResp or ""):match("SSL&%d+,CREATE ERROR: 4") then
+                address = tSocket[id].address or ""
+            end
+            if address and not address:match("^[%d%.]+$") then
+                reason = "DNS"
+            end
+        end
+        
+        if not reason and not success then tSocket[id].error = response end
+        coroutine.resume(tSocket[id].co, success, reason)
     end
 end
 
@@ -399,6 +451,7 @@ ril.regRsp("+CIPCLOSE", onResponse)
 ril.regRsp("+CIPSEND", onResponse)
 ril.regRsp("+CIPSTART", onResponse)
 ril.regRsp("+SSLDESTROY", onResponse)
+ril.regRsp("+SSLCREATE", onResponse)
 ril.regRsp("+SSLSEND", onResponse)
 ril.regRsp("+SSLCONNECT", onResponse)
 ril.regUrc("+RECEIVE", onSocketReceiveUrc)
@@ -425,7 +478,27 @@ end
 -- setTcpResendPara(4,16)
 function setTcpResendPara(retryCnt, retryMaxTimeout)
     req("AT+TCPUSERPARAM=6," .. (retryCnt or 4) .. ",7200," .. (retryMaxTimeout or 16))
-    ril.setDataTimeout((3 * (retryMaxTimeout - 8) + (retryCnt - 3) * (16 - 8) + 60) * 1000)
+    ril.setDataTimeout(((retryCnt or 4)*(retryMaxTimeout or 16) + 60) * 1000)
+end
+
+--- 设置用户自定义的DNS解析器.
+-- 通过域名连接服务器时，DNS解析的过程如下：
+-- 1、使用core中提供的方式，连接运营商DNS服务器解析，如果解析成功，则结束；如果解析失败，走第2步
+-- 2、使用脚本lib中提供的免费腾讯云HttpDns解析，如果解析成功，则结束；如果解析失败，走第3步
+-- 3、如果存在用户自定义的DNS解析器，则使用此处用户自定义的DNS解析器去解析
+-- @function[opt=nil] parserFnc，用户自定义的DNS解析器函数，函数的调用形式为：
+--      parserFnc(domainName,token)，调用接口后会等待解析结果的消息通知或者40秒超时失败
+--          domainName：string类型，表示域名，例如"www.baidu.com"
+--          token：string类型，此次DNS解析请求的token，例如"1"
+--      解析结束后，要publish一个消息来通知解析结果，消息参数中的ip地址最多返回一个，sys.publish("USER_DNS_PARSE_RESULT_"..token,ip)，例如：
+--          sys.publish("USER_DNS_PARSE_RESULT_1","115.239.211.112")
+--              表示解析成功，解析到1个IP地址115.239.211.112
+--          sys.publish("USER_DNS_PARSE_RESULT_1")
+--              表示解析失败
+-- @return nil
+-- @usage socket.setDnsParser(parserFnc)
+function setDnsParser(parserFnc)
+    dnsParser = parserFnc
 end
 
 setTcpResendPara(4, 16)

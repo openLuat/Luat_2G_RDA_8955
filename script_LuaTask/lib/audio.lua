@@ -51,12 +51,25 @@ local function playEnd(result)
     if cb then cb(result) end
 end
 
+local function isTtsApi()
+    return tonumber((rtos.get_version()):match("Luat_V(%d+)_"))>=29
+end
 
 local function taskAudio()
     local playFnc =
     {
         FILE = audiocore.play,
-        TTS = function(text) req("AT+QTTS=1") req(string.format("AT+QTTS=%d,\"%s\"",2,string.toHex(common.utf8ToUcs2(text)))) end,
+        TTS = function(text)
+                if isTtsApi() then
+                    audiocore.openTTS()
+                    local _,result = sys.waitUntil("TTS_OPEN_IND")
+                    if not result then return false end
+                    
+                    audiocore.playTTS(common.utf8ToUcs2(text))
+                else
+                    req("AT+QTTS=1") req(string.format("AT+QTTS=%d,\"%s\"",2,string.toHex(common.utf8ToUcs2(text))))
+                end
+             end,
         TTSCC = function(text) req("AT+QTTS=1") req(string.format("AT+QTTS=%d,\"%s\"",4,string.toHex(common.utf8ToUcs2(text)))) end,
         RECORD = function(id) f,d=record.getSize() req("AT+AUDREC=1,0,2," .. id .. "," .. d*1000)end,   
     }
@@ -64,7 +77,16 @@ local function taskAudio()
     local stopFnc =
     {
         FILE = audiocore.stop,
-        TTS = function() req("AT+QTTS=3") sys.waitUntil("AUDIO_STOP_END") end,
+        TTS = function(text)
+                if isTtsApi() then
+                    audiocore.stopTTS()
+                    sys.waitUntil("TTS_STOP_IND") 
+                    audiocore.closeTTS()
+                    sys.waitUntil("TTS_CLOSE_IND")
+                else
+                    req("AT+QTTS=3") sys.waitUntil("AUDIO_STOP_END")
+                end
+             end,
         TTSCC = function() req("AT+QTTS=3") sys.waitUntil("AUDIO_STOP_END") end,
         RECORD = function(id) f,d=record.getSize() req("AT+AUDREC=1,0,3," .. id .. "," .. d*1000) sys.waitUntil("AUDIO_STOP_END") end,        
     }
@@ -87,6 +109,9 @@ local function taskAudio()
         log.info("audio.taskAudio resume msg",msg)        
         if msg=="SUCCESS" then
             if sDup then
+                if sType=="TTS" and isTtsApi() then
+                    stopFnc[sType](sPath)
+                end
                 if sDupInterval and sDupInterval>0 then
                     sys.waitUntil("AUDIO_PLAY_END",sDupInterval)
                     if sType==nil then break end
@@ -99,9 +124,12 @@ local function taskAudio()
         elseif msg=="NEW" then
             stopFnc[sType](sPath)
             playEnd(4)
-            if sType==nil then break end
+            --if sType==nil then break end
             update(param.pri,param.typ,param.pth,param.vl,param.c,param.dp,param.dpIntval)
         elseif msg=="STOP" then
+            if param=="TTS" and isTtsApi() then
+                stopFnc[param]()
+            end
             playEnd(5)
             break
         else
@@ -162,8 +190,21 @@ ril.regRsp("+QTTS",rsp,0)
 local function audioMsg(msg)
     sys.publish("AUDIO_PLAY_END",msg.play_end_ind==true and "SUCCESS" or "ERROR")
 end
+
+local function ttsMsg(msg)
+    log.info("audio.ttsMsg",msg.type,msg.result)
+    local tag = {[0]="CLOSE", [1]="OPEN", [2]="PLAY", [3]="STOP"}
+    if msg.type==2 then        
+        sys.publish("AUDIO_PLAY_END",msg.result and "SUCCESS" or "ERROR")
+    else
+        if tag[msg.type] then sys.publish("TTS_"..tag[msg.type].."_IND",msg.result) end
+    end
+end
 --注册core上报的rtos.MSG_AUDIO消息的处理函数
 rtos.on(rtos.MSG_AUDIO,audioMsg)
+if isTtsApi() then
+    rtos.on(rtos.MSG_TTS,ttsMsg)
+end
 
 --- 播放音频
 -- @number priority，音频优先级，数值越大，优先级越高
@@ -205,13 +246,14 @@ function stop()
     if sType then
         if sType=="FILE" then
             audiocore.stop()
-        elseif sType=="TTS" or sType=="TTSCC" then
+        elseif (sType=="TTS" and not isTtsApi()) or sType=="TTSCC" then
             req("AT+QTTS=3")
         elseif sType=="RECORD" then
             f,d=record.getSize() req("AT+AUDREC=1,0,3," .. sPath .. "," .. d*1000)
         end
+        local typ = sType
         sPriority,sType,sPath,sVol,sCb,sDup,sDupInterval = nil
-        sys.publish("AUDIO_PLAY_END","STOP")
+        sys.publish("AUDIO_PLAY_END","STOP",typ)
     end
 end
 

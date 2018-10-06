@@ -15,7 +15,7 @@ module(..., package.seeall)
 local sProductKey,sProductSecret,sGetDeviceNameFnc,sGetDeviceSecretFnc,sSetDeviceSecretFnc
 local sKeepAlive,sCleanSession,sWill
 
-local outQuene =
+local outQueue =
 {
     SUBSCRIBE = {},
     PUBLISH = {},
@@ -24,17 +24,17 @@ local outQuene =
 local evtCb = {}
 
 local function insert(type,topic,qos,payload,cbFnc,cbPara)
-    table.insert(outQuene[type],{t=topic,q=qos,p=payload,cb=cbFnc,para=cbPara})
+    table.insert(outQueue[type],{t=topic,q=qos,p=payload,cb=cbFnc,para=cbPara})
 end
 
 local function remove(type)
-    if #outQuene[type]>0 then return table.remove(outQuene[type],1) end
+    if #outQueue[type]>0 then return table.remove(outQueue[type],1) end
 end
 
 local function procSubscribe(client)
     local i
-    for i=1,#outQuene["SUBSCRIBE"] do
-        if not client:subscribe(outQuene["SUBSCRIBE"][i].t,outQuene["SUBSCRIBE"][i].q) then
+    for i=1,#outQueue["SUBSCRIBE"] do
+        if not client:subscribe(outQueue["SUBSCRIBE"][i].t,outQueue["SUBSCRIBE"][i].q) then
             return false,"procSubscribe"
         end
     end
@@ -59,7 +59,7 @@ local function procReceive(client)
             end
             
             --如果有等待发送的数据，则立即退出本循环
-            if #outQuene["PUBLISH"]>0 then return true,"procReceive" end
+            if #outQueue["PUBLISH"]>0 then return true,"procReceive" end
         else
             break
         end
@@ -69,8 +69,8 @@ local function procReceive(client)
 end
 
 local function procSend(client)
-    while #outQuene["PUBLISH"]>0 do
-        local item = table.remove(outQuene["PUBLISH"],1)
+    while #outQueue["PUBLISH"]>0 do
+        local item = table.remove(outQueue["PUBLISH"],1)
         local result = client:publish(item.t,item.p,item.q)
         if item.cb then item.cb(result,item.para) end
         if not result then return false,"procSend" end
@@ -111,8 +111,8 @@ function clientDataTask(host,tPorts,clientId,user,password)
                     log.warn("aLiYun.clientDataTask."..prompt.." error")
                 end
 
-                while #outQuene["PUBLISH"]>0 do
-                    local item = table.remove(outQuene["PUBLISH"],1)
+                while #outQueue["PUBLISH"]>0 do
+                    local item = table.remove(outQueue["PUBLISH"],1)
                     if item.cb then item.cb(false,item.para) end
                 end
                 if aLiYunOta and aLiYunOta.connectCb then aLiYunOta.connectCb(false,sProductKey,sGetDeviceNameFnc()) end

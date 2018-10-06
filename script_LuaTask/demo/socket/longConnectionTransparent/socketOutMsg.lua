@@ -9,10 +9,10 @@
 module(...,package.seeall)
 
 --数据发送的消息队列
-local msgQuene = {}
+local msgQueue = {}
 
 local function insertMsg(data,user)
-    table.insert(msgQuene,{data=data,user=user})
+    table.insert(msgQueue,{data=data,user=user})
 end
 
 
@@ -20,8 +20,8 @@ end
 -- @return 无
 -- @usage socketOutMsg.unInit()
 function unInit()
-    while #msgQuene>0 do
-        local outMsg = table.remove(msgQuene,1)
+    while #msgQueue>0 do
+        local outMsg = table.remove(msgQueue,1)
         if outMsg.user and outMsg.user.cb then outMsg.user.cb(false,outMsg.user.para) end
     end
 end
@@ -30,7 +30,7 @@ end
 -- @return 有数据等待发送返回true，否则返回false
 -- @usage socketOutMsg.waitForSend()
 function waitForSend()
-    return #msgQuene > 0
+    return #msgQueue > 0
 end
 
 --- socket客户端数据发送处理
@@ -38,8 +38,8 @@ end
 -- @return 处理成功返回true，处理出错返回false
 -- @usage socketOutMsg.proc(socketClient)
 function proc(socketClient)
-    while #msgQuene>0 do
-        local outMsg = table.remove(msgQuene,1)
+    while #msgQueue>0 do
+        local outMsg = table.remove(msgQueue,1)
         local result = socketClient:send(outMsg.data)
         if outMsg.user and outMsg.user.cb then outMsg.user.cb(result,outMsg.user.para) end
         if not result then return end

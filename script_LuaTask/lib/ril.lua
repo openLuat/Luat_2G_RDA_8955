@@ -324,7 +324,9 @@ local function procatc(data)
             local keystr = cmdhead == "+CIPSEND" and "SEND" or "CLOSE"
             local lid, res = string.match(data, "(%d), *([%u%d :]+)")
             
-            if lid and res then
+            if data:match("^%d, *CLOSED$") then
+                isurc = true
+            elseif lid and res then
                 if (string.find(res, keystr) == 1 or string.find(res, "TCP ERROR") == 1 or string.find(res, "UDP ERROR") == 1 or string.find(data, "DATA ACCEPT")) and (lid == string.match(currcmd, "=(%d)")) then
                     result = data:match("ERROR") == nil
                     respdata = data
