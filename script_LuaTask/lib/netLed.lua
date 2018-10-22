@@ -109,7 +109,11 @@ end
 
 --- 配置网络指示灯并且立即执行配置后的动作
 -- @bool flag，是否打开网络指示灯功能，true为打开，false为关闭
--- @number pin，控制网络指示灯闪烁的GPIO引脚，例如pio.P1_1表示GPIO33
+-- @param pin，number或者function类型
+-- 为number类型时，表示控制网络指示灯闪烁的GPIO引脚，例如pio.P1_1表示GPIO33
+-- 为function类型时，表示控制网络指示灯闪烁的回调函数，回调函数的调用形式为：
+--              pin(value)
+--              value：number类型，1表示点亮，0表示熄灭
 -- @return nil
 -- @usage setup(true,pio.P1_1)表示打开网络指示灯功能，GPIO33控制指示灯
 -- @usage setup(false)表示关闭网络指示灯功能
@@ -121,7 +125,8 @@ function setup(flag,pin)
         sys.publish("NET_LED_UPDATE")
     end
     if flag and not oldSwitch then
-        sys.taskInit(taskLed, pins.setup(pin or ledPin, 0))
+        if type(pin)=="function" then pin(0) end
+        sys.taskInit(taskLed, type(pin)=="function" and pin or pins.setup(pin or ledPin, 0))
     end        
 end
 

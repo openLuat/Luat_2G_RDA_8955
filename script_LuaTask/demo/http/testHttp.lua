@@ -69,6 +69,8 @@ http.request("GET","www.lua.org",nil,nil,nil,nil,cbFnc)
 --http.request("POST","36.7.87.100:6500",nil,{head1="value1"},{[1]="begin\r\n",[2]={file="/lua/http.lua"},[3]="end\r\n"},30000,cbFnc)
 --http.request("POST","http://lq946.ngrok.xiaomiqiu.cn/",nil,nil,{[1]="begin\r\n",[2]={file_base64="/lua/http.lua"},[3]="end\r\n"},30000,cbFnc)
 
+        
+
 --如下示例代码是利用文件流模式，上传录音文件的demo，使用的URL是随意编造的
 --[[
 http.request("POST","www.test.com/postTest?imei=1&iccid=2",nil,
@@ -78,7 +80,31 @@ http.request("POST","www.test.com/postTest?imei=1&iccid=2",nil,
 ]]
 
 
---下面示例代码是利用multipart/form-data模式，上传2参数和1个照片文件
+--如下示例代码是利用x-www-form-urlencoded模式，上传3个参数，通知openluat的sms平台发送短信
+--[[
+function urlencodeTab(params)
+    local msg = {}
+    for k, v in pairs(params) do
+        table.insert(msg, string.urlEncode(k) .. '=' .. string.urlEncode(v))
+        table.insert(msg, '&')
+    end
+    table.remove(msg)
+    return table.concat(msg)
+end
+
+http.request("POST","http://api.openluat.com/sms/send",nil,
+         {
+             ["Authorization]"="Basic jffdsfdsfdsfdsfjakljfdoiuweonlkdsjdsjapodaskdsf",
+             ["Content-Type"]="application/x-www-form-urlencoded",
+         },
+         urlencodeTab({content="您的煤气检测处于报警状态，请及时通风处理！", phone="13512345678", sign="短信发送方"}),
+         30000,cbFnc)
+]]
+         
+         
+
+
+--如下示例代码是利用multipart/form-data模式，上传2参数和1个照片文件
 --[[
 local function postMultipartFormData(url,cert,params,timeout,cbFnc,rcvFileName)
     local boundary,body,k,v,kk,vv = "--------------------------"..os.time()..rtos.tick(),{}

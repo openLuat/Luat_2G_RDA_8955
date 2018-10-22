@@ -29,7 +29,6 @@ flyMode = false
 --ci：小区ID
 --rssi：信号强度
 local lac, ci, rssi = "", "", 0
-
 --cellinfo：当前小区和临近小区信息表
 --multicellcb：获取多小区的回调函数
 local cellinfo, multicellcb = {}
@@ -94,8 +93,6 @@ local function creg(data)
         if s == "REGISTERED" then
             --产生一个内部消息NET_STATE_CHANGED，表示GSM网络注册状态发生变化
             publish("NET_STATE_REGISTERED")
-            cengQueryPoll(60 * 1000)
-        else
             cengQueryPoll()
         end
         state = s
@@ -375,15 +372,16 @@ end
 -- @usage net.cengQueryPoll(60000) --每分钟查询1次
 function cengQueryPoll(period)
     -- 不是飞行模式 并且 工作模式为完整模式
-    if not flyMode then
-        if nil ~= period then
-            --启动定时器
-            sys.timerStart(cengQueryPoll, period, period)
-        end
+    if not flyMode then        
         --发送AT+CENG?查询
         ril.request("AT+CENG?")
     else
         log.warn("net.cengQueryPoll", "flymode:", flyMode)
+    end
+    if nil ~= period then
+        --启动定时器
+        sys.timerStopAll(cengQueryPoll)
+        sys.timerStart(cengQueryPoll, period, period)
     end
     return not flyMode
 end
@@ -395,43 +393,42 @@ end
 -- @usage net.csqQueryPoll(60000) --每分钟查询1次
 function csqQueryPoll(period)
     --不是飞行模式 并且 工作模式为完整模式
-    if not flyMode then
-        if nil ~= period then
-            --启动定时器
-            sys.timerStart(csqQueryPoll, period, period)
-        end
+    if not flyMode then        
         --发送AT+CSQ查询
         ril.request("AT+CSQ")
     else
-        log.info("net.csqQueryPoll", "flymode:", flyMode)
+        log.warn("net.csqQueryPoll", "flymode:", flyMode)
+    end
+    if nil ~= period then
+        --启动定时器
+        sys.timerStopAll(csqQueryPoll)
+        sys.timerStart(csqQueryPoll, period, period)
     end
     return not flyMode
 end
 
 
---- 查询信号强度和基站信息(飞行模式，简单模式会返回查询失败)
+--- 设置查询信号强度和基站信息的间隔
 -- @number ... 查询周期,参数可变，参数为nil只查询1次，参数1是信号强度查询周期，参数2是基站查询周期
--- @return bool ，true：查询成功，false：查询失败
+-- @return bool ，true：设置成功，false：设置失败
 -- @usage net.startQueryAll()
--- @usage net.startQueryAll(60000) -- 6分钟查询1次信号强度和基站信息
+-- @usage net.startQueryAll(60000) -- 1分钟查询1次信号强度，只立即查询1次基站信息
 -- @usage net.startQueryAll(60000,600000) -- 1分钟查询1次信号强度，10分钟查询1次基站信息
 function startQueryAll(...)
-    if not flyMode then
-        csqQueryPoll(arg[1])
-        cengQueryPoll(arg[2])
-        return true
-    else
+    csqQueryPoll(arg[1])
+    cengQueryPoll(arg[2])
+    if flyMode then        
         log.info("sim.startQuerAll", "flyMode:", flyMode)
-        return false
     end
+    return true
 end
 
 --- 停止查询信号强度和基站信息
 -- @return 无
 -- @usage net.stopQueryAll()
 function stopQueryAll()
-    sys.timerStop(csqQueryPoll)
-    sys.timerStop(cengQueryPoll)
+    sys.timerStopAll(csqQueryPoll)
+    sys.timerStopAll(cengQueryPoll)
 end
 
 -- 处理SIM卡状态消息，SIM卡工作不正常时更新网络状态为未注册

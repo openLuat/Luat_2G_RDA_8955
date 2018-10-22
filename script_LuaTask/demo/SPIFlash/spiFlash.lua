@@ -32,7 +32,7 @@ end
 function setup(id, cs, timeout)
     pmd.ldoset(6, pmd.LDO_VMMC)
 
-    if not spi.setup(id, 1, 1, 8, 13000000, 1, 1) then
+    if not spi.setup(id, 0, 0, 8, 2000000, 1, 1) then
         log.error('BH25Q32.setup', 'spi setup failed')
     end
 
