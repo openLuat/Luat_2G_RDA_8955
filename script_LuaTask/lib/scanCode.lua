@@ -15,8 +15,7 @@ local sCbFnc
 -- @function cbFnc，扫码返回或者超时未返回的回调函数，回调函数的调用形式为：
 --      cbFnc(result,type,str)
 --      result：true或者false，true表示扫码成功，false表示超时失败
---      type：string或者nil类型，result为true时，表示扫码类型；result为false时，为nil；支持如下几种：
---          QR-Code、CODE-128、EAN-8、UPC-E、ISBN-10、UPC-A、EAN-13、ISBN-13、I2/5、CODE-39、PDF417
+--      type：string或者nil类型，result为true时，表示扫码类型；result为false时，为nil；支持QR-Code和CODE-128
 --      str：string或者nil类型，result为true时，表示扫码结果的字符串；result为false时，为nil
 -- @number[opt=10000] timeout，设置请求后，等待扫码结果返回的超时时间，单位毫秒，默认为10秒
 -- @usage 

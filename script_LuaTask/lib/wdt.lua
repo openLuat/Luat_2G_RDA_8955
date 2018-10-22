@@ -53,5 +53,5 @@ end
 -- @return 无
 -- @usage setup(pio.P0_31,pio.P0_29)
 function setup(rst, wd)
-    sys.taskInit(taskWdt, pins.setup(rst, 0, pio.PULLUP), pins.setup(wd, 0, pio.PULLUP))
+    sys.taskInit(taskWdt, rst and pins.setup(rst, 0, pio.PULLUP) or function() end, pins.setup(wd, 0, pio.PULLUP))
 end

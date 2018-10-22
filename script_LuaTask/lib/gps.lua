@@ -24,8 +24,8 @@ local fixFailCnt = 0
 local latitudeType,latitude,longitudeType,longitude = "N","","E",""
 --海拔，速度，方向角
 local altitude,speed,course = "0","0","0"
---参与定位的卫星个数，所有可见卫星的最大信号值
-local usedSateCnt,maxSignalStrength = "0","0"
+--参与定位的卫星个数，所有可见卫星的最大信号值,所有可见卫星的最大信号值中间缓存值
+local usedSateCnt,maxSignalStrength,maxSignalStrengthVar = "0",0,0
 --可见卫星个数
 local viewedGpsSateCnt,viewedBdSateCnt = "0","0"
 --可用卫星号，UTC时间，信噪比
@@ -70,52 +70,56 @@ local runTime,sleepTime
 返回值：无
 ]]
 local function getstrength(sg)
+    sg = ssub(sg, 4, #sg)
     local d1,d2,curnum,lineno,total,sgv_str = sfind(sg,"GSV,(%d),(%d),(%d+),(.*)%*.*")
 
     if not curnum or not lineno or not total or not sgv_str then
-		return
-	end
+        return
+    end
+    if lineno == nil then
+        maxSignalStrengthVar = 0
+        maxSignalStrength = 0
+    elseif tonumber(lineno) == 1 then
+        maxSignalStrength = maxSignalStrengthVar
+        maxSignalStrengthVar = 0
+    end
+	
+    local tmpstr,i = sgv_str
+    for i=1,4 do
+        local d1,d2,id,elevation,azimuth,strength = sfind(tmpstr,"(%d+),([%-]*%d*),(%d*),(%d*)")
+        if id == nil then return end
+        if strength == "" or not strength then
+            strength = "00"
+        end
+        strength = tonumber(strength)
+        if strength > maxSignalStrengthVar then
+            maxSignalStrengthVar = strength
+        end
 
-	local tmpstr,i = sgv_str
-	for i=1,4 do
-		local d1,d2,id,elevation,azimuth,strength = sfind(tmpstr,"(%d+),([%-]*%d*),(%d*),(%d*)")
-		if id == nil then
-			return
-		end
-		if strength == "" or not strength then
-			strength = "00"
-		end
-		strength = tonumber(strength)
-		--[[if strength and strength < 60 then
-			gps.sates = gps.sates .. id .. string.format("%02d",strength) .. " "
-			if strength > gps.sn then
-				gps.sn = strength
-			end
-		end]]
-		local idx,cur,fnd,tmpid = 0,id..","..elevation..","..azimuth..","..strength..",",false
-		for tmpid in string.gmatch(Gsv,"(%d+),%d*,%d*,%d*,") do
-			idx = idx + 1
-			if tmpid == id then fnd = true break end
-		end
-		if fnd then
-			local pattern,i = ""
-			for i=1,idx do
-				pattern = pattern.."%d+,%d*,%d*,%d*,"
-			end
-			local m1,m2 = sfind(Gsv,"^"..pattern)
-			if m1 and m2 then
-				local front = ssub(Gsv,1,m2)
-				local n1,n2 = sfind(front,"%d+,%d*,%d*,%d*,$")
-				if n1 and n2 then
-					Gsv = ssub(Gsv,1,n1-1)..cur..ssub(Gsv,n2+1,-1)
-				end
-			end
-		else
-			Gsv = Gsv..cur
-		end
+        local idx,cur,fnd,tmpid = 0,id..","..elevation..","..azimuth..","..strength..",",false
+        for tmpid in string.gmatch(Gsv,"(%d+),%d*,%d*,%d*,") do
+            idx = idx + 1
+            if tmpid == id then fnd = true break end
+        end
+        if fnd then
+            local pattern,i = ""
+            for i=1,idx do
+                pattern = pattern.."%d+,%d*,%d*,%d*,"
+            end
+            local m1,m2 = sfind(Gsv,"^"..pattern)
+            if m1 and m2 then
+                local front = ssub(Gsv,1,m2)
+                local n1,n2 = sfind(front,"%d+,%d*,%d*,%d*,$")
+                if n1 and n2 then
+                    Gsv = ssub(Gsv,1,n1-1)..cur..ssub(Gsv,n2+1,-1)
+                end
+            end
+        else
+            Gsv = Gsv..cur
+        end
 
-		tmpstr = ssub(tmpstr,d2+1,-1)
-	end
+        tmpstr = ssub(tmpstr,d2+1,-1)
+    end
 end
 
 local function filterTimerFnc()
@@ -169,6 +173,7 @@ local function parseNmea(s)
         if psGsv then getstrength(s) end
     elseif smatch(s,"BDGSV") then
         viewedBdSateCnt = tonumber(smatch(s,"%d+,%d+,(%d+)") or "0")
+		if psGsv then getstrength(s) end
     elseif smatch(s,"GSA") then
         if psSn then
             local satesn = smatch(s,"GSA,%w*,%d*,(%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,)") or ""
@@ -742,7 +747,7 @@ end
 -- @return number strength，最大信号强度
 -- @usage gps.getMaxSignalStrength()
 function getMaxSignalStrength()
-    return tonumber(maxSignalStrength)
+    return maxSignalStrength
 end
 
 --- 获取可见卫星的个数
