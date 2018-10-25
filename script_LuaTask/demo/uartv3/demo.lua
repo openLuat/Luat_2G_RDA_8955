@@ -30,6 +30,6 @@ sys.subscribe(recvReady, function()
     for i = 1, #str, 1460 do
         uart.write(UART_ID, str:sub(i, i + 1460 - 1))
     end
-    -- 串口的数据可以用消息收取，也可以直接读串口缓区表的数据,读完后清空缓冲区
+    -- 串口的数据读完后清空缓冲区
     sendQueue = {}
 end)
