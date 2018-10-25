@@ -19,12 +19,12 @@ pm.wake("mcuart")
 uart.setup(UART_ID, 115200, 8, uart.PAR_NONE, uart.STOP_1)
 uart.on(1, "receive", function(uid)
     table.insert(sendQueue, uart.read(uid, 1460))
-    sys.timerStopAll(sys.publish)
-    sys.timerStart(sys.publish, uartimeout, recvReady, table.concat(sendQueue))
+    sys.timerStart(sys.publish, uartimeout, recvReady)
 end)
 
 -- 向串口发送收到的字符串
-sys.subscribe(recvReady, function(str)
+sys.subscribe(recvReady, function()
+    local str = table.concat(sendQueue)
     log.info("uart read length:", #str, str)
     -- 串口写缓冲区最大1460
     for i = 1, #str, 1460 do
