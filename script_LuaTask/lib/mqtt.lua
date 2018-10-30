@@ -64,7 +64,7 @@ end
 local function packUNSUBSCRIBE(dup, packetId, topics)
     local header = UNSUBSCRIBE * 16 + dup * 8 + 2
     local data = pack.pack(">H", packetId)
-    for k,topic in pairs(topics) do
+    for k, topic in pairs(topics) do
         data = data .. pack.pack(">P", topic)
     end
     return pack.pack(">bAA", header, encodeLen(#data), data)
@@ -224,7 +224,7 @@ function mqttc:read(timeout, msg)
             recvTimeout = kaTimeout > timeout and timeout or kaTimeout
         end
         
-        local r, s = self.io:recv(recvTimeout == 0 and 5 or recvTimeout, msg)
+        local r, s, p = self.io:recv(recvTimeout == 0 and 5 or recvTimeout, msg)
         if r then
             self.inbuf = self.inbuf .. s
         elseif s == "timeout" then -- 超时，判断是否需要发送心跳包
@@ -236,7 +236,7 @@ function mqttc:read(timeout, msg)
                 timeout = timeout - recvTimeout
             end
         else -- 其他错误直接返回
-            return r, s
+            return r, s, p
         end
         local packet, nextpos = unpack(self.inbuf)
         if packet then
@@ -258,7 +258,7 @@ function mqttc:waitfor(id, timeout, msg)
     end
     
     while true do
-        local r, data = self:read(timeout, msg)
+        local r, data, param = self:read(timeout, msg)
         if r then
             if data.id == PUBLISH then
                 if data.qos > 0 then
@@ -279,7 +279,7 @@ function mqttc:waitfor(id, timeout, msg)
             end
             table.insert(self.cache, data)
         else
-            return false, data
+            return false, data, param
         end
     end
 end
@@ -440,12 +440,14 @@ end
 -- @string[opt=nil] msg 可选参数，控制socket所在的线程退出recv阻塞状态
 -- @return result 数据接收结果，true表示成功，false表示失败
 -- @return data
+-- @retrun param 
 -- 如果成功返回的时候接收到的服务器发过来的包
 -- 如果失败返回的是错误信息，如果是超时失败，返回"timeout"
 -- msg控制退出时，返回msg的字符串
 -- @usage
 -- true, packet = mqttc:receive()
 -- false, error_message = mqttc:receive()
+-- false，msg,param = mqttc:receive()
 function mqttc:receive(timeout, msg)
     if not self.connected then
         log.info("mqtt.client:receive", "not connected")

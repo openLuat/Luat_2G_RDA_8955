@@ -10,7 +10,7 @@ require "patch"
 module(..., package.seeall)
 
 -- lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "2.1.6"
+SCRIPT_LIB_VER = "2.1.7"
 
 -- TaskID最大值
 local TASK_TIMER_ID_MAX = 0x1FFFFFFF
@@ -45,7 +45,7 @@ end
 -- @usage sys.restart('程序超时软件重启')
 function restart(r)
     assert(r and r ~= "", "sys.restart cause null")
-    if errDump and errDump.appendErr and type(errDump.appendErr)=="function" then errDump.appendErr("restart[" .. r .. "];") end
+    if errDump and errDump.appendErr and type(errDump.appendErr) == "function" then errDump.appendErr("restart[" .. r .. "];") end
     rtos.restart()
 end
 
@@ -85,6 +85,20 @@ function waitUntil(id, ms)
     local message = ms and {wait(ms)} or {coroutine.yield()}
     unsubscribe(id, coroutine.running())
     return message[1] ~= nil, unpack(message, 2, #message)
+end
+
+--- Task任务的条件等待函数扩展（包括事件消息和定时器消息等条件），只能用于任务函数中。
+-- @param id 消息ID
+-- @number ms 等待超时时间，单位ms，最大等待126322567毫秒
+-- @return message 接收到消息返回message，超时返回false
+-- @return data 接收到消息返回消息参数
+-- @usage result, data = sys.waitUntilExt("SIM_IND", 120000)
+function waitUntilExt(id, ms)
+    subscribe(id, coroutine.running())
+    local message = ms and {wait(ms)} or {coroutine.yield()}
+    unsubscribe(id, coroutine.running())
+    if message[1] ~= nil then return unpack(message) end
+    return false
 end
 
 --- 创建一个任务线程,在模块最末行调用该函数并注册模块中的任务函数，main.lua导入该模块即可
@@ -172,10 +186,10 @@ end
 -- @return 无
 -- @usage timerStopAll(cbFnc)
 function timerStopAll(fnc)
-    for k,v in pairs(timerPool) do
+    for k, v in pairs(timerPool) do
         if type(v) == "table" and v.cb == fnc or v == fnc then
             rtos.timer_stop(k)
-            timerPool[k],para[k],loop[k] = nil
+            timerPool[k], para[k], loop[k] = nil
         end
     end
 end
@@ -219,10 +233,10 @@ end
 -- @number ms 整数，最大定时126322567毫秒
 -- @param ... 可变参数 fnc的参数
 -- @return number 定时器ID，如果失败，返回nil
-function timerLoopStart(fnc,ms,...)
-	local tid = timerStart(fnc,ms,unpack(arg))
-	if tid then loop[tid] = ms end
-	return tid
+function timerLoopStart(fnc, ms, ...)
+    local tid = timerStart(fnc, ms, unpack(arg))
+    if tid then loop[tid] = ms end
+    return tid
 end
 
 --- 判断某个定时器是否处于开启状态
@@ -231,16 +245,16 @@ end
 --另一种是开启定时器时的回调函数，此形式时必须再传入可变参数...才能唯一标记一个定时器
 -- @param ... 可变参数
 -- @return number 开启状态返回true，否则nil
-function timerIsActive(val,...)
-	if type(val) == "number" then
-		return timerPool[val]
-	else
-		for k,v in pairs(timerPool) do
-			if v == val then
-				if cmpTable(arg,para[k]) then return true end
-			end
-		end
-	end
+function timerIsActive(val, ...)
+    if type(val) == "number" then
+        return timerPool[val]
+    else
+        for k, v in pairs(timerPool) do
+            if v == val then
+                if cmpTable(arg, para[k]) then return true end
+            end
+        end
+    end
 end
 
 
@@ -316,9 +330,8 @@ rtos.on = function(id, handler)
 end
 
 ------------------------------------------ Luat 主调度框架  ------------------------------------------
-
 local function safeRun()
-	-- 分发内部消息
+    -- 分发内部消息
     dispatch()
     -- 阻塞读取外部消息
     local msg, param, exparam = rtos.receive(rtos.INF_TIMEOUT)
@@ -342,7 +355,7 @@ local function safeRun()
                 cb()
             end
             --如果是循环定时器，继续启动此定时器
-            if loop[param] then rtos.timer_start(param,loop[param]) end
+            if loop[param] then rtos.timer_start(param, loop[param]) end
         end
     --其他消息（音频消息、充电管理消息、按键消息等）
     elseif type(msg) == "number" then
@@ -356,12 +369,12 @@ end
 -- @return 无
 -- @usage sys.run()
 function run()
-    local result,err
+    local result, err
     while true do
         if sRollBack then
             safeRun()
         else
-            result,err = pcall(safeRun)
+            result, err = pcall(safeRun)
             if not result then restart(err) end
         end
     end

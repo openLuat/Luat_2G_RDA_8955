@@ -48,7 +48,7 @@ local function errorInd(error)
                 if error == 'CLOSED' and not c.ssl then c.connected = false socketStatusNtfy() end
                 c.error = error
                 if c.co and coroutine.status(c.co) == "suspended" then coroutine.resume(c.co, false) end
-                --end
+            --end
             end
         end
     end
@@ -227,29 +227,29 @@ function mt.__index:connect(address, port)
     
     local r, s = coroutine.yield()
     
-    if r==false and s=="DNS" then
-        if self.ssl then self:sslDestroy() self.error = nil end
+    if r == false and s == "DNS" then
+        if self.ssl then self:sslDestroy()self.error = nil end
         
-        require"http"
+        require "http"
         --请求腾讯云免费HttpDns解析
-        http.request("GET","119.29.29.29/d?dn="..address,nil,nil,nil,40000,
-            function (result,statusCode,head,body)
-                log.info("socket.httpDnsCb",result,statusCode,head,body)
-                sys.publish("SOCKET_HTTPDNS_RESULT",result,statusCode,head,body)
+        http.request("GET", "119.29.29.29/d?dn=" .. address, nil, nil, nil, 40000,
+            function(result, statusCode, head, body)
+                log.info("socket.httpDnsCb", result, statusCode, head, body)
+                sys.publish("SOCKET_HTTPDNS_RESULT", result, statusCode, head, body)
             end)
-        local _,result,statusCode,head,body = sys.waitUntil("SOCKET_HTTPDNS_RESULT")
+        local _, result, statusCode, head, body = sys.waitUntil("SOCKET_HTTPDNS_RESULT")
         
         --DNS解析成功
-        if result and statusCode=="200" and body and body:match("^[%d%.]+") then
-            return self:connect(body:match("^([%d%.]+)"),port)
+        if result and statusCode == "200" and body and body:match("^[%d%.]+") then
+            return self:connect(body:match("^([%d%.]+)"), port)
         --DNS解析失败
         else
             if dnsParser then
-                dnsParserToken = dnsParserToken+1
-                dnsParser(address,dnsParserToken)
-                local result,ip = sys.waitUntil("USER_DNS_PARSE_RESULT_"..dnsParserToken,40000)
+                dnsParserToken = dnsParserToken + 1
+                dnsParser(address, dnsParserToken)
+                local result, ip = sys.waitUntil("USER_DNS_PARSE_RESULT_" .. dnsParserToken, 40000)
                 if result and ip and ip:match("^[%d%.]+") then
-                    return self:connect(ip:match("^[%d%.]+"),port)
+                    return self:connect(ip:match("^[%d%.]+"), port)
                 end
             end
         end
@@ -296,7 +296,10 @@ end
 -- @string[opt=nil] msg 可选参数，控制socket所在的线程退出recv阻塞状态
 -- @return result 数据接收结果，true表示成功，false表示失败
 -- @return data 如果成功的话，返回接收到的数据；超时时返回错误为"timeout"；msg控制退出时返回msg的字符串
--- @usage  c = socket.tcp(); c:connect(); result, data = c:recv()
+-- @return param 如果是msg返回的false，则data的值是msg，param的值是msg的参数
+-- @usage c = socket.tcp(); c:connect()
+-- @usage result, data = c:recv()
+-- @usage false,msg,param = c:recv(60000,"publish_msg")
 function mt.__index:recv(timeout, msg)
     assert(self.co == coroutine.running(), "socket:recv: coroutine mismatch")
     if self.error then
@@ -306,21 +309,12 @@ function mt.__index:recv(timeout, msg)
     
     if #self.input == 0 then
         self.wait = self.ssl and "+SSL RECEIVE" or "+RECEIVE"
-        if timeout and timeout ~= 0 then
-            --[[
-            local r, s = sys.wait(timeout)
-            if r == nil then
-            return false, "timeout"
-            else
-            if self.ssl and not r then self:sslDestroy() end
-            return r, s
-            end
-            --]]
-            local r, s = sys.waitUntil(msg or tostring(self.co), timeout)
+        if timeout and timeout > 0 then
+            local r, s = sys.waitUntilExt(msg or tostring(self.co), timeout)
             if not r then
                 return false, "timeout"
-            elseif r and s == nil then
-                return false, msg
+            elseif r and r == msg then
+                return false, r, s
             else
                 if self.ssl and not r then self:sslDestroy() end
                 return r, s
@@ -343,7 +337,7 @@ function mt.__index:sslDestroy()
     assert(self.co == coroutine.running(), "socket:sslDestroy: coroutine mismatch")
     if self.ssl and (self.connected or self.created) then
         self.connected = false
-        self.created = false        
+        self.created = false
         req("AT+SSLDESTROY=" .. self.id)
         self.wait = "+SSLDESTROY"
         coroutine.yield()
@@ -396,7 +390,7 @@ local function onResponse(cmd, success, response, intermediate)
             success = false
         end
         
-        local reason,address
+        local reason, address
         if not success then
             if prefix == "+CIPSTART" then
                 address = cmd:match("AT%+CIPSTART=%d,\"%a+\",\"(.+)\",%d+")
@@ -478,7 +472,7 @@ end
 -- setTcpResendPara(4,16)
 function setTcpResendPara(retryCnt, retryMaxTimeout)
     req("AT+TCPUSERPARAM=6," .. (retryCnt or 4) .. ",7200," .. (retryMaxTimeout or 16))
-    ril.setDataTimeout(((retryCnt or 4)*(retryMaxTimeout or 16) + 60) * 1000)
+    ril.setDataTimeout(((retryCnt or 4) * (retryMaxTimeout or 16) + 60) * 1000)
 end
 
 --- 设置用户自定义的DNS解析器.
