@@ -40,6 +40,8 @@ local Sep, Ggalng, Ggalat
 local gpgsvTab, bdgsvTab = {}, {}
 -- GPGSV解析后的CNO信息
 local gsvCnoTab = {}
+-- 基站定位坐标
+local lbs_lat, lbs_lng
 
 --解析GPS模块返回的信息
 local function parseNmea(s)
@@ -371,25 +373,17 @@ function getIntLocation()
     end
     return 0, 0
 end
+--- 获取基站定位的经纬度信息dd.dddd
+function getDeglbs()
+    return lbs_lng or "0.0", lbs_lat or "0.0"
+end
+
 --- 获取度格式的经纬度信息dd.dddddd
 -- @return string,string,返回度格式的字符串经度,维度,符号(正东负西,正北负南)
 -- @usage gpsv2.getLocation()
 function getDegLocation()
-    local lng, lat = "0.0", "0.0"
-    lng = longitudeType == "W" and ("-" .. longitude) or longitude
-    lat = latitudeType == "S" and ("-" .. latitude) or latitude
-    if lng and lat and lng ~= "" and lat ~= "" then
-        local integer, decimal = lng:match("(%d+).(%d+)")
-        if tonumber(integer) and tonumber(decimal) then
-            decimal = decimal:sub(1, 7)
-            lng = integer / 100 .. "." .. ((integer % 100) * 10 ^ 7 + decimal * 10 ^ (7 - #decimal)) / 60
-            integer, decimal = lat:match("(%d+).(%d+)")
-            decimal = decimal:sub(1, 7)
-            lat = integer / 100 .. "." .. ((integer % 100) * 10 ^ 7 + decimal * 10 ^ (7 - #decimal)) / 60
-            return lng, lat
-        end
-    end
-    return "0.0", "0.0"
+    local lng, lat = getIntLocation()
+    return string.format("%d.%07d", lng / 10 ^ 7, lng % 10 ^ 7), string.format("%d.%07d", lat / 10 ^ 7, lat % 10 ^ 7)
 end
 
 --- 获取度分格式的经纬度信息ddmm.mmmm
@@ -505,9 +499,10 @@ local function saveEph(timeout)
     end)
 end
 
+pmd.ldoset(7, pmd.LDO_VIB)
 -- 打开GPS，串口2，波特率115200，跟踪模式
 -- open(2, 115200, 8, 5)
--- open(2, 115200, 2, 1, 5)
+open(2, 115200, 2, 1, 5)
 -- 获取基站定位坐标
 lbsLoc.request(getlbs, nil, timeout)
 --连接服务器下载星历
