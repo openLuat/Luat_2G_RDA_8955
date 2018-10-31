@@ -502,7 +502,7 @@ end
 pmd.ldoset(7, pmd.LDO_VIB)
 -- 打开GPS，串口2，波特率115200，跟踪模式
 -- open(2, 115200, 8, 5)
-open(2, 115200, 2, 1, 5)
+-- open(2, 115200, 2, 1, 5)
 -- 获取基站定位坐标
 lbsLoc.request(getlbs, nil, timeout)
 --连接服务器下载星历
