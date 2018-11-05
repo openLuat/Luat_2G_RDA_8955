@@ -7,7 +7,7 @@ require "log"
 LOG_LEVEL = log.LOGLEVEL_TRACE
 
 require "sys"
-require "test_SPIFlash"
+require "test_SPIFlashRandomRW"
 
 --启动系统框架
 sys.init(0, 0)

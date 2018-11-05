@@ -94,25 +94,25 @@ local function pbrsp(cmd,success,response,intermediate)
 	if prefix == "+CPBF"  then
 		local name = string.match(cmd,"AT%+CPBF%s*=%s*\"(%w*)\"")
 		if intermediate == "" then
-			sys.subscribe("PB_FIND_CNF",success,"","",name)
+			sys.publish("PB_FIND_CNF",success,"","",name)
 		else
 			for w in string.gmatch(intermediate, "(.-)\r\n") do
 				local index,n = string.match(w,"+CPBF:%s*(%d+),\"([#%*%+%d]*)\",%d+,")
 				index = index or ""
 				n = n or ""
-				sys.subscribe("PB_FIND_CNF",success,index,n,name)
+				sys.publish("PB_FIND_CNF",success,index,n,name)
 			end
 		end
 	elseif prefix == "+CPBR" then
 		local index = string.match(cmd,"AT%+CPBR%s*=%s*(%d+)")
 		local num,name = string.match(intermediate,"+CPBR:%s*%d+,\"([#%*%+%d]*)\",%d+,\"(%w*)\"")
 		num,name = num or "",name or ""
-		sys.subscribe("PB_READ_CNF",success,index,num,name)
+		sys.publish("PB_READ_CNF",success,index,num,name)
 		local cb = readcb
 		readcb = nil
 		if cb then cb(success,name,num) return end
 	elseif prefix == "+CPBW" then
-		sys.subscribe("PB_WRITE_CNF",success)
+		sys.publish("PB_WRITE_CNF",success)
 		local cb = writecb
 		writecb = nil
 		if cb then cb(success) return end
@@ -122,7 +122,7 @@ local function pbrsp(cmd,success,response,intermediate)
 	elseif prefix == "+CPBS?" then
 		local storage,used,total = string.match(intermediate,"+CPBS:%s*\"(%u+)\",(%d+),(%d+)")
 		used,total = tonumber(used),tonumber(total)
-		sys.subscribe("CPBS_READ_CNF",success,storage,used,total)
+		sys.publish("CPBS_READ_CNF",success,storage,used,total)
 	elseif prefix == "+CPBS" then
 		local cb = storagecb
 		storagecb = nil

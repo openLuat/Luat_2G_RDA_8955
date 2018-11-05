@@ -439,15 +439,12 @@ end
 -- @number[opt=0] timeout 可选参数，接收超时时间，单位毫秒
 -- @string[opt=nil] msg 可选参数，控制socket所在的线程退出recv阻塞状态
 -- @return result 数据接收结果，true表示成功，false表示失败
--- @return data
--- @retrun param 
--- 如果成功返回的时候接收到的服务器发过来的包
--- 如果失败返回的是错误信息，如果是超时失败，返回"timeout"
--- msg控制退出时，返回msg的字符串
+-- @return data 如果result为true，表示服务器发过来的包；如果result为false，表示错误信息，超时失败时为"timeout"
+-- @return param msg控制退出时，返回msg的字符串
 -- @usage
 -- true, packet = mqttc:receive()
 -- false, error_message = mqttc:receive()
--- false，msg,param = mqttc:receive()
+-- false, msg, para = mqttc:receive()
 function mqttc:receive(timeout, msg)
     if not self.connected then
         log.info("mqtt.client:receive", "not connected")

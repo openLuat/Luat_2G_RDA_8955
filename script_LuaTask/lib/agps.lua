@@ -119,10 +119,11 @@ local function setFastFix(lng,lat,tm)
     if checkEph() then updateEph() end
 end
 
+local lbsLocRequesting
 --获取到基站对应的经纬度，写到GPS芯片中
 local function getLocCb(result,lat,lng,addr,time)
     log.info("agps.getLocCb",result,lat,lng,time and time:len() or 0)
-    
+    lbsLocRequesting = false
     if result==0 then
         lastLbsLng,lastLbsLat = lng,lat
         if not gps.isFix() then
@@ -165,6 +166,9 @@ sys.subscribe("IP_READY_IND", function()
     if gps.isFix() then
         runTimer()
     else
-        lbsLoc.request(getLocCb,nil,30000,"0","bs.openluat.com","12412",true)
+        if not lbsLocRequesting then
+            lbsLocRequesting = true
+            lbsLoc.request(getLocCb,nil,30000,"0","bs.openluat.com","12412",true)
+        end
     end
 end)

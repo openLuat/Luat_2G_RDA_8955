@@ -58,9 +58,10 @@ errDump.request("udp://ota.airm2m.com:9072")
 --update.request()
 
 --require"color_lcd_spi_ILI9341"
---合宙官方Air268F的全家桶套件中，有两种st7735的屏，如果屏的显示是反色，打开require"color_lcd_spi_st7735l"，注释掉"color_lcd_spi_st7735"即可
-require"color_lcd_spi_st7735"
---require"color_lcd_spi_st7735l"
+--合宙官方Air268F的全家桶套件中，一共出售过如下三种屏，如果屏的显示不正常，请使用如下三种中的一种自行验证匹配
+--require"color_lcd_spi_st7735"
+require"color_lcd_spi_st7735l"
+--require"color_lcd_spi_gc9106"
 require"testCamera"
 require"keypad"
 require"windows"
