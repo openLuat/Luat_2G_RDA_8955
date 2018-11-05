@@ -51,6 +51,7 @@ local function rsp(cmd,success,response,intermediate)
 	--查询序列号
 	if cmd == "AT+WISN?" then
 		sn = intermediate
+		if wsncb then wsncb(success) end
 		--如果没有成功读取过序列号，则产生一个内部消息SN_READY，表示已经读取到序列号
 		if not snrdy then sys.dispatch("SN_READY") snrdy = true end
 	--查询底层软件版本号
@@ -59,19 +60,22 @@ local function rsp(cmd,success,response,intermediate)
 	--查询IMEI
 	elseif cmd == "AT+CGSN" then
 		imei = intermediate
+		if wimeicb then wimeicb(success) end
 		--如果没有成功读取过IMEI，则产生一个内部消息IMEI_READY，表示已经读取到IMEI
 		if not imeirdy then sys.dispatch("IMEI_READY") imeirdy = true end
 	--写IMEI
 	elseif smatch(cmd,"AT%+WIMEI=") then
 		if wimeicb then
-			wimeicb(success)
+			req("AT+CGSN")
+			--wimeicb(success)
 		else			
 			if tonumber(smatch(sys.getcorever(),"Luat_V(%d+)_"))>15 then sys.restart("WIMEI") end
 		end
 	--写序列号
 	elseif smatch(cmd,"AT%+WISN=") then
 		if wsncb then
-			wsncb(success)
+			req("AT+WISN?")
+			--wsncb(success)
 		else			
 			if tonumber(smatch(sys.getcorever(),"Luat_V(%d+)_"))>15 then sys.restart("WISN") end
 		end

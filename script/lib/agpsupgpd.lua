@@ -142,7 +142,7 @@ function writegpd()
 	local str = head..idx2.."00"
 	inf = readtxt(GPD_FILE)
 	local tolen = slen(inf)
-	tonum = tolen/1024
+	tonum = (tolen-tolen%1024)/1024
 	print("writegpd inf",idx,idx2,tolen,tonum)
 	print("inf",ssub(inf,1,512))
 	if idx < tonum then

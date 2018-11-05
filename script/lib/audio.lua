@@ -354,8 +354,55 @@ local function audiomsg(msg)
 	end
 end
 
+local ttsState,ttsText,ttsCbFnc = "IDLE"
+function playTTS(text,vol,speed,cbFnc)
+	if vol then setspeakervol(vol) end
+	audio.openTTS(speed or 50)
+	ttsState,ttsText,ttsCbFnc = "OPENING",text,cbFnc
+end
+
+function stopTTS(cbFnc)
+	print("stopTTS",ttsState)
+	if ttsState=="PLAYING" then
+		audio.stopTTS()
+		ttsState,ttsCbFnc = "STOPING_USER",cbFnc
+	else
+		cbFnc(true)
+	end
+end
+
+local function ttsMsg(msg)
+	print("ttsMsg",msg.type,msg.result,ttsState)
+	
+	if msg.type==0 then
+		local state = ttsState
+		ttsState = "IDLE"
+		if ttsCbFnc and state then ttsCbFnc(state:match("ERR")==nil) end
+	elseif msg.type==1 then
+		if ttsState=="OPENING" then
+			if msg.result then
+				audio.playTTS(ttsText)
+				ttsState = "PLAYING"
+			else
+				ttsState = "IDLE"
+				if ttsCbFnc then ttsCbFnc(false) end
+			end			
+		end
+	elseif msg.type==2 then
+		if ttsState=="PLAYING" then
+			audio.stopTTS()
+			ttsState = "STOPING_"..(msg.result and "SUC" or "ERR")
+		end
+	elseif msg.type==3 then
+		audio.closeTTS()
+		ttsState = string.gsub(ttsState,"STOPING","CLOSING")
+	end
+end
+
 --注册底层上报的rtos.MSG_AUDIO外部消息的处理函数
 sys.regmsg(rtos.MSG_AUDIO,audiomsg)
+sys.regmsg(rtos.MSG_TTS,ttsMsg)
+
 --默认音频通道设置为LOUDSPEAKER，因为目前的模块只支持LOUDSPEAKER通道
 setaudiochannel(audio.LOUDSPEAKER)
 --默认音量等级设置为4级，4级是中间等级，最低为0级，最高为7级

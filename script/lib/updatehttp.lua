@@ -279,9 +279,9 @@ end
 				"&version="..base.VERSION
 ∑µªÿ÷µ£∫Œﬁ
 ]]
-function setup(prot,server,port,getURL)
-	if prot and server and port and getURL then
-		PROTOCOL,SERVER,PORT,getURL = prot,server,port,getURL
+function setup(prot,server,port,url)
+	if prot and server and port and url then
+		PROTOCOL,SERVER,PORT,getURL = prot,server,port,url
 		usersvr = true
 		base.assert(base.PROJECT and base.VERSION,"undefine PROJECT or VERSION in main.lua")		
 		connect()

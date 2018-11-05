@@ -128,7 +128,7 @@ end
 ∑µªÿ÷µ£∫Œﬁ
 ]]
 local function getstrength(sg)
-	local d1,d2,curnum,lineno,total,sgv_str = sfind(sg,"GSV,(%d),(%d),(%d+),(.*)%*.*")
+	local d1,d2,curnum,lineno,total,sgv_str = sfind(sg,"GPGSV,(%d),(%d),(%d+),(.*)%*.*")
 	if not curnum or not lineno or not total or not sgv_str then
 		return
 	end

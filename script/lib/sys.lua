@@ -25,12 +25,15 @@ local assert = base.assert
 local tonumber = base.tonumber
 
 --lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "1.2.1"
+SCRIPT_LIB_VER = "1.2.2"
 
 --是否允许“脚本异常时 或者 脚本调用sys.restart接口时”的重启
 --是否有挂起的等待重启的事件
 --是否存在lua运行期间的语法错误
 local restartflg,restartpending,luarunerr = 0,false,0
+
+--lua运行出错时，是否回退为本地烧写的版本
+local sRestoreFlag = true
 
 --“是否需要刷新界面”的标志，有GUI的项目才会用到此标志
 local refreshflag = false
@@ -342,7 +345,11 @@ end
 		至于真正导致重启的语法错误，在trace中搜索saferestart去分析
 ]]
 local function luaerrexit()
-	luaerrexitfnc()
+	if sRestoreFlag then
+		luaerrexitfnc()
+	else
+		rtos.restart()
+	end
 end
 local function saferestart(r)
 	print("saferestart",r,restartflg,rtos.remove_dir)
@@ -699,6 +706,10 @@ function reguartx(id,fnc)
 	uartxprocs[id] = fnc
 end
 
+function setrestore(restoreFlag)
+	sRestoreFlag = restoreFlag
+end
+
 --[[
 函数名：setrestart(警告：此接口只允许update.lua、dbg.lua、aliyuniotota.lua调用，其他地方不要使用)
 功能  ：设置是否允许“脚本异常时 或者 脚本调用sys.restart接口时”的重启功能
@@ -803,7 +814,12 @@ function run()
 	local status,err
 	while true do
 		if luarunerr==2 or restartflg==0 then
-			saferun()
+			if sRestoreFlag then
+				saferun()
+			else
+				status,err = pcall(saferun)
+				if not status then saferestart(err or "") rtos.restart() end
+			end
 		else		
 			status,err = pcall(saferun)
 			--运行出错

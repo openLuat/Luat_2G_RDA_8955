@@ -1064,8 +1064,20 @@ function setretrymode(md)
 	ril.setDataTimeout(md==0 and 120000 or 60000)
 end
 
+--- 设置TCP层自动重传的参数
+-- @number[opt=4] retryCnt，重传次数；取值范围0到12
+-- @number[opt=16] retryMaxTimeout，限制每次重传允许的最大超时时间(单位秒)，取值范围1到16
+-- @return nil
+-- @usage
+-- setTcpResendPara(3,8)
+-- setTcpResendPara(4,16)
+function setTcpResendPara(retryCnt, retryMaxTimeout)
+    req("AT+TCPUSERPARAM=6," .. (retryCnt or 4) .. ",7200," .. (retryMaxTimeout or 16))
+    ril.setDataTimeout(((retryCnt or 4)*(retryMaxTimeout or 16) + 60) * 1000)
+end
+
 --注册本模块关注的内部消息的处理函数
 sys.regapp(proc,"IMSI_READY","FLYMODE_IND","UPDATE_BEGIN_IND","UPDATE_END_IND","DBG_BEGIN_IND","DBG_END_IND","NTP_BEGIN_IND","NTP_END_IND")
 sys.regapp(netmsg,"NET_STATE_CHANGED")
 checkciicr(120000)
-setretrymode(0)
+setTcpResendPara(4,16)

@@ -46,10 +46,10 @@ local function enclen(s)
 end
 
 local function declen(s)
-	local i,value,multiplier,digit = 1,0,1 
+	local i,value,multiplier,digit = 1,0,1
 	repeat
 		if i > slen(s) then return end
-		digit = sbyte(s,i) 
+		digit = sbyte(s,i)
 		value = value + bit.band(digit,127)*multiplier
 		multiplier = multiplier * 128
 		i = i + 1
@@ -77,7 +77,7 @@ local function iscomplete(s)
 			else
 				return
 			end
-		end		
+		end
 	end
 end
 
@@ -106,19 +106,19 @@ local function pack(mqttver,typ,...)
 		ret = ret..encutf8(user)..encutf8(pwd)
 		return ret
 	end
-	
+
 	local function subscribe(p)
 		para.dup,para.topic = true,p.topic
 		para.seq = p.seq or getseq()
 		print("subscribe",p.dup,para.dup,common.binstohexs(para.seq))
-		
+
 		local s = lpack.pack("bA",SUBSCRIBE*16+(p.dup and 1 or 0)*8+2,para.seq)
 		for i=1,#p.topic do
 			s = s..encutf8(p.topic[i].topic)..schar(p.topic[i].qos or 0)
 		end
 		return s
 	end
-	
+
 	local function publish(p)
 		para.dup,para.topic,para.payload,para.qos,para.retain = true,p.topic,p.payload,p.qos,p.retain
 		para.seq = p.seq or getseq()
@@ -127,24 +127,24 @@ local function pack(mqttver,typ,...)
 		local s2 = s1..p.payload
 		return s2
 	end
-	
+
 	local function puback(seq)
 		return schar(PUBACK*16)..seq
 	end
-	
+
 	local function pingreq()
 		return schar(PINGREQ*16)
 	end
-	
+
 	local function disconnect()
 		return schar(DISCONNECT*16)
 	end
-	
+
 	local function unsubscribe(p)
 		para.dup,para.topic = true,p.topic
 		para.seq = p.seq or getseq()
 		print("unsubscribe",p.dup,para.dup,common.binstohexs(para.seq))
-		
+
 		local s = lpack.pack("bA",UNSUBSCRIBE*16+(p.dup and 1 or 0)*8+2,para.seq)
 		for i=1,#p.topic do
 			s = s..encutf8(p.topic[i])
@@ -189,29 +189,29 @@ local function unpack(mqttver,s)
 		rcvpacket.reason = sbyte(d,2)
 		return true
 	end
-	
+
 	local function suback(d)
 		print("suback or unsuback",common.binstohexs(d))
 		if slen(d) < 2 then return end
 		rcvpacket.seq = ssub(d,1,2)
 		return true
 	end
-	
+
 	local function puback(d)
 		print("puback",common.binstohexs(d))
 		if slen(d) < 2 then return end
 		rcvpacket.seq = ssub(d,1,2)
 		return true
 	end
-	
+
 	local function publish(d)
 		--print("publish",common.binstohexs(d)) --数据量太大时不能打开，内存不足
 		if slen(d) < 4 then return end
-		local _,tplen = lpack.unpack(ssub(d,1,2),">H")		
+		local _,tplen = lpack.unpack(ssub(d,1,2),">H")
 		local pay = (rcvpacket.qos > 0 and 5 or 3)
 		if slen(d) < tplen+pay-1 then return end
 		rcvpacket.topic = ssub(d,3,2+tplen)
-		
+
 		if rcvpacket.qos > 0 then
 			rcvpacket.seq = ssub(d,tplen+3,tplen+4)
 			pay = 5
@@ -219,7 +219,7 @@ local function unpack(mqttver,s)
 		rcvpacket.payload = ssub(d,tplen+pay,-1)
 		return true
 	end
-	
+
 	local function empty()
 		return true
 	end
@@ -233,7 +233,7 @@ local function unpack(mqttver,s)
 		[PINGRSP] = empty,
 		[UNSUBACK] = suback,
 	}
-	local d1,d2,d3,typ,len = iscomplete(s)	
+	local d1,d2,d3,typ,len = iscomplete(s)
 	if not procer[typ] then print("unpack unknwon typ",typ) return end
 	rcvpacket.typ = typ
 	rcvpacket.qos = bit.rshift(bit.band(sbyte(s,1),0x06),1)
@@ -267,7 +267,7 @@ end
 --[[
 函数名：mqttconncb
 功能  ：发送MQTT CONNECT报文后的异步回调函数
-参数  ：		
+参数  ：
 		sckidx：socket idx
 		result： bool类型，发送结果，true为成功，其他为失败
 		tpara：table类型，{key="MQTTCONN",val=CONNECT报文数据}
@@ -307,13 +307,13 @@ end
 --[[
 函数名：mqttsubcb
 功能  ：发送SUBSCRIBE报文后的异步回调函数
-参数  ：		
+参数  ：
 		sckidx：socket idx
 		result： bool类型，发送结果，true为成功，其他为失败
 		tpara：table类型，{key="MQTTSUB", val=para, usertag=usertag, ackcb=ackcb}
 返回值：无
 ]]
-local function mqttsubcb(sckidx,result,tpara)	
+local function mqttsubcb(sckidx,result,tpara)
 	--重新封装MQTT SUBSCRIBE报文，重复标志设为true，序列号和topic都是用原始值，数据保存起来，如果超时DUP_TIME秒中没有收到SUBACK，则会自动重发SUBSCRIBE报文
 	--重发的触发开关在mqttdup.lua中
 	mqttdup.ins(sckidx,tpara.key,pack(tclients[getclient(sckidx)].mqttver,SUBSCRIBE,tpara.val),tpara.val.seq,tpara.ackcb,tpara.usertag)
@@ -322,13 +322,13 @@ end
 --[[
 函数名：mqttunsubcb
 功能  ：发送UNSUBSCRIBE报文后的异步回调函数
-参数  ：		
+参数  ：
 		sckidx：socket idx
 		result： bool类型，发送结果，true为成功，其他为失败
 		tpara：table类型，{key="MQTTUNSUB", val=para, usertag=usertag, ackcb=ackcb}
 返回值：无
 ]]
-local function mqttunsubcb(sckidx,result,tpara)	
+local function mqttunsubcb(sckidx,result,tpara)
 	--重新封装MQTT UNSUBSCRIBE报文，重复标志设为true，序列号和topic都是用原始值，数据保存起来，如果超时DUP_TIME秒中没有收到UNSUBACK，则会自动重发UNSUBSCRIBE报文
 	--重发的触发开关在mqttdup.lua中
 	mqttdup.ins(sckidx,tpara.key,pack(tclients[getclient(sckidx)].mqttver,UNSUBSCRIBE,tpara.val),tpara.val.seq,tpara.ackcb,tpara.usertag)
@@ -337,26 +337,26 @@ end
 --[[
 函数名：mqttpubcb
 功能  ：发送PUBLISH报文后的异步回调函数
-参数  ：		
+参数  ：
 		sckidx：socket idx
 		result： bool类型，发送结果，true为成功，其他为失败
 		tpara：table类型，{key="MQTTPUB", val=para, qos=qos, usertag=usertag, ackcb=ackcb}
 返回值：无
 ]]
-local function mqttpubcb(sckidx,result,tpara)	
+local function mqttpubcb(sckidx,result,tpara)
 	if tpara.qos==0 then
 		if tpara.ackcb then tpara.ackcb(tpara.usertag,result) end
 	elseif tpara.qos==1 then
 		--重新封装MQTT PUBLISH报文，重复标志设为true，序列号、topic、payload都是用原始值，数据保存起来，如果超时DUP_TIME秒中没有收到PUBACK，则会自动重发PUBLISH报文
 		--重发的触发开关在mqttdup.lua中
 		mqttdup.ins(sckidx,tpara.key,pack(tclients[getclient(sckidx)].mqttver,PUBLISH,tpara.val),tpara.val.seq,tpara.ackcb,tpara.usertag)
-	end	
+	end
 end
 
 --[[
 函数名：mqttdiscb
 功能  ：发送MQTT DICONNECT报文后的异步回调函数
-参数  ：		
+参数  ：
 		sckidx：socket idx
 		result： bool类型，发送结果，true为成功，其他为失败
 		tpara：table类型，{key="MQTTDISC", val=data, usertag=usrtag}
@@ -424,7 +424,7 @@ end
 参数  ：
 		sckidx：socket idx
         data：发送的数据，在发送结果事件处理函数ntfy中，会赋值到item.data中
-		para：发送的参数，在发送结果事件处理函数ntfy中，会赋值到item.para中 
+		para：发送的参数，在发送结果事件处理函数ntfy中，会赋值到item.para中
 返回值：调用发送接口的结果（并不是数据发送是否成功的结果，数据发送是否成功的结果在ntfy中的SEND事件中通知），true为成功，其他为失败
 ]]
 function snd(sckidx,data,para)
@@ -458,7 +458,7 @@ function mqttsnd(sckidx,typ,usrtag)
 	if not tmqttpack[typ] then print("mqttsnd typ error",typ) return end
 	local mqttyp = tmqttpack[typ].mqttyp
 	local dat,para = tmqttpack[typ].mqttdatafnc(sckidx)
-	
+
 	if mqttyp==CONNECT then
 		if tmqttpack[typ].mqttduptyp then mqttdup.rmv(sckidx,tmqttpack[typ].mqttduptyp) end
 		if not snd(sckidx,dat,{key=tmqttpack[typ].sndpara,val=dat}) and tmqttpack[typ].sndcb then
@@ -469,9 +469,9 @@ function mqttsnd(sckidx,typ,usrtag)
 	elseif mqttyp==DISCONNECT then
 		if not snd(sckidx,dat,{key=tmqttpack[typ].sndpara,usertag=usrtag}) and tmqttpack[typ].sndcb then
 			tmqttpack[typ].sndcb(sckidx,false,{key=tmqttpack[typ].sndpara,usertag=usrtag})
-		end		
-	end	
-	
+		end
+	end
+
 	return true
 end
 
@@ -491,10 +491,10 @@ local function reconn(sckidx)
 	--sckconning表示正在尝试连接后台，一定要判断此变量，否则有可能发起不必要的重连，导致sckreconncnt增加，实际的重连次数减少
 	if tclients[mqttclientidx].sckconning then return end
 	--一个连接周期内的重连
-	if tclients[mqttclientidx].sckreconncnt < RECONN_MAX_CNT then		
+	if tclients[mqttclientidx].sckreconncnt < RECONN_MAX_CNT then
 		tclients[mqttclientidx].sckreconncnt = tclients[mqttclientidx].sckreconncnt+1
 		socket.disconnect(sckidx)
-		tclients[mqttclientidx].sckconning = true		
+		tclients[mqttclientidx].sckconning = true
 	--一个连接周期的重连都失败
 	else
 		tclients[mqttclientidx].sckreconncnt,tclients[mqttclientidx].sckreconncyclecnt = 0,tclients[mqttclientidx].sckreconncyclecnt+1
@@ -508,7 +508,7 @@ local function reconn(sckidx)
 			end
 		else
 			link.shut()
-		end		
+		end
 	end
 end
 
@@ -546,7 +546,7 @@ function ntfy(idx,evt,result,item)
 		else
 			--RECONN_PERIOD秒后重连
 			sys.timer_start(reconn,RECONN_PERIOD*1000,idx)
-		end	
+		end
 	--数据发送结果（调用socket.send后的异步事件）
 	elseif evt == "SEND" then
 		if not result then
@@ -769,7 +769,7 @@ function rcv(idx,data)
 	local mqttclientidx = getclient(idx)
 	if not mqttclientidx or not tclients[mqttclientidx].sckconnected then return end
 	print("rcv",slen(data)>200 and slen(data) or common.binstohexs(data))
-	sys.timer_start(pingreq,(tclients[mqttclientidx].keepalive*1000-(tclients[mqttclientidx].keepalive*1000%2))/2,idx)	
+	sys.timer_start(pingreq,(tclients[mqttclientidx].keepalive*1000-(tclients[mqttclientidx].keepalive*1000%2))/2,idx)
 	tclients[mqttclientidx].sckrcvs = tclients[mqttclientidx].sckrcvs..data
 	if slen(tclients[mqttclientidx].sckrcvs)>1024*10 then collectgarbage() end
 
@@ -879,7 +879,7 @@ function create(prot,host,port,ver)
 	{
 		prot=prot,
 		host=host,
-		port=port,		
+		port=port,
 		sckidx=socket.SCK_MAX_CNT-#tclients,
 		sckconning=false,
 		sckconnected=false,
@@ -950,7 +950,7 @@ end
 		flg：number类型，遗嘱标志，仅支持0和1
 		qos：number类型，服务器端发布遗嘱消息的服务质量等级，仅支持0,1,2
 		retain：number类型，遗嘱保留标志，仅支持0和1
-		topic：string类型，服务器端发布遗嘱消息的主题，gb2312编码	
+		topic：string类型，服务器端发布遗嘱消息的主题，gb2312编码
 		payload：string类型，服务器端发布遗嘱消息的载荷，gb2312编码
 返回值：无
 ]]
@@ -980,7 +980,7 @@ end
 		clientid：string类型，client identifier，gb2312编码[必选]
 		keepalive：number类型，保活时间，单位秒[可选，默认600]
 		user：string类型，用户名，gb2312编码[可选，默认""]
-		password：string类型，密码，gb2312编码[可选，默认""]		
+		password：string类型，密码，gb2312编码[可选，默认""]
 		connectedcb：function类型，mqtt连接成功的回调函数[可选]
 		connecterrcb：function类型，mqtt连接失败的回调函数[可选]
 		sckerrcb：function类型，socket连接失败的回调函数[可选]
@@ -996,9 +996,9 @@ function tmqtt:connect(clientid,keepalive,user,password,connectedcb,connecterrcb
 	self.connectedcb=connectedcb
 	self.connecterrcb=connecterrcb
 	self.sckerrcb=sckerrcb
-	
+
 	tclients[getclient(self.sckidx)]=self
-	
+
 	if self.mqttconnected then print("tmqtt:connect already connected") return end
 	if not self.sckconnected then
 		connect(self.sckidx,self.prot,self.host,self.port)
@@ -1032,13 +1032,13 @@ function tmqtt:publish(topic,payload,flags,ackcb,usertag)
 		if ackcb then ackcb(usertag,false) end
 		return
 	end
-	
+
 	if flags and flags~=0 and flags~=1 and flags~=4 and flags~=5 then assert(false,"tmqtt:publish not support flags "..flags) return end
 	local qos,retain = flags and (bit.band(flags,0x03)) or 0,flags and (bit.isset(flags,2) and 1 or 0) or 0
 	--print("tmqtt:publish",flags,qos,retain)
 	--打包publish报文
 	local dat,para = pack(self.mqttver,PUBLISH,{qos=qos,retain=retain,topic=topic,payload=payload})
-	
+
 	--发送
 	local tpara = {key="MQTTPUB",val=para,qos=qos,retain=retain,usertag=usertag,ackcb=ackcb}
 	if not snd(self.sckidx,dat,tpara) then
@@ -1062,7 +1062,7 @@ function tmqtt:subscribe(topics,ackcb,usertag)
 		if ackcb then ackcb(usertag,false) end
 		return
 	end
-	
+
 	--仅支持qos 0和1
 	for k,v in pairs(topics) do
 		if v.qos==2 then assert(false,"tmqtt:publish not support qos 2") return end
@@ -1070,7 +1070,7 @@ function tmqtt:subscribe(topics,ackcb,usertag)
 
 	--打包subscribe报文
 	local dat,para = pack(self.mqttver,SUBSCRIBE,{topic=topics})
-	
+
 	--发送
 	local tpara = {key="MQTTSUB", val=para, usertag=usertag, ackcb=ackcb}
 	if not snd(self.sckidx,dat,tpara) then
@@ -1095,10 +1095,10 @@ function tmqtt:unsubscribe(topics,ackcb,usertag)
 		if ackcb then ackcb(usertag,false) end
 		return
 	end
-	
+
 	--打包unsubscribe报文
 	local dat,para = pack(self.mqttver,UNSUBSCRIBE,{topic=topics})
-	
+
 	--发送
 	local tpara = {key="MQTTUNSUB", val=para, usertag=usertag, ackcb=ackcb}
 	if not snd(self.sckidx,dat,tpara) then
@@ -1115,7 +1115,7 @@ end
 返回值：无
 ]]
 function tmqtt:regevtcb(evtcbs)
-	self.evtcbs=evtcbs	
+	self.evtcbs=evtcbs
 end
 
 --[[

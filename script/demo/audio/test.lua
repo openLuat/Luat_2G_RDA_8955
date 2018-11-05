@@ -79,6 +79,26 @@ local function testplayconflict()
 	]]
 end
 
+local speed=0
+local function playTtsCbFnc(result)
+    print("playTtsCbFnc",result)
+    speed = speed+1
+    if speed>100 then speed=0 end
+    testPlayTts()
+end
+
+local function stopTtsCbFnc(result)
+    print("stopTtsCbFnc",result)
+    speed = speed+1
+    if speed>100 then speed=0 end
+    testPlayTts()
+end
+
+function testPlayTts()
+    audio.playTTS(common.gb2312toucs2(ttstr),1,speed,playTtsCbFnc)
+    --sys.timer_start(audio.stopTTS,5000,stopTtsCbFnc)
+end
+
 
 local function testtsnew()
 	--设置优先级相同时的播放策略，1表示停止当前播放，播放新的播放请求
