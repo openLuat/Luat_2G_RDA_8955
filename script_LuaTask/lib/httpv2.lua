@@ -103,7 +103,7 @@ function request(method, url, timeout, params, data, ctype, basic, headers)
     str = str .. '\r\n' .. table.concat(msg, '\r\n') .. '\r\n\r\n'
     -- log.info("httpv2.request send:", str:tohex())
     -- 发送请求报文
-    if not sys.waitUntil("IP_READY_IND", timeout) then return '502', 'SOCKET_TIMOUT_ERROR' end
+    if not socket.isReady() then return '502', 'SOCKET_TIMOUT_ERROR' end
     local c = socket.tcp()
     if not c:connect(host, port) then
         c:close()
