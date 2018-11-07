@@ -132,8 +132,7 @@ end
 --              result：number类型，0表示成功，1表示网络环境尚未就绪，2表示连接服务器失败，3表示发送数据失败，4表示接收服务器应答超时，5表示服务器返回查询失败；为0时，后面的3个参数才有意义
 --              lat：string类型或者nil，纬度，整数部分3位，小数部分7位，例如"031.2425864"
 --              lng：string类型或者nil，经度，整数部分3位，小数部分7位，例如"121.4736522"
---              addr：string类型，UCS2大端编码的位置字符串。调用lbsLoc.request时传入的第二个参数为true时，才返回本参数
--- @bool[opt=nil] reqAddr，是否需要服务器返回地址字符串信息，true返回，false或者nil不返回
+-- @bool[opt=nil] reqAddr，此参数无意义，保留
 -- @number[opt=20000] timeout，请求超时时间，单位毫秒，默认20000毫秒
 -- @string[opt=nil] productKey，IOT网站上的产品证书，此参数可选，用户如果在main.lua中定义了PRODUCT_KEY变量，就不需要传入此参数
 -- @string[opt=nil] host，服务器域名，此参数可选，目前仅lib中agps.lua使用此参数。用户脚本中不需要传入此参数
