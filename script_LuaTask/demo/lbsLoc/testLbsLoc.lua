@@ -14,15 +14,8 @@ require"lbsLoc"
 参数  ：无
 返回值：无
 ]]
-local function reqLbsLoc()
-    reqAddr = not reqAddr
-    if reqWifi==nil then
-        reqWifi = {["1a:fe:34:9e:a1:77"] = -63,["8c:be:be:2d:cd:e9"] = -81,["20:4e:7f:82:c2:c4"] = -70}
-    else
-        reqWifi=nil
-    end
-    
-    lbsLoc.request(getLocCb,reqAddr,nil,nil,nil,nil,nil,reqWifi)
+local function reqLbsLoc()   
+    lbsLoc.request(getLocCb)
 end
 
 --[[
@@ -31,11 +24,10 @@ end
 		result：number类型，0表示成功，1表示网络环境尚未就绪，2表示连接服务器失败，3表示发送数据失败，4表示接收服务器应答超时，5表示服务器返回查询失败；为0时，后面的3个参数才有意义
 		lat：string类型，纬度，整数部分3位，小数部分7位，例如031.2425864
 		lng：string类型，经度，整数部分3位，小数部分7位，例如121.4736522
-		addr：string类型，UCS2大端编码的位置字符串。调用lbsLoc.request时传入的第二个参数为true时，才返回本参数
 返回值：无
 ]]
-function getLocCb(result,lat,lng,addr)
-    log.info("testLbsLoc.getLocCb",result,lat,lng,(result==0 and addr) and common.ucs2beToGb2312(addr) or "")
+function getLocCb(result,lat,lng)
+    log.info("testLbsLoc.getLocCb",result,lat,lng)
     --获取经纬度成功
     if result==0 then
     --失败

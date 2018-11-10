@@ -268,8 +268,8 @@ function request(method,url,cert,head,body,timeout,cbFnc,rcvFileName)
     d1,d2,auth = url:find("(.-:.-)@",offset+1)
     offset = d2 or offset
 
-    if url:match(":(%d+)",offset+1) then
-        d1,d2,hostName,port = url:find("(.-):(%d+)",offset+1)
+    if url:match("^[^/]+:(%d+)",offset+1) then
+        d1,d2,hostName,port = url:find("^([^/]+):(%d+)",offset+1)
     else
         d1,d2,hostName = url:find("(.-)/",offset+1)
         if hostName then
