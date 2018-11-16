@@ -33,6 +33,6 @@ end)
 
 rtos.on(rtos.MSG_UART_TX_DONE, function(id)
     if uartSentCallbacks[id] then
-        uartSentCallbacks[id]()
+        uartSentCallbacks[id](id)
     end
 end)

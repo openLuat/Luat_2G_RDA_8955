@@ -196,3 +196,20 @@ function io.fileSize(path)
     end
     return size
 end
+
+--- 返回指定位置读取的字符串
+-- @string path,文件路径全名例如:"/ldata/call.txt"
+-- @number offset,要读取的指定位置
+-- @number len,要读取的字节数
+-- @return string,返回要读取的数据,读取失败返回nil
+function io.readStream(path, offset, len)
+    local file, str = io.open(path, "r")
+    if file then
+        local current = file:seek()
+        file:seek("set", offset)
+        str = file:read(len)
+        file:seek("set", current)
+        io.close(file)
+    end
+    return str
+end
