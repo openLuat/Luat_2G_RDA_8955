@@ -40,17 +40,26 @@ local function socketStatusNtfy()
     sys.publish("SOCKET_ACTIVE", isSocketActive() or isSocketActive(true))
 end
 
+local function stopSslConnectTimer(tSocket,id)
+    if id and tSocket[id].ssl and tSocket[id].co and coroutine.status(tSocket[id].co) == "suspended" and tSocket[id].wait=="+SSLCONNECT" then
+        sys.timerStop(coroutine.resume,tSocket[id].co,false,"TIMEOUT")
+    end
+end
+
 local function errorInd(error)
     for k, v in pairs({sockets, socketsSsl}) do
-        if #v ~= 0 then
+        --if #v ~= 0 then
             for _, c in pairs(v) do -- IP状态出错时，通知所有已连接的socket
                 --if c.connected or c.created then
                 if error == 'CLOSED' and not c.ssl then c.connected = false socketStatusNtfy() end
                 c.error = error
-                if c.co and coroutine.status(c.co) == "suspended" then coroutine.resume(c.co, false) end
+                if c.co and coroutine.status(c.co) == "suspended" then
+                    stopSslConnectTimer(v, c.id)
+                    coroutine.resume(c.co, false)
+                end
             --end
             end
-        end
+        --end
     end
 end
 
@@ -68,6 +77,7 @@ local function onSocketURC(data, prefix)
     
     if result == "CONNECT OK" or result:match("CONNECT ERROR") or result:match("CONNECT FAIL") then
         if tSocket[id].wait == "+CIPSTART" or tSocket[id].wait == "+SSLCONNECT" then
+            stopSslConnectTimer(tSocket,id)
             coroutine.resume(tSocket[id].co, result == "CONNECT OK")
         else
             log.error("socket: error urc", tSocket[id].wait)
@@ -80,6 +90,7 @@ local function onSocketURC(data, prefix)
     if string.find(result, "ERROR") or result == "CLOSED" then
         if result == 'CLOSED' and not tSocket[id].ssl then tSocket[id].connected = false socketStatusNtfy() end
         tSocket[id].error = result
+        stopSslConnectTimer(tSocket,id)
         coroutine.resume(tSocket[id].co, false)
     end
 end
@@ -218,6 +229,7 @@ function mt.__index:connect(address, port)
             req(tConfigCert[i])
         end
         req("AT+SSLCONNECT=" .. self.id)
+        sys.timerStart(coroutine.resume,120000,self.co,false,"TIMEOUT")
     else
         req(string.format("AT+CIPSTART=%d,\"%s\",\"%s\",%s", self.id, self.protocol, address, port))
     end
@@ -403,6 +415,7 @@ local function onResponse(cmd, success, response, intermediate)
         end
         
         if not reason and not success then tSocket[id].error = response end
+        stopSslConnectTimer(tSocket,id)
         coroutine.resume(tSocket[id].co, success, reason)
     end
 end
