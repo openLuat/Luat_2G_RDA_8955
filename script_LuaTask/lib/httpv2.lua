@@ -140,6 +140,7 @@ function request(method, url, timeout, params, data, ctype, basic, headers, cert
     -- 处理状态代码
     _, idx, response_code = s:find("%s(%d+)%s.-\r\n")
     _, offset = s:find('\r\n\r\n')
+    if not idx or not offset then return '501', 'SERVER_NOT_RESPONSE' end
     log.info('httpv2.response code and message:', response_code)
     -- 处理headers代码
     for k, v in string.gmatch(s:sub(idx + 1, offset), "(.-):%s*(.-)\r\n") do response_header[k] = v end
