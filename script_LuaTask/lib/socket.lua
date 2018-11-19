@@ -324,11 +324,14 @@ function mt.__index:recv(timeout, msg)
         if timeout and timeout > 0 then
             local r, s = sys.waitUntilExt(msg or tostring(self.co), timeout)
             if not r then
+                self.wait = ""
                 return false, "timeout"
             elseif r and r == msg then
+                self.wait = ""
                 return false, r, s
             else
                 if self.ssl and not r then self:sslDestroy() end
+                self.wait = ""
                 return r, s
             end
         else
@@ -438,6 +441,7 @@ local function onSocketReceiveUrc(urc)
             else
                 local s = table.concat(cache)
                 if tSocket[id].wait == "+RECEIVE" or tSocket[id].wait == "+SSL RECEIVE" then
+                    tSocket[id].wait = ""
                     coroutine.resume(tSocket[id].co, true, s)
                 else -- 数据进缓冲区，缓冲区溢出采用覆盖模式
                     if #tSocket[id].input > INDEX_MAX then tSocket[id].input = {} end
