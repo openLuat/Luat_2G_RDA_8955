@@ -14,7 +14,7 @@ local Content_type = {'application/x-www-form-urlencoded', 'application/json', '
 function urlencodeTab(params)
     local msg = {}
     for k, v in pairs(params) do
-        table.insert(msg, string.urlencode(k) .. '=' .. string.urlencode(v))
+        table.insert(msg, string.urlEncode(k) .. '=' .. string.urlEncode(v))
         table.insert(msg, '&')
     end
     table.remove(msg)
