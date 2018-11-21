@@ -136,7 +136,10 @@ function request(method, url, timeout, params, data, ctype, basic, headers, cert
     ------------------------------------ 接收服务器返回消息部分 ------------------------------------
     local msg, str = {}, ""
     local r, s = c:recv(timeout)
-    if not r then return '503', 'SOCKET_RECV_TIMOUT' end
+    if not r then 
+        c:close()
+        return '503', 'SOCKET_RECV_TIMOUT' 
+    end
     -- 处理状态代码
     _, idx, response_code = s:find("%s(%d+)%s.-\r\n")
     _, offset = s:find('\r\n\r\n')
