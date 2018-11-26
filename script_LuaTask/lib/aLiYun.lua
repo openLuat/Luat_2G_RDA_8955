@@ -98,6 +98,7 @@ function clientDataTask(host,tPorts,clientId,user,password)
                 if evtCb["connect"] then evtCb["connect"](true) end
 
                 local result,prompt = procSubscribe(mqttClient)
+                outQueue["SUBSCRIBE"] = {}
                 if result then
                     local procs,k,v = {procReceive,procSend}
                     while true do

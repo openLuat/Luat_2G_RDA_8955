@@ -78,7 +78,7 @@ ril.regUrc("STATE", function(data)
         return
     elseif status == "IP INITIAL" then
         if net.getState() ~= 'REGISTERED' then return end
-        request(string.format('AT+CSTT="%s","%s","%s"', apnname, username, password))
+        request(string.format('AT+CSTT="%s","%s","%s"', apnname, username or "", password or ""))
         request("AT+CIICR")
     elseif status == "IP START" then
         request("AT+CIICR")

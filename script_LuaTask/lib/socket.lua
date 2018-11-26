@@ -40,8 +40,9 @@ local function socketStatusNtfy()
     sys.publish("SOCKET_ACTIVE", isSocketActive() or isSocketActive(true))
 end
 
-local function stopSslConnectTimer(tSocket,id)
-    if id and tSocket[id].ssl and tSocket[id].co and coroutine.status(tSocket[id].co) == "suspended" and tSocket[id].wait=="+SSLCONNECT" then
+local function stopConnectTimer(tSocket,id)
+    if id and tSocket[id] and tSocket[id].co and coroutine.status(tSocket[id].co) == "suspended"
+        and (tSocket[id].wait=="+SSLCONNECT" or (tSocket[id].protocol=="UDP" and tSocket[id].wait=="+CIPSTART")) then
         sys.timerStop(coroutine.resume,tSocket[id].co,false,"TIMEOUT")
     end
 end
@@ -54,7 +55,7 @@ local function errorInd(error)
                 if error == 'CLOSED' and not c.ssl then c.connected = false socketStatusNtfy() end
                 c.error = error
                 if c.co and coroutine.status(c.co) == "suspended" then
-                    stopSslConnectTimer(v, c.id)
+                    stopConnectTimer(v, c.id)
                     coroutine.resume(c.co, false)
                 end
             --end
@@ -74,23 +75,23 @@ local function onSocketURC(data, prefix)
         log.error('socket: urc on nil socket', data, id, tSocket[id], socketsSsl[id])
         return
     end
-    
+
     if result == "CONNECT OK" or result:match("CONNECT ERROR") or result:match("CONNECT FAIL") then
         if tSocket[id].wait == "+CIPSTART" or tSocket[id].wait == "+SSLCONNECT" then
-            stopSslConnectTimer(tSocket,id)
+            stopConnectTimer(tSocket,id)
             coroutine.resume(tSocket[id].co, result == "CONNECT OK")
         else
             log.error("socket: error urc", tSocket[id].wait)
         end
         return
     end
-    
+
     if tag == "SSL" and string.find(result, "ERROR:") == 1 then return end
-    
+
     if string.find(result, "ERROR") or result == "CLOSED" then
         if result == 'CLOSED' and not tSocket[id].ssl then tSocket[id].connected = false socketStatusNtfy() end
         tSocket[id].error = result
-        stopSslConnectTimer(tSocket,id)
+        stopConnectTimer(tSocket,id)
         coroutine.resume(tSocket[id].co, false)
     end
 end
@@ -103,7 +104,7 @@ local function socket(protocol, cert)
         log.warn("socket.socket: too many sockets")
         return nil
     end
-    
+
     local co = coroutine.running()
     if not co then
         log.warn("socket.socket: socket must be called in coroutine")
@@ -119,10 +120,10 @@ local function socket(protocol, cert)
         input = {},
         wait = "",
     }
-    
+
     tSocket = (ssl and socketsSsl or sockets)
     tSocket[id] = o
-    
+
     return setmetatable(o, mt)
 end
 --- 创建基于TCP的socket对象
@@ -159,7 +160,7 @@ local function sslInit()
         sslInited = true
         req("AT+SSLINIT")
     end
-    
+
     local i, item
     for i = 1, #tSslInputCert do
         item = table.remove(tSslInputCert, 1)
@@ -193,17 +194,17 @@ end
 -- @usage  c = socket.tcp(); c:connect();
 function mt.__index:connect(address, port)
     assert(self.co == coroutine.running(), "socket:connect: coroutine mismatch")
-    
+
     if not link.isReady() then
         log.info("socket.connect: ip not ready")
         return false
     end
-    
+
     if cc and cc.anyCallExist() then
         log.info("socket:connect: call exist, cannot connect")
         return false
     end
-    
+
     if self.ssl then
         local tConfigCert, i = {}
         if self.cert then
@@ -220,7 +221,7 @@ function mt.__index:connect(address, port)
                 table.insert(tConfigCert, "AT+SSLCERT=1," .. self.id .. ",\"localprivatekey\",\"" .. self.cert.clientKey .. "\"")
             end
         end
-        
+
         sslInit()
         self.address = address
         req(string.format("AT+SSLCREATE=%d,\"%s\",%d", self.id, address .. ":" .. port, (self.cert and self.cert.caCert) and 0 or 1))
@@ -229,19 +230,19 @@ function mt.__index:connect(address, port)
             req(tConfigCert[i])
         end
         req("AT+SSLCONNECT=" .. self.id)
-        sys.timerStart(coroutine.resume,120000,self.co,false,"TIMEOUT")
     else
         req(string.format("AT+CIPSTART=%d,\"%s\",\"%s\",%s", self.id, self.protocol, address, port))
     end
-    
+    if self.ssl or self.protocol=="UDP" then sys.timerStart(coroutine.resume,120000,self.co,false,"TIMEOUT") end
+
     ril.regUrc((self.ssl and "SSL&" or "") .. self.id, onSocketURC)
     self.wait = self.ssl and "+SSLCONNECT" or "+CIPSTART"
-    
+
     local r, s = coroutine.yield()
-    
+
     if r == false and s == "DNS" then
         if self.ssl then self:sslDestroy()self.error = nil end
-        
+
         require "http"
         --请求腾讯云免费HttpDns解析
         http.request("GET", "119.29.29.29/d?dn=" .. address, nil, nil, nil, 40000,
@@ -250,7 +251,7 @@ function mt.__index:connect(address, port)
                 sys.publish("SOCKET_HTTPDNS_RESULT", result, statusCode, head, body)
             end)
         local _, result, statusCode, head, body = sys.waitUntil("SOCKET_HTTPDNS_RESULT")
-        
+
         --DNS解析成功
         if result and statusCode == "200" and body and body:match("^[%d%.]+") then
             return self:connect(body:match("^([%d%.]+)"), port)
@@ -266,7 +267,7 @@ function mt.__index:connect(address, port)
             end
         end
     end
-    
+
     if r == false then
         if self.ssl then self:sslDestroy() end
         return false
@@ -289,7 +290,7 @@ function mt.__index:send(data)
         log.warn('socket.client:send', 'closed')
         return false
     end
-    
+
     for i = 1, string.len(data), SENDSIZE do
         -- 按最大MTU单元对data分包
         local stepData = string.sub(data, i, i + SENDSIZE - 1)
@@ -318,7 +319,7 @@ function mt.__index:recv(timeout, msg)
         log.warn('socket.client:recv', 'error', self.error)
         return false
     end
-    
+
     if #self.input == 0 then
         self.wait = self.ssl and "+SSL RECEIVE" or "+RECEIVE"
         if timeout and timeout > 0 then
@@ -336,7 +337,7 @@ function mt.__index:recv(timeout, msg)
             return coroutine.yield()
         end
     end
-    
+
     if self.protocol == "UDP" then
         return true, table.remove(self.input)
     else
@@ -390,7 +391,7 @@ local function onResponse(cmd, success, response, intermediate)
         log.warn('socket: response on nil socket', cmd, response)
         return
     end
-    
+
     if cmd:match("^AT%+SSLCREATE") then
         tSocket[id].createResp = response
     end
@@ -402,7 +403,7 @@ local function onResponse(cmd, success, response, intermediate)
         if (prefix == '+CIPSEND' or prefix == "+SSLSEND") and response:match("%d, *([%u%d :]+)") ~= 'SEND OK' then
             success = false
         end
-        
+
         local reason, address
         if not success then
             if prefix == "+CIPSTART" then
@@ -414,9 +415,9 @@ local function onResponse(cmd, success, response, intermediate)
                 reason = "DNS"
             end
         end
-        
+
         if not reason and not success then tSocket[id].error = response end
-        stopSslConnectTimer(tSocket,id)
+        stopConnectTimer(tSocket,id)
         coroutine.resume(tSocket[id].co, success, reason)
     end
 end
@@ -468,7 +469,7 @@ ril.regUrc("+SSL RECEIVE", onSocketReceiveUrc)
 
 function printStatus()
     log.info('socket.printStatus', 'valid id', table.concat(valid), table.concat(validSsl))
-    
+
     for m, n in pairs({sockets, socketsSsl}) do
         for _, client in pairs(n) do
             for k, v in pairs(client) do

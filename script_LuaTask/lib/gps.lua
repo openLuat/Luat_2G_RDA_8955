@@ -41,11 +41,13 @@ local powerCbFnc
 uartBaudrate = 115200
 local uartID,uartDatabits,uartParity,uartStopbits = 2,8,uart.PAR_NONE,uart.STOP_1
 --搜星模式命令字符串，"$PGKC115," .. gps .. "," .. glonass .. "," .. beidou .. "," .. galieo .. "*"
-local aerialModeStr = ""
+local aerialModeStr,aerialModeSetted = ""
 --运行模式命令字符串，"$PGKC105," .. mode .. "," .. rt .. "," .. st .. "*"
-local runModeStr = ""
+local runModeStr,runModeSetted = ""
 --正常运行模式下NMEA数据上报间隔命令字符串，"$PGKC101," .. interval .. "*"
-local nmeaReportStr = ""
+local nmeaReportStr,nmeaReportSetted = ""
+--每种NEMA数据的输出频率命令字符串
+local nmeaReportFreqStr,nmeaReportFreqSetted = ""
 --NMEA数据处理模式，0表示仅gps.lua内部处理，1表示仅用户自己处理，2表示gps.lua和用户同时处理
 --用户处理一条NMEA数据的回调函数
 local nmeaMode,nmeaCbFnc = 0
@@ -186,6 +188,7 @@ local function parseNmea(s)
     if filterSeconds>0 and fixed and not fixFlag and not filteredFlag then
         if not sys.timerIsActive(filterTimerFnc) then
             log.info("gps.filterTimerFnc begin")
+            sys.publish("GPS_STATE","LOCATION_FILTER")
             sys.timerStart(filterTimerFnc,filterSeconds*1000)
         end        
         return
@@ -223,6 +226,7 @@ local function taskRead()
             cacheData = cacheData..s
             local d1,d2,nemaStr = sfind(cacheData,"\r\n")
             while d1 do
+                writePendingCmds()
                 nemaStr = ssub(cacheData,1,d2)
                 cacheData = ssub(cacheData,d2+1,-1)
 
@@ -258,6 +262,13 @@ function writeCmd(cmd,isFull)
     --log.info("gps.writecmd",tmp:toHex())
 end
 
+function writePendingCmds()
+    if not aerialModeSetted and aerialModeStr~="" then writeCmd(aerialModeStr) aerialModeSetted=true end
+    if not runModeSetted and runModeStr~="" then writeCmd(runModeStr) runModeSetted=true end
+    if not nmeaReportSetted and nmeaReportStr~="" then writeCmd(nmeaReportStr) nmeaReportSetted=true end
+    if not nmeaReportFreqSetted and nmeaReportFreqStr~="" then writeCmd(nmeaReportFreqStr) nmeaReportFreqSetted=true end
+end
+
 local function _open()
     if openFlag then return end
     pm.wake("gps.lua")
@@ -272,10 +283,7 @@ local function _open()
     openFlag = true
     sys.publish("GPS_STATE","OPEN")
     fixFlag,filteredFlag = false
-    Ggalng,Ggalat,Gsv,Sep = "","",""
-    if aerialModeStr~="" then writeCmd(aerialModeStr) aerialModeStr="" end
-    if runModeStr~="" then writeCmd(runModeStr) runModeStr="" end
-    if nmeaReportStr~="" then writeCmd(nmeaReportStr) nmeaReportStr="" end
+    Ggalng,Ggalat,Gsv,Sep = "","",""    
     log.info("gps._open")
 end
 
@@ -294,6 +302,7 @@ local function _close()
     fixFlag,filteredFlag = false
     sys.timerStop(filterTimerFnc)
     Ggalng,Ggalat,Gsv,Sep = "","",""
+    aerialModeSetted,runModeSetted,nmeaReportSetted,nmeaReportFreqSetted = nil
     log.info("gps._close")
 end
 
@@ -582,8 +591,10 @@ function setAerialMode(gps,beidou,glonass,galieo)
     local beidou = beidou or 0
     local galieo = galieo or 0
     if gps+glonass+beidou+galieo == 0 then gps=1 beidou=1 end
-    aerialModeStr = "$PGKC115,"..gps..","..glonass..","..beidou..","..galieo.."*"
-    if isOpen() then writeCmd(aerialModeStr) aerialModeStr="" end
+    local tmpStr = "$PGKC115,"..gps..","..glonass..","..beidou..","..galieo.."*"
+    if tmpStr~=aerialModeStr then
+        aerialModeStr,aerialModeSetted = tmpStr
+    end
 end
 
 
@@ -619,11 +630,28 @@ function setRunMode(mode,runTm,sleepTm)
         if rt>10000 then rt=10000 end
         if rt<200 then rt=200 end
         nmeaReportStr = "$PGKC101,"..rt.."*"
-        if isOpen() then writeCmd(nmeaReportStr) nmeaReportStr="" end
     end
 
-    runModeStr = "$PGKC105,"..mode..((mode==1 or mode==2) and (","..rt..","..st) or "").."*"
-    if isOpen() then writeCmd(runModeStr) runModeStr="" end
+    local tmpStr = "$PGKC105,"..mode..((mode==1 or mode==2) and (","..rt..","..st) or "").."*"
+    if tmpStr~=runModeStr then
+        runModeStr,runModeSetted = tmpStr
+    end
+end
+
+--- 设置NEMA语句的输出频率.
+-- @number[opt=1] rmc，单位秒，RMC语句输出频率，取值范围0到10之间的整数，0表示不输出
+-- @number[opt=1] gga，单位秒，GGA语句输出频率，取值范围0到10之间的整数，0表示不输出
+-- @number[opt=1] gsa，单位秒，GSA语句输出频率，取值范围0到10之间的整数，0表示不输出
+-- @number[opt=1] gsv，单位秒，GSV语句输出频率，取值范围0到10之间的整数，0表示不输出
+-- @number[opt=1] vtg，单位秒，VTG语句输出频率，取值范围0到10之间的整数，0表示不输出
+-- @number[opt=0] gll，单位秒，GLL语句输出频率，取值范围0到10之间的整数，0表示不输出
+-- @return nil
+-- @usage gps.setNemaReportFreq(5,0,0,0,0,0)
+function setNemaReportFreq(rmc,gga,gsa,gsv,vtg,gll)
+    local tmpStr = "$PGKC242,"..(gll or 0)..","..(rmc or 1)..","..(vtg or 1)..","..(gga or 1)..","..(gsa or 1)..","..(gsv or 1)..",0,0,0,0,0,0,0,0,0,0,0,0,0".."*"
+    if tmpStr~=nmeaReportFreqStr then
+        nmeaReportFreqStr,nmeaReportFreqSetted = tmpStr
+    end
 end
 
 --- 设置GPS定位成功后经纬度的过滤时间.
