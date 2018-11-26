@@ -323,15 +323,13 @@ function mt.__index:recv(timeout, msg)
         self.wait = self.ssl and "+SSL RECEIVE" or "+RECEIVE"
         if timeout and timeout > 0 then
             local r, s = sys.waitUntilExt(msg or tostring(self.co), timeout)
+            self.wait = ""
             if not r then
-                self.wait = ""
                 return false, "timeout"
             elseif r and r == msg then
-                self.wait = ""
                 return false, r, s
             else
                 if self.ssl and not r then self:sslDestroy() end
-                self.wait = ""
                 return r, s
             end
         else
