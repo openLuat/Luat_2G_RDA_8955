@@ -1,1 +1,1 @@
-http://www.openluat.com/Product/file/rda8955/core_V0031.zip
+https://github.com/openLuat/Luat_2G_RDA_8955/releases/latest
