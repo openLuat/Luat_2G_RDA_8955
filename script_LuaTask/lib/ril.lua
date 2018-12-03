@@ -340,7 +340,7 @@ local function procatc(data)
                 isurc = true
             end
         elseif cmdhead == "+SSLINIT" or cmdhead == "+SSLCERT" or cmdhead == "+SSLCREATE" or cmdhead == "+SSLCONNECT" or cmdhead == "+SSLSEND" or cmdhead == "+SSLDESTROY" or cmdhead == "+SSLTERM" then
-            if string.match(data, "^SSL&%d, *CLOSED") or string.match(data, "^SSL&%d, *ERROR")then
+            if string.match(data, "^SSL&%d, *CLOSED") or string.match(data, "^SSL&%d, *ERROR") or string.match(data, "SSL&%d,CONNECT ERROR") then
                 isurc = true
             elseif string.match(data, "^SSL&%d,") then
                 respdata = data
