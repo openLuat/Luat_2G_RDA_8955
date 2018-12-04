@@ -8,7 +8,7 @@ require "socket"
 module(..., package.seeall)
 
 -- 此处的IP和端口请填上你自己的socket服务器和端口
-local ip, port = "36.7.87.100", "6500"
+local ip, port = "180.97.80.55",12415
 -- tcp test
 sys.taskInit(function()
     local r, s, p
