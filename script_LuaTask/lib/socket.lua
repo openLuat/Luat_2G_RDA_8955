@@ -121,6 +121,7 @@ local function socket(protocol, cert)
         input = {},
         output = {},
         wait = "",
+        connected = false,
         iSubscribe = false,
     }
     
