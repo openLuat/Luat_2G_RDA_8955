@@ -1,12 +1,16 @@
-﻿发布时间：2018/12/03 10:04
+﻿发布时间：2018/12/06 16:26
 修改记录：
     一、lib脚本修改
 	lib脚本版本号：2.3.0
-	(1)socket 新增select框架，支持异步调用
-	(2)socket 之前的同步框架,优化send处理，增加socket同步框架的稳定性.
-	(3)socket 的select框架支持保持链接心跳包间隔时间和心跳包设置.
+	(1)socket.lua：新增select框架，支持异步调用，支持保持链接心跳包间隔时间和心跳包设置；优化之前同步框架的send处理，增加socket同步框架的稳定性
+	(2)patch.lua：新增协程运行出错时，是否重启的配置功能
+		【新功能重要性】：一般
+		【问题影响模块】：所有模块
+		【新功能说明】： 如果需要重启，在main.lua的VERSION下一行定义COROUTINE_ERROR_RESTART = true
     二、demo脚本修改
-	(2)demo 新增asyncSocket和asyncSocketCallback两个演示demo
+	(1)新增asyncSocket和asyncSocketCallback两个演示demo
+	(2)apn：修正中国香港的一个apn name拼写出错的问题
+	(3)Air168：新增Air168 demo，需要配合Luat_VXXXX_8955_168_TTS_UI的lod使用
 
 
 发布时间：2018/12/03 10:04
@@ -17,8 +21,6 @@
 		【问题重要性】：一般
 		【问题影响模块】：所有模块
 		【问题出现概率】：在网络较差的情况下，小概率出现
-    二、demo脚本修改
-	(1)apn：修正中国香港的一个apn name拼写出错的问题
 
 
 

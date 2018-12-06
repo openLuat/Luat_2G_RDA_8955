@@ -112,26 +112,44 @@
 	<td class="summary">创建基于UDP的socket对象</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#mt.__index:connect">
-    mt.__index:connect (address, port)
+	<td class="name" nowrap><a href="#mt:connect">
+    mt:connect (address, port)
     </a></td>
 	<td class="summary">连接服务器</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#mt.__index:send">
-    mt.__index:send (data)
+	<td class="name" nowrap><a href="#mt:asyncSelect">
+    mt:asyncSelect (keepAlive, pingreq)
+    </a></td>
+	<td class="summary">异步收发选择器</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mt:asyncSend">
+    mt:asyncSend (data)
+    </a></td>
+	<td class="summary">异步发送数据</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mt:asyncRecv">
+    mt:asyncRecv ()
+    </a></td>
+	<td class="summary">异步接收数据</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mt:send">
+    mt:send (data)
     </a></td>
 	<td class="summary">发送数据</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#mt.__index:recv">
-    mt.__index:recv (<strong  style="color: gray;">[timeout=0]</strong><strong  style="color: gray;">[, msg=nil]</strong>)
+	<td class="name" nowrap><a href="#mt:recv">
+    mt:recv (<strong  style="color: gray;">[timeout=0]</strong><strong  style="color: gray;">[, msg=nil]</strong>)
     </a></td>
 	<td class="summary">接收数据</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#mt.__index:close">
-    mt.__index:close ()
+	<td class="name" nowrap><a href="#mt:close">
+    mt:close ()
     </a></td>
 	<td class="summary">销毁一个socket</td>
 	</tr>
@@ -239,9 +257,9 @@ c = socket.tcp(<span class="keyword">true</span>, {caCert=<span class="string">"
 
 </dd>
     <dt>
-    <a name = "mt.__index:connect"></a>
+    <a name = "mt:connect"></a>
     <strong  style="color: red;">
-    mt.__index:connect (address, port)
+    mt:connect (address, port)
     </strong>
     </dt>
     <dd>
@@ -274,9 +292,101 @@ c = socket.tcp(<span class="keyword">true</span>, {caCert=<span class="string">"
 
 </dd>
     <dt>
-    <a name = "mt.__index:send"></a>
+    <a name = "mt:asyncSelect"></a>
     <strong  style="color: red;">
-    mt.__index:send (data)
+    mt:asyncSelect (keepAlive, pingreq)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">异步收发选择器</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">keepAlive</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">服务器和客户端最大通信间隔时间,也叫心跳包最大时间,单位秒</pre>
+        </li>
+        <li><span class="parameter">pingreq</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">心跳包的字符串</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">boole,false 失败，true 表示成功</pre></il>
+    </ul>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "mt:asyncSend"></a>
+    <strong  style="color: red;">
+    mt:asyncSend (data)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">异步发送数据</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example"> 数据</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">result true - 成功，false - 失败</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">c = socket.tcp(); c:connect(); c:asyncSend(<span class="string">"12345678"</span>);</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "mt:asyncRecv"></a>
+    <strong  style="color: red;">
+    mt:asyncRecv ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">异步接收数据</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        <pre class="example">nil, 表示没有收到数据</pre></li>
+        <li>
+        <pre class="example">data 如果是UDP协议，返回新的数据包,如果是TCP,返回所有收到的数据,没有数据返回长度为0的空串</pre></li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">c = socket.tcp(); c:connect()</pre></il>
+        <li><pre class="example">data = c:asyncRecv()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "mt:send"></a>
+    <strong  style="color: red;">
+    mt:send (data)
     </strong>
     </dt>
     <dd>
@@ -306,9 +416,9 @@ c = socket.tcp(<span class="keyword">true</span>, {caCert=<span class="string">"
 
 </dd>
     <dt>
-    <a name = "mt.__index:recv"></a>
+    <a name = "mt:recv"></a>
     <strong  style="color: red;">
-    mt.__index:recv (<strong  style="color: green;">[timeout=0]</strong><strong  style="color: green;">[, msg=nil]</strong>)
+    mt:recv (<strong  style="color: green;">[timeout=0]</strong><strong  style="color: green;">[, msg=nil]</strong>)
     </strong>
     </dt>
     <dd>
@@ -350,9 +460,9 @@ c = socket.tcp(<span class="keyword">true</span>, {caCert=<span class="string">"
 
 </dd>
     <dt>
-    <a name = "mt.__index:close"></a>
+    <a name = "mt:close"></a>
     <strong  style="color: red;">
-    mt.__index:close ()
+    mt:close ()
     </strong>
     </dt>
     <dd>
@@ -485,7 +595,7 @@ setTcpResendPara(<span class="number">4</span>,<span class="number">16</span>)</
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-11-26 16:32:37 </i>
+<i style="float:right;">Last updated 2018-12-06 16:40:02 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

@@ -65,6 +65,7 @@ coroutine.resume = function(...)
             traceBack = (traceBack and traceBack~="") and (arg[2].."\r\n"..traceBack) or arg[2]
             if errDump and errDump.appendErr and type(errDump.appendErr)=="function" then
                 errDump.appendErr(traceBack)
+                if _G.COROUTINE_ERROR_RESTART then rtos.restart() end
             else
                 log.error("coroutine.resume",traceBack)
             end
