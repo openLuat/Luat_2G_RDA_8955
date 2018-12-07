@@ -11,6 +11,7 @@
 	(1)新增asyncSocket和asyncSocketCallback两个演示demo
 	(2)apn：修正中国香港的一个apn name拼写出错的问题
 	(3)Air168：新增Air168 demo，需要配合Luat_VXXXX_8955_168_TTS_UI的lod使用
+	(3)Air268F：修正拍照测试时图像镜像的问题，需要配合Luat_VXXXX_8955F或者合Luat_VXXXX_8955F_FLOAT的版本使用，XXXX最低为0032
 
 
 发布时间：2018/12/03 10:04

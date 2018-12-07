@@ -151,7 +151,7 @@ function takePhoto()
     --唤醒系统
     pm.wake("testTakePhoto")
     --打开摄像头
-    disp.cameraopen(1)
+    disp.cameraopen(1,0,0)
     --打开摄像头预览
     --如果有LCD，使用LCD的宽和高
     --如果无LCD，宽度设置为240像素，高度设置为320像素，240*320是Air268F支持的最大分辨率
