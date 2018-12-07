@@ -13,43 +13,6 @@ require"utils"
 require"audio"
 local WIDTH,HEIGHT = disp.getlcdinfo()
 local DEFAULT_WIDTH,DEFAULT_HEIGHT = 240,320
--- 拍照
-function takePhoto()
-    --唤醒系统
-    pm.wake("testTakePhoto")
-    --打开摄像头
-    disp.cameraopen(1,0,0)
-    --打开摄像头预览
-    --如果有LCD，使用LCD的宽和高
-    --如果无LCD，宽度设置为240像素，高度设置为320像素，240*320是Air268F支持的最大分辨率
-    disp.camerapreview(0,0,0,0,WIDTH or DEFAULT_WIDTH,HEIGHT or DEFAULT_HEIGHT)
-    --设置照片的宽和高像素并且开始拍照
-    --此处设置的宽和高和预览时的保持一致
-    disp.cameracapture(WIDTH or DEFAULT_WIDTH,HEIGHT or DEFAULT_HEIGHT)
-    --设置照片保存路径
-    disp.camerasavephoto("/testCamera.jpg")
-    log.info("testCamera.takePhoto fileSize",io.fileSize("/testCamera.jpg"))
-    --关闭摄像头预览
-    disp.camerapreviewclose()
-    --关闭摄像头
-    disp.cameraclose()
-    --允许系统休眠
-    pm.sleep("testTakePhoto")    
-    --显示拍照图片    
-    if WIDTH~=0 and HEIGHT~=0 then
-        disp.clear()
-        disp.putimage("/testCamera.jpg",0,0)
-        disp.puttext(common.utf8ToGb2312("照片尺寸: "..io.fileSize("/testCamera.jpg")),0,5)
-        disp.update()
-    end   
-    
-	--5秒后自动返回提示界面
-	if WIDTH~=0 and HEIGHT~=0 then
-		sys.timerStart(windows.returnIdle,5000)
-	end
-    
-end
-
 
 -- 扫码结果回调函数
 -- @bool result，true或者false，true表示扫码成功，false表示超时失败
@@ -96,4 +59,42 @@ function scan()
     --如果有LCD，使用LCD的宽和高
     --如果无LCD，宽度设置为240像素，高度设置为320像素，240*320是Air268F支持的最大分辨率
     disp.camerapreview(0,0,0,0,WIDTH or DEFAULT_WIDTH,HEIGHT or DEFAULT_HEIGHT)
+end
+
+
+-- 拍照
+function takePhoto()
+    --唤醒系统
+    pm.wake("testTakePhoto")
+    --打开摄像头
+    disp.cameraopen(1,0,0)
+    --打开摄像头预览
+    --如果有LCD，使用LCD的宽和高
+    --如果无LCD，宽度设置为240像素，高度设置为320像素，240*320是Air268F支持的最大分辨率
+    disp.camerapreview(0,0,0,0,WIDTH or DEFAULT_WIDTH,HEIGHT or DEFAULT_HEIGHT)
+    --设置照片的宽和高像素并且开始拍照
+    --此处设置的宽和高和预览时的保持一致
+    disp.cameracapture(WIDTH or DEFAULT_WIDTH,HEIGHT or DEFAULT_HEIGHT)
+    --设置照片保存路径
+    disp.camerasavephoto("/testCamera.jpg")
+    log.info("testCamera.takePhoto fileSize",io.fileSize("/testCamera.jpg"))
+    --关闭摄像头预览
+    disp.camerapreviewclose()
+    --关闭摄像头
+    disp.cameraclose()
+    --允许系统休眠
+    pm.sleep("testTakePhoto")    
+    --显示拍照图片    
+    if WIDTH~=0 and HEIGHT~=0 then
+        disp.clear()
+        disp.putimage("/testCamera.jpg",0,0)
+        disp.puttext(common.utf8ToGb2312("照片尺寸: "..io.fileSize("/testCamera.jpg")),0,5)
+        disp.update()
+    end   
+    
+	--5秒后自动返回提示界面
+	if WIDTH~=0 and HEIGHT~=0 then
+		sys.timerStart(windows.returnIdle,5000)
+	end
+    
 end
