@@ -76,6 +76,11 @@ local function init1()
     end
 end
 
+--如下一行代码，表示是否启用i2c id复用功能，0表示不启用，1表示启用，默认启用
+--如果启用了i2c id复用功能，i2c id 0和2都表示i2c3
+--如果不启用i2c id复用功能，i2c id 0、1、2分别表示i2c1、i2c2、i2c3
+--仅0033以及以后的core才支持“此复用功能设置”以及“i2c1和i2c2的功能”
+--i2c.set_id_dup(0)
 --init和init1接口演示了两套i2c软件接口的使用方式
 --init()
 init1()

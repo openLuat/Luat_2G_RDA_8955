@@ -53,7 +53,8 @@ local cellinfo,flymode,csqswitch,cengswitch,multicellcb = {}
 --ledontime：指示灯点亮时长(毫秒)
 --ledofftime：指示灯熄灭时长(毫秒)
 --usersckconnect：用户socket是否连接上后台
-local ledstate,ledontime,ledofftime,usersckconnect = "INIT",0,0
+--userscksslconnect：用户socket是否连接上后台
+local ledstate,ledontime,ledofftime,usersckconnect,userscksslconnect = "INIT",0,0
 --ledflg：网络指示灯开关
 --ledpin：网络指示灯控制引脚
 --ledvalid：引脚输出何种电平会点亮指示灯，1为高，0为低
@@ -609,7 +610,7 @@ end
 返回值：无
 ]]
 function procled()
-	print("procled",ledflg,ledstate,flymode,usersckconnect,cgatt,state)
+	print("procled",ledflg,ledstate,flymode,usersckconnect,userscksslconnect,cgatt,state)
 	--如果开启了网络指示灯功能
 	if ledflg then
 		local newstate,newontime,newofftime = "IDLE",ledidleon,ledidleoff
@@ -619,7 +620,7 @@ function procled()
 		elseif simerrsta then
 			newstate,newontime,newofftime = "SIMERR",ledsimerron,ledsimerroff
 		--用户socket连接到了后台
-		elseif usersckconnect then
+		elseif usersckconnect or userscksslconnect then
 			newstate,newontime,newofftime = "SCK",ledsckon,ledsckoff
 		--附着上GPRS数据网络
 		elseif cgatt then
@@ -647,6 +648,14 @@ local function usersckind(v)
 	print("usersckind",v)
 	if usersckconnect~=v then
 		usersckconnect = v
+		procled()
+	end
+end
+
+local function userscksslind(v)
+	print("userscksslind",v)
+	if userscksslconnect~=v then
+		userscksslconnect = v
 		procled()
 	end
 end
@@ -713,6 +722,7 @@ local procer =
 	FLYMODE_IND = flyind,
 	SYS_WORKMODE_IND = workmodeind,
 	USER_SOCKET_CONNECT = usersckind,
+	USER_SOCKETSSL_CONNECT = userscksslind,
 	NET_GPRS_READY = cgattind,
 	CELL_INFO_IND = cellinfoind,
 }

@@ -258,6 +258,7 @@ function mqttc:waitfor(id, timeout, msg)
     end
     
     while true do
+        local insertCache = true
         local r, data, param = self:read(timeout, msg)
         if r then
             if data.id == PUBLISH then
@@ -272,12 +273,13 @@ function mqttc:waitfor(id, timeout, msg)
                     log.info("mqtt.client:waitfor", "send ack fail", data.id == PUBREC and "PUBREC" or "PUBCOMP")
                     return false
                 end
+                insertCache = false
             end
             
             if data.id == id then
                 return true, data
             end
-            table.insert(self.cache, data)
+            if insertCache then table.insert(self.cache, data) end
         else
             return false, data, param
         end

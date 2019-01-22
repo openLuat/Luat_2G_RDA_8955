@@ -39,7 +39,7 @@ end
 -- @return string,string,错误返回 response_code, error_message
 -- @usage local c, h, b = httpv2.request(url, method, headers, body)
 -- @usage local r, e  = httpv2.request("http://wrong.url/ ")
-function request(method, url, timeout, params, data, ctype, basic, headers, cert)
+function request(method, url, timeout, params, data, ctype, basic, headers, cert, fnc)
     local response_header, response_code, response_body = {}
     local _, idx, offset, ssl, auth, https, host, port, path
     headers = headers or {
@@ -48,7 +48,8 @@ function request(method, url, timeout, params, data, ctype, basic, headers, cert
         ['Accept-Language'] = 'zh-CN,zh,cn',
         ['Content-Type'] = 'application/x-www-form-urlencoded',
         ['Content-Length'] = '0',
-        ['Connection'] = 'close'
+        ['Connection'] = 'Keep-alive',
+        ["Keep-Alive"] = 'timeout=20',
     }
     ssl = string.find(rtos.get_version(), 'SSL')
     -- 处理url的协议头和鉴权
@@ -83,7 +84,9 @@ function request(method, url, timeout, params, data, ctype, basic, headers, cert
         data = type(data) == 'string' and data or (type(data) == 'table' and json.encode(data)) or ""
         headers['Content-Length'] = #data or 0
     elseif ctype == 3 and type(data) == 'string' then
-        headers['Content-Length'] = io.filesize(data) or 0
+        headers['Content-Length'] = io.fileSize(data) or 0
+    elseif data and type(data) == "string" then
+        headers['Content-Length'] = #data or 0
     end
     -- 处理HTTP Basic Authorization 验证
     if auth then
@@ -102,13 +105,14 @@ function request(method, url, timeout, params, data, ctype, basic, headers, cert
         return '502', 'SOCKET_CONN_ERROR'
     end
     if ctype ~= 3 then
-        str = method .. ' ' .. path .. ' HTTP/1.0\r\n' .. str .. '\r\n\r\n' .. (data or "") .. '\r\n'
+        str = method .. ' ' .. path .. ' HTTP/1.1\r\n' .. str .. '\r\n' .. (data or "") .. '\r\n'
+        -- log.info("发送的http报文:", str)
         if not c:send(str) then
             c:close()
             return '426', 'SOCKET_SEND_ERROR'
         end
     else
-        str = method .. ' ' .. path .. ' HTTP/1.0\r\n' .. str .. '\r\n\r\n'
+        str = method .. ' ' .. path .. ' HTTP/1.1\r\n' .. str .. '\r\n'
         if not c:send(str) then
             c:close()
             return '426', 'SOCKET_SEND_ERROR'
@@ -116,7 +120,7 @@ function request(method, url, timeout, params, data, ctype, basic, headers, cert
         local file = io.open(data, 'r')
         if file then
             while true do
-                local dat = file:read(1460)
+                local dat = file:read(8192)
                 if dat == nil then
                     io.close(file)
                     break
@@ -136,25 +140,37 @@ function request(method, url, timeout, params, data, ctype, basic, headers, cert
     ------------------------------------ 接收服务器返回消息部分 ------------------------------------
     local msg, str = {}, ""
     local r, s = c:recv(timeout)
-    if not r then 
+    if not r then
         c:close()
-        return '503', 'SOCKET_RECV_TIMOUT' 
+        return '503', 'SOCKET_RECV_TIMOUT'
     end
     -- 处理状态代码
     _, idx, response_code = s:find("%s(%d+)%s.-\r\n")
     _, offset = s:find('\r\n\r\n')
     if not idx or not offset then return '501', 'SERVER_NOT_RESPONSE' end
-    log.info('httpv2.response code and message:', response_code)
+    log.info('httpv2.response code:', response_code)
     -- 处理headers代码
     for k, v in string.gmatch(s:sub(idx + 1, offset), "(.-):%s*(.-)\r\n") do response_header[k] = v end
-    -- 处理body
-    while true do
-        table.insert(msg, s)
-        r, s = c:recv(timeout)
-        if not r then break end
+    local len = response_header["Content-Range"] and tonumber(response_header["Content-Range"]:match("/(%d+)")) or tonumber(response_header["Content-Length"]) or 2147483648
+    
+    s = s:sub((offset or 0) + 1, -1)
+    local cnt = #s
+    if tonumber(response_code) == 200 or tonumber(response_code) == 206 then
+        -- 处理body
+        while true do
+            if type(fnc) == "function" then
+                fnc(s, len)
+            else
+                table.insert(msg, s)
+            end
+            if cnt >= len then break end
+            r, s = c:recv(timeout)
+            if not r then break end
+            cnt = cnt + #s
+        end
+        s = table.concat(msg) or ""
     end
     c:close()
-    str = table.concat(msg) or ""
     local gzip = response_header["Content-Encoding"] == "gzip"
-    return response_code, response_header, gzip and ((zlib.inflate(str:sub((offset or 0) + 1, -1))):read()) or str:sub((offset or 0) + 1, -1)
+    return response_code, response_header, gzip and ((zlib.inflate(s)):read()) or s
 end

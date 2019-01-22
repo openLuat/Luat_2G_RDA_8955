@@ -18,7 +18,7 @@ local width, data = qrencode.encode('http://www.openluat.com')
 --- disp.putqrcode(data, width, display_width, x, y) 显示二维码
 -- @param data 从qrencode.encode返回的二维码数据
 -- @param width 二维码数据的实际宽度
--- @param display_width 二维码实际显示宽度
+-- @param display_width 二维码实际显示宽度,显示宽度开根号需要是整数
 -- @param x 二维码显示起始坐标x
 -- @param y 二维码显示起始坐标y
 
@@ -26,7 +26,7 @@ local width, data = qrencode.encode('http://www.openluat.com')
 local function appQRCode()
 	disp.clear()
 	disp.drawrect(0, 0, WIDTH-1, HEIGHT-1, WHITE)
-	local displayWidth = (WIDTH>HEIGHT and HEIGHT or WIDTH)-4
+	local displayWidth = 100
 	disp.putqrcode(data, width, displayWidth, (WIDTH-displayWidth)/2, (HEIGHT-displayWidth)/2)
 	disp.update()
 end

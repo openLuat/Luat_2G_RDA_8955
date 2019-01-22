@@ -42,16 +42,15 @@ local function enCellInfo(s)
 end
 
 local function enWifiInfo(tWifi)
-    local ret,k,v = ""
-    if tWifi and #tWifi>0 then
-        ret = string.char(#tWifi)
+    local ret,cnt,k,v = "",0
+    if tWifi then
         for k,v in pairs(tWifi) do
             log.info("lbsLoc.enWifiInfo",k,v)
             ret = ret..pack.pack("Ab",(k:gsub(":","")):fromHex(),v+255)
+            cnt = cnt+1
         end
     end
-    
-    return ret
+    return string.char(cnt)..ret
 end
 
 local function trans(str)
@@ -72,7 +71,7 @@ local function taskClient(cbFnc,reqAddr,timeout,productKey,host,port,reqTime,req
     local reqStr = pack.pack("bAbAAAA",
         productKey:len(),
         productKey,
-        (reqAddr and 2 or 0)+(reqTime and 4 or 0)+((reqWifi and #reqWifi~=0) and 16 or 0),
+        (reqAddr and 2 or 0)+(reqTime and 4 or 0)+(reqWifi and 16 or 0),
         "",
         common.numToBcdNum(misc.getImei()),
         enCellInfo(net.getCellInfoExt()),
@@ -80,6 +79,7 @@ local function taskClient(cbFnc,reqAddr,timeout,productKey,host,port,reqTime,req
     log.info("reqStr",reqStr:toHex())
     while true do
         sck = socket.udp()
+        if not sck then cbFnc(6) return end
         if sck:connect(host,port) then
             while true do
                 if sck:send(reqStr) then
@@ -87,12 +87,13 @@ local function taskClient(cbFnc,reqAddr,timeout,productKey,host,port,reqTime,req
                     if result then                        
                         sck:close()
                         log.info("lbcLoc receive",data:toHex())
-                        if data:len()>=11 and data:byte(1)==0 then
+                        if data:len()>=11 and (data:byte(1)==0 or data:byte(1)==0xFF) then
                             cbFnc(0,
                                 trans(common.bcdNumToNum(data:sub(2,6))),
                                 trans(common.bcdNumToNum(data:sub(7,11))),
                                 reqAddr and data:sub(13,12+data:byte(12)) or nil,
-                                data:sub(reqAddr and (13+data:byte(12)) or 12,-1))
+                                data:sub(reqAddr and (13+data:byte(12)) or 12,-1),
+                                (data:byte(1)==0) and "LBS" or "WIFI")
                         else
                             log.warn("lbsLoc.query","根据基站查询经纬度失败")
                             if data:byte(1)==2 then
@@ -128,10 +129,21 @@ end
 
 --- 发送根据基站查询经纬度请求（仅支持中国区域的位置查询）
 -- @function cbFnc，用户回调函数，回调函数的调用形式为：
---              cbFnc(result,lat,lng,addr)
---              result：number类型，0表示成功，1表示网络环境尚未就绪，2表示连接服务器失败，3表示发送数据失败，4表示接收服务器应答超时，5表示服务器返回查询失败；为0时，后面的3个参数才有意义
+--              cbFnc(result,lat,lng,addr,dateTime,locType)
+--              result：number类型
+--                      0表示成功
+--                      1表示网络环境尚未就绪
+--                      2表示连接服务器失败
+--                      3表示发送数据失败
+--                      4表示接收服务器应答超时
+--                      5表示服务器返回查询失败
+--                      6表示socket已满，创建socket失败
+--                      为0时，后面的5个参数才有意义
 --              lat：string类型或者nil，纬度，整数部分3位，小数部分7位，例如"031.2425864"
 --              lng：string类型或者nil，经度，整数部分3位，小数部分7位，例如"121.4736522"
+--              addr：无意义，保留使用
+--              dateTime：无意义，保留使用
+--              locType：string类型，位置类型，"LBS"表示基站定位位置，"WIFI"表示WIFI定位位置
 -- @bool[opt=nil] reqAddr，此参数无意义，保留
 -- @number[opt=20000] timeout，请求超时时间，单位毫秒，默认20000毫秒
 -- @string[opt=nil] productKey，IOT网站上的产品证书，此参数可选，用户如果在main.lua中定义了PRODUCT_KEY变量，就不需要传入此参数

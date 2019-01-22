@@ -60,7 +60,6 @@ require"color_lcd_spi_st7735l"
 require"testCamera"
 require"keypad"
 require"windows"
-
 --启动系统框架
 sys.init(0, 0)
 sys.run()

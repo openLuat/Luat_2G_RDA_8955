@@ -79,9 +79,9 @@ local function writeEphBegin()
 end
 
 local function downloadEphCb(result,prompt,head,body)
-    log.info("testHttp.cbFnc",result,prompt)
+    log.info("agps.downloadEphCb",result,prompt)
     runTimer()
-    if result and body then        
+    if result and prompt=="200" and body then
         if gps.isFix() then
             io.writeFile(EPH_TIME_FILE,tostring(os.time()))
         else

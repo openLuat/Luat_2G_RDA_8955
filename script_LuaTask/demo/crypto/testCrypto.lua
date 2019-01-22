@@ -105,6 +105,15 @@ local function sha256Test()
     end
 end
 
+local function hmacSha256Test()
+    if type(crypto.hmac_sha256)=="function" then
+        local originStr = "asdasdsadasweqcdsjghjvcb"
+        local signKey = "12345689012345"
+        log.info("testCrypto.hmac_sha256",crypto.hmac_sha256(originStr,signKey))
+    end
+end
+
+
 --- crc算法测试
 -- @return 无
 -- @usage crcTest()
@@ -337,6 +346,7 @@ local function test()
     crcTest()
     aesTest()
     flowMd5Test()
+    hmacSha256Test()
     --xxtea 需要lod打开支持
     xxteaTest()
 end

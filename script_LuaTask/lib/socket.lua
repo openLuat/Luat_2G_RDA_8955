@@ -48,6 +48,8 @@ local function stopConnectTimer(tSocket, id)
 end
 
 local function errorInd(error)
+    local coSuspended = {}
+    
     for k, v in pairs({sockets, socketsSsl}) do
         --if #v ~= 0 then
         for _, c in pairs(v) do -- IP状态出错时，通知所有已连接的socket
@@ -56,11 +58,18 @@ local function errorInd(error)
             c.error = error
             if c.co and coroutine.status(c.co) == "suspended" then
                 stopConnectTimer(v, c.id)
-                coroutine.resume(c.co, false)
+                --coroutine.resume(c.co, false)
+                table.insert(coSuspended,c.co)
             end
         --end
         end
     --end
+    end
+    
+    for k, v in pairs(coSuspended) do
+        if v and coroutine.status(v) == "suspended" then
+            coroutine.resume(v, false)
+        end
     end
 end
 
@@ -123,6 +132,7 @@ local function socket(protocol, cert)
         wait = "",
         connected = false,
         iSubscribe = false,
+        subMessage = nil,
     }
     
     tSocket = (ssl and socketsSsl or sockets)
@@ -357,7 +367,7 @@ function mt:send(data)
         return false
     end
     
-    for i = 1, string.len(data), SENDSIZE do
+    for i = 1, string.len(data or ""), SENDSIZE do
         -- 按最大MTU单元对data分包
         local stepData = string.sub(data, i, i + SENDSIZE - 1)
         --发送AT命令执行数据发送
@@ -386,13 +396,14 @@ function mt:recv(timeout, msg)
         return false
     end
     if msg and not self.iSubscribe then
-        self.iSubscribe = true
-        sys.subscribe(msg, function(data)
-            table.insert(self.output, data or "")
-            if self.wait == "+RECEIVE" then coroutine.resume(self.co, false) end
-        end)
+        self.iSubscribe = msg
+        self.subMessage = function(data)
+            if data then table.insert(self.output, data) end
+            if self.wait == "+RECEIVE" or self.wait == "+SSL RECEIVE" then coroutine.resume(self.co, 0xAA) end
+        end
+        sys.subscribe(msg, self.subMessage)
     end
-    if #self.output ~= 0 then sys.publish(msg) end
+    if msg and #self.output ~= 0 then sys.publish(msg, false) end
     if #self.input == 0 then
         self.wait = self.ssl and "+SSL RECEIVE" or "+RECEIVE"
         if timeout and timeout > 0 then
@@ -407,7 +418,7 @@ function mt:recv(timeout, msg)
             -- end
             if r == nil then
                 return false, "timeout"
-            elseif r == false then
+            elseif r == 0xAA then
                 local dat = table.concat(self.output)
                 self.output = {}
                 return false, msg, dat
@@ -445,10 +456,14 @@ end
 -- @usage  c = socket.tcp(); c:connect(); c:send("123"); c:close()
 function mt:close()
     assert(self.co == coroutine.running(), "socket:close: coroutine mismatch")
+    if self.iSubscribe then
+        sys.unsubscribe(self.iSubscribe, self.subMessage)
+        self.iSubscribe = false
+    end
     if self.connected or self.created then
         self.connected = false
         self.created = false
-        req((self.ssl and "AT+SSLDESTROY=" or "AT+CIPCLOSE=") .. self.id)
+        req(self.ssl and ("AT+SSLDESTROY=" .. self.id) or ("AT+CIPCLOSE=" .. self.id .. ",0"))
         self.wait = self.ssl and "+SSLDESTROY" or "+CIPCLOSE"
         coroutine.yield()
         socketStatusNtfy()

@@ -26,7 +26,7 @@ local function write(s)
 end
 
 local function on_wait_event_timeout()
-    coroutine.resume(console_task, "TIEMOUT")
+    coroutine.resume(console_task, "TIMEOUT")
 end
 
 local function wait_event(event, timeout)
@@ -95,11 +95,12 @@ local function main_loop()
             -- 用xpcall执行用户输入的脚本，可以捕捉脚本的错误
             xpcall(function()
                 -- 执行用户输入的脚本
-                local f = loadstring(line)
+                local f = assert(loadstring(line.." "))
                 setfenv(f, execute_env)
                 f()
             end,
-                function() -- 错误输出
+                function(err) -- 错误输出
+                    write(err .. '\r\n')
                     write(debug.traceback())
                 end)
             if wait_event_flag then

@@ -1,485 +1,501 @@
-����ʱ�䣺2018/11/05 13:25
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�1.2.2
-	(1)updatehttp.lua���������޷������û��Զ����url��������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�����ʹ�ó�����������Ȼʹ�õ��Ǻ���Ĺٷ�url
-		����������ʽ���������߼�����
-	(2)sys.lua������sys.setRestore�ӿڣ������ýű������쳣����ʱ�Ƿ����ԭʼ��д�汾
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵������Զ�������°汾������°汾���������﷨�쳣��Ĭ�ϻ��Զ����˵�ԭʼ����д�汾��ʹ��sys.setRestore�ӿڿ������Ƿ�ָ�
-	(3)agpsupgpd.lua��������ʹ��float���ܵ�lodʱ��agps���ܻᵼ��gps�����쳣��������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air800��Air801
-		��������ָ��ʡ�������
-		���������ԭ�򡿣���float��lod�£���һ����������Ľ�����С��������agps���߼�����
-		����������ʽ�����Գ���������ȡ������
-	(4)link.lua������link.setTcpResendPara�ӿڣ�������TCP����ش��������ش����
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵����������ʵ�ʲ��Է��֣�ĳЩС�����������������⣬�����շ�������ʱ��
-				�˰汾��Luat�ű�+0028��lod��Ĭ�ϴ������ش�4�Σ�ÿ���������16�룬�����һ��С�������ݷ��͵���ʱ����64�룬��ζ�ŷ���ʧ�ܣ��������Ͽ������ٴ�����
-				�ͻ��ɸ����Լ��Ĳ�Ʒʹ�ó��������ô˽ӿ�ȥ������ã�
-				�����Ʒ�ܽ��ܴܺ���ʱ�����ǲ�����Ƶ�����ߣ��Ϳ��Ե���setTcpResendPara(12,16)����Ϊ�����ܵ��ط�
-				�����ƷҪ���ܹ����ٵĸ�֪���ͽ�������Խ���Ƶ�����ߣ��Ϳ��Ե���setTcpResendPara�����Լ��������������
-
-
-
-
-����ʱ�䣺2018/06/14 10:48
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�1.2.1
-	(1)lbsloc.lua����������ѯ��γ��ʧ��ʱ����trace���������������Ϣ���Ĺ���
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵��������trace���������������Ϣ��������ٵĶ�λ��ѯ��γ��ʧ�ܵ�ԭ��
-	(2)ril.lua��������SN����ʶ�����ĸ��������������ַ���������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ������д���SN�а�������ĸ��������������ַ������ȡSNʧ��
-				  ����û���Ŀ��ʹ����SN���򣬲����п���д���˳���ĸ��������������ַ����������µ��˰汾
-		���������ԭ�򡿣���ȡSNʱ����ʶ����ĸ������
-		����������ʽ������ȡʱ��ʶ�������ַ�
-	(3)link.lua,linkssl.lua���Ż����������յ���������ʱ���ڴ�ʹ�á�����
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ��������յ���������ʱ��������Ե����ڴ治�������
-		���������ԭ�򡿣������յ���������ʱ��ԭ��ʹ��Lua��..��ƴ���ַ������˷�ʽ�ᵼ���ڴ��ʹ�óɱ�������
-		����������ʽ����ʹ��table.concat��ƴ���ַ������������ڴ�ɱ����ӵ�����
-	(4)aliyuniotauthssl.lua����������������֤ʧ��ʱ������һ����ϢALIYUN_AUTH_ERROR֪ͨ���Ĺ���
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-	(5)net.lua��ɾ�����ƶ�sim������������Ӫ�̵�mnc�Ĺ�ܴ�ʩ���Ĺ���
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�����ƶ�������������������mnc����ű�������д��ȡ�����ƣ�Ȼ���������������ֹ�ܴ�ʩ��һ�����¿���һ��ʹ�òŻ����
-		����������ʽ����8955�ĵײ�lod�Ѿ��������������mnc�����⣬���Խű�����Ҫ������ܴ�ʩ
-	(6)ril.lua��link.lua�����ơ�link.setretrymode�ӿڡ��Ĺ��ܣ�Ĭ������Ϊ�����ܵ�����
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵���������ݷ���ʱ��TCPЭ��㣺ԭ��Ĭ�ϵ����Դ���Ϊ3�Σ�ÿ�����Ե����ʱʱ��Ϊ8�룻�µ�Ĭ��ֵ��Ϊ���Դ���Ϊ4�Σ�ÿ�����Ե����ʱʱ��Ϊ16�롣
-				�Ӵ����Դ����ͳ�ʱʱ�䣬�����绷����̫�õ�����£���������ݷ��͵ĳɹ��ʡ��������绷���Ϻõ�����£����޸Ŀ��Ժ��Բ���
-    ����demo�ű��޸�
-	(1)apn������apn��demo����ʾ�������APN
-
-
-
-
-����ʱ�䣺2018/06/11 16:20
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�1.2.0
-	(1)ntp.lua������NTP������������NTP�������ı���˳��
-		���¹�����Ҫ�ԡ�����Ҫ
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵�����������˼�����ѵĹ���NTP��������ʹ��ʱע�⣺
-				ntp����ģ����ö����ѹ�����NTP��������ͬ��ʱ�䣬���ܱ�֤�κ�ʱ���κεص㶼�ܰٷְ�ͬ������ȷ��ʱ��
-				����û���Ŀ�е�ҵ���߼��ϸ�������ʱ��ͬ�����ܣ���Ҫʹ��ʹ�ñ�����ģ�飬����ʹ���Լ���Ӧ�÷�������ͬ��ʱ��
-	(2)link.lua���ƶ���Ĭ��APN��CMNET�޸�ΪCMIOT
-		���¹�����Ҫ�ԡ�����Ҫ
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵���������û���ӳ���ƶ�����������ʹ��ԭ����CMNET�������޷�����������ʹ��CMIOT�����������޸�ΪCMIOT
-	(3)gps.lua��agps.lua��������gps�رպ��ٴ�gps��gps��λ����������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air800
-		��������ָ��ʡ�������
-		���������ԭ�򡿣��ٴδ�GPSʱ��û��д��λ�ú�ʱ�����ݵ�GPSоƬ�����޷�����GPS��λ���൱��GPSоƬ���붨λ����û����Ч
-		����������ʽ����ÿ�ο���GPS����д���ϴιر�ǰ��λ�ã���վλ�û���GPSλ�ã��͵�ǰ��ʱ������
-	(4)http.lua��https.lua��֧�֡���base64�����ϴ��ļ����Ĺ���
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵�������ο�http��demo˵��
-	(5)sys.lua��ɾ�������ʹ�õ�core�Ƿ�Ϊ���°汾�����ж�
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		������˵�������������ֻ�����ѵ�ǰ���°汾��core����û��������;��������ֿ�������ɲ���Ҫ�����ţ���ɾ���˹���
-	(6)ril.lua��socket��������ʱ���������̫��������ӡǰ200�ֽڵ�����
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		������˵������Ƶ�����ʹ�������ʱ��������ӡǰ200�ֽڵ����ݣ����ٴ�ӡ���ڴ��ʱ�������
-
-
-
-����ʱ�䣺2018/05/16 14:00
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�1.1.9
-	(1)http.lua��https.lua��������request֮�󣬻ص�����֮ǰ������destroy�ӿڣ���һ��ʱ�������﷨����������������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�request֮����һ��30��Ķ�ʱ�����õ�client����destroyʱ������������󣬵���û��ֹͣ��ʱ�������Զ�ʱ��ʱ�䵽֮�󣬵���client�������
-		����������ʽ����destroyʱ�رն�ʱ��
-	(2)http.lua��https.lua��������response��ͷ��û��Content-Length��chunk����ʱ������������������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�������û�����������
-		����������ʽ�������ӶԴ�������Ĵ������������رջ��߳�ʱ֮�󣬵����û��ص�
-	(3)http.lua��https.lua��������getstatus�ӿڹ��ܴ��󡱵�����
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�����ʵ�ִ���
-		����������ʽ��������ʵ��
-	(4)http.lua��https.lua������������ʧ�����������У����������disconnect��destroy���ᵼ�����������﷨����������������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�disconnect��destroy������client id������û�йر�������ʱ����������ʱ��������client id��id�Ƿ������﷨����
-		����������ʽ����disconnect��destroyʱ�ر�������ʱ��
-	(5)pins.lua������������dereg�ӿ�֮���ٵ���reg�ӿڣ��ᵼ��������������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ����߸���
-		���������ԭ�򡿣�dereg֮��������reg�����ظ���ʼ�������Ѿ�reg����pin�ţ���������
-		����������ʽ����reg�����ظ���ʼ���Ѿ���ʼ��pin��
-	(6)update.lua���������������ʧ�ܣ���ʱɾ�������ص����������ͷ��ļ�ϵͳ�ռ�
-	(7)updatehttp.lua���������������ʧ�ܣ���ʱɾ�������ص����������ͷ��ļ�ϵͳ�ռ䣻�������ʧ�ܣ���ӡ�������������ص�����ʧ����Ϣ
-	(8)�����������õ�����/�Ĺ��ܴ��룬��֧�ָ�������lod�¹����쳣��������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ���ʹ��֧�ָ�������lod������
-		���������ԭ�򡿣�֮ǰ�Ľű�lib�Ǹ��ݲ�֧�ָ�������lod��Ƶģ�����3/2=1���������ʹ��֧�ָ�������lod��3/2=1.5��������֧����������lod�¾Ϳ��ܹ����쳣��
-		����������ʽ����a/b�Ĵ���ȫ���޸�Ϊ(a-(a%b))/b
-	(9)aliyuniotssl.lua������������MQTT����ͨ���������Ľӿ�setMqtt
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵��������������clean session��will��keep alive����
-    ����demo�ű��޸�
-	(1)gpio/gpio_setpull�����������������Ĺ�����ʾdemo
-	(2)�����������õ�����/�Ĺ��ܴ��룬��֧�ָ�������lod�¹����쳣��������
-	(3)����ʹ��uart.read�ĵط���ȥ������������������������û�����壩
-	(4)gps������NMEA���ݵĴ�ӡ���
-	(5)aliyun_ssl_huadong2�����ӡ�setMqtt�ӿڡ��Ĺ�����ʾ����
-
-
-
-
-����ʱ�䣺2018/04/24 18:34
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�1.1.8
-	(1)nvm.lua��������Ӳ������ʱ���������д�����ļ�����������ļ����ݳ������ָ���Ĭ��ֵ��������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ������ʳ���
-		���������ԭ�򡿣�д�ļ�ʱ�����Ӳ�����磬������ɲ����ļ����ݳ������´ο���ʹ�ò����ļ�����⵽���󣬾��Զ��ָ�ΪĬ��ֵ
-		����������ʽ����д�ļ�ʱ����д��һ�������ļ��У�Ȼ��ɾ�������ļ��������ļ�����Ϊ�����ļ����´ο�����ʼ��ʱ����������ļ��ͱ����ļ����ĸ���ȷʹ���ĸ�
-
-
-
-����ʱ�䣺2018/04/02 22:42
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�1.1.7
-	(1)aliyuniotsslauth�����������Ӱ����ƽ����豸��֤ʧ�ܡ�������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ�������
-		���������ԭ�򡿣���������4��2�ո���һ�κ�̨��ȥ����HTTPӦ�����е�һ���Ǳ�ѡ�ֶΣ������ն������Ѵ��ֶε����˱�ѡ�ֶ�����飬���¼��ʧ��
-		����������ʽ�����ն��������ټ��Ǳ�ѡ�ֶΡ�ͬʱ�����밢���ƵĹ�ͨ������Ϊ�˼��������Ѿ��������豸�����������˷Ǳ�ѡ�ֶΡ����ǻ���ǿ�ҽ����û�����lib�ű���1.1.7���Ա����Ժ�������ȥ�����ֶΣ����³���ͬ��������
-    ����demo�ű��޸�
-	(1)call_rec������ͨ����¼����demo
-	(2)��������demo��main.lua�ж�require"wdt"��ע��˵��
-
-
-
-����ʱ�䣺2018/02/26 15:44
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�1.1.6
-	(1)linkssl������������ssl socket���ӵ�����£����½�һ��ssl���ӣ�����������֤��ʧ�ܡ�������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�����ssl���ӵ�����£���һ����ʼ����־����ΪTRUE���˱�־�ᵼ�º�����������֤���޷�ִ�е���ĳ���
-		����������ʽ����֤�鵼�빦�ܺͳ�ʼ����־���ٹ���
-	(2)aliyuniotota��������������OTA���豸�̼����������Ĺ���
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵���������������ڰ�����iot����̨�ϣ��ο�aliyun_ssl_huadong2��demo˵��
-    ����demo�ű��޸�
-	(1)aliyun_ssl_huadong2������������OTA���ܵ�ʹ��˵��
-	(2)proto_buffer������"google proto buffer��������demo"����Ҫ��ϴ��ڵ���0020�汾��lodʹ��
-	(3)crypto������"�����ļ���md5ֵ"��ʹ��˵������Ҫ��ϴ��ڵ���0020�汾��lodʹ��
-	(4)default���޸Ĺ��ܣ�ÿ��һ�Σ�uart1��uart2�����������д������ΪLuat����������AT����������ʾ
-	(5)http��https��������http��https��demo�У���ȡ�����ݱ��浽�ļ���ʱ���������ʧ�ܣ��ű�������������
-	(6)crypto������"aes.encrypt��aes.decrypt"�ӿڵ�ʹ��˵������Ҫ��ϴ��ڵ���0020�汾��lodʹ��
-
-
-
-����ʱ�䣺2018/02/12 00:21
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�1.1.5
-	(1)http,https���Ż�http���ݽ����߼���requestʱ֧���ļ����ַ����Ļ�Ϸ���
-		����Ҫ�ԡ�����΢
-		��Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���Ż���ʽ����ȥ�����ಿ�֣��Ż�chunk�������ݵĽ�����ʽ
-	(2)misc��������core V0016�汾��ʼ��misc.setimei��misc.setsn�ӿڣ�����û��������Զ���ص�������дimei����дsn�ɹ��󣬲����Զ�������������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208����core V0016�汾��ʼ���д�����
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�core��V0016֮��汾���Ż����ļ�ϵͳ��д������дIMEI��дSN֮�󣬲��������������Ϳ��԰ٷְٱ�֤д�ɹ�������0015�Լ�֮ǰ�İ汾��дIMEI��дSN֮�󣬱����������ܱ�֤д�ɹ������Դ�V0016��ʼ���û��ű�����misc.setimei��misc.setsn�ӿ�֮�󣬱���Ϊ������������setimei��setsn�Ľӿڶ��岻��
-		����������ʽ�����ű������жϣ������core V0016֮��İ汾��дimei��дsn֮���������������ӿ�����֤�豸����
-	(3)mqtt��mqttssl�����������ӶϿ������Զ������Ĺ����У������Ե���������������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ����ϵͣ�ֻ�������绷���ǳ����ȶ�������keepaliveʱ��϶̣�����2�������ڣ�������£����п��ܳ���
-		���������ԭ�򡿣���һ����keep alive�Ķ�ʱ�������3��keep alive+������������ͨ���쳣�������û��ű�û�к������������쳣����������������ӶϿ���û��ͣ�������ʱ���������������У�����ܳ�ʱ�䶼����ʧ�ܣ������Ժܶ�Σ�������Ե�ʱ���������keep alive��ʱ��ʱ�䣬����������
-		����������ʽ�������ӶϿ��󣬹ر�keep alive��ʱ��
-	(4)sys������������uart.setup����Ϊ�жϽ������ݺ��ڵ���sys.reguart֮ǰ��uart�յ������ݣ�����sys.reguart֮�󣬻ص�������Զ�ղ������ݡ�������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�uart�жϽ������ݵ�ԭ���ǣ�core�ж��յ����ݺ󣬻�֪ͨ�ű����ڽű�reguart֮ǰ�����ղ������֪ͨ��Ϣ�ģ��Ӷ�����core�еĽ�������һֱû�б���ȡ���������յ����ݾͲ�������Ե�֪ͨ��Ϣ���ű�
-		����������ʽ����sys.reguart�ӿ�����һ���������û��ű����Կ��Ƶ���reguartʱ���Ƿ����֮ǰ���յ����ݣ���պ󣬺����յ������ݾͿ��Խ��յ��ˡ��������core V0019֮��İ汾ʹ��
-	(4)updatehttp��������ͨ��HTTP��GET����������������֧��Զ���������Ĺ���
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���¹���˵����������������HTTP�������ϣ��ն�ģ��ͨ��HTTP��GET�������������������ԡ�ֱ��ʹ��Luat��iot��վ���������������ߡ��û����дHTTP��������֧��GET����������������
-    ����demo�ű��޸�
-	(1)http,https��������rcvcbfile������û���ж�status����ȷ�ԣ�ֱ��ʹ��������������������������������
-	(2)update_http������ͨ��HTTP��GET����ִ���������ܵ���ʾdemo��֧��Luat���������û��Խ�����������
-	(3)ui���������ļ�����������Զ������ʧ�ܡ�������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208����core V0016�汾��ʼ���д�����
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�core��V0016֮��汾���ļ�ϵͳ�е������ļ�·�����ܳ���31�ֽڣ�Զ���������°汾�Ľű�����Դ�ļ����Ǵ洢���ļ�ϵͳ�еģ����Ա���Ҫ�����ļ������ȣ������ļ��洢ʧ�ܣ�����Ҳ��ʧ�ܡ��ű��ļ�������·����/lua/XXX.lua�������ļ�color_standard_spi_st7735.lua������·��Ϊ/lua/color_standard_spi_st7735.lua��һ��34�ֽڣ�������31�ֽڣ�����Զ�������ͻ�ʧ�ܣ���Դ�ļ�������ͼƬ����Ƶ��֤���ļ��ȷ�Lua�ű��ļ���������·����/ldata/XXX.yyy
-		����������ʽ�����Ǽ�������ʱ���ű��ļ����ĳ��ȣ�������׺�����ܳ���31-5(/lua/�ĳ���)=26�ֽڣ���Դ�ļ����ĳ��ȣ�������׺�����ܳ���31-7(/ldata/�ĳ���)=24�ֽ�
-		                  ��������ʱ���ļ���׺������һ��e�����Լ�������ʱ�Ľű��ļ������ȣ�������׺�����ܳ���25�ֽڣ���Դ�ļ����ĳ��ȣ�������׺�����ܳ���23�ֽ�
-
-
-
-����ʱ�䣺2018/01/20 09:20
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�1.1.4
-	(1)http,https��������http������ʧ��ʱ�����������ͳɹ������ǳ�ʱû�յ��κ�Ӧ��ʱ��û��ͨ���ص�����֪ͨ�û�Ӧ�ýű����򡱵�����
-		��������Ҫ�ԡ�������
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ���ʹ�õ�http����https����ʱ���������쳣״̬��(�����źŲ��վ��������)����߸��ʳ��֣���������ʱ�����ѳ���
-		���������ԭ�򡿣��������쳣ʱ������ʵ��·���ʧ�ܻ��߽��ղ���Ӧ�����ݣ����ִ�����ʱ��û��֪ͨ���û��ű��еĻص������������û���֪�������˴���Ӱ������߼�����
-		����������ʽ����������ʧ��ʱ������һ��"SEND"�������û��ص�sckerrcb�У�û���յ��κ�Ӧ�����ݣ�30�볬ʱ�󣬴��������3���û��ص�rcvcb�У�ʹ�÷�ʽ�ο�http��https��demo
-	(2)agps,agpsupgpd�������������쳣ʱ��agps����ִ���жϣ�����GPS���򿪺�û�б��رգ��Ӷ����𹦺�ƫ�ߡ�������
-		��������Ҫ�ԡ�������
-		������Ӱ��ģ�顿��Air800��Air801
-		��������ָ��ʡ���ʹ�õ�agps����ʱ���������쳣״̬��(�����źŲ��վ��������)����߸��ʳ��֣���������ʱ�����ѳ���
-		���������ԭ�򡿣�����agps����������֮ǰ�����GPS���������쳣ʱ������ʵ���������������֮���ͨ�ų��ַ���ʧ�ܻ��߽��ղ���Ӧ�������쳣�����ִ�����ʱ��û�йر�GPS������GPSһֱ���ڿ���״̬���Ӷ����𹦺�ƫ��
-		����������ʽ�����������������ɹ����������󣬲�ȥ��GPS��д������GPSģ���У�д�ɹ�����20�볬ʱ����ȥ�ر�GPS
-	(3)http,https���������յ����HTTP����ճ��ʱ������������������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ���ʹ�õ�http����https����ʱ������������Ƶ�ʣ���������2������1��������������ʱ�����׳��֣���Ƶ�ʷ���ʱ�����ѳ���
-		���������ԭ�򡿣���������Ƶ�ʷ���ʱ����Luat core���ݸ�Luat script�����ݳ�����ճ������ʱscriptû�����ã�����Ϊ���ݷǷ����Ӷ�ͨ��rcvcb���ش���
-		����������ʽ��������httpͷ��Ϣ�е�Content-Lengthֵ���жϺ���body�������ݣ�����յ������ݳ��������ֵ��ֻ��ȡ����ֵָ����λ�á������������¸�ѭ���м�����������
-	(4)keypad������������keypad.setupʱ��һ����������nilʱ������powerkey����������������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		��������ָ��ʡ���ʹ�õ�keypad���ܡ����ҵ�����keypad.setup,��һ������������nil��������powerkey����������ֻҪͬʱ������Щ��������������֣���֮������
-		���������ԭ�򡿣�����setup�ӿڣ���һ����������nilʱ����keypad.lua�еġ�������ʱ�䡱��������Ϊ��nil���ڰ���powerkey��ʱ���������������ʱ������һ����ʱ�������ʱ��Ϊnil����������
-		����������ʽ����������ʱ�䴫��nilʱ����ֵĬ�ϵ�3000����
-	(5)nvm����߲����ļ���д���ٶ�
-		����Ҫ�ԡ�����΢
-		��Ӱ��ģ�顿��Air202��Air800��Air801��Air201��Air208
-		���Ż���ʽ����ԭ��nvm.set�ӿڻ�д����ļ����޸ĺ�ֻдһ�Σ��ɴ�����Ч��
-    ����demo�ű��޸�
-	(1)http,https����ʾ��http������ʧ��ʱ�����������ͳɹ������ǳ�ʱû�յ��κ�Ӧ��ʱ���Ĵ����쳣����
-
-
-
-����ʱ�䣺2018/01/17 22:23
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�1.1.3
-	(1)linkssl��������ssl����û������ca֤��ʱ��������������
-	(2)ril��֧��SSL������
-	(3)nvm����������������ļ������У�����쳣�ϵ磬������Ե��º�������һֱ������������
-    ����demo�ű��޸�
-	(1)ui������ILI9341����IC��LCDʾ��
-	(2)socket_ssl/long_connection_verify_server_and_client������socket ssl˫����֤��ʾ��
-	(3)https/verify_server_and_client������https˫����֤��ʾ��
-
-
-
-����ʱ�䣺2018/01/03 18:32
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�1.1.2
-	(1)http��֧�֡�POST���������Զ�����Content-Length�ײ�
-	(2)mqttssl��֧��tls1.2�汾
-	(3)https��֧��https
-    ����demo�ű��޸�
-        (1)mqtt_ssl����ʾ��α���У��������˵�֤��
-        (2)https�����Ӱٶ���ҳhttps://www.baidu.com,��ʾhttps��ʹ��
-
-
-
-����ʱ�䣺2017/12/08 13:23
-�޸ļ�¼��
-    һ��lib�ű��޸�
-        lib�ű��汾�ţ�1.1.1
-        (1)http��֧�֡�httpӦ��body�Զ����浽�ļ�������
-    ����demo�ű��޸�
-        (1)http��֧�֡�httpӦ��body�Զ����浽�ļ�������
-
-
-����ʱ�䣺2017/11/18 14:47
-�޸ļ�¼��
-    һ��lib�ű��޸�
-        lib�ű��汾�ţ�1.1.0
-        (1)http��������requestʱ�����Զ���headʱ�쳣������������
-        (2)agps���������������ظ�����1�η�������������
-        (3)agpsupgpd������������������������socket id���ܺ�����socket id��ͻ��������
-        (4)mqtt��mqttssl������unsubscribeȡ����������Ľӿ�
-    ����demo�ű��޸�
-        (1)socket_ssl���淶ca֤���ļ��ĺ�׺��
-
-
-
-����ʱ�䣺2017/10/29 16:33
-�޸ļ�¼��
-    һ��lib�ű��޸�
-        lib�ű��汾�ţ�1.0.9
-        (1)audio��������tts����ʱ�������µ�tts���ţ��µ�tts�����쳣��������
-        (2)gps��������������agpsģ�飬gps�޷�����������������
-        (3)sys������1.0.7��1.0.8 lib�ű��г��ֵġ�Զ�������Ľű����й����д����﷨����ʱ���޷��Զ����˵���д��ԭʼ�ű���������
-        (4)֧�֡�����socket���ӳ���ʱ������ֱ�ӵ���link.shut�ر�����socket���ӣ��Ƚ��رյ�ǰ���������ӣ�Ȼ���Զ�������ֻ�ж����������ʧ�ܣ���ȥ����link.shut��
-    ����demo�ű��޸�
-        (1)audio����ʾ��tts����ʱ�������µ�tts���š��Ĺ���
-        (2)i2c����ʾ��i2c.send��i2c.recv���ӿڵ�ʹ��
-        (3)socket��socket_ssl��֧�֡�����socket���ӳ���ʱ������ֱ�ӵ���link.shut�ر�����socket���ӣ��Ƚ��رյ�ǰ���������ӣ�Ȼ���Զ�������ֻ�ж����������ʧ�ܣ���ȥ����link.shut��
-
-
-
-����ʱ�䣺2017/9/18 16:49
-�޸ļ�¼��
-    һ��lib�ű��޸�
-        lib�ű��汾�ţ�1.0.8
-        (1)sms���������������Զ�ƴ�ӡ�������
-        (2)wdt���޸�Ӳ����ʹ�õ�Ĭ������
-        (3)linkssl��mqttssl���Ż�ssl�Ŀ����߼�
-        (4)sys��������MODULE_TYPE���õ�ǿ�Ƽ��
-    ����demo�ű��޸�
-        (1)gpio_single������ldo��gpio���Ƶ�ע��˵��
-        (2)����main.lua�����Ӷ�MODULE_TYPE������
-        (3)ui������SPI�ӿڵ�LCD��ʾ���ܣ���׼SPI���š�LCDר��SPI���š��ڰ�����������
-        (4)spi������spi��demo
-        (5)fs�������ļ�ϵͳʣ��ռ䡢����Ŀ¼�Ĺ���ʹ��ʾ��
-
-
-
-����ʱ�䣺2017/9/5 11:58
-�޸ļ�¼��
-    һ��lib�ű��޸�
-        lib�ű��汾�ţ�1.0.7
-        (1)keypad������powerkey�����Ĵ�������
-        (2)sms���������յ��ĳ�����û���Զ�ƴ�ӡ�������
-        (3)sys��update��dbg��������Զ����������dbg�ϱ������У���ֹ���﷨�������sys.restart�ӿڡ����������ܡ�	
-        (4)patch.lua�����·�װjson.decode�ӿڣ�����decode�ķ���ֵ��ʹ�÷�ʽ�ο�json��demo
-        (5)http.lua��������chunk��������ʱ������󡱵�����
-        (6)nvm.lua��������table���Ͳ��������ֵ�ǿձ���������ֵʱʧ�ܡ�������
-        (7)mqtt.lua��mqttssl.lua��֧�֡��û��Զ����쳣�������򡱵Ĺ���
-    ����demo�ű��޸�
-        (1)default��֧�֡��������й����г���power key�������Զ��ػ�������
-        (2)json��json.decode�ӿ����ӷ���ֵ��ʾ�������
-        (3)mqtt��mqttssl��֧��һ��Ĭ�ϵ��쳣��������
-        (4)i2c���淶����
-        (5)update������<��Ҫ����.txt>
-
-
-
-����ʱ�䣺2017/8/18 10:31
-�޸ļ�¼��
-    һ��lib�ű��޸�
-        lib�ű��汾�ţ�1.0.6
-        (1)uiwin������isactive��bug
-        (2)wdt������setup�ӿڣ�֧���Զ���ι������
-    ����demo�ű��޸�
-        (1)adc������ע��
-        (2)ui���Ż�����ṹ
-        (3)crypto��֧��sha1��hmac_sha1�㷨
-        (4)gpio_single�����ӵ�ѹ���GPIO�Ŀ���˵��
-        (5)i2c���淶i2c idΪ2������֮ǰ��0
-
-
-
-����ʱ�䣺2017/8/8 13:40
-�޸ļ�¼��
-    һ��lib�ű��޸�
-        lib�ű��汾�ţ�1.0.5
-        (1)misc������openpwm�ӿڵ�ע��˵��
-    ����demo�ű��޸�
-        (1)aliyun_ssl_huadong2���޸�ProductKey��Ϣ��������֧��Ӳ�����Ź�
-        (2)mono_lcd�����ƹ���
-        (3)default������������ȱ��һ���ո�IDE��д�󣬳����﷨���󡱵�����
-
-
-
-����ʱ�䣺2017/7/26 11:19
-�޸ļ�¼��
-    һ��lib�ű��޸�
-        lib�ű��汾�ţ�1.0.4
-        (1)net.lua���������ƶ�PLMN������FLPMN�б��е����޷�ע�����硱������
-        (2)mqtt.lua��mqttssl.lua��
-		������tmqtt:disconnect�ӿڶϿ����Ӻ����Զ�������������
-		����tmqtt:setcleansession�ӿ�
-	(3)aliyuniotssl.lua��aliyuniotsslauth.lua��֧�ְ����ƻ���2�ڵ�
-        (4)misc.lua��֧��pwm�������
-    ����demo�ű��޸�
-        (1)socket_ssl\long_connection��demo������������CA֤���ļ�
-        (2)����fs����ʾ�ļ������ӿڵ�ʹ��
-        (3)����format_string����ʾ���ݸ�ʽת���ӿڵ�ʹ��
-        (4)uart��������uart����������ɺ��첽��Ϣ֪ͨ�����ܵ�ʹ��˵��
-        (5)����adc����ʾadc���ܵ�ʹ��˵��
-        (6)crypto������ע��
-        (7)mqtt��mqtt_ssl����ʾtmqtt:setcleansession�ӿڵ�ʹ��˵��
-        (8)����aliyun_ssl_huadong2��֧�ְ����ƻ���2�ڵ�
-        (9)����pwm��֧��pwm�������
-
-
-����ʱ�䣺2017/7/7 11:44
-�޸ļ�¼��
-    һ��lib�ű��޸�
-        lib�ű��汾�ţ�1.0.3
-        (1)link.lua���������������ӹ��̺����ݷ��͹�����TCPЭ��������������Ľӿ�setretrymode
-        (2)mqtt.lua,mqttssl.lua��publish�ӿ�֧��retain����������
-
-
-
-����ʱ�䣺2017/6/30 22:34
-�޸ļ�¼��
-    һ��lib�ű��޸�
-        lib�ű��汾�ţ�1.0.2
-        (1)sys.lua���ײ�汾��������ʱ������ӡһ�����棬�����ϱ�������Ϣ��dbg������
-        (2)link.lua���������û������˼�����������ʧ�ܻص������󣬸����Բ���ִ�лص���������
-	(3)update.lua���������Ի���
-    ����demo�ű��޸�
-        (1)����update\Luat_iot_server_daemon��demo��֧��iot��̨��Զ�������Լ�������Ϣ�ϱ�����
-
-
-
-����ʱ�䣺2017/6/27 20:41
-�޸ļ�¼��
-    һ��lib�ű��޸�
-        lib�ű��汾�ţ�1.0.1
-        (1)sys.lua��
-		������dbgģ�鲻���ϱ�sys.restartԭ��ֵ��������
-		�ӿ�Lua�ڴ��Զ������ٶ�
-        (2)dbg.lua���޸������ӿڵ���ʾǰ׺
-        (3)link.lua��
-		����setiperrcb�ӿڣ������ü���IP�������糬ʱʧ�ܺ�Ļص�����
-		������dbgģ�顢updateģ�顢ntpģ����û�Ӧ��socket����ʱ���ĳ�ͻ����
-
-
-
-����ʱ�䣺2017/5/31 13:17
-�޸ļ�¼��
-    ��һ�η���
+﻿发布时间：2019/01/22 17:45
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：1.2.3
+	(1)sys.lua：新增“串口接收到新数据时，携带串口id和数据长度”的功能
+		【新功能重要性】：一般
+		【新功能影响模块】：所有模块
+		【新功能说明】：需要配合core 0031以及以上版本才能支持
+	(2)linkssl.lua,net.lua：修正“ssl连接会导致net模块的网络指示灯工作不正常”的问题
+		【问题重要性】：一般
+		【问题影响模块】：所有模块
+		【问题出现概率】：必现
+
+
+
+
+发布时间：2018/11/05 13:25
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：1.2.2
+	(1)updatehttp.lua：修正“无法设置用户自定义的url”的问题
+		【问题重要性】：重要
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：必现
+		【问题出现原因】：变量使用出错，导致仍然使用的是合宙的官方url
+		【问题解决方式】：修正逻辑错误
+	(2)sys.lua：新增sys.setRestore接口，可设置脚本运行异常出错时是否回退原始烧写版本
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：远程升级新版本后，如果新版本出现运行语法异常，默认会自动回退到原始的烧写版本，使用sys.setRestore接口可设置是否恢复
+	(3)agpsupgpd.lua：修正“使用float功能的lod时，agps功能会导致gps功能异常”的问题
+		【问题重要性】：重要
+		【问题影响模块】：Air800、Air801
+		【问题出现概率】：必现
+		【问题出现原因】：在float的lod下，有一个除法运算的结果变成小数，导致agps的逻辑出错
+		【问题解决方式】：对除法运算做取整操作
+	(4)link.lua：新增link.setTcpResendPara接口，可设置TCP层的重传次数和重传间隔
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：经过实际测试发现，某些小区本身的网络有问题，数据收发存在延时；
+				此版本的Luat脚本+0028的lod，默认处理是重传4次，每次最大间隔是16秒，如果在一个小区内数据发送的延时超过64秒，意味着发送失败，会主动断开连接再次重连
+				客户可根据自己的产品使用场景，调用此接口去灵活配置：
+				如果产品能接受很大延时，但是不接受频繁掉线，就可以调用setTcpResendPara(12,16)设置为尽可能的重发
+				如果产品要求能够快速的感知发送结果，可以接受频繁掉线，就可以调用setTcpResendPara根据自己的需求进行设置
+
+
+
+
+发布时间：2018/06/14 10:48
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：1.2.1
+	(1)lbsloc.lua：新增“查询经纬度失败时，在trace中输出错误描述信息”的功能
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：在trace中输出错误描述信息，方便快速的定位查询经纬度失败的原因
+	(2)ril.lua：修正“SN区域不识别除字母和数字外的其他字符”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：如果写入的SN中包含除字母和数字外的其他字符，则读取SN失败
+				  如果用户项目中使用了SN区域，并且有可能写入了除字母和数字外的其他字符，则必须更新到此版本
+		【问题出现原因】：读取SN时，仅识别字母和数字
+		【问题解决方式】：读取时，识别任意字符
+	(3)link.lua,linkssl.lua：优化“连续接收到大量数据时的内存使用”功能
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：连续收到大量数据时，会概率性导致内存不足的问题
+		【问题出现原因】：连续收到大量数据时，原来使用Lua的..来拼接字符串，此方式会导致内存的使用成倍的增长
+		【问题解决方式】：使用table.concat来拼接字符串，不存在内存成倍增加的问题
+	(4)aliyuniotauthssl.lua：新增“阿里云认证失败时，产生一个消息ALIYUN_AUTH_ERROR通知”的功能
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+	(5)net.lua：删除“移动sim卡限制所属运营商的mnc的规避措施”的功能
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：极低
+		【问题出现原因】：如果移动卡限制了所属的正常mnc，则脚本会重新写卡取消限制，然后主动重启。这种规避措施，一般在新卡第一次使用才会出现
+		【问题解决方式】：8955的底层lod已经解决了限制正常mnc的问题，所以脚本不需要再做规避措施
+	(6)ril.lua、link.lua：完善“link.setretrymode接口”的功能，默认设置为尽可能的重试
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：数据发送时，TCP协议层：原来默认的重试次数为3次，每次重试的最大超时时间为8秒；新的默认值改为重试次数为4次，每次重试的最大超时时间为16秒。
+				加大重试次数和超时时间，在网络环境不太好的情况下，会提高数据发送的成功率。对于网络环境较好的情况下，此修改可以忽略不计
+    二、demo脚本修改
+	(1)apn：新增apn的demo，演示如何设置APN
+
+
+
+
+发布时间：2018/06/11 16:20
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：1.2.0
+	(1)ntp.lua：增加NTP服务器，调整NTP服务器的遍历顺序
+		【新功能重要性】：重要
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：增加了几个免费的公共NTP服务器，使用时注意：
+				ntp功能模块采用多个免费公共的NTP服务器来同步时间，不能保证任何时间任何地点都能百分百同步到正确的时间
+				如果用户项目中的业务逻辑严格依赖于时间同步功能，则不要使用使用本功能模块，建议使用自己的应用服务器来同步时间
+	(2)link.lua：移动卡默认APN由CMNET修改为CMIOT
+		【新功能重要性】：重要
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：有用户反映，移动物联网卡，使用原来的CMNET，可能无法正常上网，使用CMIOT正常，所以修改为CMIOT
+	(3)gps.lua、agps.lua：修正“gps关闭后，再打开gps，gps定位慢”的问题
+		【问题重要性】：重要
+		【问题影响模块】：Air800
+		【问题出现概率】：必现
+		【问题出现原因】：再次打开GPS时，没有写入位置和时间数据到GPS芯片，就无法加速GPS定位，相当于GPS芯片的秒定位功能没有生效
+		【问题解决方式】：每次开启GPS，都写入上次关闭前的位置（基站位置或者GPS位置）和当前的时间数据
+	(4)http.lua，https.lua：支持“以base64编码上传文件”的功能
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：参考http的demo说明
+	(5)sys.lua：删除“检查使用的core是否为最新版本”的判断
+		【功能重要性】：一般
+		【功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【功能说明】：这个功能只是提醒当前有新版本的core，并没有其他用途；会给部分开发者造成不必要的困扰，故删除此功能
+	(6)ril.lua：socket发送数据时，如果数据太长，仅打印前200字节的数据
+		【功能重要性】：一般
+		【功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【功能说明】：频繁发送大量数据时，仅仅打印前200字节的数据，减少打印对内存和时间的消耗
+
+
+
+发布时间：2018/05/16 14:00
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：1.1.9
+	(1)http.lua，https.lua：修正“request之后，回调函数之前，调用destroy接口，过一段时间会出现语法错误重启”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：必现
+		【问题出现原因】：request之后有一个30秒的定时器会用到client对象，destroy时销毁了这个对象，但是没有停止定时器，所以定时器时间到之后，调用client对象出错
+		【问题解决方式】：destroy时关闭定时器
+	(2)http.lua，https.lua：修正“response的头中没有Content-Length和chunk编码时，解析出错”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：必现
+		【问题出现原因】：代码中没处理这种情况
+		【问题解决方式】：添加对此种情况的处理，服务器关闭或者超时之后，调用用户回调
+	(3)http.lua，https.lua：修正“getstatus接口功能错误”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：必现
+		【问题出现原因】：代码实现错误
+		【问题解决方式】：重新实现
+	(4)http.lua，https.lua：修正“连接失败重连过程中，如果调用了disconnect和destroy，会导致重连代码语法错误重启”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：必现
+		【问题出现原因】：disconnect和destroy销毁了client id，但是没有关闭重连定时器，重连定时器会引用client id，id非法导致语法错误
+		【问题解决方式】：disconnect和destroy时关闭重连定时器
+	(5)pins.lua：修正“调用dereg接口之后，再调用reg接口，会导致重启”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：高概率
+		【问题出现原因】：dereg之后，再重新reg，会重复初始化所有已经reg过的pin脚，引起重启
+		【问题解决方式】：reg不再重复初始化已经初始化pin脚
+	(6)update.lua：如果升级包下载失败，及时删除已下载的升级包，释放文件系统空间
+	(7)updatehttp.lua：如果升级包下载失败，及时删除已下载的升级包，释放文件系统空间；如果升级失败，打印出来服务器返回的升级失败信息
+	(8)修正“所有用到除法/的功能代码，在支持浮点数的lod下工作异常”的问题
+		【问题重要性】：重要
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：使用支持浮点数的lod，必现
+		【问题出现原因】：之前的脚本lib是根据不支持浮点数的lod设计的，例如3/2=1；但是如果使用支持浮点数的lod，3/2=1.5，所以在支付浮点数的lod下就可能工作异常了
+		【问题解决方式】：a/b的代码全部修改为(a-(a%b))/b
+	(9)aliyuniotssl.lua：新增“设置MQTT数据通道参数”的接口setMqtt
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：可以设置clean session、will、keep alive参数
+    二、demo脚本修改
+	(1)gpio/gpio_setpull：新增配置上下拉的功能演示demo
+	(2)修正“所有用到除法/的功能代码，在支持浮点数的lod下工作异常”的问题
+	(3)所有使用uart.read的地方，去掉第三个参数（第三个参数没有意义）
+	(4)gps：增加NMEA数据的打印输出
+	(5)aliyun_ssl_huadong2：增加“setMqtt接口”的功能演示代码
+
+
+
+
+发布时间：2018/04/24 18:34
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：1.1.8
+	(1)nvm.lua：修正“硬件掉电时，如果正在写参数文件，可能造成文件内容出错，恢复成默认值”的问题
+		【问题重要性】：重要
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：概率出现
+		【问题出现原因】：写文件时，如果硬件掉电，可能造成参数文件内容出错，下次开机使用参数文件，检测到错误，就自动恢复为默认值
+		【问题解决方式】：写文件时，先写到一个备份文件中，然后删除参数文件，备份文件改名为参数文件。下次开机初始化时，会检查参数文件和备份文件，哪个正确使用哪个
+
+
+
+发布时间：2018/04/02 22:42
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：1.1.7
+	(1)aliyuniotsslauth：修正“连接阿里云进行设备认证失败”的问题
+		【问题重要性】：重要
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：必现
+		【问题出现原因】：阿里云在4月2日更新一次后台后，去掉了HTTP应答行中的一个非必选字段，但是终端软件把此字段当成了必选字段来检查，导致检查失败
+		【问题解决方式】：终端软件不再检查非必选字段。同时经过与阿里云的沟通，他们为了兼容我们已经量产的设备，重新添加了非必选字段。但是还是强烈建议用户升级lib脚本到1.1.7，以避免以后阿里云再去掉此字段，导致出现同样的问题
+    二、demo脚本修改
+	(1)call_rec：新增通话中录音的demo
+	(2)完善所有demo的main.lua中对require"wdt"的注释说明
+
+
+
+发布时间：2018/02/26 15:44
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：1.1.6
+	(1)linkssl：修正“存在ssl socket连接的情况下，再新建一个ssl连接，新连接配置证书失败”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：必现
+		【问题出现原因】：存在ssl连接的情况下，有一个初始化标志设置为TRUE，此标志会导致后续的新连接证书无法执行导入的程序
+		【问题解决方式】：证书导入功能和初始化标志不再关联
+	(2)aliyuniotota：新增“阿里云OTA（设备固件升级）”的功能
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：升级包放在阿里云iot控制台上，参考aliyun_ssl_huadong2的demo说明
+    二、demo脚本修改
+	(1)aliyun_ssl_huadong2：新增阿里云OTA功能的使用说明
+	(2)proto_buffer：新增"google proto buffer编解码测试demo"，需要配合大于等于0020版本的lod使用
+	(3)crypto：新增"计算文件的md5值"的使用说明，需要配合大于等于0020版本的lod使用
+	(4)default：修改功能，每秒一次，uart1和uart2向外输出“烧写的软件为Luat软件，不是AT软件”的提示
+	(5)http、https：修正“http和https的demo中，获取的数据保存到文件中时，如果保存失败，脚本重启”的问题
+	(6)crypto：新增"aes.encrypt和aes.decrypt"接口的使用说明，需要配合大于等于0020版本的lod使用
+
+
+
+发布时间：2018/02/12 00:21
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：1.1.5
+	(1)http,https：优化http数据接收逻辑；request时支持文件和字符串的混合发送
+		【重要性】：轻微
+		【影响模块】：Air202、Air800、Air801、Air201、Air208
+		【优化方式】：去除冗余部分，优化chunk传输数据的解析方式
+	(2)misc：修正“core V0016版本开始，misc.setimei和misc.setsn接口，如果用户不传入自定义回调函数，写imei或者写sn成功后，不会自动重启”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208，从core V0016版本开始才有此问题
+		【问题出现概率】：必现
+		【问题出现原因】：core从V0016之后版本，优化了文件系统读写操作，写IMEI和写SN之后，不用重启软件，就可以百分百保证写成功；但是0015以及之前的版本，写IMEI和写SN之后，必须重启才能保证写成功；所以从V0016开始，用户脚本调用misc.setimei和misc.setsn接口之后，表现为不再重启，与setimei和setsn的接口定义不符
+		【问题解决方式】：脚本主动判断，如果是core V0016之后的版本，写imei和写sn之后，主动调用重启接口来保证设备重启
+	(3)mqtt、mqttssl：修正“连接断开后，在自动重连的过程中，概率性导致重启”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：较低，只有在网络环境非常不稳定，并且keepalive时间较短（例如2分钟以内）的情况下，才有可能出现
+		【问题出现原因】：有一个“keep alive的定时器，如果3倍keep alive+半分钟与服务器通信异常，并且用户脚本没有函数处理这种异常，则会重启”，连接断开后，没有停掉这个定时器，在重连过程中，如果很长时间都连接失败，会重试很多次，这个重试的时间如果超过keep alive定时器时间，则引起重启
+		【问题解决方式】：连接断开后，关闭keep alive定时器
+	(4)sys：修正“调用uart.setup配置为中断接收数据后，在调用sys.reguart之前，uart收到了数据，调用sys.reguart之后，回调函数永远收不到数据”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：必现
+		【问题出现原因】：uart中断接收数据的原理是：core中断收到数据后，会通知脚本，在脚本reguart之前，是收不到这个通知消息的，从而导致core中的接收数据一直没有被读取，后续才收到数据就不会产生性的通知消息到脚本
+		【问题解决方式】：sys.reguart接口增加一个参数，用户脚本可以控制调用reguart时，是否清空之前接收的数据，清空后，后续收到的数据就可以接收到了。必须配合core V0019之后的版本使用
+	(4)updatehttp：新增“通过HTTP的GET命令下载升级包，支持远程升级”的功能
+		【新功能重要性】：一般
+		【新功能影响模块】：Air202、Air800、Air801、Air201、Air208
+		【新功能说明】：升级包放在HTTP服务器上，终端模块通过HTTP的GET命令下载升级包。可以“直接使用Luat的iot网站配置升级”，或者“用户自行搭建HTTP服务器，支持GET命令下载升级包”
+    二、demo脚本修改
+	(1)http,https：修正“rcvcbfile函数中没有判断status的正确性，直接使用其他参数，可能引起重启”的问题
+	(2)update_http：新增通过HTTP的GET命令执行升级功能的演示demo，支持Luat服务器和用户自建服务器升级
+	(3)ui：修正“文件名过长导致远程升级失败”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208，从core V0016版本开始才有此问题
+		【问题出现概率】：必现
+		【问题出现原因】：core从V0016之后版本，文件系统中的完整文件路径不能超过31字节，远程升级后新版本的脚本和资源文件，是存储在文件系统中的，所以必须要限制文件名长度，否则文件存储失败，升级也就失败。脚本文件的完整路径是/lua/XXX.lua，例如文件color_standard_spi_st7735.lua的完整路径为/lua/color_standard_spi_st7735.lua，一共34字节，超过了31字节，所以远程升级就会失败；资源文件（例如图片、音频、证书文件等非Lua脚本文件）的完整路径是/ldata/XXX.yyy
+		【问题解决方式】：非加密升级时：脚本文件名的长度（包括后缀）不能超过31-5(/lua/的长度)=26字节，资源文件名的长度（包括后缀）不能超过31-7(/ldata/的长度)=24字节
+		                  加密升级时：文件后缀会添加一个e，所以加密升级时的脚本文件名长度（包括后缀）不能超过25字节，资源文件名的长度（包括后缀）不能超过23字节
+
+
+
+发布时间：2018/01/20 09:20
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：1.1.4
+	(1)http,https：修正“http请求发送失败时，或者请求发送成功，但是超时没收到任何应答时，没有通过回调函数通知用户应用脚本程序”的问题
+		【问题重要性】：严重
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：使用到http或者https功能时，在网络异常状态下(例如信号差，基站容量饱和)，会高概率出现；网络正常时，很难出现
+		【问题出现原因】：在网络异常时，会概率导致发送失败或者接收不到应答数据，出现此问题时，没有通知到用户脚本中的回调函数，导致用户不知道出现了错误，影响后续逻辑处理
+		【问题解决方式】：请求发送失败时，传入一个"SEND"参数到用户回调sckerrcb中；没有收到任何应答数据，30秒超时后，传入错误码3到用户回调rcvcb中；使用方式参考http和https的demo
+	(2)agps,agpsupgpd：修正“网络异常时，agps功能执行中断，导致GPS被打开后没有被关闭，从而引起功耗偏高”的问题
+		【问题重要性】：严重
+		【问题影响模块】：Air800、Air801
+		【问题出现概率】：使用到agps功能时，在网络异常状态下(例如信号差，基站容量饱和)，会高概率出现；网络正常时，很难出现
+		【问题出现原因】：连接agps星历服务器之前，会打开GPS；在网络异常时，会概率导致与星历服务器之间的通信出现发送失败或者接收不到应答数据异常，出现此问题时，没有关闭GPS，导致GPS一直处于开启状态，从而引起功耗偏高
+		【问题解决方式】：从星历服务器成功下载星历后，才去打开GPS，写星历到GPS模块中，写成功或者20秒超时都会去关闭GPS
+	(3)http,https：修正“收到多个HTTP报文粘包时，解析出错”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：使用到http或者https功能时，当服务器高频率（例如至少2秒以内1个包）发送数据时，容易出现；低频率发送时，很难出现
+		【问题出现原因】：服务器高频率发送时，从Luat core传递给Luat script的数据出现了粘包，此时script没处理好，就认为数据非法，从而通过rcvcb返回错误
+		【问题解决方式】：根据http头信息中的Content-Length值，判断后续body数据内容，如果收到的数据超过了这个值，只获取到此值指定的位置。后续数据在下个循环中继续解析处理
+	(4)keypad：修正“调用keypad.setup时第一个参数传入nil时，按下powerkey键会重启”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air202、Air800、Air801、Air201、Air208
+		【问题出现概率】：使用到keypad功能、并且调用了keypad.setup,第一个参数传入了nil，当按下powerkey键会重启。只要同时满足这些条件，此问题必现；反之不出现
+		【问题出现原因】：调用setup接口，第一个参数传入nil时，把keypad.lua中的“长按键时间”变量设置为了nil，在按下powerkey键时，会用这个长按键时间启动一个定时器，这个时间为nil，所以重启
+		【问题解决方式】：长按键时间传入nil时，赋值默认的3000毫秒
+	(5)nvm：提高参数文件的写入速度
+		【重要性】：轻微
+		【影响模块】：Air202、Air800、Air801、Air201、Air208
+		【优化方式】：原来nvm.set接口会写多次文件，修改后只写一次，可大大提高效率
+    二、demo脚本修改
+	(1)http,https：演示“http请求发送失败时，或者请求发送成功，但是超时没收到任何应答时”的错误异常处理
+
+
+
+发布时间：2018/01/17 22:23
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：1.1.3
+	(1)linkssl：修正“ssl连接没有配置ca证书时会重启”的问题
+	(2)ril：支持SSL多连接
+	(3)nvm：修正“保存参数文件过程中，如果异常断电，会概率性导致后续开机一直重启”的问题
+    二、demo脚本修改
+	(1)ui：新增ILI9341驱动IC的LCD示例
+	(2)socket_ssl/long_connection_verify_server_and_client：新增socket ssl双向认证的示例
+	(3)https/verify_server_and_client：新增https双向认证的示例
+
+
+
+发布时间：2018/01/03 18:32
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：1.1.2
+	(1)http：支持“POST”方法，自动添加Content-Length首部
+	(2)mqttssl：支持tls1.2版本
+	(3)https：支持https
+    二、demo脚本修改
+        (1)mqtt_ssl：演示如何编码校验服务器端的证书
+        (2)https：连接百度主页https://www.baidu.com,演示https的使用
+
+
+
+发布时间：2017/12/08 13:23
+修改记录：
+    一、lib脚本修改
+        lib脚本版本号：1.1.1
+        (1)http：支持“http应答body自动保存到文件”功能
+    二、demo脚本修改
+        (1)http：支持“http应答body自动保存到文件”功能
+
+
+发布时间：2017/11/18 14:47
+修改记录：
+    一、lib脚本修改
+        lib脚本版本号：1.1.0
+        (1)http：修正“request时存在自定义head时异常重启”的问题
+        (2)agps：修正“开机会重复连接1次服务器”的问题
+        (3)agpsupgpd：修正“连接星历服务器的socket id可能和其他socket id冲突”的问题
+        (4)mqtt、mqttssl：新增unsubscribe取消订阅主题的接口
+    二、demo脚本修改
+        (1)socket_ssl：规范ca证书文件的后缀名
+
+
+
+发布时间：2017/10/29 16:33
+修改记录：
+    一、lib脚本修改
+        lib脚本版本号：1.0.9
+        (1)audio：修正“tts播放时，请求新的tts播放，新的tts播放异常”的问题
+        (2)gps：修正“不加载agps模块，gps无法正常工作”的问题
+        (3)sys：修正1.0.7和1.0.8 lib脚本中出现的“远程升级的脚本运行过程中存在语法错误时，无法自动回退到烧写的原始脚本”的问题
+        (4)支持“单个socket连接出错时，不再直接调用link.shut关闭所有socket连接，先仅关闭当前出错的连接，然后自动重连，只有多次重连连续失败，才去调用link.shut”
+    二、demo脚本修改
+        (1)audio：演示“tts播放时，请求新的tts播放”的功能
+        (2)i2c：演示“i2c.send和i2c.recv”接口的使用
+        (3)socket、socket_ssl：支持“单个socket连接出错时，不再直接调用link.shut关闭所有socket连接，先仅关闭当前出错的连接，然后自动重连，只有多次重连连续失败，才去调用link.shut”
+
+
+
+发布时间：2017/9/18 16:49
+修改记录：
+    一、lib脚本修改
+        lib脚本版本号：1.0.8
+        (1)sms：修正“长短信自动拼接”的问题
+        (2)wdt：修改硬件狗使用的默认引脚
+        (3)linkssl、mqttssl：优化ssl的控制逻辑
+        (4)sys：新增对MODULE_TYPE配置的强制检查
+    二、demo脚本修改
+        (1)gpio_single：修正ldo对gpio控制的注释说明
+        (2)所有main.lua中增加对MODULE_TYPE的配置
+        (3)ui：完善SPI接口的LCD显示功能（标准SPI引脚、LCD专用SPI引脚、黑白屏、彩屏）
+        (4)spi：新增spi的demo
+        (5)fs：新增文件系统剩余空间、创建目录的功能使用示例
+
+
+
+发布时间：2017/9/5 11:58
+修改记录：
+    一、lib脚本修改
+        lib脚本版本号：1.0.7
+        (1)keypad：新增powerkey按键的处理功能
+        (2)sms：修正“收到的长短信没有自动拼接”的问题
+        (3)sys、update、dbg：新增“远程升级或者dbg上报过程中，禁止“语法错误或者sys.restart接口”的重启功能”	
+        (4)patch.lua：重新封装json.decode接口，增加decode的返回值。使用方式参考json的demo
+        (5)http.lua：修正“chunk传输数据时解包错误”的问题
+        (6)nvm.lua：修正“table类型参数如果旧值是空表，设置新值时失败”的问题
+        (7)mqtt.lua、mqttssl.lua：支持“用户自定义异常处理程序”的功能
+    二、demo脚本修改
+        (1)default：支持“开机运行过程中长按power key按键，自动关机”功能
+        (2)json：json.decode接口增加返回值表示解析结果
+        (3)mqtt、mqttssl：支持一种默认的异常处理程序
+        (4)i2c：规范代码
+        (5)update：添加<重要提醒.txt>
+
+
+
+发布时间：2017/8/18 10:31
+修改记录：
+    一、lib脚本修改
+        lib脚本版本号：1.0.6
+        (1)uiwin：修正isactive的bug
+        (2)wdt：新增setup接口，支持自定义喂狗引脚
+    二、demo脚本修改
+        (1)adc：完善注释
+        (2)ui：优化代码结构
+        (3)crypto：支持sha1和hmac_sha1算法
+        (4)gpio_single：添加电压域对GPIO的控制说明
+        (5)i2c：规范i2c id为2，兼容之前的0
+
+
+
+发布时间：2017/8/8 13:40
+修改记录：
+    一、lib脚本修改
+        lib脚本版本号：1.0.5
+        (1)misc：修正openpwm接口的注释说明
+    二、demo脚本修改
+        (1)aliyun_ssl_huadong2：修改ProductKey信息，软件上支持硬件看门狗
+        (2)mono_lcd：完善功能
+        (3)default：修正“由于缺少一个空格，IDE烧写后，出现语法错误”的问题
+
+
+
+发布时间：2017/7/26 11:19
+修改记录：
+    一、lib脚本修改
+        lib脚本版本号：1.0.4
+        (1)net.lua：修正“移动PLMN被放入FLPMN列表中导致无法注册网络”的问题
+        (2)mqtt.lua、mqttssl.lua：
+		修正“tmqtt:disconnect接口断开连接后，又自动重连”的问题
+		新增tmqtt:setcleansession接口
+	(3)aliyuniotssl.lua、aliyuniotsslauth.lua：支持阿里云华东2节点
+        (4)misc.lua：支持pwm输出功能
+    二、demo脚本修改
+        (1)socket_ssl\long_connection的demo：更换服务器CA证书文件
+        (2)新增fs：演示文件操作接口的使用
+        (3)新增format_string：演示数据格式转换接口的使用
+        (4)uart：新增“uart发送数据完成后，异步消息通知”功能的使用说明
+        (5)新增adc：演示adc功能的使用说明
+        (6)crypto：完善注释
+        (7)mqtt、mqtt_ssl：演示tmqtt:setcleansession接口的使用说明
+        (8)新增aliyun_ssl_huadong2：支持阿里云华东2节点
+        (9)新增pwm：支持pwm输出功能
+
+
+发布时间：2017/7/7 11:44
+修改记录：
+    一、lib脚本修改
+        lib脚本版本号：1.0.3
+        (1)link.lua：新增“设置连接过程和数据发送过程中TCP协议的重连参数”的接口setretrymode
+        (2)mqtt.lua,mqttssl.lua：publish接口支持retain参数的设置
+
+
+
+发布时间：2017/6/30 22:34
+修改记录：
+    一、lib脚本修改
+        lib脚本版本号：1.0.2
+        (1)sys.lua：底层版本不是最新时，仅打印一个警告，不再上报错误信息到dbg服务器
+        (2)link.lua：修正“用户设置了激活数据网络失败回调函数后，概率性不会执行回调”的问题
+	(3)update.lua：完善重试机制
+    二、demo脚本修改
+        (1)新增update\Luat_iot_server_daemon的demo：支持iot后台的远程升级以及调试信息上报功能
+
+
+
+发布时间：2017/6/27 20:41
+修改记录：
+    一、lib脚本修改
+        lib脚本版本号：1.0.1
+        (1)sys.lua：
+		修正“dbg模块不能上报sys.restart原因值”的问题
+		加快Lua内存自动回收速度
+        (2)dbg.lua：修改重启接口的提示前缀
+        (3)link.lua：
+		新增setiperrcb接口，可设置激活IP数据网络超时失败后的回调函数
+		修正“dbg模块、update模块、ntp模块和用户应用socket重连时”的冲突问题
+
+
+
+发布时间：2017/5/31 13:17
+修改记录：
+    第一次发布

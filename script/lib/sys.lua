@@ -25,7 +25,7 @@ local assert = base.assert
 local tonumber = base.tonumber
 
 --lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "1.2.2"
+SCRIPT_LIB_VER = "1.2.3"
 
 --是否允许“脚本异常时 或者 脚本调用sys.restart接口时”的重启
 --是否有挂起的等待重启的事件
@@ -727,13 +727,13 @@ function setrestart(flg,tag)
 	if flg and restartflg==0 and restartpending then restart("restartpending") end
 end
 
-local msg,msgpara
+local msg,msgpara,msgpara2
 function saferun()
 	--while true do
 		--处理内部消息
 		runqmsg()
 		--阻塞读取外部消息
-		msg,msgpara = rtos.receive(rtos.INF_TIMEOUT)
+		msg,msgpara,msgpara2 = rtos.receive(rtos.INF_TIMEOUT)
 
 		--电池电量为0%，用户应用脚本中没有定义“低电关机处理程序”，并且没有启动自动关机定时器		
 		if --[[not lprfun and ]]not lpring and type(msg) == "table" and msg.id == rtos.MSG_PMD and msg.level == 0 then
@@ -781,7 +781,7 @@ function saferun()
 				--物理串口
 				else
 					if uartprocs[msgpara] ~= nil then
-						uartprocs[msgpara]()
+						uartprocs[msgpara](msgpara,msgpara2)
 					else
 						handlers[msg](msg,msgpara)
 					end

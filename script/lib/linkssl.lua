@@ -352,8 +352,8 @@ end
 返回值：无
 ]]
 local function usersckntfy(id)
-	--产生一个内部消息"USER_SOCKET_CONNECT"，通知“用户创建的socket连接状态发生变化”
-	if not linklist[id].tag then sys.dispatch("USER_SOCKET_CONNECT",usersckisactive()) end
+	--产生一个内部消息"USER_SOCKETSSL_CONNECT"，通知“用户创建的socket连接状态发生变化”
+	if not linklist[id].tag then sys.dispatch("USER_SOCKETSSL_CONNECT",usersckisactive()) end
 end
 
 --[[

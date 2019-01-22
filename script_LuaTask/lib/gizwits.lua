@@ -345,7 +345,7 @@ function clientAuthTask()
     local retryCnt = 0
     while true do
         local body = "mac="..sgetDeviceNameFnc().."&passcode="..getDeviceSecretFnc()
-        if sgetAuthkey ~= nil then
+        if sgetAuthkey ~= nil and sgetAuthkey() ~= nil then
             log.info("sgetAuthkey",sgetAuthkey())
             body = body.."&auth_key="..sgetAuthkey()
         end  --当有sgetAuthkey的时候就加上这个参数

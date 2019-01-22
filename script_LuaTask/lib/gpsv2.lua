@@ -119,7 +119,7 @@ local function parseNmea(s)
         end
     elseif s:match("VTG") then
         kmHour = s:match("VTG,%d*%.*%d*,%w*,%d*%.*%d*,%w*,%d*%.*%d*,%w*,(%d*%.*%d*)")
-        if fixFlag then sys.publish("GPS_MSG_REPORT") end
+        if fixFlag then sys.publish("GPS_MSG_REPORT", 1) else sys.publish("GPS_MSG_NOREPORT", 0) end
     end
 end
 
@@ -185,6 +185,28 @@ local function setFastFix(lat, lng)
     writeCmd("$PGKC634," .. t)
     writeCmd("$PGKC635," .. lat .. "," .. lng .. ",0," .. t)
 end
+
+-- 定时自动下载坐标和星历的任务
+local function getlbs(result, lat, lng, addr)
+    if result and lat and lng then
+        lbs_lat, lbs_lng = lat, lng
+        setFastFix(lat, lng)
+    end
+end
+
+local function saveEph(timeout)
+    sys.taskInit(function()
+        while true do
+            local code, head, data = httpv2.request("GET", "download.openluat.com/9501-xingli/brdcGPD.dat_rda", timeout)
+            if tonumber(code) and tonumber(code) == 200 then
+                log.info("保存下载的星历:", io.writeFile(GPD_FILE, data))
+                ephFlag = false
+                break
+            end
+        end
+    end)
+end
+
 --- 打开GPS模块
 -- @number id，UART ID，支持1和2，1表示UART1，2表示UART2
 -- @number baudrate，波特率，支持1200,2400,4800,9600,10400,14400,19200,28800,38400,57600,76800,115200,230400,460800,576000,921600,1152000,4000000
@@ -193,6 +215,8 @@ end
 -- @param fnc,外部模块使用的电源管理函数
 -- @return 无
 -- @usage gpsv2.open()
+-- @usage gpsv2.open(2, 115200, 8, 5)  -- 打开GPS，串口2，波特率115200，超低功耗跟踪模式
+-- @usage gpsv2.open(2, 115200, 2, 1, 5) -- 打开GPS，串口2，波特率115200，周期低功耗模式1秒输出，5秒睡眠
 function open(id, baudrate, mode, sleepTm, fnc)
     sleepTm = tonumber(sleepTm) and sleepTm * 1000 or 5000
     pm.wake("gpsv2.lua")
@@ -206,6 +230,16 @@ function open(id, baudrate, mode, sleepTm, fnc)
     end
     openFlag = true
     local fullPowerMode = false
+    ---------------------------------- 初始化GPS任务--------------------------------------------
+    pmd.ldoset(7, pmd.LDO_VIB)
+    -- 获取基站定位坐标
+    lbsLoc.request(getlbs, nil, timeout)
+    --连接服务器下载星历
+    saveEph(timeout)
+    -- 自动定时下载定位坐标
+    sys.timerLoopStart(function()lbsLoc.request(getlbs, nil, timeout) end, EPH_UPDATE_INTERVAL * 1000)
+    -- 自动定时下载星历数据
+    sys.timerLoopStart(saveEph, EPH_UPDATE_INTERVAL * 1000, timeout)
     log.info("----------------------------------- GPS OPEN -----------------------------------")
     GPS_CO = sys.taskInit(function()
         read()
@@ -477,37 +511,3 @@ end
 function getCno()
     return gsvCnoTab
 end
-
--- 定时自动下载坐标和星历的任务
-local function getlbs(result, lat, lng, addr)
-    if result and lat and lng then
-        lbs_lat, lbs_lng = lat, lng
-        setFastFix(lat, lng)
-    end
-end
-
-local function saveEph(timeout)
-    sys.taskInit(function()
-        while true do
-            local code, head, data = httpv2.request("GET", "download.openluat.com/9501-xingli/brdcGPD.dat_rda", timeout)
-            if tonumber(code) and tonumber(code) == 200 then
-                log.info("保存下载的星历:", io.writeFile(GPD_FILE, data))
-                ephFlag = false
-                break
-            end
-        end
-    end)
-end
-
-pmd.ldoset(7, pmd.LDO_VIB)
--- 打开GPS，串口2，波特率115200，跟踪模式
--- open(2, 115200, 8, 5)
--- open(2, 115200, 2, 1, 5)
--- 获取基站定位坐标
-lbsLoc.request(getlbs, nil, timeout)
---连接服务器下载星历
-saveEph(timeout)
--- 自动定时下载定位坐标
-sys.timerLoopStart(function()lbsLoc.request(getlbs, nil, timeout) end, EPH_UPDATE_INTERVAL * 1000)
--- 自动定时下载星历数据
-sys.timerLoopStart(saveEph, EPH_UPDATE_INTERVAL * 1000, timeout)
