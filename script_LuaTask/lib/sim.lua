@@ -52,6 +52,17 @@ function getStatus()
     return status
 end
 
+--- 获取sim卡类型
+-- @return string ,"UNSUPPORT"表示core软件不支持此功能，"NO_RDY_SIM"表示SIM卡未就绪；"VSIM"表示虚拟SIM卡，"REAL_SIM"表示实体SIM卡
+-- @usage sim.getType()
+function getType()
+    if type(rtos.is_vsim)=="function" then
+        return status and (rtos.is_vsim() and "VSIM" or "REAL_SIM") or "NO_RDY_SIM"
+    else
+        return "UNSUPPORT"
+    end 
+end
+
 --[[
 函数名：rsp
 功能  ：本功能模块内“通过虚拟串口发送到底层core软件的AT命令”的应答处理
