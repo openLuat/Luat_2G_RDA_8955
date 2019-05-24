@@ -55,4 +55,6 @@ LuaDB 脚本和资源（通过烧写工具烧写的文件，例如lua脚本文件，mp3音频文件，图片文件
 其中Lua运行内存1024KB，Luat框架引用的一些lua模块需要占用一定的运行内存，可通过sys.lua中的run函数中的代码--print("mem:",base.collectgarbage("count"))实时打印已占用的空间
 
 
-因flash空间有限，TTS_UI和TTS2的最后一个版本是0028，以后不再发布新的TTS_UI版本；如果同时使用这两项功能，购买Air202F或者Air268F模块，使用Luat_VXXXX_8955F.lod
+因flash空间有限:
+TTS_UI和TTS2的最后一个版本是0028，以后不再发布新的TTS_UI和TTS2版本；如果同时使用这两项功能，购买Air202F或者Air268F模块，使用Luat_VXXXX_8955F.lod
+TTS1的最后一个版本是0033，以后不再发布新的TTS1版本；如果同时使用这两项功能，购买Air202F或者Air268F模块，使用Luat_VXXXX_8955F.lod

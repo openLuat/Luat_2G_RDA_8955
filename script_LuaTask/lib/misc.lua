@@ -212,7 +212,6 @@ ril.regRsp("+CGSN", rsp)
 ril.regRsp("+MUID", rsp)
 ril.regRsp("+WIMEI", rsp)
 ril.regRsp("+AMFAC", rsp)
-ril.regRsp("+CFUN", rsp)
 ril.regRsp('+VER', rsp, 4, '^[%w_]+$')
 req('AT+VER')
 --查询是否校准

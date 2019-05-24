@@ -229,3 +229,4 @@ end)
 req("ATX4")
 --开启来电urc上报
 req("AT+CLIP=1")
+req("ATS7=60")

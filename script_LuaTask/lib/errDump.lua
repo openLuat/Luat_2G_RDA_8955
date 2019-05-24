@@ -1,11 +1,13 @@
 --- 模块功能：系统错误日志管理(强烈建议用户开启此模块的“错误日志上报调试服务器”功能).
--- 错误日志包括三种：
+-- 错误日志包括四种：
 -- 1、系统主任务运行时的错误日志
 --    此类错误会导致软件重启，错误日志保存在/luaerrinfo.txt文件中
 -- 2、调用sys.taskInit创建的协程运行过程中的错误日志
 --    此类错误会终止当前协程的运行，但是不会导致软件重启，错误日志保存在/lib_err.txt中
 -- 3、调用errDump.appendErr或者sys.restart接口保存的错误日志
 --    此类错误日志保存在/lib_err.txt中
+-- 4、调用errDump.setNetworkLog接口打开网络异常日志功能后，会自动保存最近几种网络异常日志
+--    此类异常日志保存在内存中
 --
 -- 其中2和3保存的错误日志，最多支持5K字节
 -- 每次上报错误日志给调试服务器之后，会清空已保存的日志
@@ -21,7 +23,8 @@ module(..., package.seeall)
 --错误信息文件以及错误信息内容
 local LIB_ERR_FILE,libErr,LIB_ERR_MAX_LEN = "/lib_err.txt","",5*1024
 local LUA_ERR_FILE,luaErr = "/luaerrinfo.txt",""
-local sReporting,sProtocol,sWritingFile
+local sReporting,sProtocol
+local sNetworkLog,stNetworkLog,sNetworkLogFlag = "",{}
 
 -- 初始化LIB_ERR_FILE文件中的错误信息(读取到内存中，并且打印出来)
 -- @return nil
@@ -36,6 +39,8 @@ local function initErr()
     if luaErr~="" then
         log.error("errDump.luaErr", luaErr)
     end
+    
+    updateNetworkLog()
 end
 
 
@@ -53,16 +58,13 @@ function appendErr(s)
         log.error("errDump.appendErr",s)
         if (s:len()+libErr:len())<=LIB_ERR_MAX_LEN then            
             libErr = libErr..s
-            sWritingFile = true
-            local result = io.writeFile(LIB_ERR_FILE, libErr)
-            sWritingFile = false
-            return result
+            return io.writeFile(LIB_ERR_FILE, libErr)
         end
     end
 end
 
 local function reportData()
-    return _G.PROJECT.."_"..rtos.get_version()..",".._G.VERSION..","..misc.getImei()..","..misc.getSn()..","..luaErr..(luaErr:len()>0 and "\r\n" or "")..libErr
+    return _G.PROJECT.."_"..rtos.get_version()..",".._G.VERSION..","..misc.getImei()..","..misc.getSn()..","..luaErr..(luaErr:len()>0 and "\r\n" or "")..libErr..sNetworkLog
 end
 
 local function httpPostCbFnc(result,statusCode)
@@ -75,7 +77,7 @@ function clientTask(protocol,addr,period)
     while true do
         if not socket.isReady() then sys.waitUntil("IP_READY_IND") end
         --log.info("errDump.clientTask","err",luaErr~="" or libErr~="")
-        if luaErr~="" or libErr~="" then
+        if luaErr~="" or libErr~="" or sNetworkLog~="" then
             local retryCnt,result,data = 0
             while true do
                 if protocol=="http" then
@@ -101,12 +103,12 @@ function clientTask(protocol,addr,period)
                 end
                 
                 if result then
-                    if not sWritingFile then
-                        libErr = ""
-                        os.remove(LIB_ERR_FILE)
-                    end
+                    libErr = ""
+                    os.remove(LIB_ERR_FILE)
                     luaErr = ""
                     os.remove(LUA_ERR_FILE)
+                    sNetworkLog = ""
+                    stNetworkLog = {}
                     break
                 else
                     retryCnt = retryCnt+1
@@ -126,6 +128,79 @@ function clientTask(protocol,addr,period)
         end
     end
     sReporting = false
+end
+
+function updateNetworkLog()
+    if sNetworkLogFlag then
+        sNetworkLog = ""
+        for k,v in pairs(stNetworkLog) do
+            if v and v~="" then
+                sNetworkLog = sNetworkLog.."\r\n"..k.."@"..v
+            end
+        end
+    end
+end
+
+local onceGsmRegistered,onceGprsAttached
+--- 配置网络错误日志开关
+-- @bool[opt=nil] flag，是否打开网络错误日志开关，true为打开，false或者nil为关闭
+-- @usage
+-- errDump.setNetworkLog(true)
+function setNetworkLog(flag)
+    sNetworkLogFlag = flag
+    local procer = flag and sys.subscribe or sys.unsubscribe
+    if not flag then
+        sNetworkLog,stNetworkLog = "",{}
+    end
+    
+    local function getTimeStr()
+        local clk = os.date("*t")
+        return string.format("%02d_%02d:%02d:%02d",clk.day,clk.hour,clk.min,clk.sec)
+    end
+    
+    procer("FLYMODE",function(value)
+        if value then            
+            stNetworkLog["FLYMODE"] = getTimeStr()
+            updateNetworkLog()
+        end
+    end)
+    procer("SIM_IND",function(value)
+        if value~="RDY" then            
+            stNetworkLog["SIM_IND"] = getTimeStr()..":"..value
+            updateNetworkLog()
+        end
+    end)
+    procer("NET_STATE_UNREGISTER",function()
+        if onceGsmRegistered then
+            stNetworkLog["NET_STATE_UNREGISTER"] = getTimeStr()
+            updateNetworkLog()
+        end
+    end)
+    procer("NET_STATE_REGISTER",function() onceGsmRegistered=true end)
+    procer("GPRS_ATTACH",function(value)
+        if value then
+            onceGprsAttached = true
+        elseif onceGprsAttached then
+            stNetworkLog["GPRS_ATTACH"] = getTimeStr()..":0"
+            updateNetworkLog()
+        end
+    end)
+    procer("LIB_SOCKET_CONNECT_FAIL_IND",function(ssl,prot,addr,port)           
+        stNetworkLog[(ssl and "ssl" or prot).."://"..addr..":"..port] = getTimeStr()..":connect fail"
+        updateNetworkLog()
+    end)
+    procer("LIB_SOCKET_SEND_FAIL_IND",function(ssl,prot,addr,port)           
+        stNetworkLog[(ssl and "ssl" or prot).."://"..addr..":"..port] = getTimeStr()..":send fail"
+        updateNetworkLog()
+    end)
+    procer("PDP_DEACT_IND",function()        
+        stNetworkLog["PDP_DEACT_IND"] = getTimeStr()
+        updateNetworkLog()
+    end)
+    procer("IP_SHUT_IND",function()        
+        stNetworkLog["IP_SHUT_IND"] = getTimeStr()
+        updateNetworkLog()
+    end)
 end
 
 --- 配置调试服务器地址，启动错误信息上报给调试服务器的功能，上报成功后，会清除错误信息

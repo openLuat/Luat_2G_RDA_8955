@@ -1,5 +1,5 @@
 --- 模块功能：阿里云物联网套件客户端功能.
--- 目前的产品节点类型仅支持“设备”，设备认证方式支持“一机一密”和“一型一密”
+-- 目前的产品节点类型仅支持“设备”，设备认证方式支持“一机一密和“一型一密”
 -- @module aLiYun
 -- @author openLuat
 -- @license MIT
@@ -14,6 +14,7 @@ module(..., package.seeall)
 
 local sProductKey,sProductSecret,sGetDeviceNameFnc,sGetDeviceSecretFnc,sSetDeviceSecretFnc
 local sKeepAlive,sCleanSession,sWill
+local isSleep--休眠，不去重连服务器
 
 local outQueue =
 {
@@ -54,17 +55,17 @@ local function procReceive(client)
                     aLiYunOta.upgrade(data.payload)
                 end
             --其他消息
-            else    
+            else
                 if evtCb["receive"] then evtCb["receive"](data.topic,data.qos,data.payload) end
             end
-            
+
             --如果有等待发送的数据，则立即退出本循环
             if #outQueue["PUBLISH"]>0 then return true,"procReceive" end
         else
             break
         end
     end
-	
+
     return data=="timeout" or r,"procReceive"
 end
 
@@ -78,20 +79,38 @@ local function procSend(client)
     return true,"procSend"
 end
 
+--不去进行重连操作
+function sleep()
+    isSleep = true
+    log.info("aLiYun.sleep","open sleep, stop try reconnect")
+end
+
+function wakeup()
+    isSleep = false
+    sys.publish("ALITUN_WAKEUP")
+    log.info("aLiYun.wakeup","exit sleep")
+end
+
+function sleepStatus()
+    return isSleep
+end
+
 function clientDataTask(host,tPorts,clientId,user,password)
     local retryConnectCnt = 0
     local portIdx = 0
     while true do
+        if isSleep then sys.waitUntil("ALITUN_WAKEUP") end
+
         if not socket.isReady() then
             retryConnectCnt = 0
             --等待网络环境准备就绪，超时时间是5分钟
             sys.waitUntil("IP_READY_IND",300000)
         end
-        
+
         if socket.isReady() then
             local mqttClient = mqtt.client(clientId,sKeepAlive or 240,user,password,sCleanSession,sWill)
             portIdx = portIdx%(#tPorts)+1
-            
+
             if mqttClient:connect(host,tonumber(tPorts[portIdx]),"tcp_ssl") then
                 retryConnectCnt = 0
                 if aLiYunOta and aLiYunOta.connectCb then aLiYunOta.connectCb(true,sProductKey,sGetDeviceNameFnc()) end
@@ -120,7 +139,7 @@ function clientDataTask(host,tPorts,clientId,user,password)
                 if evtCb["connect"] then evtCb["connect"](false) end
             else
                 retryConnectCnt = retryConnectCnt+1
-            end          
+            end
 
             mqttClient:disconnect()
             if retryConnectCnt>=5 then link.shut() retryConnectCnt=0 end
@@ -144,7 +163,7 @@ local function getDeviceSecretCb(result,prompt,head,body)
         end
     end
     sys.publish("GetDeviceSecretEnd")
-    
+
 end
 
 local function authCbFnc(result,statusCode,head,body)
@@ -174,7 +193,7 @@ function clientAuthTask()
             http.request("POST",
                      "https://iot-auth.cn-shanghai.aliyuncs.com/auth/devicename",
                      nil,{["Content-Type"]="application/x-www-form-urlencoded"},authBody,20000,authCbFnc)
-                     
+
             local _,result,statusCode,body = sys.waitUntil("ALIYUN_AUTH_IND")
             --log.info("aLiYun.clientAuthTask1",result and statusCode=="200",body)
             if result and statusCode=="200" then
@@ -191,14 +210,14 @@ function clientAuthTask()
                                 table.insert(ports,tJsonDecode["data"]["resources"]["mqtt"]["port"])
                             end
                         end
-                        
-                        sys.taskInit(clientDataTask,returnMqtt and host or sProductKey..".iot-as-mqtt.cn-shanghai.aliyuncs.com",#ports~=0 and ports or {1883},sGetDeviceNameFnc(),tJsonDecode["data"]["iotId"],tJsonDecode["data"]["iotToken"])	
+
+                        sys.taskInit(clientDataTask,returnMqtt and host or sProductKey..".iot-as-mqtt.cn-shanghai.aliyuncs.com",#ports~=0 and ports or {1883},sGetDeviceNameFnc(),tJsonDecode["data"]["iotId"],tJsonDecode["data"]["iotToken"])
                         return
                     end
                 end
             end
-            
-            if sProductSecret then                
+
+            if sProductSecret then
                 http.request("POST","https://iot-auth.cn-shanghai.aliyuncs.com/auth/register/device",nil,
                     {['Content-Type']="application/x-www-form-urlencoded"},
                     getBody("register"),30000,getDeviceSecretCb)
@@ -212,7 +231,7 @@ function clientAuthTask()
                 break
             end
         end
-        
+
         if evtCb["auth"] then evtCb["auth"](false) end
         sys.wait(5000)
     end

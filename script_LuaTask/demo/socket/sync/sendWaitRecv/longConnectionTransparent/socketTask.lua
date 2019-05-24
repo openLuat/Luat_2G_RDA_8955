@@ -28,6 +28,8 @@ function isReady()
     return ready
 end
 
+socket.setSendMode(1)
+
 --启动socket客户端任务
 sys.taskInit(
     function()

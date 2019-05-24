@@ -10,6 +10,8 @@ module(..., package.seeall)
 -- 这里请填写修改为自己的IP和端口
 local host, port = "lbsmqtt.airm2m.com", 1884
 
+socket.setSendMode(1)
+
 -- 测试MQTT的任务代码
 sys.taskInit(function()
     while true do

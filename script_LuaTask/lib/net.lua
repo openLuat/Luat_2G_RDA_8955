@@ -340,8 +340,10 @@ intermediate：AT命令的应答中的中间信息
 local function rsp(cmd, success, response, intermediate)
     local prefix = string.match(cmd, "AT(%+%u+)")
     
-    if intermediate ~= nil then
-        if prefix == "+CSQ" then
+    log.info("net.rsp",cmd, success, response, intermediate)
+    
+    if prefix == "+CSQ" then
+        if intermediate ~= nil then
             local s = string.match(intermediate, "+CSQ:%s*(%d+)")
             if s ~= nil then
                 rssi = tonumber(s)
@@ -349,9 +351,9 @@ local function rsp(cmd, success, response, intermediate)
                 --产生一个内部消息GSM_SIGNAL_REPORT_IND，表示读取到了信号强度
                 publish("GSM_SIGNAL_REPORT_IND", success, rssi)
             end
-        elseif prefix == "+CFUN" then
-            publish("FLYMODE", flyMode)
-        elseif prefix == "+CENG" then end
+        end
+    elseif prefix == "+CFUN" then
+        if success then publish("FLYMODE", flyMode) end
     end
 end
 

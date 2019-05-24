@@ -100,8 +100,8 @@ end
 -- @usage sha256Test()
 local function sha256Test()
     local originStr = "sdfdsfdsfdsffdsfdsfsdfs1234"
-    if crypto.sha256 then
-        log.info("testCrypto.sha256",crypto.sha256(originStr):toHex())
+    if tonumber(string.match(rtos.get_version(),"Luat_V(%d+)_"))>=34 then
+        log.info("testCrypto.sha256",crypto.sha256(originStr))
     end
 end
 
@@ -131,6 +131,9 @@ local function crcTest()
         log.info("testCrypto.crc16_CCITT-FALSE",string.format("%04X",crypto.crc16("CCITT-FALSE",originStr)))
         log.info("testCrypto.crc16_XMODEM",string.format("%04X",crypto.crc16("XMODEM",originStr)))
         log.info("testCrypto.crc16_DNP",string.format("%04X",crypto.crc16("DNP",originStr)))
+    end
+    if tonumber(string.match(rtos.get_version(),"Luat_V(%d+)_"))>=34 then
+        log.info("testCrypto.USER-DEFINED",string.format("%04X",crypto.crc16("USER-DEFINED",originStr,0x8005,0x0000,0x0000,0,0)))
     end
     
     log.info("testCrypto.crc16_modbus",string.format("%04X",crypto.crc16_modbus(originStr,slen(originStr))))
@@ -333,6 +336,38 @@ local function aesTest()
     end
 end
 
+--参考：http://www.kjson.com/encrypt/enc/
+local function desTest()
+    --aes.encrypt和aes.decrypt接口测试(V0020版本后的lod才支持此功能)
+    if tonumber(string.match(rtos.get_version(),"Luat_V(%d+)_"))>=34 then
+        local originStr = "123456789"
+        --加密模式：ECB；填充方式：ZeroPadding；密钥：12345678
+        local encodeStr = crypto.des_encrypt("ECB","ZERO",originStr,"12345678")
+        print(originStr,"DES ECB ZeroPadding encrypt",string.toHex(encodeStr))
+        log.info("DES ECB ZeroPadding decrypt",crypto.des_decrypt("ECB","ZERO",encodeStr,"12345678"))    
+        
+        originStr = "123456789"
+        --加密模式：ECB；填充方式：Pkcs5Padding；密钥：12345678
+        encodeStr = crypto.des_encrypt("ECB","PKCS5",originStr,"12345678")
+        print(originStr,"DES ECB Pkcs5Padding encrypt",string.toHex(encodeStr))
+        log.info("DES ECB Pkcs5Padding decrypt",crypto.des_decrypt("ECB","PKCS5",encodeStr,"12345678"))    
+        
+        originStr = "123456789"
+        --加密模式：ECB；填充方式：Pkcs7Padding；密钥：12345678
+        encodeStr = crypto.des_encrypt("ECB","PKCS7",originStr,"12345678")
+        print(originStr,"DES ECB Pkcs7Padding encrypt",string.toHex(encodeStr))
+        log.info("DES ECB Pkcs7Padding decrypt",crypto.des_decrypt("ECB","PKCS7",encodeStr,"12345678"))
+        
+        originStr = ("31323334353637383900000000000000"):fromHex()
+        --加密模式：ECB；填充方式：NONE；密钥：12345678
+        encodeStr = crypto.des_encrypt("ECB","NONE",originStr,"12345678")
+        print(originStr,"DES ECB NonePadding encrypt",string.toHex(encodeStr))
+        log.info("DES ECB NonePadding decrypt",string.toHex(crypto.des_decrypt("ECB","NONE",encodeStr,"12345678")))
+   
+        
+    end
+end
+
 --- 算法测试入口
 -- @return 无
 -- @usage test()
@@ -342,9 +377,10 @@ local function test()
     md5Test()
     hmacSha1Test()
     sha1Test()
-    --sha256Test()
+    sha256Test()
     crcTest()
     aesTest()
+    desTest()
     flowMd5Test()
     hmacSha256Test()
     --xxtea 需要lod打开支持

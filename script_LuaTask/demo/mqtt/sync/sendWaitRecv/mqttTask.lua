@@ -14,6 +14,8 @@ require"mqttInMsg"
 
 local ready = false
 
+socket.setSendMode(1)
+
 --- MQTT连接是否处于激活状态
 -- @return 激活状态返回true，非激活状态返回false
 -- @usage mqttTask.isReady()

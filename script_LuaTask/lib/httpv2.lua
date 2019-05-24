@@ -42,15 +42,21 @@ end
 function request(method, url, timeout, params, data, ctype, basic, headers, cert, fnc)
     local response_header, response_code, response_body = {}
     local _, idx, offset, ssl, auth, https, host, port, path
-    headers = headers or {
-        ['User-Agent'] = 'Mozilla/4.0',
-        ['Accept'] = '*/*',
-        ['Accept-Language'] = 'zh-CN,zh,cn',
-        ['Content-Type'] = 'application/x-www-form-urlencoded',
-        ['Content-Length'] = '0',
-        ['Connection'] = 'Keep-alive',
-        ["Keep-Alive"] = 'timeout=20',
-    }
+    if type(headers) == "string" then
+        local tmp = {}
+        for k, v in string.gmatch(headers, "(.-):%s*(.-)\r\n") do tmp[k] = v end
+        headers = tmp
+    elseif type(headers) ~= "table" then
+        headers = {
+            ['User-Agent'] = 'Mozilla/4.0',
+            ['Accept'] = '*/*',
+            ['Accept-Language'] = 'zh-CN,zh,cn',
+            ['Content-Type'] = 'application/x-www-form-urlencoded',
+            ['Content-Length'] = '0',
+            ['Connection'] = 'Keep-alive',
+            ["Keep-Alive"] = 'timeout=20',
+        }
+    end
     ssl = string.find(rtos.get_version(), 'SSL')
     -- 处理url的协议头和鉴权
     _, offset, https = url:find("^(%a+)://")
@@ -73,7 +79,7 @@ function request(method, url, timeout, params, data, ctype, basic, headers, cert
     path = url:sub(offset + 1, -1)
     path = path == "" and "/" or path
     -- 处理查询字符串
-    if params ~= nil and type(params) == 'table' then path = path .. '?' .. urlencodeTab(params) end
+    if params then path = path .. '?' .. (type(params) == 'table' and urlencodeTab(params) or params) end
     -- 处理HTTP协议body部分的数据
     ctype = ctype or 2
     headers['Content-Type'] = Content_type[ctype]
@@ -105,7 +111,7 @@ function request(method, url, timeout, params, data, ctype, basic, headers, cert
         return '502', 'SOCKET_CONN_ERROR'
     end
     if ctype ~= 3 then
-        str = method .. ' ' .. path .. ' HTTP/1.1\r\n' .. str .. '\r\n' .. (data or "") .. '\r\n'
+        str = method .. ' ' .. path .. ' HTTP/1.1\r\n' .. str .. '\r\n' .. (data and data .. "\r\n" or "")
         -- log.info("发送的http报文:", str)
         if not c:send(str) then
             c:close()

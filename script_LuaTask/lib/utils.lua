@@ -26,7 +26,7 @@ end
 -- @return len,输出字符串的长度
 -- @usage
 -- string.fromHex("010203")       ->  "\1\2\3"
--- string.fromHex("313233616263:) ->  "123abc"
+-- string.fromHex("313233616263") ->  "123abc"
 function string.fromHex(hex)
     --滤掉分隔符
     local hex = hex:gsub("[%s%p]", ""):upper()
@@ -219,7 +219,7 @@ function io.pathInfo(path)
         end
         pos = pos - 1
     end
-    
+
     local dirname = string.sub(path, 1, pos)
     local filename = string.sub(path, pos + 1)
     extpos = extpos - pos

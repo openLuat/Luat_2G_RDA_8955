@@ -14,7 +14,7 @@ local recording
 local stoping
 local duration
 local recordCallback
-local flag_s=false
+--local flag_s=false
 
 --- 开始录音
 -- @param seconds 录音时长，单位：秒
@@ -111,11 +111,11 @@ ril.regUrc("+AUDREC", function(data)
         --录音播放相关
         elseif action=="2" then
             if size > 0 then
-                if not flag_s then            
+                --if not flag_s then            
                     sys.publish("AUDIO_PLAY_END","SUCCESS")
-                else
-                    flag_s=false
-                end
+                --else
+                    --flag_s=false
+                --end
 			else
 			    sys.publish("AUDIO_PLAY_END","ERROR")
             end
@@ -136,7 +136,7 @@ ril.regRsp("+AUDREC", function(cmd, success)
         if stoping and not success then stoping = false end -- 失败直接结束，成功则等到+AUDREC上报才判定停止录音成功
     --停止播放录音
     elseif action=="3" then
-        flag_s=true
+        --flag_s=true
 		sys.publish("AUDIO_STOP_END")
     end
 end)

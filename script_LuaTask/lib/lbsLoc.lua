@@ -50,7 +50,7 @@ local function enWifiInfo(tWifi)
             cnt = cnt+1
         end
     end
-    return string.char(cnt)..ret
+    return (tWifi and string.char(cnt) or "")..ret
 end
 
 local function trans(str)

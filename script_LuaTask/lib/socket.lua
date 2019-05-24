@@ -17,7 +17,7 @@ local socketsSsl = {}
 -- 单次发送数据最大值
 local SENDSIZE = 1460
 -- 缓冲区最大下标
-local INDEX_MAX = 49
+local INDEX_MAX = 256
 
 --用户自定义的DNS解析器
 local dnsParser
@@ -59,7 +59,7 @@ local function errorInd(error)
             if c.co and coroutine.status(c.co) == "suspended" then
                 stopConnectTimer(v, c.id)
                 --coroutine.resume(c.co, false)
-                table.insert(coSuspended,c.co)
+                table.insert(coSuspended, c.co)
             end
         --end
         end
@@ -218,7 +218,8 @@ function mt:connect(address, port)
         log.info("socket:connect: call exist, cannot connect")
         return false
     end
-    
+    self.address = address
+    self.port = port
     if self.ssl then
         local tConfigCert, i = {}
         if self.cert then
@@ -236,8 +237,7 @@ function mt:connect(address, port)
             end
         end
         
-        sslInit()
-        self.address = address
+        sslInit()        
         req(string.format("AT+SSLCREATE=%d,\"%s\",%d", self.id, address .. ":" .. port, (self.cert and self.cert.caCert) and 0 or 1))
         self.created = true
         for i = 1, #tConfigCert do
@@ -284,6 +284,7 @@ function mt:connect(address, port)
     
     if r == false then
         if self.ssl then self:sslDestroy() end
+        sys.publish("LIB_SOCKET_CONNECT_FAIL_IND",self.ssl,self.protocol,address,port)
         return false
     end
     self.connected = true
@@ -314,13 +315,20 @@ function mt:asyncSelect(keepAlive, pingreq)
             self.wait = self.ssl and "+SSLSEND" or "+CIPSEND"
             if not coroutine.yield() then
                 if self.ssl then self:sslDestroy() end
+                sys.publish("LIB_SOCKET_SEND_FAIL_IND",self.ssl,self.protocol,self.address,self.port)
                 return false
             end
         end
     end
     self.wait = "SOCKET_WAIT"
     sys.publish("SOCKET_SEND", self.id)
-    sys.timerStart(self.asyncSend, (keepAlive or 300) * 1000, self, pingreq or "\0")
+    if keepAlive and keepAlive ~= 0 then
+        if type(pingreq) == "function" then
+            sys.timerStart(pingreq, keepAlive * 1000)
+        else
+            sys.timerStart(self.asyncSend, keepAlive * 1000, self, pingreq or "\0")
+        end
+    end
     return coroutine.yield()
 end
 --- 异步发送数据
@@ -375,6 +383,7 @@ function mt:send(data)
         self.wait = self.ssl and "+SSLSEND" or "+CIPSEND"
         if not coroutine.yield() then
             if self.ssl then self:sslDestroy() end
+            sys.publish("LIB_SOCKET_SEND_FAIL_IND",self.ssl,self.protocol,self.address,self.port)
             return false
         end
     end
@@ -427,7 +436,14 @@ function mt:recv(timeout, msg)
                 return r, s
             end
         else
-            return coroutine.yield()
+            local r, s = coroutine.yield()
+            if r == 0xAA then
+                local dat = table.concat(self.output)
+                self.output = {}
+                return false, msg, dat
+            else
+                return r, s
+            end
         end
     end
     
@@ -454,7 +470,7 @@ end
 --- 销毁一个socket
 -- @return nil
 -- @usage  c = socket.tcp(); c:connect(); c:send("123"); c:close()
-function mt:close()
+function mt:close(slow)
     assert(self.co == coroutine.running(), "socket:close: coroutine mismatch")
     if self.iSubscribe then
         sys.unsubscribe(self.iSubscribe, self.subMessage)
@@ -463,7 +479,7 @@ function mt:close()
     if self.connected or self.created then
         self.connected = false
         self.created = false
-        req(self.ssl and ("AT+SSLDESTROY=" .. self.id) or ("AT+CIPCLOSE=" .. self.id .. ",0"))
+        req(self.ssl and ("AT+SSLDESTROY=" .. self.id) or ("AT+CIPCLOSE=" .. self.id .. (slow and ",0" or "")))
         self.wait = self.ssl and "+SSLDESTROY" or "+CIPCLOSE"
         coroutine.yield()
         socketStatusNtfy()
@@ -497,8 +513,22 @@ local function onResponse(cmd, success, response, intermediate)
             -- CIPSTART,SSLCONNECT 返回OK只是表示被接受
             return
         end
-        if (prefix == '+CIPSEND' or prefix == "+SSLSEND") and response:match("%d, *([%u%d :]+)") ~= 'SEND OK' then
-            success = false
+        
+        if prefix=='+CIPSEND' then
+            if response:match("%d, *([%u%d :]+)")~='SEND OK' then
+                local acceptLen = response:match("DATA ACCEPT:%d,(%d+)")
+                if acceptLen then
+                    if acceptLen~=cmd:match("AT%+%u+=%d,(%d+)") then
+                        success = false
+                    end
+                else
+                    success = false
+                end
+            end
+        elseif prefix=="+SSLSEND" then
+            if response:match("%d, *([%u%d :]+)")~='SEND OK' then
+                success = false
+            end
         end
         
         local reason, address
@@ -606,6 +636,18 @@ end
 -- @usage socket.setDnsParser(parserFnc)
 function setDnsParser(parserFnc)
     dnsParser = parserFnc
+end
+
+--- 设置数据发送模式（在网络准备就绪之前调用此接口设置）.
+-- 如果设置为快发模式，注意如下两点：
+-- 1、通过send接口发送的数据，如果成功发送到服务器，设备端无法获取到这个成功状态
+-- 2、通过send接口发送的数据，如果发送失败，设备端可以获取到这个失败状态
+-- 慢发模式可以获取到send接口发送的成功或者失败
+-- @number[opt=0] mode，数据发送模式，0表示慢发，1表示快发
+-- @return nil
+-- @usage socket.setSendMode(1)
+function setSendMode(mode)
+    link.setSendMode(mode)
 end
 
 setTcpResendPara(4, 16)

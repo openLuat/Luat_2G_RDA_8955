@@ -16,6 +16,8 @@ local ssub,schar,smatch,sbyte,slen,sgmatch,sgsub,srep = string.sub,string.char,s
 local sPRODUCT_KEY,sPRODUCT_SECRET,sgetDeviceNameFnc,getDeviceSecretFnc,getDeviceIdFnc,setDeviceIdFnc,sgetAuthkey
 local mqttHeartbeat,sExtra,sServer,sPort
 
+local fotastart
+
 local evtCb = {}
 
 --数据发送的消息队列
@@ -397,6 +399,30 @@ local function httpDownloadCbFnc(result,statusCode,head)
     log.info("update.httpDownloadCbFnc",result,statusCode)
     sys.publish("UPDATE_DOWNLOAD",result,statusCode,head)
 end
+
+--升级处理函数，来源为update.lua
+local sProcessedLen = 0
+local function processOta(stepData,totalLen,statusCode)
+    if stepData and totalLen then
+        if statusCode=="200" or statusCode=="206" then
+            if rtos.fota_process((sProcessedLen+stepData:len()>totalLen) and stepData:sub(1,totalLen-sProcessedLen) or stepData,totalLen)~=0 then
+                log.error("updata.processOta","fail")
+                return false
+            else
+                sProcessedLen = sProcessedLen + stepData:len()
+                log.info("updata.processOta",totalLen,sProcessedLen,(sProcessedLen*100/totalLen).."%")
+                --if sProcessedLen*100/totalLen==sBraekTest then return false end
+                if sProcessedLen*100/totalLen>=100 then return true end
+            end
+        elseif statusCode:sub(1,1)~="3" and stepData:len()==totalLen and totalLen>0 and totalLen<=200 then
+            local msg = stepData:match("\"msg\":%s*\"(.-)\"")
+            if msg and msg:len()<=200 then
+                log.warn("update.error",common.ucs2beToUtf8((msg:gsub("\\u","")):fromHex()))
+            end
+        end
+    end
+end
+
 --- 手动检查更新
 -- @string hard_version，硬件版本
 -- @string soft_version，软件版本
@@ -419,15 +445,37 @@ function checkUpdate(hard_version,soft_version)
         local soft_ver, download_url = string.match(body,"soft_ver=(.+)&download_url=(.+)")
         log.info("gizwits.OTA","gizwits ota result",soft_ver, download_url)
         if download_url ~= nil then
-            local UPD_FILE_PATH = "/luazip/update.bin"
-            os.remove(UPD_FILE_PATH)
-            http.request("GET",download_url,nil,nil,nil,60000,httpDownloadCbFnc,UPD_FILE_PATH)
-            local _,result1,statusCode1,head1 = sys.waitUntil("UPDATE_DOWNLOAD")
-            if result1 and statusCode1=="200" then
-                log.info("gizwits.OTA","download success")
-                sys.restart("UPDATE_DOWNLOAD_SUCCESS")
-            else
-                log.info("gizwits.OTA","download fail")
+            if _G.moduleType == 2 then
+                local UPD_FILE_PATH = "/luazip/update.bin"
+                os.remove(UPD_FILE_PATH)
+                http.request("GET",download_url,nil,nil,nil,60000,httpDownloadCbFnc,UPD_FILE_PATH)
+                local _,result1,statusCode1,head1 = sys.waitUntil("UPDATE_DOWNLOAD")
+                if result1 and statusCode1=="200" then
+                    log.info("gizwits.OTA","download success")
+                    sys.restart("UPDATE_DOWNLOAD_SUCCESS")
+                else
+                    log.info("gizwits.OTA","download fail")
+                end
+            elseif _G.moduleType == 4 then
+                if rtos.fota_start()~=0 then
+                    log.error("gizwits.OTA","fota_start fail")
+                    fotastart = false
+                    return
+                else
+                    fotastart = true
+                end
+                http.request("GET",download_url,nil,nil,nil,60000,httpDownloadCbFnc,processOta)
+                local _,result1,statusCode1,head1 = sys.waitUntil("UPDATE_DOWNLOAD")
+                if result then
+                    rtos.fota_end()
+                    if statusCode=="200" then
+                        log.info("gizwits.OTA","download success")
+                        sys.restart("UPDATE_DOWNLOAD_SUCCESS")
+                    end
+                else
+                    rtos.fota_end()
+                    log.info("gizwits.OTA","download fail")
+                end
             end
         end
     else

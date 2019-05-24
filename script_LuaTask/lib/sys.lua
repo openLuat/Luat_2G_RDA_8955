@@ -10,7 +10,7 @@ require "patch"
 module(..., package.seeall)
 
 -- lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "2.3.1"
+SCRIPT_LIB_VER = "2.3.2"
 
 -- TaskID最大值
 local TASK_TIMER_ID_MAX = 0x1FFFFFFF
@@ -51,7 +51,7 @@ end
 
 --- Task任务延时函数，只能用于任务函数中
 -- @number ms  整数，最大等待126322567毫秒
--- @return number 正常返回1，失败返回nil
+-- @return 定时结束返回nil,被其他线程唤起返回调用线程传入的参数
 -- @usage sys.wait(30)
 function wait(ms)
     -- 参数检测，参数不能为负值

@@ -62,6 +62,12 @@ local RILCMD = {
     ["+CTFSGETID"] = 2,
     ["+CTFSDECRYPT"] = 2,
     ["+CTFSAUTH"] = 2,
+    ["+ALIPAYOPEN"] = 2,
+    ["+ALIPAYREP"] = 2,
+    ["+ALIPAYPINFO"] = 2,
+    ["+ALIPAYACT"] = 2,
+    ["+ALIPAYDID"] = 2,
+    ["+ALIPAYSIGN"] = 2,
 }
 
 --radioready：AT命令通道是否准备就绪
@@ -77,6 +83,8 @@ local cmdqueue = {
 local currcmd, currarg, currsp, curdelay, cmdhead, cmdtype, rspformt
 --反馈结果,中间信息,结果信息
 local result, interdata, respdata
+
+local sslCreating
 
 --ril会出现三种情况:
 --发送AT命令，收到应答
@@ -263,6 +271,9 @@ local function procatc(data)
     if string.find(data, "^%+CMS ERROR:") or string.find(data, "^%+CME ERROR:") or (data == "CONNECT FAIL" and currcmd and string.match(currcmd, "CIPSTART")) then
         data = "ERROR"
     end
+    if sslCreating and data=="+PDP: DEACT" and tonumber(string.match(rtos.get_version(),"Luat_V(%d+)_"))<31 then
+        sys.publish("SSL_DNS_PARSE_PDP_DEACT")
+    end
     --执行成功的应答
     if data == "OK" or data == "SHUT OK" then
         result = true
@@ -349,6 +360,7 @@ local function procatc(data)
                 else
                     result = true
                 end
+                if cmdhead=="+SSLCREATE" then sslCreating=false end
             else
                 isurc = true
             end
@@ -469,6 +481,8 @@ local function sendat()
     else
         sys.timerStart(atimeout, TIMEOUT)
     end
+    
+    if currcmd:match("^AT%+SSLCREATE") then sslCreating=true end
     
     log.info("ril.sendat", currcmd)
     --向虚拟串口中发送AT命令

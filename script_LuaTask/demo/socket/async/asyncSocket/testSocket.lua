@@ -10,10 +10,11 @@ module(..., package.seeall)
 -- 此处的IP和端口请填上你自己的socket服务器和端口
 local ip, port, c = "180.97.80.55", "12415"
 
+socket.setSendMode(1)
+
 -- 异步接口演示代码
 local asyncClient
 sys.taskInit(function()
-    local recv_cnt, send_cnt = 0, 0
     while true do
         while not socket.isReady() do sys.wait(1000) end
         asyncClient = socket.tcp()

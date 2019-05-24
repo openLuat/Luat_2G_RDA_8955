@@ -438,15 +438,15 @@ function mqttc:publish(topic, payload, qos, retain)
 end
 
 --- 接收消息
--- @number[opt=0] timeout 可选参数，接收超时时间，单位毫秒
+-- @number timeout 接收超时时间，单位毫秒
 -- @string[opt=nil] msg 可选参数，控制socket所在的线程退出recv阻塞状态
 -- @return result 数据接收结果，true表示成功，false表示失败
 -- @return data 如果result为true，表示服务器发过来的包；如果result为false，表示错误信息，超时失败时为"timeout"
 -- @return param msg控制退出时，返回msg的字符串
 -- @usage
--- true, packet = mqttc:receive()
--- false, error_message = mqttc:receive()
--- false, msg, para = mqttc:receive()
+-- true, packet = mqttc:receive(2000)
+-- false, error_message = mqttc:receive(2000)
+-- false, msg, para = mqttc:receive(2000)
 function mqttc:receive(timeout, msg)
     if not self.connected then
         log.info("mqtt.client:receive", "not connected")
@@ -464,10 +464,8 @@ end
 -- process data
 -- mqttc:disconnect()
 function mqttc:disconnect()
-    if self.connected then
-        self:write(packZeroData(DISCONNECT))
-    end
     if self.io then
+        if self.connected then self:write(packZeroData(DISCONNECT)) end
         self.io:close()
         self.io = nil
     end

@@ -10,6 +10,8 @@ require "utils"
 require "lbsLoc"
 module(..., package.seeall)
 
+-- 浮点支持
+local float = rtos.get_version():upper():find("FLOAT")
 -- GPS任务线程ID
 local GPS_CO
 --串口配置
@@ -46,7 +48,7 @@ local lbs_lat, lbs_lng
 --解析GPS模块返回的信息
 local function parseNmea(s)
     if not s or s == "" then return end
-    log.info("定位模块上报的信息:", s)
+    log.warn("定位模块上报的信息:", s)
     local lat, lng, spd, cog, gpsFind, gpsTime, gpsDate, locSateCnt, hdp, latTyp, lngTyp, altd
     if s:match("GGA") then
         lat, latTyp, lng, lngTyp, gpsFind, locSateCnt, hdp, altd, sep = s:match("GGA,%d+%.%d+,(%d+%.%d+),([NS]),(%d+%.%d+),([EW]),(%d),(%d+),([%d%.]*),(.*),M,(.*),M")
@@ -119,7 +121,8 @@ local function parseNmea(s)
         end
     elseif s:match("VTG") then
         kmHour = s:match("VTG,%d*%.*%d*,%w*,%d*%.*%d*,%w*,%d*%.*%d*,%w*,(%d*%.*%d*)")
-        if fixFlag then sys.publish("GPS_MSG_REPORT", 1) else sys.publish("GPS_MSG_NOREPORT", 0) end
+        -- if fixFlag then sys.publish("GPS_MSG_REPORT", 1) else sys.publish("GPS_MSG_NOREPORT", 0) end
+        sys.publish("GPS_MSG_REPORT", fixFlag and 1 or 0)
     end
 end
 
@@ -156,8 +159,7 @@ local function writeCmd(cmd, isFull)
         tmp = cmd .. (string.format("%02X", tmp)):upper() .. "\r\n"
     end
     uart.write(uartID, tmp)
-    log.info("gpsv2.writecmd", tmp)
---log.info("gpsv2.writecmd",tmp:toHex())
+-- log.info("gpsv2.writecmd", tmp)
 end
 
 -- GPS串口写数据操作
@@ -166,6 +168,7 @@ end
 -- @usage gpsv2.writeData(str)
 local function writeData(str)
     uart.write(uartID, (str:fromHex()))
+-- log.info("gpsv2.writeData", str)
 end
 -- AIR530的校验和算法
 local function hexCheckSum(str)
@@ -215,12 +218,13 @@ end
 -- @param fnc,外部模块使用的电源管理函数
 -- @return 无
 -- @usage gpsv2.open()
--- @usage gpsv2.open(2, 115200, 8, 5)  -- 打开GPS，串口2，波特率115200，超低功耗跟踪模式
+-- @usage gpsv2.open(2, 115200, 0, 1)  -- 打开GPS，串口2，波特率115200，正常功耗模式，1秒1个点
 -- @usage gpsv2.open(2, 115200, 2, 1, 5) -- 打开GPS，串口2，波特率115200，周期低功耗模式1秒输出，5秒睡眠
 function open(id, baudrate, mode, sleepTm, fnc)
     sleepTm = tonumber(sleepTm) and sleepTm * 1000 or 5000
     pm.wake("gpsv2.lua")
     uartID, uartBaudrate = tonumber(id) or uartID, tonumber(baudrate) or uartBaudrate
+    log.info("GPS-UARTR-ID and buad:", id, baudrate, uartID, uartBaudrate)
     uart.setup(uartID, uartBaudrate, 8, uart.PAR_NONE, uart.STOP_1)
     if fnc and type(fnc) == "function" then
         fnc()
@@ -230,6 +234,7 @@ function open(id, baudrate, mode, sleepTm, fnc)
     end
     openFlag = true
     local fullPowerMode = false
+    local wakeFlag = false
     ---------------------------------- 初始化GPS任务--------------------------------------------
     pmd.ldoset(7, pmd.LDO_VIB)
     -- 获取基站定位坐标
@@ -243,17 +248,24 @@ function open(id, baudrate, mode, sleepTm, fnc)
     log.info("----------------------------------- GPS OPEN -----------------------------------")
     GPS_CO = sys.taskInit(function()
         read()
-        setReport(sleepTm > 10000 and 10000 or sleepTm)
+        -- 发送GPD传送结束语句
+        writeData("AAF00B006602FFFF6F0D0A")
+        -- 切换为NMEA接收模式
+        local nmea = "AAF00E00950000" .. (pack.pack("<i", uartBaudrate):toHex())
+        nmea = nmea .. hexCheckSum(nmea) .. "0D0A"
+        writeData(nmea)
+        writeCmd("$PGKC147," .. uartBaudrate .. "*")
+        setReport(1000)
         while openFlag do
             if not fixFlag and not ephFlag and io.exists(GPD_FILE) and os.time() > 1514779200 then
                 local tmp, data, len = "", io.readFile(GPD_FILE):toHex()
-                -- 切换到BINARY模式
-                while read():toHex() ~= "AAF00C0001009500039B0D0A" do writeCmd("$PGKC149,1,115200*") end
                 log.info("模块写星历数据开始!")
+                -- 切换到BINARY模式
+                while read():toHex() ~= "AAF00C0001009500039B0D0A" do writeCmd("$PGKC149,1," .. uartBaudrate .. "*") end
                 -- 写入星历数据
                 local cnt = 0 -- 包序号
                 for i = 1, #data, 1024 do
-                    tmp = data:sub(i, i + 1023)
+                    local tmp = data:sub(i, i + 1023)
                     if tmp:len() < 1024 then tmp = tmp .. ("F"):rep(1024 - tmp:len()) end
                     tmp = "AAF00B026602" .. string.format("%04X", cnt):upper() .. tmp
                     tmp = tmp .. hexCheckSum(tmp) .. "0D0A"
@@ -265,30 +277,47 @@ function open(id, baudrate, mode, sleepTm, fnc)
                     cnt = cnt + 1
                 end
                 -- 发送GPD传送结束语句
-                writeData("aaf00b006602ffff6f0d0a")
+                writeData("AAF00B006602FFFF6F0D0A")
                 -- 切换为NMEA接收模式
-                writeData("aaf00e0095000000c20100580d0a")
-                while not read():find("$G") do writeData("aaf00e0095000000c20100580d0a") end
+                while not read():find("$G") do writeData(nmea) end
                 setFastFix(lbs_lat, lbs_lng)
                 ephFlag = true
                 fullPowerMode = true
                 log.info("模块写星历数据完成!")
+            end
+            if tonumber(mode) == 2 then
+                fixFlag = false
+                -- setRunMode(0, 1000, sleepTm)
+                setReport(1000)
+                while not fixFlag do
+                    parseNmea(read())
+                end
+                parseNmea(read())
+                if fixFlag then end
+                -- while not read():match("PGKC001,105,(3)") do setRunMode(2, 1000, sleepTm) end
+                writeCmd("$PGKC051,1*")
+                sys.wait(sleepTm)
+            -- while fixFlag do parseNmea(read()) end
             else
-                if fixFlag and fullPowerMode then
-                    setRunMode(sleepTm > 5000 and mode or 0, 1000, sleepTm)
-                    fullPowerMode = false
-                    sys.timerStopAll(restart)
-                elseif not fixFlag and not fullPowerMode then
-                    sys.timerStart(restart, 300 * 1000, 2)
-                    while openFlag do
-                        setRunMode(0)
-                        if read():match("PGKC001,105,(3)") then break end
-                    end
-                    setReport(sleepTm > 10000 and 10000 or sleepTm)
-                    fullPowerMode = true
+                if not wakeFlag then
+                    setRunMode(mode, 1000, sleepTm)
+                    setReport(sleepTm)
+                    wakeFlag = true
                 end
                 parseNmea(read())
             end
+        -- if fixFlag and fullPowerMode then
+        --     setRunMode(mode, 1000, sleepTm)
+        --     fullPowerMode = false
+        --     sys.timerStopAll(restart)
+        -- elseif not fixFlag and not fullPowerMode then
+        --     sys.timerStart(restart, 300 * 1000, 2)
+        --     while openFlag do
+        --         setRunMode(0)
+        --         if read():match("PGKC001,105,(3)") then break end
+        --     end
+        --     fullPowerMode = true
+        -- end
         end
         sys.publish("GPS_CLOSE_MSG")
         log.info("GPS 任务结束退出!")
@@ -398,12 +427,16 @@ function getIntLocation()
         local integer, decimal = lng:match("(%d+).(%d+)")
         if tonumber(integer) and tonumber(decimal) then
             decimal = decimal:sub(1, 7)
-            lng = (integer / 100) * 10 ^ 7 + ((integer % 100) * 10 ^ 7 + decimal * 10 ^ (7 - #decimal)) / 60
-            integer, decimal = lat:match("(%d+).(%d+)")
-            decimal = decimal:sub(1, 7)
-            lat = (integer / 100) * 10 ^ 7 + ((integer % 100) * 10 ^ 7 + decimal * 10 ^ (7 - #decimal)) / 60
-            return lng, lat
+            local tmp = (integer % 100) * 10 ^ 7 + decimal * 10 ^ (7 - #decimal)
+            lng = ((integer - integer % 100) / 100) * 10 ^ 7 + (tmp - tmp % 60) / 60
         end
+        integer, decimal = lat:match("(%d+).(%d+)")
+        if tonumber(integer) and tonumber(decimal) then
+            decimal = decimal:sub(1, 7)
+            tmp = (integer % 100) * 10 ^ 7 + decimal * 10 ^ (7 - #decimal)
+            lat = ((integer - integer % 100) / 100) * 10 ^ 7 + (tmp - tmp % 60) / 60
+        end
+        return lng, lat
     end
     return 0, 0
 end
@@ -413,25 +446,29 @@ function getDeglbs()
 end
 
 --- 获取度格式的经纬度信息dd.dddddd
--- @return string,string,返回度格式的字符串经度,维度,符号(正东负西,正北负南)
+-- @return string,string,固件为非浮点时返回度格式的字符串经度,维度,符号(正东负西,正北负南)
+-- @return float,float,固件为浮点的时候，返回浮点类型
 -- @usage gpsv2.getLocation()
 function getDegLocation()
     local lng, lat = getIntLocation()
-    return string.format("%d.%07d", lng / 10 ^ 7, lng % 10 ^ 7), string.format("%d.%07d", lat / 10 ^ 7, lat % 10 ^ 7)
+    lng, lat = string.format("%d.%07d", lng / 10 ^ 7, lng % 10 ^ 7), string.format("%d.%07d", lat / 10 ^ 7, lat % 10 ^ 7)
+    lng = float and tonumber(lng) or lng
+    lat = float and tonumber(lat) or lat
+    return lng, lat
 end
 
 --- 获取度分格式的经纬度信息ddmm.mmmm
 -- @return string,string,返回度格式的字符串经度,维度,符号(正东负西,正北负南)
 -- @usage gpsv2.getCentLocation()
 function getCentLocation()
-    return Ggalng or "", Ggalat or ""
+    return Ggalng or 0, Ggalat or 0
 end
 
 --- 获取海拔
 -- @return number altitude，海拔，单位米
 -- @usage gpsv2.getAltitude()
 function getAltitude()
-    return tonumber(altitude:match("(%d+)") or "0")
+    return tonumber(altitude and altitude:match("(%d+)")) or 0
 end
 
 --- 获取速度
@@ -439,20 +476,20 @@ end
 -- @return number nmSpeed，第二个返回值为海里每小时的速度
 -- @usage gpsv2.getSpeed()
 function getSpeed()
-    local integer = tonumber(speed:match("(%d+)") or "0")
+    local integer = tonumber(speed and speed:match("(%d+)")) or 0
     return (integer * 1852 - (integer * 1852 % 1000)) / 1000, integer
 end
 
 --- 获取时速(KM/H)的整数型和浮点型(字符串)
 function getKmHour()
-    return tonumber(kmHour:match("(%d+)") or "0"), kmHour or "0"
+    return tonumber(kmHour and kmHour:match("(%d+)")) or 0, (float and tonumber(kmHour) or kmHour) or "0"
 end
 
 --- 获取方向角
 -- @return number Azimuth，方位角
 -- @usage gpsv2.getAzimuth()
 function getAzimuth()
-    return tonumber(azimuth:match("(%d+)") or "0")
+    return tonumber(azimuth and azimuth:match("(%d+)")) or 0
 end
 
 --- 获取可见卫星的个数
@@ -466,7 +503,7 @@ end
 -- @return number count，定位使用的卫星个数
 -- @usage gpsv2.getUsedSateCnt()
 function getUsedSateCnt()
-    return tonumber(usedSateCnt or "0")
+    return tonumber(usedSateCnt) or 0
 end
 
 --- 获取RMC语句中的UTC时间
@@ -483,7 +520,7 @@ end
 -- @return number sep，大地高
 -- @usage gpsv2.getSep()
 function getSep()
-    return tonumber(Sep or "0")
+    return tonumber(Sep) or 0
 end
 
 --- 获取GSA语句中的可见卫星号
@@ -493,7 +530,7 @@ end
 -- @return string viewedSateId，可用卫星号，""表示无效
 -- @usage gpsv2.getSateSn()
 function getSateSn()
-    return SateSn or ""
+    return tonumber(SateSn) or 0
 end
 --- 获取BDGSV解析结果
 -- @return table, GSV解析后的数组

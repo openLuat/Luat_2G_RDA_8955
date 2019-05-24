@@ -85,7 +85,7 @@ local function getstrength(sg)
         maxSignalStrength = maxSignalStrengthVar
         maxSignalStrengthVar = 0
     end
-	
+
     local tmpstr,i = sgv_str
     for i=1,4 do
         local d1,d2,id,elevation,azimuth,strength = sfind(tmpstr,"(%d+),([%-]*%d*),(%d*),(%d*)")
@@ -184,13 +184,13 @@ local function parseNmea(s)
             end
         end
     end
-    
+
     if filterSeconds>0 and fixed and not fixFlag and not filteredFlag then
         if not sys.timerIsActive(filterTimerFnc) then
             log.info("gps.filterTimerFnc begin")
             sys.publish("GPS_STATE","LOCATION_FILTER")
             sys.timerStart(filterTimerFnc,filterSeconds*1000)
-        end        
+        end
         return
     end
 
@@ -243,7 +243,7 @@ local function taskRead()
     end
 end
 
--- GPS串口写命令操作
+--- GPS串口写命令操作
 -- @string cmd，GPS指令(cmd格式："$PGKC149,1,115200*"或者"$PGKC149,1,115200*XX\r\n")
 -- @bool isFull，cmd是否为完整的指令格式，包括校验和以及\r\n；true表示完整，false或者nil为不完整
 -- @return nil
@@ -283,7 +283,7 @@ local function _open()
     openFlag = true
     sys.publish("GPS_STATE","OPEN")
     fixFlag,filteredFlag = false
-    Ggalng,Ggalat,Gsv,Sep = "","",""    
+    Ggalng,Ggalat,Gsv,Sep = "","",""
     log.info("gps._open")
 end
 
