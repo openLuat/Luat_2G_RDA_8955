@@ -57,7 +57,7 @@ function request(method, url, timeout, params, data, ctype, basic, headers, cert
             ["Keep-Alive"] = 'timeout=20',
         }
     end
-    ssl = string.find(rtos.get_version(), 'SSL')
+    ssl = string.find(rtos.get_version(), 'SSL') or string.find(rtos.get_version(), '8955F')
     -- 处理url的协议头和鉴权
     _, offset, https = url:find("^(%a+)://")
     _, idx, auth = url:find("(.-:.-)@", (offset or 0) + 1)

@@ -13,6 +13,7 @@ require "utils"
 module(..., package.seeall)
 
 local req = ril.request
+local stopCbFnc
 
 --音频播放的协程ID
 local taskID
@@ -25,7 +26,7 @@ local taskID
 --sDup：当前播放的音频是否需要重复播放
 --sDupInterval：如果sDup为true，此值表示重复播放的间隔(单位毫秒)，默认无间隔
 --sStrategy：优先级相同时的播放策略，0(表示继续播放正在播放的音频，忽略请求播放的新音频)，1(表示停止正在播放的音频，播放请求播放的新音频)
-local sPriority,sType,sPath,sVol,sCb,sDup,sDupInterval,sStrategy
+local sPriority,sType,sPath,sVol,sCb,sDup,sDupInterval,sStrategy,sStopingType
 
 local function update(priority,type,path,vol,cb,dup,dupInterval)
     print("audio.update",sPriority,priority,type,path,vol,cb,dup,dupInterval)
@@ -35,6 +36,7 @@ local function update(priority,type,path,vol,cb,dup,dupInterval)
             --此处第三个参数传入table是因为publish接口无法处理nil后面的参数
             sys.publish("AUDIO_PLAY_END","NEW",{pri=priority,typ=type,pth=path,vl=vol,c=cb,dp=dup,dpIntval=dupInterval})
         else
+            log.error("audio.update","priority error")
             return false
         end
     else
@@ -47,7 +49,7 @@ end
 local function playEnd(result)
     log.info("audio.playEnd",result,sCb)
     local cb = sCb
-    sPriority,sType,sPath,sVol,sCb,sDup,sDupInterval = nil
+    sPriority,sType,sPath,sVol,sCb,sDup,sDupInterval,sStopingType = nil
     if cb then cb(result) end
 end
 
@@ -63,9 +65,16 @@ local function taskAudio()
                 if isTtsApi() then
                     audiocore.openTTS()
                     local _,result = sys.waitUntil("TTS_OPEN_IND")
-                    if not result then return false end
-                    
-                    audiocore.playTTS(common.utf8ToUcs2(text))
+                    if result then
+                        audiocore.playTTS(common.utf8ToUcs2(text))
+                    else
+                        audiocore.stopTTS()
+                        sys.waitUntil("TTS_STOP_IND") 
+                        audiocore.closeTTS()
+                        sys.waitUntil("TTS_CLOSE_IND")
+                        _,result = sys.waitUntil("TTS_OPEN_IND")
+                        if not result then return false end
+                    end                                      
                 else
                     req("AT+QTTS=1") req(string.format("AT+QTTS=%d,\"%s\"",2,string.toHex(common.utf8ToUcs2(text))))
                 end
@@ -117,7 +126,7 @@ local function taskAudio()
                     if sType==nil then break end
                 end
             else
-                stopFnc[sType](sPath)
+                stopFnc[sType or sStopingType](sPath)
                 playEnd(0)
                 if sType==nil then break end
             end
@@ -232,7 +241,10 @@ end
 -- @usage audio.play(0,"FILE","/ldata/call.mp3",7,cbFnc)
 -- @usage 更多用法参考demo/audio/testAudio.lua
 function play(priority,type,path,vol,cbFnc,dup,dupInterval)
-    if not update(priority,type,path,vol or 4,cbFnc,dup,dupInterval or 0) then return false end
+    if not update(priority,type,path,vol or 4,cbFnc,dup,dupInterval or 0) then
+        log.error("audio.play","sync error")
+        return false
+    end
     if not sType or not taskID or coroutine.status(taskID)=="dead" then
         taskID = sys.taskInit(taskAudio)
     end
@@ -240,20 +252,49 @@ function play(priority,type,path,vol,cbFnc,dup,dupInterval)
 end
 
 --- 停止音频播放
+-- @function[opt=nil] cbFnc，停止音频播放的回调函数(停止结果通过此函数通知用户)，回调函数的调用形式为：
+--      cbFnc(result)
+--      result：number类型
+--              0表示停止成功
+--              1表示之前已经发送了停止动作，请耐心等待停止结果的回调
 -- @return nil
 -- @usage audio.stop()
-function stop()
+function stop(cbFnc)
+    log.info("audio.stop",sType,cbFnc)
+    if stopCbFnc and cbFnc then cbFnc(1) return end
     if sType then
         if sType=="FILE" then
             audiocore.stop()
         elseif (sType=="TTS" and not isTtsApi()) or sType=="TTSCC" then
             req("AT+QTTS=3")
+        elseif sType=="TTS" and isTtsApi() then
+            sStopingType = "TTS"
         elseif sType=="RECORD" then
             f,d=record.getSize() req("AT+AUDREC=1,0,3," .. sPath .. "," .. d*1000)
+            --audiocore.stop()
+            if cbFnc then
+                stopCbFnc = cbFnc
+                function recordPlayInd()
+                    --sPriority,sType,sPath,sVol,sCb,sDup,sDupInterval = nil
+                    sys.publish("AUDIO_PLAY_END","STOP","RECORD")
+                    if stopCbFnc then stopCbFnc(0) stopCbFnc=nil end
+                    sys.unsubscribe("LIB_RECORD_PLAY_END_IND",recordPlayInd)
+                end
+                sys.subscribe("LIB_RECORD_PLAY_END_IND",recordPlayInd)
+            else
+                local typ = sType
+                sPriority,sType,sPath,sVol,sCb,sDup,sDupInterval = nil
+                sys.publish("AUDIO_PLAY_END","STOP",typ)
+            end
         end
-        local typ = sType
-        sPriority,sType,sPath,sVol,sCb,sDup,sDupInterval = nil
-        sys.publish("AUDIO_PLAY_END","STOP",typ)
+        if sType~="RECORD" then
+            local typ = sType
+            sPriority,sType,sPath,sVol,sCb,sDup,sDupInterval = nil
+            sys.publish("AUDIO_PLAY_END","STOP",typ)
+            if cbFnc then cbFnc(0) end
+        end
+    else
+        if cbFnc then cbFnc(0) end 
     end
 end
 

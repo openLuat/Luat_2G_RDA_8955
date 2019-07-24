@@ -15,6 +15,7 @@ local stoping
 local duration
 local recordCallback
 --local flag_s=false
+local stopCbFnc
 
 --- 开始录音
 -- @param seconds 录音时长，单位：秒
@@ -36,9 +37,22 @@ function start(seconds, cb)
 end
 
 --- 停止录音
--- @usage record.stop()
-function stop()
-    if not recording or stoping then return end
+-- @function[opt=nil] cbFnc，停止录音的回调函数(停止结果通过此函数通知用户)，回调函数的调用形式为：
+--      cbFnc(result)
+--      result：number类型
+--              0表示停止成功
+--              1表示之前已经发送了停止动作，请耐心等待停止结果的回调
+-- @usage record.stop(cb)
+function stop(cbFnc)
+    if not recording then
+        if cbFnc then cbFnc(0) end
+        return
+    end
+    if stoping then
+        if cbFnc then cbFnc(1) end
+        return
+    end
+    stopCbFnc = cbFnc
     ril.request("AT+AUDREC=0,0,0," .. ID .. "," .. duration)
     stoping = true
 end
@@ -108,17 +122,15 @@ ril.regUrc("+AUDREC", function(data)
             if recordCallback then recordCallback(result, size) recordCallback = nil end
             recording = false
             stoping = false
+            if stopCbFnc then stopCbFnc(0) stopCbFnc=nil end
         --录音播放相关
         elseif action=="2" then
+            sys.publish("LIB_RECORD_PLAY_END_IND")
             if size > 0 then
-                --if not flag_s then            
-                    sys.publish("AUDIO_PLAY_END","SUCCESS")
-                --else
-                    --flag_s=false
-                --end
-			else
-			    sys.publish("AUDIO_PLAY_END","ERROR")
-            end
+                sys.publish("AUDIO_PLAY_END","SUCCESS")
+            else
+                sys.publish("AUDIO_PLAY_END","ERROR")
+            end            
         end
     end
 end)
@@ -133,7 +145,10 @@ ril.regRsp("+AUDREC", function(cmd, success)
             recording = false
         end
     elseif action == '0' then
-        if stoping and not success then stoping = false end -- 失败直接结束，成功则等到+AUDREC上报才判定停止录音成功
+        if stoping and not success then  -- 失败直接结束，成功则等到+AUDREC上报才判定停止录音成功
+            if stopCbFnc then stopCbFnc(0) stopCbFnc=nil end
+            stoping = false
+        end 
     --停止播放录音
     elseif action=="3" then
         --flag_s=true

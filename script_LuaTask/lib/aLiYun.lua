@@ -15,6 +15,7 @@ module(..., package.seeall)
 local sProductKey,sProductSecret,sGetDeviceNameFnc,sGetDeviceSecretFnc,sSetDeviceSecretFnc
 local sKeepAlive,sCleanSession,sWill
 local isSleep--休眠，不去重连服务器
+local sErrHandleCo,sErrHandleCb,sErrHandleTmout
 
 local outQueue =
 {
@@ -43,9 +44,9 @@ local function procSubscribe(client)
 end
 
 local function procReceive(client)
-    local r,data
+    local r,data,s
     while true do
-        r,data = client:receive(2000)
+        r,data,s = client:receive(60000,"aliyun_publish_ind")
         --接收到数据
         if r and data~="timeout" then
             log.info("aLiYun.procReceive",data.topic,string.toHex(data.payload))
@@ -61,6 +62,12 @@ local function procReceive(client)
 
             --如果有等待发送的数据，则立即退出本循环
             if #outQueue["PUBLISH"]>0 then return true,"procReceive" end
+        elseif data == "aliyun_publish_ind" and s:find("disconnect") then--主动断开
+            client:disconnect()
+            return false,"procReceive"
+        elseif data == "aliyun_publish_ind" and s:find("send") then--来数据要发了
+            log.info("aliyun aliyun_publish_ind")
+            return true,"procReceive"
         else
             break
         end
@@ -79,18 +86,30 @@ local function procSend(client)
     return true,"procSend"
 end
 
---不去进行重连操作
+--- 断开阿里云物联网套件的连接，并且不再重连
+-- @return nil
+-- @usage
+-- aLiYun.sleep()
 function sleep()
     isSleep = true
     log.info("aLiYun.sleep","open sleep, stop try reconnect")
+    sys.publish("aliyun_publish_ind","disconnect")
 end
 
+--- 重新打开阿里云物联网套件的连接
+-- @return nil
+-- @usage
+-- aLiYun.wakeup()
 function wakeup()
     isSleep = false
     sys.publish("ALITUN_WAKEUP")
     log.info("aLiYun.wakeup","exit sleep")
 end
 
+--- 查看打开阿里云物联网套件的是否允许连接状态
+-- @return bool 是否允许连接阿里云
+-- @usage
+-- local ar = aLiYun.sleepStatus()
 function sleepStatus()
     return isSleep
 end
@@ -126,6 +145,7 @@ function clientDataTask(host,tPorts,clientId,user,password)
                             if not result then log.warn("aLiYun.clientDataTask."..prompt.." error") break end
                         end
                         if not result then break end
+                        if sErrHandleCo then coroutine.resume(sErrHandleCo,"feed") end
                     end
                 else
                     log.warn("aLiYun.clientDataTask."..prompt.." error")
@@ -291,6 +311,8 @@ end
 -- aLiYun.publish("/b0FMK1Ga5cp/862991234567890/update","test",1,cbFnc,"cbFncPara")
 function publish(topic,payload,qos,cbFnc,cbPara)
     insert("PUBLISH",topic,qos,payload,cbFnc,cbPara)
+    sys.publish("aliyun_publish_ind","send")
+    log.info("aliyun aliyun_publish_ind","publish")
 end
 
 --- 注册事件的处理函数
@@ -307,4 +329,18 @@ end
 -- aLiYun.on("b0FMK1Ga5cp",nil,getDeviceNameFnc,getDeviceSecretFnc)
 function on(evt,cbFnc)
 	evtCb[evt] = cbFnc
+end
+
+function setErrHandle(cbFnc,tmout)
+    sErrHandleCb = cbFnc
+    sErrHandleTmout = tmout or 150
+    if not sErrHandleCo then
+        sErrHandleCo = sys.taskInit(function()
+            while true do
+                if sys.wait(sErrHandleTmout*1000) == nil then
+                    sErrHandleCb()
+                end
+            end
+        end)
+    end
 end

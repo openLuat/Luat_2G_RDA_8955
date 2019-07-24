@@ -32,12 +32,7 @@ console.setup(1, 115200)
 require "httpv2"
 require "pins"
 require "gpsv2"
-pins.setup(pio.P0_28, 1)
-local pwb = pins.setup(pio.P0_3, nil, pio.PULLDOWN)
-sys.timerStart(function()
-    pwb(0)
-    rtos.poweroff()
-end, 10000)
+-- require "tm1637"
 --加载硬件看门狗功能模块
 --根据自己的硬件配置决定：1、是否加载此功能模块；2、配置Luat模块复位单片机引脚和互相喂狗引脚
 --合宙官方出售的Air201开发板上有硬件看门狗，所以使用官方Air201开发板时，必须加载此功能模块

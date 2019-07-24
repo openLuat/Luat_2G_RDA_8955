@@ -176,7 +176,7 @@ function setNetworkLog(flag)
             updateNetworkLog()
         end
     end)
-    procer("NET_STATE_REGISTER",function() onceGsmRegistered=true end)
+    procer("NET_STATE_REGISTERED",function() onceGsmRegistered=true end)
     procer("GPRS_ATTACH",function(value)
         if value then
             onceGprsAttached = true

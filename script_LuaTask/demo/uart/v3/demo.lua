@@ -13,12 +13,12 @@ module(..., package.seeall)
 -- 串口ID,串口读缓冲区
 local UART_ID, sendQueue = 1, {}
 -- 串口超时，串口准备好后发布的消息
-local uartimeout, recvReady = 25, "UART_RECV_ID"
+local uartimeout, recvReady = 500, "UART_RECV_ID"
 --保持系统处于唤醒状态，不会休眠
 pm.wake("mcuart")
 uart.setup(UART_ID, 115200, 8, uart.PAR_NONE, uart.STOP_1)
-uart.on(1, "receive", function(uid)
-    table.insert(sendQueue, uart.read(uid, 1460))
+uart.on(1, "receive", function(uid, length)
+    table.insert(sendQueue, uart.read(uid, length))
     sys.timerStart(sys.publish, uartimeout, recvReady)
 end)
 

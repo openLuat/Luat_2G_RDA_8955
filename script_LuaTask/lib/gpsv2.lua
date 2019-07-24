@@ -44,23 +44,21 @@ local gpgsvTab, bdgsvTab = {}, {}
 local gsvCnoTab = {}
 -- 基站定位坐标
 local lbs_lat, lbs_lng
-
+-- 日志开关
+local isLog = true
 --解析GPS模块返回的信息
 local function parseNmea(s)
     if not s or s == "" then return end
-    log.warn("定位模块上报的信息:", s)
+    if isLog then log.warn("定位模块上报的信息:", s) end
     local lat, lng, spd, cog, gpsFind, gpsTime, gpsDate, locSateCnt, hdp, latTyp, lngTyp, altd
     if s:match("GGA") then
         lat, latTyp, lng, lngTyp, gpsFind, locSateCnt, hdp, altd, sep = s:match("GGA,%d+%.%d+,(%d+%.%d+),([NS]),(%d+%.%d+),([EW]),(%d),(%d+),([%d%.]*),(.*),M,(.*),M")
         if (gpsFind == "1" or gpsFind == "2" or gpsFind == "4") and altd then
-            -- fixFlag = true
             altitude = altd
             usedSateCnt = locSateCnt
-            Ggalng, Ggalat = (lngTyp == "W" and "-" or "") .. lng, (latTyp == "S" and "-" or "") .. lat
             Sep = sep
-        else
-            -- fixFlag = false
-            end
+        end
+        Ggalng, Ggalat = (lngTyp == "W" and "-" or "") .. lng, (latTyp == "S" and "-" or "") .. lat
         latitudeType, longitudeType, latitude, longitude = latTyp, lngTyp, lat, lng
     elseif s:match("GSA") then
         local satesn = s:match("GSA,%w*,%d*,(%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,%d*,)") or ""
@@ -117,7 +115,9 @@ local function parseNmea(s)
         latitudeType, longitudeType, latitude, longitude = latTyp, lngTyp, lat, lng
         if gpsFind == "A" and gpsTime and gpsDate and gpsTime ~= "" and gpsDate ~= "" then
             local yy, mm, dd, h, m, s = tonumber(gpsDate:sub(5, 6)), tonumber(gpsDate:sub(3, 4)), tonumber(gpsDate:sub(1, 2)), tonumber(gpsTime:sub(1, 2)), tonumber(gpsTime:sub(3, 4)), tonumber(gpsTime:sub(5, 6))
-            UtcTime = {year = 2000 + yy, month = mm, day = dd, hour = h, min = m, sec = s}
+            UtcTime = os.date("*t", os.time({year = 2000 + yy, month = mm, day = dd, hour = h, min = m, sec = s}) + 28800)
+            misc.setClock(UtcTime)
+            sys.publish("GPS_TIMING_SUCCEED")
         end
     elseif s:match("VTG") then
         kmHour = s:match("VTG,%d*%.*%d*,%w*,%d*%.*%d*,%w*,%d*%.*%d*,%w*,(%d*%.*%d*)")
@@ -213,22 +213,23 @@ end
 --- 打开GPS模块
 -- @number id，UART ID，支持1和2，1表示UART1，2表示UART2
 -- @number baudrate，波特率，支持1200,2400,4800,9600,10400,14400,19200,28800,38400,57600,76800,115200,230400,460800,576000,921600,1152000,4000000
--- @nunber mode,功耗模式0正常功耗，2周期唤醒，8跟踪模式
+-- @nunber mode,功耗模式0正常功耗，2周期唤醒
 -- @number sleepTm,间隔唤醒的时间 秒
 -- @param fnc,外部模块使用的电源管理函数
 -- @return 无
 -- @usage gpsv2.open()
 -- @usage gpsv2.open(2, 115200, 0, 1)  -- 打开GPS，串口2，波特率115200，正常功耗模式，1秒1个点
--- @usage gpsv2.open(2, 115200, 2, 1, 5) -- 打开GPS，串口2，波特率115200，周期低功耗模式1秒输出，5秒睡眠
+-- @usage gpsv2.open(2, 115200, 2, 5) -- 打开GPS，串口2，波特率115200，周期低功耗模式1秒输出，5秒睡眠
 function open(id, baudrate, mode, sleepTm, fnc)
-    sleepTm = tonumber(sleepTm) and sleepTm * 1000 or 5000
-    pm.wake("gpsv2.lua")
     uartID, uartBaudrate = tonumber(id) or uartID, tonumber(baudrate) or uartBaudrate
-    log.info("GPS-UARTR-ID and buad:", id, baudrate, uartID, uartBaudrate)
+    mode, sleepTm = tonumber(mode) or 0, tonumber(sleepTm) and sleepTm * 1000 or 1000
+    pm.wake("gpsv2.lua")
+    uart.close(uartID)
     uart.setup(uartID, uartBaudrate, 8, uart.PAR_NONE, uart.STOP_1)
     if fnc and type(fnc) == "function" then
         fnc()
     else
+        pmd.ldoset(7, pmd.LDO_VIB)
         pmd.ldoset(7, pmd.LDO_VCAM)
         rtos.sys32k_clk_out(1)
     end
@@ -236,7 +237,6 @@ function open(id, baudrate, mode, sleepTm, fnc)
     local fullPowerMode = false
     local wakeFlag = false
     ---------------------------------- 初始化GPS任务--------------------------------------------
-    pmd.ldoset(7, pmd.LDO_VIB)
     -- 获取基站定位坐标
     lbsLoc.request(getlbs, nil, timeout)
     --连接服务器下载星历
@@ -306,18 +306,6 @@ function open(id, baudrate, mode, sleepTm, fnc)
                 end
                 parseNmea(read())
             end
-        -- if fixFlag and fullPowerMode then
-        --     setRunMode(mode, 1000, sleepTm)
-        --     fullPowerMode = false
-        --     sys.timerStopAll(restart)
-        -- elseif not fixFlag and not fullPowerMode then
-        --     sys.timerStart(restart, 300 * 1000, 2)
-        --     while openFlag do
-        --         setRunMode(0)
-        --         if read():match("PGKC001,105,(3)") then break end
-        --     end
-        --     fullPowerMode = true
-        -- end
         end
         sys.publish("GPS_CLOSE_MSG")
         log.info("GPS 任务结束退出!")
@@ -335,6 +323,7 @@ function close(id, fnc)
     if fnc and type(fnc) == "function" then
         fnc()
     else
+        pmd.ldoset(0, pmd.LDO_VIB)
         pmd.ldoset(0, pmd.LDO_VCAM)
         rtos.sys32k_clk_out(0)
     end
@@ -451,16 +440,15 @@ end
 -- @usage gpsv2.getLocation()
 function getDegLocation()
     local lng, lat = getIntLocation()
-    lng, lat = string.format("%d.%07d", lng / 10 ^ 7, lng % 10 ^ 7), string.format("%d.%07d", lat / 10 ^ 7, lat % 10 ^ 7)
-    lng = float and tonumber(lng) or lng
-    lat = float and tonumber(lat) or lat
-    return lng, lat
+    if float then return lng / 10 ^ 7, lat / 10 ^ 7 end
+    return string.format("%d.%07d", lng / 10 ^ 7, lng % 10 ^ 7), string.format("%d.%07d", lat / 10 ^ 7, lat % 10 ^ 7)
 end
 
 --- 获取度分格式的经纬度信息ddmm.mmmm
 -- @return string,string,返回度格式的字符串经度,维度,符号(正东负西,正北负南)
 -- @usage gpsv2.getCentLocation()
 function getCentLocation()
+    if float then return tonumber(Ggalng or 0), tonumber(Ggalat or 0) end
     return Ggalng or 0, Ggalat or 0
 end
 
@@ -547,4 +535,9 @@ end
 --- 获取GPSGSV解析后的CNO数据
 function getCno()
     return gsvCnoTab
+end
+
+--- 是否显示日志
+function openLog(v)
+    isLog = v == nil and true or v
 end

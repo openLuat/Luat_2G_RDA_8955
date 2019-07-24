@@ -37,6 +37,10 @@ local function otaCb(result,filePath,md5,size)
         local calMD5 = crypto.md5(filePath,"file")
         result = (string.upper(calMD5) == string.upper(md5))
         log.info("aLiYunOta.otaCb cmp md5",result,calMD5,md5)		
+    end 
+    if not result then
+        verRpt()
+        os.remove(filePath)
     end
     if gCb then
         gCb(result,filePath)

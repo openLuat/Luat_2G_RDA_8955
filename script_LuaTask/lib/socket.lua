@@ -42,7 +42,8 @@ end
 
 local function stopConnectTimer(tSocket, id)
     if id and tSocket[id] and tSocket[id].co and coroutine.status(tSocket[id].co) == "suspended"
-        and (tSocket[id].wait == "+SSLCONNECT" or (tSocket[id].protocol == "UDP" and tSocket[id].wait == "+CIPSTART")) then
+        and (tSocket[id].wait == "+SSLCONNECT" or tSocket[id].wait == "+CIPSTART") then
+        -- and (tSocket[id].wait == "+SSLCONNECT" or (tSocket[id].protocol == "UDP" and tSocket[id].wait == "+CIPSTART")) then
         sys.timerStop(coroutine.resume, tSocket[id].co, false, "TIMEOUT")
     end
 end
@@ -84,7 +85,6 @@ local function onSocketURC(data, prefix)
         log.error('socket: urc on nil socket', data, id, tSocket[id], socketsSsl[id])
         return
     end
-    
     if result == "CONNECT OK" or result:match("CONNECT ERROR") or result:match("CONNECT FAIL") then
         if tSocket[id].wait == "+CIPSTART" or tSocket[id].wait == "+SSLCONNECT" then
             stopConnectTimer(tSocket, id)
@@ -205,8 +205,9 @@ end
 -- @string address 服务器地址，支持ip和域名
 -- @param port string或者number类型，服务器端口
 -- @return bool result true - 成功，false - 失败
--- @usage  c = socket.tcp(); c:connect();
-function mt:connect(address, port)
+-- @number timeout, 链接服务器最长超时时间
+-- @usage  c = socket.tcp(); c:connect("www.baidu.com",80,5);
+function mt:connect(address, port, timeout)
     assert(self.co == coroutine.running(), "socket:connect: coroutine mismatch")
     
     if not link.isReady() then
@@ -237,7 +238,7 @@ function mt:connect(address, port)
             end
         end
         
-        sslInit()        
+        sslInit()
         req(string.format("AT+SSLCREATE=%d,\"%s\",%d", self.id, address .. ":" .. port, (self.cert and self.cert.caCert) and 0 or 1))
         self.created = true
         for i = 1, #tConfigCert do
@@ -247,7 +248,8 @@ function mt:connect(address, port)
     else
         req(string.format("AT+CIPSTART=%d,\"%s\",\"%s\",%s", self.id, self.protocol, address, port))
     end
-    if self.ssl or self.protocol == "UDP" then sys.timerStart(coroutine.resume, 120000, self.co, false, "TIMEOUT") end
+    -- if self.ssl or self.protocol == "UDP" then sys.timerStart(coroutine.resume, 120000, self.co, false, "TIMEOUT") end
+    sys.timerStart(coroutine.resume, (timeout or 120) * 1000, self.co, false, "TIMEOUT")
     
     ril.regUrc((self.ssl and "SSL&" or "") .. self.id, onSocketURC)
     self.wait = self.ssl and "+SSLCONNECT" or "+CIPSTART"
@@ -284,7 +286,7 @@ function mt:connect(address, port)
     
     if r == false then
         if self.ssl then self:sslDestroy() end
-        sys.publish("LIB_SOCKET_CONNECT_FAIL_IND",self.ssl,self.protocol,address,port)
+        sys.publish("LIB_SOCKET_CONNECT_FAIL_IND", self.ssl, self.protocol, address, port)
         return false
     end
     self.connected = true
@@ -315,7 +317,7 @@ function mt:asyncSelect(keepAlive, pingreq)
             self.wait = self.ssl and "+SSLSEND" or "+CIPSEND"
             if not coroutine.yield() then
                 if self.ssl then self:sslDestroy() end
-                sys.publish("LIB_SOCKET_SEND_FAIL_IND",self.ssl,self.protocol,self.address,self.port)
+                sys.publish("LIB_SOCKET_SEND_FAIL_IND", self.ssl, self.protocol, self.address, self.port)
                 return false
             end
         end
@@ -383,7 +385,7 @@ function mt:send(data)
         self.wait = self.ssl and "+SSLSEND" or "+CIPSEND"
         if not coroutine.yield() then
             if self.ssl then self:sslDestroy() end
-            sys.publish("LIB_SOCKET_SEND_FAIL_IND",self.ssl,self.protocol,self.address,self.port)
+            sys.publish("LIB_SOCKET_SEND_FAIL_IND", self.ssl, self.protocol, self.address, self.port)
             return false
         end
     end
@@ -514,19 +516,19 @@ local function onResponse(cmd, success, response, intermediate)
             return
         end
         
-        if prefix=='+CIPSEND' then
-            if response:match("%d, *([%u%d :]+)")~='SEND OK' then
+        if prefix == '+CIPSEND' then
+            if response:match("%d, *([%u%d :]+)") ~= 'SEND OK' then
                 local acceptLen = response:match("DATA ACCEPT:%d,(%d+)")
                 if acceptLen then
-                    if acceptLen~=cmd:match("AT%+%u+=%d,(%d+)") then
+                    if acceptLen ~= cmd:match("AT%+%u+=%d,(%d+)") then
                         success = false
                     end
                 else
                     success = false
                 end
             end
-        elseif prefix=="+SSLSEND" then
-            if response:match("%d, *([%u%d :]+)")~='SEND OK' then
+        elseif prefix == "+SSLSEND" then
+            if response:match("%d, *([%u%d :]+)") ~= 'SEND OK' then
                 success = false
             end
         end
