@@ -219,7 +219,7 @@ local function urc(data)
     if data == "RDY" then
         radioready = true
     else
-        local prefix = string.match(data, "(%+*[%u%d& ]+)")
+        local prefix = string.match(data, "([%+%*]*[%u%d& ]+)")
         --执行prefix的urc处理函数，返回数据过滤器
         urcfilter = urctable[prefix](data, prefix)
     end

@@ -331,6 +331,12 @@ function on(evt,cbFnc)
 	evtCb[evt] = cbFnc
 end
 
+--- 设置阿里云task连续一段时间工作异常的处理程序
+-- @function cbFnc，异常处理函数，cbFnc的调用形式为：cbFnc()
+-- @number[opt=150] tmout，连续工作异常的时间，当连续异常到达这个时间之后，会调用cbFnc()
+-- @return nil
+-- @usage
+-- aLiYun.setErrHandle(function() sys.restart("ALIYUN_TASK_INACTIVE") end, 300)
 function setErrHandle(cbFnc,tmout)
     sErrHandleCb = cbFnc
     sErrHandleTmout = tmout or 150

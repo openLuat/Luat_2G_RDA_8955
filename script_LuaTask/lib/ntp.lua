@@ -60,17 +60,18 @@ end
 --- 同步时间，每个NTP服务器尝试3次，超时8秒,适用于被任务函数调用
 -- @param ts,每隔ts小时同步1次
 -- @param fnc,同步成功后回调函数
+-- @param fun,同步成功前回调函数
 -- @return 无
 -- @usage ntp.ntpTime() -- 只同步1次
 -- @usage ntp.ntpTime(1) -- 1小时同步1次
 -- @usage ntp.ntpTime(nil,fnc) -- 只同步1次，同步成功后执行fnc()
 -- @usage ntp.ntpTime(24,fnc) -- 24小时同步1次，同步成功后执行fnc()
-function ntpTime(ts, fnc)
+function ntpTime(ts, fnc, fun)
     local rc, data, ntim
     ntpEnd = false
     while true do
         local tUnusedSvr = {}
-        for i=1,#timeServer do
+        for i = 1, #timeServer do
             tUnusedSvr[i] = timeServer[i]
         end
         for i = 1, #timeServer do
@@ -82,7 +83,8 @@ function ntpTime(ts, fnc)
                     rc, data = c:recv(NTP_TIMEOUT)
                     if rc and #data == 48 then
                         ntim = os.date("*t", (sbyte(ssub(data, 41, 41)) - 0x83) * 2 ^ 24 + (sbyte(ssub(data, 42, 42)) - 0xAA) * 2 ^ 16 + (sbyte(ssub(data, 43, 43)) - 0x7E) * 2 ^ 8 + (sbyte(ssub(data, 44, 44)) - 0x80) + 1)
-                        misc.setClock(ntim,fnc)
+                        if type(fun) == "function" then fun() end
+                        misc.setClock(ntim, fnc)
                         ntpEnd = true
                         c:close()
                         break
@@ -90,11 +92,11 @@ function ntpTime(ts, fnc)
                 end
             end
             
-            local cnt,n,m = #tUnusedSvr,1
-            for m=1,cnt do
-                if m~=idx then 
+            local cnt, n, m = #tUnusedSvr, 1
+            for m = 1, cnt do
+                if m ~= idx then
                     tUnusedSvr[n] = tUnusedSvr[m]
-                    n = n+1
+                    n = n + 1
                 end
             end
             tUnusedSvr[cnt] = nil
@@ -122,11 +124,11 @@ end
 -- @return 无
 -- @param ts,每隔ts小时同步1次
 -- @param fnc,同步成功后回调函数
+-- @param fun,同步成功前回调函数
 -- @usage ntp.timeSync() -- 只同步1次
 -- @usage ntp.timeSync(1) -- 1小时同步1次
 -- @usage ntp.timeSync(nil,fnc) -- 只同步1次，同步成功后执行fnc()
 -- @usage ntp.timeSync(24,fnc) -- 24小时同步1次，同步成功后执行fnc()
-function timeSync(ts, fnc)
-    sys.taskInit(ntpTime, ts, fnc)
+function timeSync(ts, fnc, fun)
+    sys.taskInit(ntpTime, ts, fnc, fun)
 end
-

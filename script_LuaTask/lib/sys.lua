@@ -10,7 +10,7 @@ require "patch"
 module(..., package.seeall)
 
 -- lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "2.3.3"
+SCRIPT_LIB_VER = "2.3.4"
 
 -- TaskID最大值
 local TASK_TIMER_ID_MAX = 0x1FFFFFFF
@@ -381,13 +381,25 @@ function run()
 end
 
 --- 设置“lua脚本运行出错时，是否回退原始烧写版本”的功能开关。如果没有调用此接口设置，默认回滚
--- @bool flag，“lua脚本运行出错时，是否回退原始烧写版本”的标志，true表示回滚，false表示不回滚
+-- 设置不允许回滚功能时，要同时设置一个开机时间阀值，超过这个时间，才不允许回滚
+-- @bool flag，“lua脚本运行出错时，是否回退原始烧写版本”的标志，true表示允许回滚，false表示不允许回滚
+-- @number[opt=300] secs，当配置不允许回滚时，此参数才有意义【注意：Luat_V0036_XXXX以及以后的core版本才支持此功能，此参数限制的是脚本程序无法捕获的core中lua虚拟机异常】；
+--      表示一个开机时间阀值，超过这个时间，才不允许回滚；取值范围如下：
+--      1到72*3600：单位为秒；表示“开机后，在此时间范围内发生异常，允许回滚”；例如300秒，表示开机运行5分钟内的错误允许回滚，5分钟后的错误不允许回滚
 -- @return nil
 -- @usage
 -- sys.setRollBack(true)
 -- sys.setRollBack(false)
-function setRollBack(flag)
+function setRollBack(flag,secs)
     sRollBack = flag
+    secs = secs or 300
+    if type(rtos.set_script_rollback)=="function" then
+        rtos.set_script_rollback(1)
+        if not flag then
+            assert(secs>=1 and secs<=72*3600)
+            timerStart(rtos.set_script_rollback,secs*1000,0)
+        end
+    end
 end
 
 require "clib"

@@ -40,14 +40,10 @@ local function serialize(pout,o)
         --table类型，加换行，大括号，中括号，双引号写入
         pout:write("{\n")
         for k,v in pairs(o) do
-            if type(k) == "number" then
-                pout:write(" [" .. k .. "] = ")
-            elseif type(k) == "string" then
-                pout:write(" [\"" .. k .."\"] = ")
-            else
-                error("cannot serialize table key " .. type(o))
-            end
-            serialize(pout,v)
+            pout:write(" [")
+            serialize(pout, k)
+            pout:write("] = ")
+            serialize(pout, v)
             pout:write(",\n")
         end
         pout:write("}\n")

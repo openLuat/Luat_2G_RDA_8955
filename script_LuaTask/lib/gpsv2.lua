@@ -116,8 +116,8 @@ local function parseNmea(s)
         if gpsFind == "A" and gpsTime and gpsDate and gpsTime ~= "" and gpsDate ~= "" then
             local yy, mm, dd, h, m, s = tonumber(gpsDate:sub(5, 6)), tonumber(gpsDate:sub(3, 4)), tonumber(gpsDate:sub(1, 2)), tonumber(gpsTime:sub(1, 2)), tonumber(gpsTime:sub(3, 4)), tonumber(gpsTime:sub(5, 6))
             UtcTime = os.date("*t", os.time({year = 2000 + yy, month = mm, day = dd, hour = h, min = m, sec = s}) + 28800)
-            misc.setClock(UtcTime)
-            sys.publish("GPS_TIMING_SUCCEED")
+            -- misc.setClock(UtcTime)
+            sys.publish("GPS_TIMING_SUCCEED", UtcTime)
         end
     elseif s:match("VTG") then
         kmHour = s:match("VTG,%d*%.*%d*,%w*,%d*%.*%d*,%w*,%d*%.*%d*,%w*,(%d*%.*%d*)")

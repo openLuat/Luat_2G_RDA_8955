@@ -16,7 +16,8 @@ module(..., package.seeall)
 local UPD_FILE_PATH = "/luazip/update.bin"
 
 
-local sUpdating,sCbFnc,sUrl,sPeriod,SRedir,sLocation
+local sTaskId,sCbFnc,sUrl,sPeriod,SRedir,sLocation
+local sPeriodWait
 local sDownloading
 
 local function httpDownloadCbFnc(result,statusCode,head)
@@ -25,7 +26,6 @@ local function httpDownloadCbFnc(result,statusCode,head)
 end
 
 function clientTask()
-    sUpdating = true
     --不要省略此处代码，否则下文中的misc.getImei有可能获取不到
     while not socket.isReady() do sys.waitUntil("IP_READY_IND") end
     while true do
@@ -40,6 +40,7 @@ function clientTask()
                             .."&firmware_name=".._G.PROJECT.."_"..rtos.get_version().."&version=".._G.VERSION..(sRedir and "&need_oss_url=1" or "")),
                      nil,nil,nil,60000,httpDownloadCbFnc,UPD_FILE_PATH)
                      
+            sPeriodWait = false
             local _,result,statusCode,head = sys.waitUntil("UPDATE_DOWNLOAD")
             if result then
                 if statusCode=="200" then
@@ -49,7 +50,7 @@ function clientTask()
                         sys.restart("UPDATE_DOWNLOAD_SUCCESS")
                     end
                 elseif statusCode:sub(1,1)=="3" and head and head["Location"] then
-                    sUpdating,sLocation = false,head["Location"]
+                    sLocation = head["Location"]
                     print("update.timerStart",head["Location"])
                     return sys.timerStart(request,2000)
                 else
@@ -77,12 +78,12 @@ function clientTask()
         sDownloading = false
         
         if sPeriod then
+            sPeriodWait = true
             sys.wait(sPeriod)
         else
             break
         end
     end
-    sUpdating = false
 end
 
 --- 启动远程升级功能
@@ -111,8 +112,10 @@ end
 function request(cbFnc,url,period,redir)
     sCbFnc,sUrl,sPeriod,sRedir = cbFnc or sCbFnc,url or sUrl,period or sPeriod,sRedir or redir
     print("update.request",sCbFnc,sUrl,sPeriod,sRedir)
-    if not sUpdating then        
-        sys.taskInit(clientTask)
+    if not sTaskId or coroutine.status(sTaskId)=="dead" then  
+        sTaskId = sys.taskInit(clientTask)
+    elseif period==nil and coroutine.status(sTaskId)=="suspended" and sPeriodWait then        
+        coroutine.resume(sTaskId)
     end
 end
 
