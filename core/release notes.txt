@@ -1,4 +1,11 @@
-﻿版本号：Luat_V0036_8955_XXX.lod
+﻿版本号：Luat_V0037_8955_XXX.lod
+发布时间：2019/08/27 11:09
+修改记录：
+   (1)8955F版本优化TTS音质
+   (2)修正“调用disp.imageraw接口解析jpg格式的大文件时，写文件时间太长，会造成无法及时喂狗，从而导致软件看门狗重启”的问题
+
+
+版本号：Luat_V0036_8955_XXX.lod
 发布时间：2019/08/11 09:00
 修改记录：
    (1)新增rtos.set_script_rollback(secs)接口，可配置不允许回滚的时间阀值，使用方式参考lib脚本中sys.setRollBack接口
@@ -11,7 +18,7 @@
 修改记录：
    (1)修正“aes和des加密时，不填充方式加密错误”的问题
    (2)修正“aes和des加密时内存泄漏”的问题
-   (3)新增pio.pin.setbounce接口，可设置中断防抖时间；在设置中断前调用有效，例如pio.pin.setbounce(10),表示中断防抖时间为10ms
+   (3)新增pio.pin.setdebounce接口，可设置中断防抖时间；在设置中断前调用有效，例如pio.pin.setdebounce(10),表示中断防抖时间为10ms
 
 
 
