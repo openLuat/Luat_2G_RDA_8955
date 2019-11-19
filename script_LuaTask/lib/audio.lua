@@ -14,6 +14,10 @@ module(..., package.seeall)
 
 local req = ril.request
 local stopCbFnc
+--tts速度，默认50
+local ttsSpeed = 50
+--喇叭音量和mic音量等级
+local sVolume,sMicVolume = 4,1
 
 --音频播放的协程ID
 local taskID
@@ -63,33 +67,33 @@ local function taskAudio()
         FILE = audiocore.play,
         TTS = function(text)
                 if isTtsApi() then
-                    audiocore.openTTS()
+                    audiocore.openTTS(ttsSpeed)
                     local _,result = sys.waitUntil("TTS_OPEN_IND")
                     if result then
                         audiocore.playTTS(common.utf8ToUcs2(text))
                     else
                         audiocore.stopTTS()
-                        sys.waitUntil("TTS_STOP_IND") 
+                        sys.waitUntil("TTS_STOP_IND")
                         audiocore.closeTTS()
                         sys.waitUntil("TTS_CLOSE_IND")
                         _,result = sys.waitUntil("TTS_OPEN_IND")
                         if not result then return false end
-                    end                                      
+                    end
                 else
                     req("AT+QTTS=1") req(string.format("AT+QTTS=%d,\"%s\"",2,string.toHex(common.utf8ToUcs2(text))))
                 end
              end,
         TTSCC = function(text) req("AT+QTTS=1") req(string.format("AT+QTTS=%d,\"%s\"",4,string.toHex(common.utf8ToUcs2(text)))) end,
-        RECORD = function(id) f,d=record.getSize() req("AT+AUDREC=1,0,2," .. id .. "," .. d*1000)end,   
+        RECORD = function(id) f,d=record.getSize() req("AT+AUDREC=1,0,2," .. id .. "," .. d*1000)end,
     }
-    
+
     local stopFnc =
     {
         FILE = audiocore.stop,
         TTS = function(text)
                 if isTtsApi() then
                     audiocore.stopTTS()
-                    sys.waitUntil("TTS_STOP_IND") 
+                    sys.waitUntil("TTS_STOP_IND")
                     audiocore.closeTTS()
                     sys.waitUntil("TTS_CLOSE_IND")
                 else
@@ -97,7 +101,7 @@ local function taskAudio()
                 end
              end,
         TTSCC = function() req("AT+QTTS=3") sys.waitUntil("AUDIO_STOP_END") end,
-        RECORD = function(id) f,d=record.getSize() req("AT+AUDREC=1,0,3," .. id .. "," .. d*1000) sys.waitUntil("AUDIO_STOP_END") end,        
+        RECORD = function(id) f,d=record.getSize() req("AT+AUDREC=1,0,3," .. id .. "," .. d*1000) sys.waitUntil("AUDIO_STOP_END") end,
     }
 
     while true do
@@ -115,7 +119,7 @@ local function taskAudio()
         --挂起播放，等待播放成功、播放失败或者有新的播放请求激活协程
         local _,msg,param = sys.waitUntil("AUDIO_PLAY_END")
 
-        log.info("audio.taskAudio resume msg",msg)        
+        log.info("audio.taskAudio resume msg",msg)
         if msg=="SUCCESS" then
             if sDup then
                 if sType=="TTS" and isTtsApi() then
@@ -157,13 +161,13 @@ end
 		prefix：通知的前缀
 返回值：无
 ]]
-local function urc(data,prefix)	
+local function urc(data,prefix)
     if prefix == "+QTTS" then
         local flag = string.match(data,": *(%d)",string.len(prefix)+1)
         --停止播放tts
         if flag=="0" --[[or flag == "1"]] then
             sys.publish("AUDIO_PLAY_END","SUCCESS")
-        end	
+        end
     end
 end
 
@@ -180,9 +184,9 @@ end
 local function rsp(cmd,success,response,intermediate)
     local prefix = string.match(cmd,"AT(%+%u+%?*)")
 
-    if prefix == "+QTTS" then	
+    if prefix == "+QTTS" then
         local action = string.match(cmd,"QTTS=(%d)")
-        if not success then            
+        if not success then
             if action=="1" or action=="2" then
                 sys.publish("AUDIO_PLAY_END","ERROR")
             end
@@ -203,7 +207,7 @@ end
 local function ttsMsg(msg)
     log.info("audio.ttsMsg",msg.type,msg.result)
     local tag = {[0]="CLOSE", [1]="OPEN", [2]="PLAY", [3]="STOP"}
-    if msg.type==2 then        
+    if msg.type==2 then
         sys.publish("AUDIO_PLAY_END",msg.result and "SUCCESS" or "ERROR")
     else
         if tag[msg.type] then sys.publish("TTS_"..tag[msg.type].."_IND",msg.result) end
@@ -294,7 +298,7 @@ function stop(cbFnc)
             if cbFnc then cbFnc(0) end
         end
     else
-        if cbFnc then cbFnc(0) end 
+        if cbFnc then cbFnc(0) end
     end
 end
 
@@ -303,14 +307,37 @@ end
 -- @return bool result，设置成功返回true，失败返回false
 -- @usage audio.setVolume(7)
 function setVolume(vol)
-    return audiocore.setvol(vol)
+    local result = audiocore.setvol(vol)
+    if result then sVolume = vol end
+    return result
 end
 --- 设置麦克音量等级
 -- @number vol，音量值为0-15，0为静音
 -- @return bool result，设置成功返回true,失败返回false
 -- @usage audio.setMicVolume(14)
 function setMicVolume(vol)
-    return audiocore.setmicvol(vol)
+    ril.request("AT+CMIC="..audiocore.LOUDSPEAKER..","..vol)
+    return true
+end
+
+ril.regRsp("+CMIC",function(cmd,success)
+    if success then
+        sMicVolume = tonumber(cmd:match("CMIC=%d+,(%d+)"))
+    end
+end)
+
+--- 获取喇叭音量等级
+-- @return number vol，喇叭音量等级
+-- @usage audio.getVolume()
+function getVolume()
+    return sVolume
+end
+
+--- 获取麦克音量等级
+-- @return number vol，麦克音量等级
+-- @usage audio.getMicVolume()
+function getMicVolume(vol)
+    return sMicVolume
 end
 
 --- 设置优先级相同时的播放策略
@@ -322,9 +349,40 @@ function setStrategy(strategy)
     sStrategy=strategy
 end
 
+--- 设置TTS朗读速度
+-- @number speed，速度范围为0-100，默认50
+-- @return bool result，设置成功返回true，失败返回false
+-- @usage audio.setTTSSpeed(70)
+function setTTSSpeed(speed)
+    if type(speed) == "number" and speed >= 0 and speed <= 100 then
+        ttsSpeed = speed
+        return true
+    end
+end
+
+local function rsp(cmd, success, response, intermediate)
+    local prefix = string.match(cmd, "AT(%+%u+)")
+    
+    log.info("net.rsp",cmd, success, response, intermediate)
+    
+    if prefix == "+CSQ" then
+        if intermediate ~= nil then
+            local s = string.match(intermediate, "+CSQ:%s*(%d+)")
+            if s ~= nil then
+                rssi = tonumber(s)
+                rssi = rssi == 99 and 0 or rssi
+                --产生一个内部消息GSM_SIGNAL_REPORT_IND，表示读取到了信号强度
+                publish("GSM_SIGNAL_REPORT_IND", success, rssi)
+            end
+        end
+    elseif prefix == "+CFUN" then
+        if success then publish("FLYMODE", flyMode) end
+    end
+end
+
 --默认音频通道设置为LOUDSPEAKER，因为目前的模块只支持LOUDSPEAKER通道
 audiocore.setchannel(audiocore.LOUDSPEAKER)
 --默认音量等级设置为4级，4级是中间等级，最低为0级，最高为7级
-setVolume(4)
+setVolume(sVolume)
 --默认MIC音量等级设置为1级，最低为0级，最高为15级
-setMicVolume(1)
+setMicVolume(sMicVolume)

@@ -49,6 +49,7 @@ local RILCMD = {
     ["+CPBF"] = 3,
     ["+CPBR"] = 3,
     ['+CLCC'] = 3,
+    ['+CNUM'] = 3,
     ["+CIPSEND"] = 10,
     ["+CIPCLOSE"] = 10,
     ["+SSLINIT"] = 10,

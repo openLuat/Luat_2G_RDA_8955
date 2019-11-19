@@ -1,4 +1,16 @@
-﻿发布时间：2019/08/12 11:03
+﻿发布时间：2019/11/19 10:46
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.3.5
+	(1)audio.lua：增加tts语音速度设置接口audio.setTTSSpeed
+	(2)socket.lua：修正“同时存在多个socket域名连接，使用http dns功能时，会导致概率重启”的问题
+	(3)新增“main.lua中配置COROUTINE_ERROR_ROLL_BACK=true，协程运行出错，允许回滚版本”功能
+	(4)mqtt.lua：修正“mqtt recv阻塞接收时，如果允许消息退出阻塞状态，会导致publish阻塞等待puback时，退出阻塞状态，导致publish失败”的问题【阿里云也存在此问题】
+	(5)audio.lua：修正“audio.setMicVolume接口设置mic音量等级无效”的问题；新增获取喇叭和mic音量等级的接口audio.getVolume和audio.getMicVolume
+
+
+
+发布时间：2019/08/12 11:03
 修改记录：
     一、lib脚本修改
 	lib脚本版本号：2.3.4

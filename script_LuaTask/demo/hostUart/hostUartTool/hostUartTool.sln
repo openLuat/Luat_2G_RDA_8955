@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hostUartTool", "hostUartTool\hostUartTool.vcproj", "{7411B46A-0EFD-4D43-AF68-C5F6C3640F25}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7411B46A-0EFD-4D43-AF68-C5F6C3640F25}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7411B46A-0EFD-4D43-AF68-C5F6C3640F25}.Debug|Win32.Build.0 = Debug|Win32
+		{7411B46A-0EFD-4D43-AF68-C5F6C3640F25}.Release|Win32.ActiveCfg = Release|Win32
+		{7411B46A-0EFD-4D43-AF68-C5F6C3640F25}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

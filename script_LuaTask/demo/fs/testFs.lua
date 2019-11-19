@@ -70,18 +70,11 @@ end
 
 
 --[[函数名：deletefile(filename)
-    功能：删除指定文件中的所有内容
+    功能：删除指定文件
     参数：文件名
     返回值：无             --]]
-local function deletefile(filename)--删除指定文件夹中的所有内容
-    local filehandle = io.open(filename,"w")
-    if filehandle then
-        filehandle:write()--写入空的内容
-        print("删除成功")
-        filehandle:close()
-    else
-        print("文件不存在或文件输入格式不正确") --打开失败  
-    end
+local function deletefile(filename)
+    os.remove(filename)
 end
 
 --打印文件系统的剩余空间

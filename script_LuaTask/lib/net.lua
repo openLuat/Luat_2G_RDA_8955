@@ -310,11 +310,11 @@ end
 --- 获取当前和临近位置区、小区、mcc、mnc、以及信号强度的拼接字符串
 -- @return string cellInfo,当前和临近位置区、小区、mcc、mnc、以及信号强度的拼接字符串，例如："460.01.6311.49234.30;460.01.6311.49233.23;460.02.6322.49232.18;"
 -- @usage net.getCellInfoExt()
-function getCellInfoExt()
+function getCellInfoExt(dbm)
     local i, ret = 1, ""
     for i = 1, cellinfo.cnt do
         if cellinfo[i] and cellinfo[i].mcc and cellinfo[i].mnc and cellinfo[i].lac and cellinfo[i].lac ~= 0 and cellinfo[i].ci and cellinfo[i].ci ~= 0 then
-            ret = ret .. cellinfo[i].mcc .. "." .. cellinfo[i].mnc .. "." .. cellinfo[i].lac .. "." .. cellinfo[i].ci .. "." .. cellinfo[i].rssi .. ";"
+            ret = ret .. cellinfo[i].mcc .. "." .. cellinfo[i].mnc .. "." .. cellinfo[i].lac .. "." .. cellinfo[i].ci .. "." .. (dbm and (cellinfo[i].rssi*2-113) or cellinfo[i].rssi) .. ";"
         end
     end
     return ret

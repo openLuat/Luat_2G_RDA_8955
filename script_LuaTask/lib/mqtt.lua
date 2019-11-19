@@ -11,7 +11,7 @@ module(..., package.seeall)
 
 -- MQTT 指令id
 local CONNECT, CONNACK, PUBLISH, PUBACK, PUBREC, PUBREL, PUBCOMP, SUBSCRIBE, SUBACK, UNSUBSCRIBE, UNSUBACK, PINGREQ, PINGRESP, DISCONNECT = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
-local CLIENT_COMMAND_TIMEOUT = 20000
+local CLIENT_COMMAND_TIMEOUT = 60000
 
 local function encodeLen(len)
     local s = ""
@@ -188,7 +188,7 @@ function mqttc:checkKeepAlive()
     if self.keepAlive == 0 then return true end
     if os.time() - self.lastOTime >= self.keepAlive then
         if not self:write(packZeroData(PINGREQ)) then
-            log.info("mqtt.client:checkKeepAlive", "pingreq send fail")
+            log.info("mqtt.client:", "pingreq send fail")
             return false
         end
     end
@@ -204,8 +204,11 @@ function mqttc:write(data)
 end
 
 -- 接收mqtt数据包
-function mqttc:read(timeout, msg)
-    if not self:checkKeepAlive() then return false end
+function mqttc:read(timeout, msg, msgNoResume)
+    if not self:checkKeepAlive() then
+        log.warn("mqtt.read checkKeepAlive fail")
+        return false
+    end
     
     -- 处理之前缓冲的数据
     local packet, nextpos = unpack(self.inbuf)
@@ -224,7 +227,7 @@ function mqttc:read(timeout, msg)
             recvTimeout = kaTimeout > timeout and timeout or kaTimeout
         end
         
-        local r, s, p = self.io:recv(recvTimeout == 0 and 5 or recvTimeout, msg)
+        local r, s, p = self.io:recv(recvTimeout == 0 and 5 or recvTimeout, msg, msgNoResume)
         if r then
             self.inbuf = self.inbuf .. s
         elseif s == "timeout" then -- 超时，判断是否需要发送心跳包
@@ -250,7 +253,7 @@ function mqttc:read(timeout, msg)
 end
 
 -- 等待接收指定的mqtt消息
-function mqttc:waitfor(id, timeout, msg)
+function mqttc:waitfor(id, timeout, msg, msgNoResume)
     for index, packet in ipairs(self.cache) do
         if packet.id == id then
             return true, table.remove(self.cache, index)
@@ -259,7 +262,7 @@ function mqttc:waitfor(id, timeout, msg)
     
     while true do
         local insertCache = true
-        local r, data, param = self:read(timeout, msg)
+        local r, data, param = self:read(timeout, msg, msgNoResume)
         if r then
             if data.id == PUBLISH then
                 if data.qos > 0 then
@@ -328,7 +331,7 @@ function mqttc:connect(host, port, transport, cert, timeout)
         return false
     end
     
-    local r, packet = self:waitfor(CONNACK, self.commandTimeout)
+    local r, packet = self:waitfor(CONNACK, self.commandTimeout, nil, true)
     if not r or packet.rc ~= 0 then
         log.info("mqtt.client:connect", "connack error", r and packet.rc or -1)
         return false
@@ -364,7 +367,7 @@ function mqttc:subscribe(topic, qos)
         return false
     end
     
-    if not self:waitfor(SUBACK, self.commandTimeout) then
+    if not self:waitfor(SUBACK, self.commandTimeout, nil, true) then
         log.info("mqtt.client:subscribe", "wait ack failed")
         return false
     end
@@ -396,7 +399,7 @@ function mqttc:unsubscribe(topic)
         return false
     end
     
-    if not self:waitfor(UNSUBACK, self.commandTimeout) then
+    if not self:waitfor(UNSUBACK, self.commandTimeout, nil, true) then
         log.info("mqtt.client:unsubscribe", "wait ack failed")
         return false
     end
@@ -430,7 +433,7 @@ function mqttc:publish(topic, payload, qos, retain)
     
     if qos == 0 then return true end
     
-    if not self:waitfor(qos == 1 and PUBACK or PUBCOMP, self.commandTimeout) then
+    if not self:waitfor(qos == 1 and PUBACK or PUBCOMP, self.commandTimeout, nil, true) then
         log.warn("mqtt.client:publish", "wait ack timeout")
         return false
     end

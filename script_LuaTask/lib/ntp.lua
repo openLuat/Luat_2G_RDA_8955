@@ -4,6 +4,7 @@
 -- 并不能保证任何时间任何地点都能百分百同步到正确的时间
 -- 所以，如果用户项目中的业务逻辑严格依赖于时间同步功能
 -- 则不要使用使用本功能模块，建议使用自己的应用服务器来同步时间
+-- 参考 http://ask.openluat.com/article/912 加深对授时功能的理解
 -- @module ntp
 -- @author openLuat
 -- @license MIT

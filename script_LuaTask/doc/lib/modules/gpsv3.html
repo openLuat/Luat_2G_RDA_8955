@@ -1,0 +1,830 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luat开源项目脚本lib</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>script_LuaTask lib</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/aLiPay.html">aLiPay</a></li>
+  <li><a href="../modules/aLiYun.html">aLiYun</a></li>
+  <li><a href="../modules/aLiYunOta.html">aLiYunOta</a></li>
+  <li><a href="../modules/agps.html">agps</a></li>
+  <li><a href="../modules/audio.html">audio</a></li>
+  <li><a href="../modules/cc.html">cc</a></li>
+  <li><a href="../modules/clib.html">clib</a></li>
+  <li><a href="../modules/common.html">common</a></li>
+  <li><a href="../modules/console.html">console</a></li>
+  <li><a href="../modules/errDump.html">errDump</a></li>
+  <li><a href="../modules/gizwits.html">gizwits</a></li>
+  <li><a href="../modules/gps.html">gps</a></li>
+  <li><a href="../modules/gpsv2.html">gpsv2</a></li>
+  <li><strong>gpsv3</strong></li>
+  <li><a href="../modules/http.html">http</a></li>
+  <li><a href="../modules/httpv2.html">httpv2</a></li>
+  <li><a href="../modules/lbsLoc.html">lbsLoc</a></li>
+  <li><a href="../modules/led.html">led</a></li>
+  <li><a href="../modules/link.html">link</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/misc.html">misc</a></li>
+  <li><a href="../modules/mqtt.html">mqtt</a></li>
+  <li><a href="../modules/net.html">net</a></li>
+  <li><a href="../modules/netLed.html">netLed</a></li>
+  <li><a href="../modules/ntp.html">ntp</a></li>
+  <li><a href="../modules/nvm.html">nvm</a></li>
+  <li><a href="../modules/patch.html">patch</a></li>
+  <li><a href="../modules/pb.html">pb</a></li>
+  <li><a href="../modules/pins.html">pins</a></li>
+  <li><a href="../modules/pm.html">pm</a></li>
+  <li><a href="../modules/powerKey.html">powerKey</a></li>
+  <li><a href="../modules/record.html">record</a></li>
+  <li><a href="../modules/ril.html">ril</a></li>
+  <li><a href="../modules/scanCode.html">scanCode</a></li>
+  <li><a href="../modules/sim.html">sim</a></li>
+  <li><a href="../modules/sms.html">sms</a></li>
+  <li><a href="../modules/socket.html">socket</a></li>
+  <li><a href="../modules/sys.html">sys</a></li>
+  <li><a href="../modules/uiWin.html">uiWin</a></li>
+  <li><a href="../modules/update.html">update</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wdt.html">wdt</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>gpsv3</code></h1>
+<p>模块功能：GPS模块管理</p>
+<p></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: openLuat</li>
+        <li><strong>Release</strong>: 2018.08.28</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: openLuat</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#close">
+    close ()
+    </a></td>
+	<td class="summary">关闭GPS</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#restart">
+    restart (r)
+    </a></td>
+	<td class="summary">重启GPS模块</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#noLog">
+    noLog (v)
+    </a></td>
+	<td class="summary">关闭日志开关</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setReport">
+    setReport (tm)
+    </a></td>
+	<td class="summary">设置NMEA消息上报的间隔</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isOpen">
+    isOpen ()
+    </a></td>
+	<td class="summary">获取GPS模块是否处于开启状态</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isFix">
+    isFix ()
+    </a></td>
+	<td class="summary">获取GPS模块是否定位成功</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getMaxCno">
+    getMaxCno ()
+    </a></td>
+	<td class="summary">获取GSV解析后的最大Cno</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getSateSn">
+    getSateSn ()
+    </a></td>
+	<td class="summary">获取所有可用卫星号</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getBDGsv">
+    getBDGsv ()
+    </a></td>
+	<td class="summary">获取BDGSV解析结果</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getGPGsv">
+    getGPGsv ()
+    </a></td>
+	<td class="summary">获取GPGSV解析结果</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sumViewSate">
+    sumViewSate ()
+    </a></td>
+	<td class="summary">统计GSA语句中的可见卫星数量</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sumUsedSate">
+    sumUsedSate ()
+    </a></td>
+	<td class="summary">获取定位使用的卫星个数</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getUtcTime">
+    getUtcTime ()
+    </a></td>
+	<td class="summary">获取RMC语句中的UTC时间</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getDop">
+    getDop ()
+    </a></td>
+	<td class="summary">获取位置，水平，垂直精度</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getSep">
+    getSep ()
+    </a></td>
+	<td class="summary">获取定位使用的大地高
+ 地球椭球面相对大地水准面的高度</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getAltitude">
+    getAltitude ()
+    </a></td>
+	<td class="summary">获取海拔</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getAzimuth">
+    getAzimuth ()
+    </a></td>
+	<td class="summary">获取方向角</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getSpeed">
+    getSpeed ()
+    </a></td>
+	<td class="summary">获取速度</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getCentLocation">
+    getCentLocation ()
+    </a></td>
+	<td class="summary">获取度分格式的经纬度信息ddmm.mmmm</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getIntLocation">
+    getIntLocation ()
+    </a></td>
+	<td class="summary">获取返回值为度的10^7方的整数值（度*10^7的值）</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getDegLocation">
+    getDegLocation ()
+    </a></td>
+	<td class="summary">获取度格式的经纬度信息dd.dddddd</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getAllMsg">
+    getAllMsg ()
+    </a></td>
+	<td class="summary">获取打包的GPS信息
+ return number，定位成功1,失败0, 经度，纬度，速度，海拔，方位角度，定位卫星数量，可见卫星数量，最大信噪比，UTC时间戳</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "close"></a>
+    <strong  style="color: red;">
+    close ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">关闭GPS</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.close()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "restart"></a>
+    <strong  style="color: red;">
+    restart (r)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">重启GPS模块</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">r</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">重启方式-0:外部电源重置; 1:热启动; 2:温启动; 3:冷启动</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.restart()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "noLog"></a>
+    <strong  style="color: red;">
+    noLog (v)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">关闭日志开关</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">v</span>
+        <pre class="example"> boolean值 true 表示关闭，其他表示打开</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.noLog(<span class="keyword">true</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "setReport"></a>
+    <strong  style="color: red;">
+    setReport (tm)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置NMEA消息上报的间隔</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tm</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">上报消息的间隔时间</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">无</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.setReport(tm)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "isOpen"></a>
+    <strong  style="color: red;">
+    isOpen ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取GPS模块是否处于开启状态</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">bool result，true表示开启状态，false或者nil表示关闭状态</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.isOpen()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "isFix"></a>
+    <strong  style="color: red;">
+    isFix ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取GPS模块是否定位成功</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">bool result，true表示定位成功，false或者nil表示定位失败</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.isFix()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getMaxCno"></a>
+    <strong  style="color: red;">
+    getMaxCno ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取GSV解析后的最大Cno</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number，Cno 最大值</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.getMaxCno()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getSateSn"></a>
+    <strong  style="color: red;">
+    getSateSn ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取所有可用卫星号</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">table 卫星号的数组</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv2.getSateSn()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getBDGsv"></a>
+    <strong  style="color: red;">
+    getBDGsv ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取BDGSV解析结果</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">table, GSV解析后的数组</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.getBDGsv()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getGPGsv"></a>
+    <strong  style="color: red;">
+    getGPGsv ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取GPGSV解析结果</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">table, GSV解析后的数组</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.getGPGsv()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "sumViewSate"></a>
+    <strong  style="color: red;">
+    sumViewSate ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">统计GSA语句中的可见卫星数量</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number, 可见卫星数量</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.sumViewSate()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "sumUsedSate"></a>
+    <strong  style="color: red;">
+    sumUsedSate ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取定位使用的卫星个数</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number count，定位使用的卫星个数</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.sumUsedSate()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getUtcTime"></a>
+    <strong  style="color: red;">
+    getUtcTime ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取RMC语句中的UTC时间</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number utc 时间戳</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.getUtcTime()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getDop"></a>
+    <strong  style="color: red;">
+    getDop ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取位置，水平，垂直精度</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number 多参数 pdop,hdop,vodp</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.getDop()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getSep"></a>
+    <strong  style="color: red;">
+    getSep ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取定位使用的大地高
+ 地球椭球面相对大地水准面的高度</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number sep，大地高</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.getSep()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getAltitude"></a>
+    <strong  style="color: red;">
+    getAltitude ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取海拔</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number altitude，海拔，单位米</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.getAltitude()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getAzimuth"></a>
+    <strong  style="color: red;">
+    getAzimuth ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取方向角</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number Azimuth，方位角</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.getAzimuth()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getSpeed"></a>
+    <strong  style="color: red;">
+    getSpeed ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取速度</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        <pre class="example">number kmSpeed，第一个返回值为公里每小时的速度</pre></li>
+        <li>
+        <pre class="example">number nmSpeed，第二个返回值为海里每小时的速度</pre></li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.getSpeed()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getCentLocation"></a>
+    <strong  style="color: red;">
+    getCentLocation ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取度分格式的经纬度信息ddmm.mmmm</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">string,string,返回度格式的字符串经度,维度,符号(正东负西,正北负南)</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv3.getCentLocation()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getIntLocation"></a>
+    <strong  style="color: red;">
+    getIntLocation ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取返回值为度的10^7方的整数值（度*10^7的值）</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">number,number,INT32整数型,经度,维度,符号(正东负西,正北负南)</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv2.getIntLocation()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getDegLocation"></a>
+    <strong  style="color: red;">
+    getDegLocation ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取度格式的经纬度信息dd.dddddd</pre>
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        <pre class="example">string,string,固件为非浮点时返回度格式的字符串经度,维度,符号(正东负西,正北负南)</pre></li>
+        <li>
+        <pre class="example">float,float,固件为浮点的时候，返回浮点类型</pre></li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">gpsv2.getLocation()</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getAllMsg"></a>
+    <strong  style="color: red;">
+    getAllMsg ()
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">获取打包的GPS信息
+ return number，定位成功1,失败0, 经度，纬度，速度，海拔，方位角度，定位卫星数量，可见卫星数量，最大信噪比，UTC时间戳</pre>
+
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="keyword">local</span> fix,lng,lat,speed,alt = getAllMsg()</pre></il>
+        <li><pre class="example"><span class="keyword">local</span> fix,lng,lat,speed,alt,azi,used,view,cno = getAllMsg()</pre></il>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2019-11-19 10:46:53 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
+

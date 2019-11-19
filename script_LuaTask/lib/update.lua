@@ -1,4 +1,5 @@
---- 模块功能：远程升级
+--- 模块功能：远程升级.
+-- 参考 http://ask.openluat.com/article/916 加深对远程升级功能的理解
 -- @module update
 -- @author openLuat
 -- @license MIT

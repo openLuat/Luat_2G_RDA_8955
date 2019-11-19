@@ -26,8 +26,8 @@ local EPH_UPDATE_INTERVAL = 4 * 3600
 local ephFlag = false
 --GPS开启标志，true表示开启状态，false或者nil表示关闭状态
 local openFlag
---GPS定位标志，true表示，其余表示未定位
-local fixFlag = false
+--GPS定位标志，true表示，其余表示未定位,hdop 水平精度
+local fixFlag, hdop = false, "0"
 -- 经纬度类型和数据
 local latitudeType, latitude, longitudeType, longitude = "N", "", "E", ""
 -- 海拔，速度，时速,方向角
@@ -35,7 +35,7 @@ local altitude, speed, kmHour, azimuth = "0", "0", "0", "0"
 -- 参与定位的卫星个数,GPS和北斗可见卫星个数
 local usedSateCnt, viewedGpsSateCnt, viewedBdSateCnt = "0", "0", "0"
 -- 可用卫星号，UTC时间
-local SateSn, UtcTime
+local SateSn, UtcTime, utcStamp = {}, {}, 0
 -- 大地高，度分经度，度分纬度
 local Sep, Ggalng, Ggalat
 -- GPS和北斗GSV解析保存的表
@@ -57,6 +57,7 @@ local function parseNmea(s)
             altitude = altd
             usedSateCnt = locSateCnt
             Sep = sep
+            hdop = hdp
         end
         Ggalng, Ggalat = (lngTyp == "W" and "-" or "") .. lng, (latTyp == "S" and "-" or "") .. lat
         latitudeType, longitudeType, latitude, longitude = latTyp, lngTyp, lat, lng
@@ -115,6 +116,7 @@ local function parseNmea(s)
         latitudeType, longitudeType, latitude, longitude = latTyp, lngTyp, lat, lng
         if gpsFind == "A" and gpsTime and gpsDate and gpsTime ~= "" and gpsDate ~= "" then
             local yy, mm, dd, h, m, s = tonumber(gpsDate:sub(5, 6)), tonumber(gpsDate:sub(3, 4)), tonumber(gpsDate:sub(1, 2)), tonumber(gpsTime:sub(1, 2)), tonumber(gpsTime:sub(3, 4)), tonumber(gpsTime:sub(5, 6))
+            utcStamp = os.time({year = 2000 + yy, month = mm, day = dd, hour = h, min = m, sec = s})
             UtcTime = os.date("*t", os.time({year = 2000 + yy, month = mm, day = dd, hour = h, min = m, sec = s}) + 28800)
             -- misc.setClock(UtcTime)
             sys.publish("GPS_TIMING_SUCCEED", UtcTime)
@@ -504,11 +506,22 @@ function getUtcTime()
     return UtcTime
 end
 
+--- 获取gps的UTC时间戳
+-- @retrun number，时间戳
+-- @usage gpsv2.getUtcStamp()
+function getUtcStamp()
+    return utcStamp or 0
+end
 --- 获取定位使用的大地高
 -- @return number sep，大地高
 -- @usage gpsv2.getSep()
 function getSep()
     return tonumber(Sep) or 0
+end
+
+--- 获取水平精度
+function getHdop()
+    return tonumber(hdop) or 0
 end
 
 --- 获取GSA语句中的可见卫星号

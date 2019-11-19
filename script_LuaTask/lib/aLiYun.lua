@@ -138,7 +138,7 @@ function clientDataTask(host,tPorts,clientId,user,password)
                 local result,prompt = procSubscribe(mqttClient)
                 outQueue["SUBSCRIBE"] = {}
                 if result then
-                    local procs,k,v = {procReceive,procSend}
+                    local procs,k,v = {procSend,procReceive}
                     while true do
                         for k,v in pairs(procs) do
                             result,prompt = v(mqttClient)
