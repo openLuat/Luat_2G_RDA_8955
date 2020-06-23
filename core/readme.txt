@@ -9,8 +9,9 @@ Luat_VXXXX_8955_TTS1.lod：支持TTS功能
 Luat_VXXXX_8955_TTS2.lod：支持TTS功能、不支持MP3、MIDI、录音、json
 Luat_VXXXX_8955_UI.lod：支持SPI接口的LCD功能
 Luat_VXXXX_8955_SSL_FLOAT.lod：支持SSL功能、浮点数
-Luat_VXXXX_8955_SSL_UI_FLOAT.lod：支持SSL功能、PI接口的LCD功能、浮点数
-Luat_VXXXX_8955F.lod：64M flash版本（Air202F），支持SSL、TTS、SPI接口的LCD功能
+Luat_VXXXX_8955_SSL_UI_FLOAT.lod：支持SSL功能、SPI接口的LCD功能、浮点数
+Luat_VXXXX_8955F.lod：64M flash版本（Air202F），支持以上提到的所有功能（除浮点数外）
+Luat_VXXXX_8955F_FLOAT.lod：64M flash版本（Air202F），支持以上提到的所有功能
 
 
 
