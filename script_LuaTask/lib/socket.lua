@@ -410,9 +410,10 @@ function mt:recv(timeout, msg, msgNoResume)
     self.msgNoResume = msgNoResume
     if msg and not self.iSubscribe then
         self.iSubscribe = msg
-        self.subMessage = function(data)
-            if data then table.insert(self.output, data) end
-            if (self.wait == "+RECEIVE" or self.wait == "+SSL RECEIVE") and not self.msgNoResume then
+        self.subMessage = function(data) 
+            --if data then table.insert(self.output, data) end
+            if (self.wait == "+RECEIVE" or self.wait == "+SSL RECEIVE") and not self.msgNoResume then  
+                if data then table.insert(self.output, data) end
                 coroutine.resume(self.co, 0xAA)
             end
         end

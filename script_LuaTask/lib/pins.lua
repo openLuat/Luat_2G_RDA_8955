@@ -34,7 +34,7 @@ function setup(pin, val, pull)
     -- 中断模式配置
     if type(val) == "function" then
         pio.pin.setdir(pio.INT, pin)
-        if pull then pio.pin.setpull(pull or pio.PULLUP, pin) end
+        if pull and tonumber((rtos.get_version()):match("Luat_V(%d+)_"))>=21 then pio.pin.setpull(pull or pio.PULLUP, pin) end
         --注册引脚中断的处理函数
         interruptCallbacks[pin] = val
         dirs[pin] = false
@@ -50,7 +50,7 @@ function setup(pin, val, pull)
         -- 输入模式初始化默认配置
         dirs[pin] = false
         pio.pin.setdir(pio.INPUT, pin)
-        if pull then pio.pin.setpull(pull or pio.PULLUP, pin) end
+        if pull and tonumber((rtos.get_version()):match("Luat_V(%d+)_"))>=21 then pio.pin.setpull(pull or pio.PULLUP, pin) end
     end
     -- 返回一个自动切换输入输出模式的函数
     return function(val, changeDir)
@@ -58,7 +58,7 @@ function setup(pin, val, pull)
         if (not val and dirs[pin]) or (val and not dirs[pin]) then
             pio.pin.close(pin)
             pio.pin.setdir(val and (val == 1 and pio.OUTPUT1 or pio.OUTPUT) or pio.INPUT, pin)
-            if not val and pull then pio.pin.setpull(pull or pio.PULLUP, pin) end
+            if not val and pull and tonumber((rtos.get_version()):match("Luat_V(%d+)_"))>=21 then pio.pin.setpull(pull or pio.PULLUP, pin) end
             dirs[pin] = val and true or false
             return val or pio.pin.getval(pin)
         end

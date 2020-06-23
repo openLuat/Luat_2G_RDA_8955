@@ -111,8 +111,7 @@ local function taskClient(method,protocal,auth,host,port,path,cert,head,body,tim
             --应答头
             for k,v in string.gmatch(rcvCache:sub(d1+1,d2-2),"(.-):%s*(.-)\r\n") do
                 rspHead[k] = v
-                if (k=="Transfer-Encoding") and (v=="chunked") then rcvChunked = true end
-
+                if (string.upper(k)==string.upper("Transfer-Encoding")) and (string.upper(v)==string.upper("chunked")) then rcvChunked = true end
             end
             if not rcvChunked then
                 contentLen = tonumber(rspHead["Content-Length"] or "2147483647")

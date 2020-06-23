@@ -7,7 +7,8 @@
 -- 3、调用errDump.appendErr或者sys.restart接口保存的错误日志
 --    此类错误日志保存在/lib_err.txt中
 -- 4、调用errDump.setNetworkLog接口打开网络异常日志功能后，会自动保存最近几种网络异常日志
---    此类异常日志保存在内存中
+--    错误日志保存在/lib_network_err.txt中
+-- 5、底层固件的死机信息
 --
 -- 其中2和3保存的错误日志，最多支持5K字节
 -- 每次上报错误日志给调试服务器之后，会清空已保存的日志
@@ -24,7 +25,8 @@ module(..., package.seeall)
 local LIB_ERR_FILE,libErr,LIB_ERR_MAX_LEN = "/lib_err.txt","",5*1024
 local LUA_ERR_FILE,luaErr = "/luaerrinfo.txt",""
 local sReporting,sProtocol
-local sNetworkLog,stNetworkLog,sNetworkLogFlag = "",{}
+local LIB_NETWORK_ERR_FILE,sNetworkLog,stNetworkLog,sNetworkLogFlag = "/lib_network_err.txt","",{}
+local firmwareAssertErr = ""
 
 -- 初始化LIB_ERR_FILE文件中的错误信息(读取到内存中，并且打印出来)
 -- @return nil
@@ -40,7 +42,17 @@ local function initErr()
         log.error("errDump.luaErr", luaErr)
     end
     
-    updateNetworkLog()
+    sNetworkLog = io.readFile(LIB_NETWORK_ERR_FILE) or ""
+    if sNetworkLog~="" then
+        log.error("errDump.libNetErr", sNetworkLog)
+    end
+   
+    if type(rtos.get_fatal_info)=="function" then
+        firmwareAssertErr = rtos.get_fatal_info() or ""
+        if firmwareAssertErr~="" then
+            log.error("errDump.firmwareAssertErr", firmwareAssertErr)
+        end
+    end
 end
 
 
@@ -64,7 +76,10 @@ function appendErr(s)
 end
 
 local function reportData()
-    return _G.PROJECT.."_"..rtos.get_version()..",".._G.VERSION..","..misc.getImei()..","..misc.getSn()..","..luaErr..(luaErr:len()>0 and "\r\n" or "")..libErr..sNetworkLog
+    local s = _G.PROJECT.."_"..rtos.get_version()..",".._G.VERSION..","..misc.getImei()..","..misc.getSn()..","
+    s = s.."\r\npoweron reason:"..rtos.poweron_reason().."\r\n"..luaErr..(luaErr:len()>0 and "\r\n" or "")..libErr..(libErr:len()>0 and "\r\n" or "")..sNetworkLog
+    s = s..(firmwareAssertErr:len()>0 and "\r\n" or "")..firmwareAssertErr
+    return s
 end
 
 local function httpPostCbFnc(result,statusCode)
@@ -77,7 +92,7 @@ function clientTask(protocol,addr,period)
     while true do
         if not socket.isReady() then sys.waitUntil("IP_READY_IND") end
         --log.info("errDump.clientTask","err",luaErr~="" or libErr~="")
-        if luaErr~="" or libErr~="" or sNetworkLog~="" then
+        if luaErr~="" or libErr~="" or sNetworkLog~="" or firmwareAssertErr~="" then
             local retryCnt,result,data = 0
             while true do
                 if protocol=="http" then
@@ -109,6 +124,9 @@ function clientTask(protocol,addr,period)
                     os.remove(LUA_ERR_FILE)
                     sNetworkLog = ""
                     stNetworkLog = {}
+                    os.remove(LIB_NETWORK_ERR_FILE)
+                    firmwareAssertErr = ""
+                    if type(rtos.remove_fatal_info)=="function" then rtos.remove_fatal_info() end
                     break
                 else
                     retryCnt = retryCnt+1
@@ -137,6 +155,10 @@ function updateNetworkLog()
             if v and v~="" then
                 sNetworkLog = sNetworkLog.."\r\n"..k.."@"..v
             end
+        end
+        
+        if sNetworkLog~="" then
+            io.writeFile(LIB_NETWORK_ERR_FILE,sNetworkLog)
         end
     end
 end
@@ -191,6 +213,10 @@ function setNetworkLog(flag)
     end)
     procer("LIB_SOCKET_SEND_FAIL_IND",function(ssl,prot,addr,port)           
         stNetworkLog[(ssl and "ssl" or prot).."://"..addr..":"..port] = getTimeStr()..":send fail"
+        updateNetworkLog()
+    end)
+    procer("LIB_SOCKET_CLOSE_IND",function(ssl,prot,addr,port)           
+        stNetworkLog[(ssl and "ssl" or prot).."://"..addr..":"..port.." closed"] = getTimeStr()
         updateNetworkLog()
     end)
     procer("PDP_DEACT_IND",function()        

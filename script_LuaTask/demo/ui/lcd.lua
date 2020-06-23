@@ -11,16 +11,16 @@
 -- require "mono_std_spi_sh1106"
 -- require "mono_std_spi_ssd1306"
 -- require "mono_std_spi_st7567"
-require "color_std_spi_st7735"
+--require "color_std_spi_st7735"
 -- require "color_std_spi_st7735l"
 -- require "color_std_spi_ILI9341"
 -- require "color_lcd_spi_ILI9341"
 -- require "mono_lcd_spi_sh1106"
 -- require "mono_lcd_spi_ssd1306"
 -- require "mono_lcd_spi_st7567"
--- require "color_lcd_spi_st7735"
--- require "color_lcd_spi_gc9106"
--- require "mono_i2c_ssd1306"
+ require "color_lcd_spi_st7735"
+--require "color_lcd_spi_gc9106l"
+--require "mono_i2c_ssd1306"
 module(..., package.seeall)
 
 --LCD分辨率的宽度和高度(单位是像素)

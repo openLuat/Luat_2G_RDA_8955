@@ -13,6 +13,7 @@ local msgQueue = {}
 
 local function insertMsg(topic,payload,qos,user)
     table.insert(msgQueue,{t=topic,p=payload,q=qos,user=user})
+    sys.publish("APP_SOCKET_SEND_DATA")
 end
 
 local function pubQos0TestCb(result)
@@ -53,12 +54,6 @@ function unInit()
     end
 end
 
---- MQTT客户端是否有数据等待发送
--- @return 有数据等待发送返回true，否则返回false
--- @usage mqttOutMsg.waitForSend()
-function waitForSend()
-    return #msgQueue > 0
-end
 
 --- MQTT客户端数据发送处理
 -- @param mqttClient，MQTT客户端对象

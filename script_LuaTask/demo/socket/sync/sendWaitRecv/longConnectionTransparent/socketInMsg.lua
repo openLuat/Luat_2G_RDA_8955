@@ -14,19 +14,17 @@ module(...,package.seeall)
 function proc(socketClient)
     local result,data
     while true do
-        result,data = socketClient:recv(2000)
+        result,data = socketClient:recv(60000,"APP_SOCKET_SEND_DATA")
         --接收到数据
         if result then
             log.info("socketInMsg.proc",data)
                 
             sys.publish("SOCKET_RECV_DATA",data)
             
-            --如果socketOutMsg中有等待发送的数据，则立即退出本循环
-            if socketOutMsg.waitForSend() then return true end
         else
             break
         end
     end
 	
-    return result or data=="timeout"
+    return result or data=="timeout" or data=="APP_SOCKET_SEND_DATA"
 end

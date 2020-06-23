@@ -11,6 +11,7 @@ require"pm"
 require"scanCode"
 require"utils"
 require"audio"
+--require"testUartSentFile"
 local WIDTH,HEIGHT = disp.getlcdinfo()
 local DEFAULT_WIDTH,DEFAULT_HEIGHT = 240,320
 
@@ -67,7 +68,7 @@ function takePhoto()
     --唤醒系统
     pm.wake("testTakePhoto")
     --打开摄像头
-    disp.cameraopen(1,0,0)
+    disp.cameraopen(1,0,0,0)
     --打开摄像头预览
     --如果有LCD，使用LCD的宽和高
     --如果无LCD，宽度设置为240像素，高度设置为320像素，240*320是Air268F支持的最大分辨率
@@ -84,7 +85,9 @@ function takePhoto()
     disp.cameraclose()
     --允许系统休眠
     pm.sleep("testTakePhoto")    
-    --显示拍照图片    
+
+    --testUartSentFile.sendFile()
+    --显示拍照图片   
     if WIDTH~=0 and HEIGHT~=0 then
         disp.clear()
         disp.putimage("/testCamera.jpg",0,0)
@@ -92,9 +95,8 @@ function takePhoto()
         disp.update()
     end   
     
-	--5秒后自动返回提示界面
-	if WIDTH~=0 and HEIGHT~=0 then
-		sys.timerStart(windows.returnIdle,5000)
-	end
-    
+    --5秒后自动返回提示界面
+    if WIDTH~=0 and HEIGHT~=0 then
+        sys.timerStart(windows.returnIdle,5000)
+    end    
 end

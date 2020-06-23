@@ -13,6 +13,7 @@ local msgQuene = {}
 
 local function insertMsg(data,user)
     table.insert(msgQuene,{data=data,user=user})
+    sys.publish("APP_SOCKET_SEND_DATA")
 end
 
 local function sndGetCb(result)
@@ -40,13 +41,6 @@ function unInit()
         local outMsg = table.remove(msgQuene,1)
         if outMsg.user and outMsg.user.cb then outMsg.user.cb(false,outMsg.user.para) end
     end
-end
-
---- socket客户端是否有数据等待发送
--- @return 有数据等待发送返回true，否则返回false
--- @usage socketOutMsg.waitForSend()
-function waitForSend()
-    return #msgQuene > 0
 end
 
 --- socket客户端数据发送处理

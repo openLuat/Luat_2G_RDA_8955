@@ -14,19 +14,16 @@ module(...,package.seeall)
 function proc(mqttClient)
     local result,data
     while true do
-        result,data = mqttClient:receive(2000)
+        result,data = mqttClient:receive(60000,"APP_SOCKET_SEND_DATA")
         --接收到数据
         if result then
             log.info("mqttInMsg.proc",data.topic,string.toHex(data.payload))
                 
             --TODO：根据需求自行处理data.payload
-            
-            --如果mqttOutMsg中有等待发送的数据，则立即退出本循环
-            if mqttOutMsg.waitForSend() then return true end
         else
             break
         end
     end
 	
-    return result or data=="timeout"
+    return result or data=="timeout" or data=="APP_SOCKET_SEND_DATA"
 end

@@ -124,13 +124,8 @@ ril.regUrc("+AUDREC", function(data)
             stoping = false
             if stopCbFnc then stopCbFnc(0) stopCbFnc=nil end
         --录音播放相关
-        elseif action=="2" then
-            sys.publish("LIB_RECORD_PLAY_END_IND")
-            if size > 0 then
-                sys.publish("AUDIO_PLAY_END","SUCCESS")
-            else
-                sys.publish("AUDIO_PLAY_END","ERROR")
-            end            
+        elseif action=="2" then             
+            sys.publish("LIB_AUDIO_PLAY_IND","RESULT",size>0)
         end
     end
 end)
@@ -152,6 +147,6 @@ ril.regRsp("+AUDREC", function(cmd, success)
     --停止播放录音
     elseif action=="3" then
         --flag_s=true
-		sys.publish("AUDIO_STOP_END")
+		sys.publish("LIB_AUDIO_RECORD_STOP_RESULT")
     end
 end)

@@ -52,6 +52,31 @@ local function flash_random_rw_test(spi_flash, capcity)
     return true
 end
 
+local readDataLen = 0
+local function flash_random_rd_speed_test(spi_flash, capcity)
+    for i=1,40 do
+        readDataLen = 0
+        local bgnTick = rtos.tick()
+        for n = 1, (TOTAL+STEP*i-1), STEP do
+            local sector_ids = gen_rand_list(1, capcity * 16, STEP)
+            for i, id in ipairs(sector_ids) do
+                local addr = id * SECTOR_SIZE
+                --log.info('testSPIFlash', string.format('test id[%03d] address 0x%06X', n + i - 1, addr))
+                local data = spi_flash:read(addr, SECTOR_SIZE)
+                if data:len() ~= SECTOR_SIZE then
+                    log.error('testSPIFlash', 'flash data read failed')
+                    return false
+                end
+                readDataLen = readDataLen+SECTOR_SIZE
+            end
+        end
+        local speed = readDataLen/((rtos.tick()-bgnTick)*1000/16384)
+        sys.timerLoopStart(print,2000,readDataLen,speed,"bytes/ms")
+        sys.wait(3000)
+    end
+    return true
+end
+
 sys.taskInit(function()
     local spi_flash = spiFlash.setup(spi.SPI_1, pio.P0_10)
     local manufacutreID, deviceID = spi_flash:readFlashID()
@@ -61,4 +86,5 @@ sys.taskInit(function()
     log.info('testSPIFlash', 'flash name', flashName)
     local capcity = tonumber(flashName:sub(flashName:find('q') + 1, -1))
     log.info('testSPIFlash', 'flash random rw test result', flash_random_rw_test(spi_flash, capcity) and 'pass' or 'fail')
+    --log.info('testSPIFlash', 'flash random rd speed test result', flash_random_rd_speed_test(spi_flash, capcity) and 'pass' or 'fail')
 end)

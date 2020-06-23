@@ -526,7 +526,7 @@ end
 -- @function[opt=nil] cbFnc，短信发送结果异步返回时的用户回调函数，回调函数的调用形式为：
 --              cbFnc(result,num,data)
 --              num：短信接收方的号码，ASCII码字符串格式
---              data：短信内容，GB2312编码的字符串
+--              data：短信内容，unicode大端编码的HEX字符串
 -- @number[opt=nil] idx，插入短信发送缓冲表的位置，默认是插入末尾
 -- @return result，true表示调用接口成功（并不是短信发送成功，短信发送结果，通过sendcnf返回，如果有cbFnc，会通知cbFnc函数）；返回false，表示调用接口失败
 -- @usage sms.send("10086","test",cbFnc)
