@@ -89,11 +89,15 @@ local function handlePlayInd(item,key,value)
     end 
 end
 
+local audioTaskWaitPlayEntry
+
 local function audioTask()    
     while true do
         if #audioQueue==0 then
             log.info("audioTask","wait LIB_AUDIO_PLAY_ENTRY")
+            audioTaskWaitPlayEntry = true
             sys.waitUntil("LIB_AUDIO_PLAY_ENTRY")
+            audioTaskWaitPlayEntry = false
         end        
                
         local item = audioQueue[1] 
@@ -257,7 +261,9 @@ function play(priority,type,path,vol,cbFnc,dup,dupInterval)
         else
             if priority>front.priority or (priority==front.priority and sStrategy==1) then
                 table.insert(audioQueue,item)
-                sys.publish("LIB_AUDIO_PLAY_IND","NEW")
+                if not audioTaskWaitPlayEntry then
+                    sys.publish("LIB_AUDIO_PLAY_IND","NEW")
+                end
             else
                 log.warn("audio.play","priority error")
                 if cbFnc then cbFnc(2) end

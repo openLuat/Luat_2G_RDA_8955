@@ -58,6 +58,8 @@ function isEnd()
     return ntpEnd
 end
 
+local sTs,sFnc,sFun
+
 --- 同步时间，每个NTP服务器尝试3次，超时8秒,适用于被任务函数调用
 -- @param ts,每隔ts小时同步1次
 -- @param fnc,同步成功后回调函数
@@ -69,6 +71,7 @@ end
 -- @usage ntp.ntpTime(24,fnc) -- 24小时同步1次，同步成功后执行fnc()
 function ntpTime(ts, fnc, fun)
     local rc, data, ntim
+    local sTs,sFnc,sFun = ts or sTs, fnc or sFnc, fun or sFun
     ntpEnd = false
     while true do
         local tUnusedSvr = {}
@@ -84,8 +87,8 @@ function ntpTime(ts, fnc, fun)
                     rc, data = c:recv(NTP_TIMEOUT)
                     if rc and #data == 48 then
                         ntim = os.date("*t", (sbyte(ssub(data, 41, 41)) - 0x83) * 2 ^ 24 + (sbyte(ssub(data, 42, 42)) - 0xAA) * 2 ^ 16 + (sbyte(ssub(data, 43, 43)) - 0x7E) * 2 ^ 8 + (sbyte(ssub(data, 44, 44)) - 0x80) + 1)
-                        if type(fun) == "function" then fun() end
-                        misc.setClock(ntim, fnc)
+                        if type(sFun) == "function" then sFun() end
+                        misc.setClock(ntim, sFnc)
                         ntpEnd = true
                         c:close()
                         break
@@ -108,8 +111,8 @@ function ntpTime(ts, fnc, fun)
         if ntpEnd then
             sys.publish("NTP_SUCCEED")
             log.info("ntp.timeSync is date:", ntim.year .. "/" .. ntim.month .. "/" .. ntim.day .. "," .. ntim.hour .. ":" .. ntim.min .. ":" .. ntim.sec)
-            if ts == nil or type(ts) ~= "number" then break end
-            sys.wait(ts * 3600 * 1000)
+            if sTs == nil or type(sTs) ~= "number" then break end
+            sys.wait(sTs * 3600 * 1000)
         else
             log.warn("ntp.timeSync is error!")
             sys.wait(1000)
@@ -131,5 +134,6 @@ end
 -- @usage ntp.timeSync(nil,fnc) -- 只同步1次，同步成功后执行fnc()
 -- @usage ntp.timeSync(24,fnc) -- 24小时同步1次，同步成功后执行fnc()
 function timeSync(ts, fnc, fun)
-    sys.taskInit(ntpTime, ts, fnc, fun)
+    sTs,sFnc,sFun = ts, fnc, fun
+    sys.taskInit(ntpTime)
 end

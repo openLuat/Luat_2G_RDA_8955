@@ -53,6 +53,11 @@ local function enWifiInfo(tWifi)
     return (tWifi and string.char(cnt) or "")..ret
 end
 
+local function enMuid()
+    local muid = misc.getMuid()
+    return string.char(muid:len())..muid
+end
+
 local function trans(str)
     local s = str
     if str:len()<10 then
@@ -68,12 +73,13 @@ local function taskClient(cbFnc,reqAddr,timeout,productKey,host,port,reqTime,req
     end
     
     local retryCnt,sck = 0
-    local reqStr = pack.pack("bAbAAAA",
+    local reqStr = pack.pack("bAbAAAAA",
         productKey:len(),
         productKey,
-        (reqAddr and 2 or 0)+(reqTime and 4 or 0)+(reqWifi and 16 or 0),
+        (reqAddr and 2 or 0)+(reqTime and 4 or 0)+(reqWifi and 16 or 0)+32,
         "",
         common.numToBcdNum(misc.getImei()),
+        enMuid(),
         enCellInfo(net.getCellInfoExt()),
         enWifiInfo(reqWifi))
     log.info("reqStr",reqStr:toHex())
